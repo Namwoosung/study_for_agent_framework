@@ -1,0 +1,154 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>모델 노출에서 실제 Handler 실행까지 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" class="current" aria-current="page"><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>Built-in Tools와 MCP</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 04</p><h1>모델 노출에서 실제 Handler 실행까지</h1><p class="lead">내장 도구와 SDK MCP, 외부 서버의 실행 경계</p><div class="chapter-meta">원문 10–11장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>도구를 모델에게 보여 주는 단계와, 호출이 발생했을 때 실행을 허용하는 단계는 다릅니다. 자동 승인 설정만으로 노출 목록이나 자원 접근권한이 모두 결정되는 것은 아닙니다.</p><p>커스텀 Tool은 SDK MCP 서버를 통해 Python Handler에 연결할 수 있습니다. In-process 도구와 외부 MCP 서버의 실행 위치·자격증명·장애 경계를 나누고, 실제 데이터 권한은 Handler와 DB에서 검증해야 합니다.</p><p class="reading-question"><strong>읽는 관점</strong>도구 설명·스키마·자동 승인·실제 OS·DB 권한을 각기 다른 층으로 읽으세요.</p></section><section class="source-section" data-source-chapter="10"><h2 id="s-10-1">10. Built-in Tools와 Tool 선택·실행<a class="anchor" href="#s-10-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-10-2">10.1 Tool의 두 단계<a class="anchor" href="#s-10-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>모델 노출:</strong> 지금 실행에서 사용 가능한 도구와 스키마를 모델에게 알려 준다.</li>
+<li><strong>도구 실행:</strong> 실제 호출 발생 시 정책 확인 뒤 실행 환경에서 함수를 실행한다.</li>
+</ol>
+<p>이 둘을 혼동하면 “모델에 알려주지 않은 도구를 완전히 차단했다”, “자동 허용했으니 도구가 무조건 모델에 보인다” 같은 오류가 생긴다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<h3 id="s-10-3">10.2 내장 도구의 역할 예시<a class="anchor" href="#s-10-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>도구 계열</th>
+<th>수행할 수 있는 작업 예</th>
+<th>반도체 데모의 주의점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Read/Glob/Grep</td>
+<td>파일 읽기, 경로 검색, 텍스트 탐색</td>
+<td>폴더·파일 접근 범위 제한</td>
+</tr>
+<tr>
+<td>Bash</td>
+<td>셸 명령·프로그램 실행</td>
+<td>네트워크/파일수정/외부 프로세스 위험</td>
+</tr>
+<tr>
+<td>Edit/Write</td>
+<td>파일 변경·생성</td>
+<td>원본 공정 자료 변조 방지</td>
+</tr>
+<tr>
+<td>Web 관련 도구</td>
+<td>외부 자료 탐색</td>
+<td>기밀 정보 전송 금지</td>
+</tr>
+<tr>
+<td>Task/Subagent</td>
+<td>하위 역할 위임</td>
+<td>자식 Agent의 권한·비용 상한</td>
+</tr>
+<tr>
+<td>MCP Tools</td>
+<td>기업 API·DB·RAG 연동</td>
+<td>인증과 RBAC, 쿼리 안전성 별도 구현</td>
+</tr>
+</tbody></table>
+</div><p>사용 가능한 정확한 도구 목록은 <strong>SDK 버전·CLI 버전·설정·환경</strong>에 따라 달라질 수 있다. <code>SystemMessage(init)</code>의 Tool 정보와 공식 API Reference로 확인한다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<h3 id="s-10-4">10.3 <code>tools</code>, <code>allowed_tools</code>, <code>disallowed_tools</code> 비교<a class="anchor" href="#s-10-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>의미</th>
+<th>보안상 해석</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tools</code></td>
+<td>기본 제공/노출하는 도구 집합 설정</td>
+<td>모델의 도구 표면을 좁히는 수단</td>
+</tr>
+<tr>
+<td><code>allowed_tools</code></td>
+<td>도구 사용을 자동 승인하는 규칙</td>
+<td><strong>단독 차단 목록이 아님</strong></td>
+</tr>
+<tr>
+<td><code>disallowed_tools</code></td>
+<td>이름·패턴과 일치하는 호출을 거부</td>
+<td>거부 규칙, 추가 방어 계층</td>
+</tr>
+<tr>
+<td>Permission Mode</td>
+<td>일반 승인 동작 조절</td>
+<td>다른 규칙과 함께 평가</td>
+</tr>
+<tr>
+<td><code>PreToolUse</code></td>
+<td>호출 직전 검사·차단·변환</td>
+<td>동적 정책을 적용할 수 있음</td>
+</tr>
+<tr>
+<td>실제 시스템 권한</td>
+<td>OS/컨테이너/DB 계정</td>
+<td>런타임 설정을 우회해도 자원 접근을 제한</td>
+</tr>
+</tbody></table>
+</div><p><a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<h3 id="s-10-5">10.4 Tool 실패와 재시도<a class="anchor" href="#s-10-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Tool 호출이 실패했다고 해서 항상 Python 코드의 예외로 직결되는 것은 아니다. 도구 오류가 Agent에게 전달되어 모델이 다른 계획을 세울 수도 있고, 실행 전체가 실패할 수도 있다. 실패를 기록할 때 <strong>Tool 자체 실패, 정책 거부, 모델 오류, SDK 통신 실패</strong>를 각각 구분해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+</section>
+<section class="source-section" data-source-chapter="11"><h2 id="s-11-1">11. 커스텀 Tool·SDK MCP Server·외부 MCP<a class="anchor" href="#s-11-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-11-2">11.1 <code>@tool</code>이 일반 Python 함수를 바로 실행시키는 것인가?<a class="anchor" href="#s-11-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Python SDK는 <code>@tool</code>로 Tool의 이름·설명·입력 스키마·Handler를 만들고 <code>create_sdk_mcp_server()</code>로 등록하는 방식을 공식적으로 제공한다. 모델은 이 MCP Tool을 호출하고, SDK는 해당 호출을 Python Handler에 연결한다. <a href="https://code.claude.com/docs/en/agent-sdk/custom-tools" target="_blank" rel="noopener noreferrer">[D05]</a></p>
+<h3 id="s-11-3">11.2 커스텀 Tool 예제<a class="anchor" href="#s-11-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from claude_agent_sdk import tool, create_sdk_mcp_server, ClaudeAgentOptions
+
+@tool(&quot;get_sensor_stat&quot;, &quot;Return a synthetic sensor summary&quot;, {&quot;sensor_id&quot;: str})
+async def get_sensor_stat(args):
+    # 학습용: 실제 시스템에서는 DB 권한, 입력검증, 감사 로그가 필요
+    sensor_id = args[&quot;sensor_id&quot;]
+    values = {&quot;demo-temp-01&quot;: 42.1, &quot;demo-temp-02&quot;: 43.0}
+    if sensor_id not in values:
+        return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Unknown sensor ID&quot;}], &quot;isError&quot;: True}
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: str(values[sensor_id])}]}
+
+server = create_sdk_mcp_server(
+    name=&quot;fab_demo&quot;,
+    version=&quot;1.0.0&quot;,
+    tools=[get_sensor_stat],
+)
+
+options = ClaudeAgentOptions(
+    mcp_servers={&quot;fab_demo&quot;: server},
+    allowed_tools=[&quot;mcp__fab_demo__get_sensor_stat&quot;],
+)</code></pre></div><p>위 코드는 공식적인 <code>@tool</code> / <code>create_sdk_mcp_server</code> 사용 형태를 따르는 <strong>합성 데이터 학습 예제</strong>로, 실행하지 않았다. <code>allowed_tools</code> 항목은 이 도구를 <strong>자동 승인</strong>하는 설정이지 모든 다른 도구를 자동 차단하지 않는다. 읽기 전용 데이터 접근 보장은 Handler 안의 권한 검사와 서버 설정까지 포함해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/custom-tools" target="_blank" rel="noopener noreferrer">[D05]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<h3 id="s-11-4">11.3 외부 MCP와 In-process MCP의 차이<a class="anchor" href="#s-11-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>In-process SDK MCP</th>
+<th>외부 MCP Server</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>실행 위치</td>
+<td>SDK가 구동하는 앱 프로세스와 연계</td>
+<td>별도 프로세스·서버일 수 있음</td>
+</tr>
+<tr>
+<td>연결</td>
+<td><code>create_sdk_mcp_server()</code></td>
+<td>stdio 또는 원격 MCP 설정 등</td>
+</tr>
+<tr>
+<td>장점</td>
+<td>작은 도구를 코드로 빠르게 노출</td>
+<td>팀 간 도구 재사용, 독립 배포, 보안 분리</td>
+</tr>
+<tr>
+<td>주의</td>
+<td>앱 코드의 권한·비밀정보·예외 노출</td>
+<td>인증·네트워크·서버 가용성·감사 정책</td>
+</tr>
+</tbody></table>
+</div><p><a href="https://code.claude.com/docs/en/agent-sdk/custom-tools" target="_blank" rel="noopener noreferrer">[D05]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/mcp" target="_blank" rel="noopener noreferrer">[D13]</a></p>
+<h3 id="s-11-5">11.4 Tool의 입력 검증<a class="anchor" href="#s-11-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Tool 스키마가 모델에 제공된다고 해도 사내 데이터 접근은 반드시 실제 Handler에서 검증해야 한다. 예컨대 <code>lot_id</code> 문자열 하나가 합법적으로 보이더라도 <strong>사용자에게 그 Lot 조회 권한이 있는지는 별도 문제</strong>다. [설계]</p>
+<p>권장 순서: 인증된 사용자 → RBAC/ABAC 검사 → 허용 파라미터 범위 확인 → DB 읽기 전용 쿼리 → 반환 컬럼/행 제한 → 민감 정보 필터 → 결과 감사.</p>
+<h3 id="s-11-6">11.5 MCP는 무엇을 제공하지 않는가?<a class="anchor" href="#s-11-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>MCP 자체는 Tool 인터페이스/연결 프로토콜이다. 데이터 권한, SQL Injection 방어, 통신 암호화 설정, 감사 보존 정책, 결과 수치의 정확성을 자동으로 보장하지 않는다. <strong>MCP 도입과 보안 설계는 별개</strong>다. [설계]</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="instructions.html"><small>이전 단원</small>← 지침과 설정 병합</a><a class="next" href="permissions.html"><small>다음 단원</small>Permission과 Hooks →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-10-1">10. Built-in Tools와 Tool 선택·실행</a><a href="#s-11-1">11. 커스텀 Tool·SDK MCP Server·외부 MCP</a></nav></aside></div></body></html>

@@ -1,0 +1,388 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI의 원리·구현·한계를 배우는 개인 학습 교재"><title>준비·모델·도구·출력의 실제 파일 연결하기 — PydanticAI</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">P.</span><span>PydanticAI<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="core.html" ><span class="nav-number">02</span><span>Agent·Deps·Tools</span></a><a href="validation.html" ><span class="nav-number">03</span><span>출력·Retry·종료</span></a><a href="history.html" ><span class="nav-number">04</span><span>Messages와 영속성</span></a><a href="architecture.html" ><span class="nav-number">05</span><span>Graph·Loop·Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Memory·Skills·MCP</span></a><a href="orchestration.html" ><span class="nav-number">07</span><span>협업과 Harness</span></a><p class="nav-group">구현과 운영</p><a href="code.html" class="current" aria-current="page"><span class="nav-number">08</span><span>소스코드 경계 추적</span></a><a href="operations.html" ><span class="nav-number">09</span><span>모델·보안·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용과 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >용어와 복습</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Core v2.61.0</span><a href="../PydanticAI.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">PydanticAI</a><span aria-hidden="true">/</span><span>소스코드 경계 추적</span></div><header class="chapter-header"><p class="eyebrow">구현과 운영 / 단원 08</p><h1>준비·모델·도구·출력의 실제 파일 연결하기</h1><p class="lead">Agent.iter와 Graph 상태, ToolManager의 검증·실행 분리</p><div class="chapter-meta">원문 18–22장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>공개 Agent API에서 Run 준비로 들어간 뒤, Graph의 세 노드와 ToolManager를 따라 읽습니다. 실제 함수명과 파일 경로를 단서로 삼되 내부 메서드를 안정된 공개 API로 사용하면 안 됩니다.</p><p>Tool 검증과 실행, Output Tool과 일반 Function Tool, Tool Retry와 Output Retry의 경계를 확인하세요. 의사코드의 가상 함수명은 역할을 설명하기 위한 것이며 복사해 실행할 실제 라이브러리 호출이 아닙니다.</p><p class="reading-question"><strong>읽는 관점</strong>사용량·재시도·호출 ID·종료 유형과 함께, 실행 순서가 외부 부작용에 미치는 영향을 추적하세요.</p></section><section class="source-section" data-source-chapter="18"><h2 id="s-18-1">18. 코드베이스 구조와 진입점<a class="anchor" href="#s-18-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-18-2">18.1 소스코드 지형도<a class="anchor" href="#s-18-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>PydanticAI 공식 저장소에서 Agent 실행과 관련된 핵심 파일은 다음과 같다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/agent/__init__.py" target="_blank" rel="noopener noreferrer">[C01]</a>~<a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/messages.py" target="_blank" rel="noopener noreferrer">[C07]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>pydantic-ai/
+├─ pydantic_ai_slim/
+│  └─ pydantic_ai/
+│     ├─ agent/
+│     │  ├─ __init__.py          # Agent 생성, run / iter, 준비와 수명주기
+│     │  └─ abstract.py          # Agent 추상 API
+│     ├─ _agent_graph.py          # Agent Loop / 세 노드 / 상태 / 모델 요청
+│     ├─ _tool_execution.py       # 다중 Tool Call 처리, 종료 전략, 병렬 실행
+│     ├─ tool_manager.py         # Tool 등록/정의 조회, 인자 검증, 실행 및 Retry
+│     ├─ tools.py                # 공개 Tool/Runtime 타입
+│     ├─ toolsets/               # Toolset 인터페이스 및 조합
+│     ├─ output.py               # 공개 출력 API/OutputSpec
+│     ├─ _output.py              # OutputSchema / OutputProcessor / Validator
+│     ├─ messages.py             # ModelRequest/Response/Part 정의
+│     ├─ _run_context.py         # RunContext 및 실행 문맥
+│     ├─ models/                 # Model 추상화와 Provider 구현
+│     ├─ capabilities/           # 확장 기능과 수명주기 Hooks
+│     ├─ _history_processor.py   # History 처리 API
+│     ├─ _system_prompt.py       # 지시문·시스템 메시지 처리
+│     ├─ usage.py                # Usage/UsageLimits
+│     ├─ conversation.py         # Conversation 관련 API
+│     └─ _instrumentation.py     # 관측/트레이싱 기반 로직
+├─ pydantic_graph/               # 범용 실행 Graph 구성요소
+├─ pydantic_evals/               # 평가 관련 패키지
+├─ pydantic_ai_harness/ 또는 관련 Harness 패키지 코드
+├─ docs/                         # 공식 문서 소스
+└─ examples/ ...                 # 사용 예제</code></pre></div><p><strong>주의:</strong> 위 트리는 각 컴포넌트의 논리적 위치를 정리한 것이다. 하위 패키지의 정확한 배포명·디렉터리 구조는 릴리스별로 변경될 수 있으며 <code>pydantic_ai_harness</code> 경로가 단일 루트에 항상 존재한다고 가정하지 않는다. 주요 실행 파일 4개는 실제 v2.61.0 링크를 확인했다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/agent/__init__.py" target="_blank" rel="noopener noreferrer">[C01]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+<h3 id="s-18-3">18.2 가장 먼저 읽을 파일 5개<a class="anchor" href="#s-18-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/agent/__init__.py" target="_blank" rel="noopener noreferrer"><code>agent/__init__.py</code></a>: 외부 Agent API가 내부 Graph로 들어가는 연결.</li>
+<li><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer"><code>_agent_graph.py</code></a>: 모델 호출/도구 분기/최종 종료.</li>
+<li><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer"><code>tool_manager.py</code></a>: Tool 인자 검증과 실행 경로.</li>
+<li><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer"><code>_tool_execution.py</code></a>: 여러 Tool Call 처리와 순서/병렬성.</li>
+<li><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_output.py" target="_blank" rel="noopener noreferrer"><code>_output.py</code></a>: OutputSchema와 결과 검증.</li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="19"><h2 id="s-19-1">19. <code>Agent.iter()</code> → Run 준비 → Graph 실행 추적<a class="anchor" href="#s-19-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-19-2">19.1 진입점 확인 [코드]<a class="anchor" href="#s-19-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>agent/__init__.py</code>에서 <code>iter()</code>는 <code>@asynccontextmanager</code> 기반으로 정의되어 있고, 실행 전에 <code>_prepare_run(...)</code> 경로를 거친다. <code>_prepare_run()</code>은 실행별 입력/모델/출력/History/Capability 등을 준비하는 데 핵심적인 지점이다. 준비된 Run이 실제 graph를 열고 실행하는 별도의 수명주기를 갖는다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/agent/__init__.py" target="_blank" rel="noopener noreferrer">[C01]</a></p>
+<p>주목할 실제 함수와 라인 범위(원본 소스의 행 번호, 태그 고정):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>함수·클래스</th>
+<th>위치</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Agent.iter</code></td>
+<td><code>agent/__init__.py</code> 약 1368행</td>
+<td>하위 Agent Graph 반복 접근용 Context Manager</td>
+</tr>
+<tr>
+<td><code>Agent._prepare_run</code></td>
+<td>같은 파일 약 1526행</td>
+<td>실행별 Model, Output, History, Capability 준비</td>
+</tr>
+<tr>
+<td><code>_PreparedAgentRun.open</code></td>
+<td>같은 파일 약 4480행</td>
+<td>실행 자원/Capability 수명주기 진입 및 정리</td>
+</tr>
+<tr>
+<td><code>GraphAgentState</code></td>
+<td><code>_agent_graph.py</code> 약 353행</td>
+<td>메시지·Usage·Retry·Run Step 보유</td>
+</tr>
+<tr>
+<td><code>UserPromptNode</code></td>
+<td><code>_agent_graph.py</code> 약 609행</td>
+<td>사용자 메시지와 Instructions 준비</td>
+</tr>
+<tr>
+<td><code>ModelRequestNode</code></td>
+<td><code>_agent_graph.py</code> 약 1316행</td>
+<td>모델 요청 준비/호출</td>
+</tr>
+<tr>
+<td><code>CallToolsNode</code></td>
+<td><code>_agent_graph.py</code> 약 2179행</td>
+<td>모델 응답 처리, Tool·Output·재호출·종료 결정</td>
+</tr>
+</tbody></table>
+</div><p><strong>핵심</strong>: <code>Agent</code> 클래스는 Agent가 무슨 일을 할지를 기술하고, <strong>Graph가 한 번의 실행에서 어떻게 진행되는지</strong>를 맡는다. 이는 &#39;사용자-facing 정의 API&#39;와 &#39;실행 루프&#39;를 분리한 설계다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/agent/__init__.py" target="_blank" rel="noopener noreferrer">[C01]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<h3 id="s-19-3">19.2 한눈에 보는 내부 Call Graph [단순화 의사코드]<a class="anchor" href="#s-19-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>설명용 의사코드</span><span>python</span></div><pre tabindex="0" aria-label="설명용 의사코드"><code># 실제 API 이름/계층을 바탕으로 한 교육용 축약본. 실행용 아님.
+async def conceptual_agent_run(agent, user_prompt, deps):
+    prepared = await agent._prepare_run(user_prompt, deps=deps, ...)
+    async with prepared.open() as run:
+        # 내부에서 pydantic-graph 기반 노드 순회
+        while not run.complete:
+            current_node = await run.advance()
+            if current_node.type == &#39;user_prompt&#39;:
+                prepare_messages_and_instructions()
+            elif current_node.type == &#39;model_request&#39;:
+                response = await call_selected_model()
+            elif current_node.type == &#39;call_tools&#39;:
+                next_node_or_end = await handle_output_and_tool_calls(response)
+        return run.result</code></pre></div><p>위 코드에 등장하는 <code>run.advance()</code>, <code>prepare_messages_and_instructions()</code> 등은 <strong>실제 라이브러리의 호출 API가 아니다</strong>. 역할을 전달하기 위한 함수명으로 만든 의사코드다. 실제 사용자는 <code>agent.run()</code> 또는 <code>async with agent.iter(...)</code>를 사용한다. <a href="https://pydantic.dev/docs/ai/core-concepts/agent/" target="_blank" rel="noopener noreferrer">[S03]</a></p>
+<h3 id="s-19-4">19.3 <code>GraphAgentState</code>의 주요 필드 [코드]<a class="anchor" href="#s-19-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>_agent_graph.py</code>의 <code>GraphAgentState</code>에는 다음과 같은 정보가 존재한다.</p>
+<ul>
+<li><code>message_history</code>: 지금까지 모델과 교환한 메시지들.</li>
+<li><code>usage</code>: 토큰·요청 등의 사용량.</li>
+<li><code>output_retries_used</code>: 출력 관련 재시도 사용량.</li>
+<li><code>run_step</code>: 현재 반복 단계.</li>
+<li><code>run_id</code>: 실행을 구분하는 식별자.</li>
+<li>추가로 실행 재개/메시지 처리/동적 도구 등을 위한 상태를 가진다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></li>
+</ul>
+<p>설계 시사점: 실제 Agent를 디버깅하려면 &#39;현재 메시지&#39;만 보지 말고 <strong>(1) 단계 번호, (2) 사용량, (3) 재시도 소비, (4) 도구 호출/결과 대응, (5) 종료 유형</strong>을 함께 기록해야 한다.</p>
+</section>
+<section class="source-section" data-source-chapter="20"><h2 id="s-20-1">20. <code>_agent_graph.py</code>: 세 가지 핵심 노드<a class="anchor" href="#s-20-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-20-2">20.1 <code>UserPromptNode</code> — 입력 구성<a class="anchor" href="#s-20-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>책임:</strong> 새로운 사용자 입력, 기존 메시지 History, System Prompt/Instructions, 미완료 Tool 호출, Deferred Tool 결과 등을 반영해 다음 단계로 이어준다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<p>이 단계에서 확인할 질문:</p>
+<ul>
+<li>이전 메시지가 있을 때 동적 지시문을 어떻게 다시 평가하는가?</li>
+<li>이미 처리되지 않은 Tool Call이 있는 상태에서 새 사용자 질문이 들어오면 어떻게 반응하는가?</li>
+<li>새로운 Conversation인지 기존 Conversation 재개인지 무엇으로 판별하는가?</li>
+<li>승인 결과(Deferred Results)는 어느 지점에서 반영되는가?</li>
+</ul>
+<p>중요: <strong>&#39;유저 입력 수신 → 무조건 즉시 모델 호출&#39;이 아니다.</strong> 이미 미완료된 작업, Tool 결과 또는 중단된 모델 응답이 있으면 이를 먼저 처리/복구하는 분기가 존재한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<h3 id="s-20-3">20.2 <code>ModelRequestNode</code> — Model API 호출<a class="anchor" href="#s-20-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>책임:</strong> 모델에 전달할 요청 파라미터와 History를 준비하고 Model 객체를 호출한다. <code>_prepare_request_parameters</code> 등에서 Tool 정의 및 Output Schema와 관련된 설정을 결합한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>[현재 Graph State]
+    → Model Request 준비
+    → Instruction + Message History 선택
+    → Function Tool Schema / Output Schema 구성
+    → Model Request Parameters 생성
+    → Provider Model 호출
+    → ModelResponse 수신
+    → CallToolsNode로 이동</code></pre></div><p>여기서 중요한 개념은 <strong>모델이 Tool 목록을 실제로 본다</strong>는 점이다. Tool Python 코드가 모델에 통째로 전송되는 것이 아니라, 적절한 도구 메타데이터·스키마가 모델 요청 파라미터에 구성된다. 실행 시 Tool 본체는 Python 호스트에 남아 있는 것이 일반적이다.</p>
+<h3 id="s-20-4">20.3 <code>CallToolsNode</code> — Agent의 핵심 분기점<a class="anchor" href="#s-20-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>CallToolsNode</code>는 모델 응답을 읽어 <strong>최종 출력인지, Function Tool 호출인지, 오류·재시도인지</strong> 판단한다. 적절한 다음 노드를 반환하거나 그래프 종료를 지시한다. 여러 도구 실행 처리는 <code>_tool_execution.py</code>의 <code>process_tool_calls(...)</code>와 연결된다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+<p>예시:</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>ModelResponse:
+  ToolCallPart(name=&#39;find_alarm&#39;, args={&#39;equip_id&#39;: &#39;EQ-17&#39;})
+            ↓
+  CallToolsNode
+            ↓
+  Function Tool: 검증 → 실행 → ToolReturnPart
+            ↓
+  다음 ModelRequestNode
+
+ModelResponse:
+  Output Tool 또는 Native Structured Output
+            ↓
+  CallToolsNode
+            ↓
+  OutputSchema + Validators
+            ↓
+  최종 결과 또는 Retry</code></pre></div><h3 id="s-20-5">20.4 중요한 실패 처리<a class="anchor" href="#s-20-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>GraphAgentState.consume_output_retry()</code>는 output 재시도 예산을 소모하며 한도를 넘으면 오류를 발생시키는 경로다. Tool별 Retry 예산과 Output Retry 예산은 구분해 읽어야 한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a></p>
+<p><strong>사례:</strong> 모델이 <code>risk_score=1.7</code>을 생성한다 → Pydantic Field 검증이 실패할 수 있다 → 프레임워크가 수정 피드백을 모델에 반환한다 → 모델이 재시도한다 → 설정한 출력 재시도 한도를 초과하면 계속 답을 만들어내기보다 실패로 처리한다.</p>
+<p>이런 구조는 반도체 분석 결과를 &#39;무조건 성공한 것처럼 출력&#39;하는 설계보다 낫지만, 실데이터 없이 <strong>정확한 이상 원인을 찾는 능력</strong>까지 제공하지는 않는다.</p>
+</section>
+<section class="source-section" data-source-chapter="21"><h2 id="s-21-1">21. <code>ToolManager</code>와 <code>_tool_execution.py</code>: 인자 검증부터 실제 실행까지<a class="anchor" href="#s-21-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-21-2">21.1 <code>ToolManager</code>의 실제 책임 [코드]<a class="anchor" href="#s-21-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 코드 <code>tool_manager.py</code>에서 <code>ToolManager</code>는 해당 Step의 Toolset 정의를 관리하고 Tool 호출을 검증·실행하며 Retry를 처리한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a></p>
+<p>주요 함수:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>메서드</th>
+<th align="right">코드 위치(대략)</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ToolManager.for_run_step</code></td>
+<td align="right">378행</td>
+<td>다음 실행 Step에서 도구 정의·재시도 상태 준비</td>
+</tr>
+<tr>
+<td><code>_validate_tool_args</code></td>
+<td align="right">543행</td>
+<td>Pydantic Schema 기반 인자 검증</td>
+</tr>
+<tr>
+<td><code>_run_validate_hooks</code></td>
+<td align="right">584행</td>
+<td>인자 검증 Hook 개입</td>
+</tr>
+<tr>
+<td><code>_run_execute_hooks</code></td>
+<td align="right">657행</td>
+<td>Tool 실행을 Capability Hook으로 감쌈</td>
+</tr>
+<tr>
+<td><code>validate_tool_call</code></td>
+<td align="right">841행</td>
+<td>실제 실행 없이 Tool 호출 인자 검증</td>
+</tr>
+<tr>
+<td><code>execute_tool_call</code></td>
+<td align="right">920행</td>
+<td>검증한 Tool 호출을 실행</td>
+</tr>
+<tr>
+<td><code>validate_output_tool_call</code></td>
+<td align="right">959행</td>
+<td>Output Tool 검증 경로</td>
+</tr>
+<tr>
+<td><code>execute_output_tool_call</code></td>
+<td align="right">1023행</td>
+<td>Output Tool 처리 경로</td>
+</tr>
+<tr>
+<td><code>handle_call</code></td>
+<td align="right">1224행</td>
+<td>단일 호출의 통합 검증/실행/지연 처리</td>
+</tr>
+<tr>
+<td><code>resolve_deferred_tool_calls</code></td>
+<td align="right">1325행</td>
+<td>보류 Tool 호출을 처리할 핸들러 호출</td>
+</tr>
+</tbody></table>
+</div><p>행 번호는 <code>v2.61.0</code> 태그 원본 기준이다. 코드 리팩터링으로 변할 수 있다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a></p>
+<h3 id="s-21-3">21.2 2단계 검증/실행 구조<a class="anchor" href="#s-21-3" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="5"><figcaption><span>그림 5</span> Tool 호출의 검증·승인·실행 경계</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-5.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Tool 호출의 검증·승인·실행 경계"><img src="assets/diagram-5.svg" alt="Tool 호출의 검증·승인·실행 경계. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+  T[모델 ToolCallPart] --&gt; L[Tool Definition 조회]
+  L --&gt; V[validate_tool_call]
+  V --&gt; JSON[Pydantic JSON Schema 검사]
+  JSON --&gt; HOOK[Validation Hooks / 사용자 규칙]
+  HOOK --&gt; A{승인/실행 허용?}
+  A --&gt;|예| E[execute_tool_call]
+  E --&gt; EXEC[Execution Hooks / Python Callable]
+  EXEC --&gt; R[ToolReturnPart]
+  A --&gt;|승인 대기| D[Deferred Requests]
+  A --&gt;|실패| F[Retry Feedback / 오류]
+  R --&gt; NEXT[다음 모델 호출]
+  D --&gt; RESUME[승인·재개 경로]</code></pre></details></figure><p>위 도식은 <strong>논리적 흐름을 단순화</strong>한 것으로, 실제 Hook/Approval 검사 순서는 Tool 유형과 Deferred 처리 방식에 따라 다르다. 코드에서 <code>validate_tool_call</code>과 <code>execute_tool_call</code>이 별도 메서드로 존재한다는 점이 핵심이다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a></p>
+<h3 id="s-21-4">21.3 Tool 검증이 보안을 완성하지는 않는다<a class="anchor" href="#s-21-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Tool 인자의 타입이 <code>equipment_id: str</code>이라는 것만 확인하면 <code>equipment_id=&#39;OTHER_FAB_SECRET&#39;</code> 같은 값도 정상 문자열이다. 서버의 권한 확인이 없다면 타입 검증은 무력하다.</p>
+<p><strong>권장 흐름:</strong> 입력 스키마 → 도구별 인가 → 테넌트 필터 → 읽기 전용 DB 세션 → 쿼리 파라미터 바인딩 → 결과 크기 제한 → 민감정보 마스킹 → 감사 로그.</p>
+<h3 id="s-21-5">21.4 여러 Tool Call 동시 실행<a class="anchor" href="#s-21-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>_tool_execution.py</code>는 한 응답에 여러 Tool Call이 있는 경우 출력 전략 및 도구 유형에 따라 실행 순서를 관리한다. <code>process_tool_calls</code>와 <code>_GracefulProcessor</code> 등의 구현이 있다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+<ul>
+<li>단순 병렬 호출은 읽기 전용 계산/검색에서 유용할 수 있다.</li>
+<li>쓰기·삭제·결재와 같은 <strong>부작용 있는 Tool</strong>은 병렬 실행 시 순서/중복 문제가 생긴다.</li>
+<li>&#39;두 가지 함수가 모두 실행되었으니 그 결과가 한 트랜잭션으로 원자적이었다&#39;고 가정하지 않는다.</li>
+<li>멱등성 키, 트랜잭션, 재시도/취소 시 부작용 보상 로직은 백엔드 설계에서 따로 다뤄야 한다.</li>
+</ul>
+<h3 id="s-21-6">21.5 <code>early</code> / <code>graceful</code> / <code>exhaustive</code> 구현 추적<a class="anchor" href="#s-21-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>실제 <code>_tool_execution.py</code>에는 전략별 Processor가 있으며 <code>_GracefulProcessor</code>는 Tool 호출 등장 순서를 바탕으로 Output Tool 앞에 놓인 Function Tool 묶음을 처리하는 경로를 구현한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+<p>학습 실험 제안(실행은 후속 단계):</p>
+<ol>
+<li><code>function_a</code>와 <code>final_result</code>를 같은 응답에서 요청하는 FakeModel 구성.</li>
+<li><code>end_strategy</code> 세 값을 바꾸어 실행 경로 기록.</li>
+<li>Function Tool 실행 횟수·순서·재시도/예외 처리를 비교.</li>
+<li><code>sequential=True</code>를 적용한 Tool과 병렬 Tool의 차이 측정.</li>
+<li>모델의 일반 텍스트 출력과 구조화 Output Tool의 종료 조건 차이를 관찰.</li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="22"><h2 id="s-22-1">22. <code>_output.py</code>, <code>Capabilities</code>, Provider 경로 코드 분석<a class="anchor" href="#s-22-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-22-2">22.1 OutputSchema는 어떻게 작동하는가?<a class="anchor" href="#s-22-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>_output.py</code>에는 <code>OutputSchema</code>, <code>OutputToolset</code>, Output Processor 계열 구현이 있다. <code>OutputSchema</code>는 출력 허용 범위, Output Tool 정의·프로세서, 모드 등 결과 스키마 관련 상태를 담는다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_output.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<p>실제 처리 개념:</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>개발자 output_type 정의
+   ↓
+Output Schema / Processor 생성
+   ↓
+선택된 모델에 결과 형식 전달
+   ↓
+ModelResponse 수신 (Tool / Native / Text 형태)
+   ↓
+값 파싱 및 Pydantic Validation
+   ↓
+사용자 Output Validator / Capability Hook
+   ↓
+성공 → RunResult, 실패 → Retry / Exception</code></pre></div><p><strong>Output Tool도 Tool이지만 일반 Function Tool과는 다르게 검증/후처리 Hook 경로가 구분</strong>된다는 점이 핵심이다. <code>tool_manager.py</code>에도 <code>validate_output_tool_call</code>과 <code>execute_output_tool_call</code>이 별도 존재한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_output.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<h3 id="s-22-3">22.2 <code>Capabilities/abstract.py</code>의 설계<a class="anchor" href="#s-22-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>AbstractCapability</code> 계열은 공통 Hook 함수와 여러 기능의 합성을 지원하는 추상 계층이다. Core Agent는 여기에 해당하는 동작을 호출하여 실행 중간에 개발자 정의 정책을 적용할 수 있다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/capabilities/abstract.py" target="_blank" rel="noopener noreferrer">[C06]</a></p>
+<p>Capability 설계는 <strong>횡단 관심사(cross-cutting concerns)</strong>와 연결해 이해하면 쉽다.</p>
+<ul>
+<li>보안: 모든 Tool 실행 전 인가 검사.</li>
+<li>비용: 모델 호출 전 예산 검사.</li>
+<li>품질: 모델 출력 전후 검증·감사.</li>
+<li>관측: 모든 Run·Tool 호출의 지연 기록.</li>
+<li>프롬프트: 조직 공통 지침 주입.</li>
+</ul>
+<p>Tool 함수마다 같은 코드를 복사하는 방식보다 <strong>중앙 정책을 재사용</strong>하기 좋지만, Capability가 여러 개 겹치면 실행 순서·예외 우선순위를 더 정교하게 이해해야 한다.</p>
+<h3 id="s-22-4">22.3 Provider/Model 계층은 어떻게 분석할까?<a class="anchor" href="#s-22-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>문서에서 특정 Provider의 모델 ID를 지정하면, Runtime은 <code>Model</code> 추상화를 통해 해당 모델 구현을 선택하고 Provider API로 요청을 보낸다. 지원 모델별 모델 설정·기능(Structured Output, Native Tool, Streaming, Thinking 등)은 다르다. <a href="https://pydantic.dev/docs/ai/models/overview/" target="_blank" rel="noopener noreferrer">[S06]</a></p>
+<p>실제 개발 전 필수 확인 항목:</p>
+<ol>
+<li>해당 모델이 Tool Calling을 안정적으로 지원하는가?</li>
+<li>Structured Output 제약을 얼마나 지원하는가?</li>
+<li>Native Tools가 요구하는 별도 공급자 API가 있는가?</li>
+<li>모델 응답에 토큰 사용량과 Stop Reason 정보가 일관되게 오는가?</li>
+<li>모델 Gateway에서 스키마·Tool 호출을 재가공하거나 누락시키지 않는가?</li>
+<li>Async·Streaming·Timeout·Retry 동작이 호환되는가?</li>
+</ol>
+<p><strong>모델 독립적 인터페이스 ≠ 모든 모델의 기능·품질이 완전히 동일</strong>하다는 뜻은 아니다.</p>
+<h3 id="s-22-5">22.4 기능별 코드 추적표 — 실무 복습용<a class="anchor" href="#s-22-5" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>보고 싶은 동작</th>
+<th>시작 파일</th>
+<th>뒤이어 볼 대상</th>
+<th>관찰할 값</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent 생성과 Run 준비</td>
+<td><code>agent/__init__.py</code></td>
+<td><code>_prepare_run</code>, <code>_PreparedAgentRun.open</code></td>
+<td>model, deps, history, capabilities</td>
+</tr>
+<tr>
+<td>모델 요청 파라미터 구성</td>
+<td><code>_agent_graph.py</code></td>
+<td><code>ModelRequestNode</code>, <code>_prepare_request_parameters</code></td>
+<td>instructions, messages, schemas</td>
+</tr>
+<tr>
+<td>Tool 호출 분기</td>
+<td><code>_agent_graph.py</code></td>
+<td><code>CallToolsNode</code>, <code>_tool_execution.py</code></td>
+<td><code>ToolCallPart</code>, output strategy</td>
+</tr>
+<tr>
+<td>Tool 인자 타입 오류</td>
+<td><code>tool_manager.py</code></td>
+<td><code>_validate_tool_args</code>, <code>validate_tool_call</code></td>
+<td>args, validation exception</td>
+</tr>
+<tr>
+<td>Tool 권한·승인</td>
+<td><code>tool_manager.py</code></td>
+<td>validate / execute hooks, deferred resolution</td>
+<td>approval status, requester</td>
+</tr>
+<tr>
+<td>Tool 병렬·순차 실행</td>
+<td><code>_tool_execution.py</code></td>
+<td><code>process_tool_calls</code>, strategy processor</td>
+<td>call index, results order</td>
+</tr>
+<tr>
+<td>Structured Output</td>
+<td><code>_output.py</code></td>
+<td><code>OutputSchema</code>, OutputProcessors</td>
+<td>typed result, validation result</td>
+</tr>
+<tr>
+<td>Output Retry</td>
+<td><code>_agent_graph.py</code></td>
+<td><code>GraphAgentState.consume_output_retry</code></td>
+<td>retry count, feedback, outcome</td>
+</tr>
+<tr>
+<td>대화 재사용</td>
+<td><code>messages.py</code>, <code>conversation.py</code></td>
+<td>Agent <code>run/iter</code>의 History 입력</td>
+<td>conversation id, message parts</td>
+</tr>
+<tr>
+<td>Capability Hook</td>
+<td><code>capabilities/abstract.py</code></td>
+<td>Agent/ToolManager의 Hook 호출</td>
+<td>hook order, intercepted values</td>
+</tr>
+<tr>
+<td>모델/Provider</td>
+<td><code>models/</code></td>
+<td>선택한 Provider 구현</td>
+<td>request payload, tool schema</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-22-6">22.5 실제로 코드 분석 보고서를 작성한다면<a class="anchor" href="#s-22-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>각 코드 경로는 다음 8가지를 기록한다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>1. 공개 API 진입점: 어떤 함수 호출인가?
+2. 내부 핵심 클래스: 객체의 책임은 무엇인가?
+3. 실행 상태: State에 저장되는 값은 무엇인가?
+4. 입력: 모델 메시지 / Tool Schema / Deps가 어디서 왔는가?
+5. 분기: Tool / Output / Retry / Error에서 무엇이 다른가?
+6. 예외: 어느 오류가 처리되고, 어느 오류가 상위로 전파되는가?
+7. Side effects: Tool 실행으로 실제로 무엇이 변경되는가?
+8. 확장 지점: 이 동작을 Hook/Capability/사용자 코드로 바꿀 수 있는가?</code></pre></div><p>이 형식으로 정리하면 OpenAI Agents SDK·Google ADK·Microsoft Agent Framework·Claude Agent SDK·Hermes와도 비교하기 쉽다.</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="orchestration.html"><small>이전 단원</small>← 협업과 Harness</a><a class="next" href="operations.html"><small>다음 단원</small>모델·보안·평가 →</a></nav><footer>PydanticAI 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-18-1">18. 코드베이스 구조와 진입점</a><a href="#s-19-1">19. Agent.iter() → Run 준비 → Graph 실행 추적</a><a href="#s-20-1">20. _agent_graph.py: 세 가지 핵심 노드</a><a href="#s-21-1">21. ToolManager와 _tool_execution.py: 인자 검증부터 실제 실행까지</a><a href="#s-22-1">22. _output.py, Capabilities, Provider 경로 코드 분석</a></nav></aside></div></body></html>

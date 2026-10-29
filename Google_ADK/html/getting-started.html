@@ -1,0 +1,207 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK의 원리·구현·한계를 배우는 개인 학습 교재"><title>첫 예제에서 실행 계약 찾기 — Google ADK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">G.</span><span>Google ADK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 버전</span></a><a href="getting-started.html" class="current" aria-current="page"><span class="nav-number">02</span><span>설정·도구·모델</span></a><p class="nav-group">핵심 원리</p><a href="state.html" ><span class="nav-number">03</span><span>Event와 저장 계층</span></a><a href="execution.html" ><span class="nav-number">04</span><span>Agent Loop와 확장</span></a><a href="workflow.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">06</span><span>보안·관측·평가</span></a><a href="code.html" ><span class="nav-number">07</span><span>소스코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">08</span><span>반도체 설계 검토</span></a><a href="comparison.html" ><span class="nav-number">09</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v2.13.0</span><a href="../Google_ADK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Google ADK</a><span aria-hidden="true">/</span><span>설정·도구·모델</span></div><header class="chapter-header"><p class="eyebrow">큰 그림 / 단원 02</p><h1>첫 예제에서 실행 계약 찾기</h1><p class="lead">Agent 정의와 Tool, 모델 연결을 하나의 요청으로 읽기</p><div class="chapter-meta">원문 5–9장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>최소 예제의 핵심은 명령을 따라 설치하는 것보다 Agent가 어떤 도구와 모델을 사용하는지 이해하는 데 있습니다. 함수의 타입과 설명은 도구 스키마를 구성하는 근거가 되지만, 실행 권한은 실제 Tool 코드와 환경이 제한해야 합니다.</p><p>아래 예제는 원문의 미실행 코드입니다. Agent와 Runner의 연결, Tool 종류, 다른 모델 공급자로 바꿀 때의 호환성 조건을 함께 확인하세요.</p><p class="reading-question"><strong>읽는 관점</strong>모델의 FunctionCall 생성과 Python 런타임의 함수 실행 사이에 있는 검증 경계를 찾으세요.</p></section><section class="source-section" data-source-chapter="5"><h2 id="s-5-1">5. 설치, 구성, 최소 예제<a class="anchor" href="#s-5-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>공식 Python Quickstart는 Python 3.10 이상과 <code>pip install google-adk</code>, <code>adk create</code>를 안내한다. <a href="https://adk.dev/get-started/python/" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code>python -m venv .venv
+source .venv/bin/activate       # Linux/macOS
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install &#39;google-adk==2.13.0&#39;
+adk create semiconductor_demo</code></pre></div><p>예제 프로젝트 구조:</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>semiconductor_demo/
+  __init__.py
+  agent.py           # root_agent 노출
+  .env               # 인증 설정 (Git에 커밋 금지)</code></pre></div><div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code># semiconductor_demo/agent.py — [예제, 실행 미검증]
+from google.adk.agents import Agent
+
+def explain_parameter(name: str) -&gt; dict:
+    &quot;&quot;&quot;Explain a semiconductor measurement term from a curated glossary.&quot;&quot;&quot;
+    glossary = {
+        &quot;cd&quot;: &quot;Critical Dimension: 패턴의 주요 치수&quot;,
+        &quot;overlay&quot;: &quot;서로 다른 패턴 층의 정렬 오차&quot;,
+    }
+    return {&quot;term&quot;: name, &quot;definition&quot;: glossary.get(name.lower(), &quot;용어 미등록&quot;)}
+
+root_agent = Agent(
+    name=&quot;semiconductor_glossary&quot;,
+    model=&quot;gemini-flash-latest&quot;,  # 실제 이용 가능한 모델로 변경
+    description=&quot;반도체 용어를 설명하는 기초 학습 Agent&quot;,
+    instruction=(
+        &quot;반도체 측정 용어 질문에는 explain_parameter 도구를 먼저 조회하고, &quot;
+        &quot;미등록 용어의 뜻을 확인 없이 꾸며내지 마세요.&quot;
+    ),
+    tools=[explain_parameter],
+)</code></pre></div><div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code># 상위 디렉터리에서 실행하는 패턴
+adk web
+# 또는 문서에서 안내하는 adk run &lt;agent 디렉터리명&gt;</code></pre></div><p><strong>해설:</strong> <code>Agent</code>는 <code>LlmAgent</code>의 편의 별칭이다. 함수 인자 타입과 docstring은 모델이 호출할 도구의 의미와 입력 구조를 전달하는 근거가 된다. 단, 모델이 도구를 반드시 사용한다고 보장되는 것은 아니며, 강한 업무 규칙은 코드에서도 검증해야 한다. <a href="https://adk.dev/agents/llm-agents/" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<h3 id="s-5-2">프로그래밍 방식 실행의 일반 형태<a class="anchor" href="#s-5-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code># [예제] 세션을 직접 관리하는 패턴
+from google.adk.agents import Agent
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+
+agent = Agent(name=&quot;study_agent&quot;, model=&quot;gemini-flash-latest&quot;, instruction=&quot;질문에 간결히 답하세요.&quot;)
+service = InMemorySessionService()
+
+async def demo():
+    await service.create_session(app_name=&quot;study&quot;, user_id=&quot;u1&quot;, session_id=&quot;s1&quot;)
+    runner = Runner(agent=agent, app_name=&quot;study&quot;, session_service=service)
+    request = types.Content(role=&quot;user&quot;, parts=[types.Part(text=&quot;CD란?&quot;)])
+    async for event in runner.run_async(user_id=&quot;u1&quot;, session_id=&quot;s1&quot;, new_message=request):
+        if event.is_final_response():
+            print(event.content)</code></pre></div><p><code>Runner(agent=..., app_name=...)</code> 방식은 호환용 패턴으로 남아 있지만, v2.13.0의 <code>Runner.__init__</code> 소스는 <code>App</code>을 전달하는 것을 권장한다. <code>app</code>, <code>agent</code>, <code>node</code> 중 <strong>정확히 하나</strong>를 주어야 하며, 따로 전달한 <code>plugins=</code> 인자는 deprecated로 안내한다. <a href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/runners.py" target="_blank" rel="noopener noreferrer">[S01]</a></p>
+</section>
+<section class="source-section" data-source-chapter="6"><h2 id="s-6-1">6. <code>Agent</code> / <code>LlmAgent</code>의 구성<a class="anchor" href="#s-6-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>기본 인자 중 설계상 중요한 것:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>역할</th>
+<th>개발자의 결정</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>Agent 식별자</td>
+<td>충돌 없는 이름, 로그 표준화</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>LLM 선택</td>
+<td>사내 정책, 품질, 도구 호환성</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Agent 목적</td>
+<td>상위 Agent의 위임 판단 지원</td>
+</tr>
+<tr>
+<td><code>instruction</code></td>
+<td>작업 지침</td>
+<td>책임 범위, 인용 규칙, 금지 동작</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>호출 가능한 기능</td>
+<td>최소 권한 원칙</td>
+</tr>
+<tr>
+<td><code>sub_agents</code></td>
+<td>하위 Agent 계층</td>
+<td>책임 분리, 전환 경로</td>
+</tr>
+<tr>
+<td><code>input_schema</code> / <code>output_schema</code></td>
+<td>입력·출력 구조</td>
+<td>다운스트림 데이터 계약</td>
+</tr>
+<tr>
+<td><code>output_key</code></td>
+<td>최종 응답을 State에 기록</td>
+<td>다음 단계와 연결</td>
+</tr>
+<tr>
+<td>callbacks</td>
+<td>Agent/Model/Tool 수명주기 제어</td>
+<td>예외·정책·관찰성</td>
+</tr>
+</tbody></table>
+</div><p><code>instruction</code>은 정적 문자열 또는 동적 지시문 제공자가 될 수 있다. 상태값을 지시문에 삽입할 수 있지만 민감한 데이터를 프롬프트에 무작정 주입하면 안 된다. 또한 일부 문서 예시는 <code>output_schema</code>와 Tools의 조합에 모델/설정별 제약이 있음을 안내하므로 결합 가능성을 검증해야 한다. <a href="https://adk.dev/agents/llm-agents/" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+</section>
+<section class="source-section" data-source-chapter="7"><h2 id="s-7-1">7. Tool과 Function Calling: &#39;모델이 실행한다&#39;의 정확한 의미<a class="anchor" href="#s-7-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Tool 호출은 일반적으로 다음의 다단계 구조다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>(1) Python 함수/Tool 등록
+       ↓
+(2) 도구 이름·설명·인자 스키마를 모델 요청에 노출
+       ↓
+(3) 모델이 도구 이름과 인자(JSON 구조)를 생성
+       ↓
+(4) ADK 런타임이 도구를 찾아 검증·실행
+       ↓
+(5) FunctionResponse 이벤트 생성
+       ↓
+(6) 응답이 모델의 다음 입력으로 반영될 수 있음
+       ↓
+(7) 모델이 추가 호출 또는 최종 응답 결정</code></pre></div><p><strong>중요:</strong> LLM 자체가 Python 함수 내부 코드를 직접 실행하는 것이 아니다. 실제 권한을 가진 Python 런타임에서 프레임워크가 해당 함수를 호출한다. 따라서 도구는 권한 경계이며 도구가 어떤 자격증명으로 어떤 데이터에 접근하는지 별도 검토가 필요하다.</p>
+<h3 id="s-7-2">도구 작성 시 지켜야 할 규칙<a class="anchor" href="#s-7-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>함수명·설명·인자를 모호하지 않게 작성하고 입력 크기와 범위를 제한한다.</li>
+<li>Tool 함수에서 <strong>사용자·프로젝트·테이블 권한을 재검증</strong>한다. 프롬프트만으로 보안을 구현하지 않는다.</li>
+<li>변경성 함수(등록, 삭제, 설정 변경)를 분석용 함수와 분리한다.</li>
+<li>반환값에 <code>status</code>, <code>error</code>, <code>source</code>, <code>unit</code>, <code>data_version</code>을 포함하는 것을 권장한다.</li>
+<li>예외·Timeout·재시도 및 API 부하를 도구 경계에서 통제한다.</li>
+<li>결과가 크면 반환 내용을 축약하고 상세 결과는 Artifact에 저장한다.</li>
+</ul>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code># [설계 예제] 사내 데이터 접근 전 검증은 Tool 코드의 책임
+ALLOWED_METRICS = {&quot;CD_NM&quot;, &quot;OVERLAY_NM&quot;, &quot;ETCH_DEPTH_NM&quot;}
+
+def read_metric_summary(metric: str, wafer_count: int = 25) -&gt; dict:
+    &quot;&quot;&quot;Return approved aggregate metrics from a read-only dataset.&quot;&quot;&quot;
+    if metric not in ALLOWED_METRICS:
+        return {&quot;status&quot;: &quot;denied&quot;, &quot;error&quot;: &quot;metric_not_allowlisted&quot;}
+    if not (1 &lt;= wafer_count &lt;= 100):
+        return {&quot;status&quot;: &quot;error&quot;, &quot;error&quot;: &quot;wafer_count_out_of_range&quot;}
+    # 실제 시스템에서는 호출자 인증, DB 읽기 전용 계정, 감사 로그 필요
+    return {&quot;status&quot;: &quot;not_implemented&quot;, &quot;metric&quot;: metric,
+            &quot;note&quot;: &quot;예시이며 실제 데이터를 조회하지 않음&quot;}</code></pre></div></section>
+<section class="source-section" data-source-chapter="8"><h2 id="s-8-1">8. Tool 유형: Python, OpenAPI, MCP, AgentTool, Code Execution<a class="anchor" href="#s-8-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>종류</th>
+<th>역할</th>
+<th>주요 주의점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Function Tool</td>
+<td>Python 함수를 모델 Tool로 제공</td>
+<td>입력 검증·권한·예외</td>
+</tr>
+<tr>
+<td><code>BaseTool</code></td>
+<td>Tool을 클래스로 확장</td>
+<td>실행 수명주기, 상태, 인증</td>
+</tr>
+<tr>
+<td><code>BaseToolset</code></td>
+<td>동적으로 Tool 목록 관리</td>
+<td>도구 가시성, 세션별 인증</td>
+</tr>
+<tr>
+<td>OpenAPI Tool</td>
+<td>외부 HTTP API 스펙 기반 접근</td>
+<td>API 권한·스펙 신뢰도</td>
+</tr>
+<tr>
+<td><code>McpToolset</code></td>
+<td>MCP 서버 도구를 ADK로 연결</td>
+<td>서버 신뢰, 네트워크, 자격증명</td>
+</tr>
+<tr>
+<td><code>AgentTool</code></td>
+<td>다른 Agent를 하나의 Tool처럼 실행</td>
+<td>비용·종료 조건·위임 경계</td>
+</tr>
+<tr>
+<td>Code Executor</td>
+<td>코드 실행/계산</td>
+<td>격리 환경, 파일·네트워크 권한</td>
+</tr>
+</tbody></table>
+</div><p><strong>MCP와 Function Tool의 차이:</strong> Function Tool은 보통 같은 Python 실행 환경 안에서 함수를 호출한다. MCP는 별도 서버가 공개하는 기능을 표준 프로토콜로 가져온다. MCP가 있다는 사실만으로 도구 내용·권한·실행 환경이 안전하다는 의미는 아니다. <a href="https://adk.dev/tools-custom/" target="_blank" rel="noopener noreferrer">[D10]</a><a href="https://adk.dev/mcp/" target="_blank" rel="noopener noreferrer">[D11]</a></p>
+</section>
+<section class="source-section" data-source-chapter="9"><h2 id="s-9-1">9. 모델 연동과 모델 비종속성<a class="anchor" href="#s-9-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>ADK의 기본 예제는 Gemini를 사용하지만 LiteLLM, OpenAI, Anthropic, Ollama 등과 연결하는 공식 경로가 존재한다. 모델별 인증·API 스펙·Tool Calling·멀티모달·Structured Output 호환성을 구분해야 한다. <a href="https://adk.dev/agents/models/litellm/" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>[Agent/Runner/Flow]
+         |
+  Model abstraction
+         |
+  +------+-----------------------------+
+  |             |                      |
+Gemini     LiteLLM adapter          Custom Adapter
+  |        (여러 모델)                 |
+Google API/     |             사내 LLM Gateway
+Vertex AI    타 벤더 API               |
+                                    사내 모델 서버</code></pre></div><p>사내 Gateway의 OpenAI 호환 API가 있다고 해도 모든 ADK 기능이 자동으로 동작하는 것은 아니다. <strong>역할 분리, Tool JSON 스키마, streaming event, tool_call_id, model metadata, resume, rate limiting</strong> 등을 시험해야 한다. LiteLLM은 공급망 보안 공지가 있었으므로 의존성·버전 검증이 중요하다. <a href="https://adk.dev/agents/models/litellm/" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="foundations.html"><small>이전 단원</small>← 개념과 버전</a><a class="next" href="state.html"><small>다음 단원</small>Event와 저장 계층 →</a></nav><footer>Google ADK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-5-1">5. 설치, 구성, 최소 예제</a><a href="#s-6-1">6. Agent / LlmAgent의 구성</a><a href="#s-7-1">7. Tool과 Function Calling: &#39;모델이 실행한다&#39;의 정확한 의미</a><a href="#s-8-1">8. Tool 유형: Python, OpenAPI, MCP, AgentTool, Code Execution</a><a href="#s-9-1">9. 모델 연동과 모델 비종속성</a></nav></aside></div></body></html>

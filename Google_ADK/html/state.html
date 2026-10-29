@@ -1,0 +1,250 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK의 원리·구현·한계를 배우는 개인 학습 교재"><title>이벤트와 저장의 수명주기 — Google ADK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">G.</span><span>Google ADK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 버전</span></a><a href="getting-started.html" ><span class="nav-number">02</span><span>설정·도구·모델</span></a><p class="nav-group">핵심 원리</p><a href="state.html" class="current" aria-current="page"><span class="nav-number">03</span><span>Event와 저장 계층</span></a><a href="execution.html" ><span class="nav-number">04</span><span>Agent Loop와 확장</span></a><a href="workflow.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">06</span><span>보안·관측·평가</span></a><a href="code.html" ><span class="nav-number">07</span><span>소스코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">08</span><span>반도체 설계 검토</span></a><a href="comparison.html" ><span class="nav-number">09</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v2.13.0</span><a href="../Google_ADK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Google ADK</a><span aria-hidden="true">/</span><span>Event와 저장 계층</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 03</p><h1>이벤트와 저장의 수명주기</h1><p class="lead">Invocation · Session · State · Memory · Artifact를 분리하기</p><div class="chapter-meta">원문 10–17장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>요청 하나는 Invocation이고, 그 안에서 여러 모델·도구 호출이 일어날 수 있습니다. 각 단계의 Event는 단순한 답변 문장보다 많은 정보를 전달하며, Session과 State 변경을 이해하는 연결점이 됩니다.</p><p>저장된 기록 전체가 매번 모델 입력이 되는 것은 아닙니다. 현재 State, 검색할 Memory, 파일 Artifact와 모델 Context를 나누고, 임시 상태의 지속 범위와 Compaction의 손실 가능성까지 살펴보세요.</p><p class="reading-question"><strong>읽는 관점</strong>무엇이 저장되는지, 언제 사라지는지, 무엇이 실제 모델 입력으로 들어가는지 각각 확인하세요.</p></section><section class="source-section" data-source-chapter="10"><h2 id="s-10-1">10. ADK 아키텍처: Agent가 아니라 실행 시스템으로 보기<a class="anchor" href="#s-10-1" aria-label="이 절의 고유 링크">#</a></h2>
+<figure class="diagram" data-source-diagram="1"><figcaption><span>그림 1</span> Runner와 서비스·Agent·Event의 연결</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-1.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Runner와 서비스·Agent·Event의 연결"><img src="assets/diagram-1.svg" alt="Runner와 서비스·Agent·Event의 연결. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+    U[사용자/애플리케이션] --&gt; RT[Runner]
+    RT --&gt; APP[App: root agent / plugins / configs]
+    RT --&gt; SS[(SessionService)]
+    RT --&gt; MS[(MemoryService)]
+    RT --&gt; AS[(ArtifactService)]
+    APP --&gt; AG[BaseAgent / LlmAgent / Workflow Node]
+    AG --&gt; FLOW[BaseLlmFlow]
+    FLOW --&gt; LL[Model Adapter]
+    LL --&gt; API[LLM API 또는 LLM Gateway]
+    FLOW --&gt; TOOL[Tool / MCP / AgentTool]
+    TOOL --&gt; EXT[사내 데이터/API/실행환경]
+    FLOW --&gt; EV[Event stream]
+    EV --&gt; RT
+    RT --&gt; SS
+    RT --&gt; U</code></pre></details></figure><p><strong>이 다이어그램은 학습용 개념도</strong>로서 세부 callback 순서나 모듈 참조관계를 1:1 복제한 것은 아니다. v2.13.0에서 Runner는 <code>App</code>, Agent/Node, PluginManager 및 Session/Memory/Artifact/Credential 서비스를 관리한다. <code>LlmAgent._run_async_impl</code>은 <code>self._llm_flow.run_async(ctx)</code>를 실행하며 이벤트를 yield한다. <a href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/runners.py" target="_blank" rel="noopener noreferrer">[S01]</a><a href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/agents/llm_agent.py" target="_blank" rel="noopener noreferrer">[S02]</a></p>
+<h3 id="s-10-2">누가 무엇을 책임지는가?<a class="anchor" href="#s-10-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>개발자:</strong> Tool 구현, Agent 정의, App 설정, 저장소 선택, 접근 통제, 응답 검증, 사용자 UI.</li>
+<li><strong>Runner:</strong> 입력을 세션에 연결, 실행 컨텍스트/이벤트 관리, 서비스 상호작용, 이벤트 전달, 중단·재개 통합.</li>
+<li><strong>Agent / Workflow:</strong> 어떤 작업자를 어떤 순서로 실행할지, 어떤 모델/도구를 사용할지.</li>
+<li><strong>LLM Flow:</strong> 모델 요청 구성, 모델 호출, 도구 호출 후처리, 반복 종료 조건.</li>
+<li><strong>서비스 백엔드:</strong> Session 이벤트 및 State, Memory 검색, 파일 결과물 저장.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="11"><h2 id="s-11-1">11. <code>Event</code>가 핵심인 이유<a class="anchor" href="#s-11-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>일반 채팅 로그는 보통 <code>role</code>, <code>content</code> 중심이다. ADK의 Event는 <strong>대화 텍스트뿐 아니라 동작·상태·흐름 제어</strong>를 함께 표현한다. <a href="https://adk.dev/sessions/state/" target="_blank" rel="noopener noreferrer">[D05]</a><a href="https://adk.dev/2.0/" target="_blank" rel="noopener noreferrer">[D13]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>Event 정보</th>
+<th>개념적 역할</th>
+<th>분석 시 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>author</code></td>
+<td>이벤트를 생성한 주체</td>
+<td>어느 Agent/사용자인가?</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>텍스트, Tool Call/Response 등</td>
+<td>실제 어떤 입력·출력이 발생했는가?</td>
+</tr>
+<tr>
+<td><code>invocation_id</code></td>
+<td>실행 단위 식별</td>
+<td>어느 요청에서 생성됐나?</td>
+</tr>
+<tr>
+<td><code>branch</code> / <code>isolation_scope</code></td>
+<td>이벤트 가시성·실행 분기</td>
+<td>다른 하위 Agent의 기록을 볼 수 있는가?</td>
+</tr>
+<tr>
+<td><code>actions</code></td>
+<td>상태 변경, 전환, escalate 등의 신호</td>
+<td>무엇을 바꾸거나 전환했나?</td>
+</tr>
+<tr>
+<td><code>partial</code></td>
+<td>Streaming 중간 이벤트</td>
+<td>최종 완료 이벤트와 구분했는가?</td>
+</tr>
+<tr>
+<td><code>output</code> / <code>route</code> / <code>node_info</code></td>
+<td>그래프 노드 출력·경로·메타데이터</td>
+<td>그래프에서 다음 노드가 누구인가?</td>
+</tr>
+</tbody></table>
+</div><p><strong>중요:</strong> <code>Event</code>는 <code>Session</code>에 저장될 수 있는 실행 이력의 구성 요소다. <code>Event</code>를 단순히 ‘LLM이 답한 문장 하나’라고 이해하면 State 업데이트, 승인 중단, Workflow 노드 간 데이터 전달을 설명할 수 없다.</p>
+</section>
+<section class="source-section" data-source-chapter="12"><h2 id="s-12-1">12. <code>Invocation</code>, <code>Turn</code>, <code>Session</code>의 관계<a class="anchor" href="#s-12-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>Application: semiconductor_agent
+  User: engineer_01
+    Session: conversation_20261029_A
+      - Invocation 1: &quot;CD 공정이 뭐야?&quot;
+          Event 1: User Content
+          Event 2: Tool Call
+          Event 3: Tool Response
+          Event 4: Final Response
+      - Invocation 2: &quot;이전 데이터와 비교해&quot;
+          Event 5: User Content
+          Event 6: Model / Tool events ...
+
+  User: engineer_02
+    Session: separate_conversation ...</code></pre></div><ul>
+<li><code>Session</code> = 여러 차례 요청이 이어지는 대화 맥락.</li>
+<li><code>Invocation</code> = Agent 실행 요청 1회(내부에서 여러 모델 호출/Tool 호출 가능).</li>
+<li><code>Event</code> = Invocation 실행 중 발생하는 개별 메시지/상태 변화.</li>
+<li><code>Turn</code>이라는 표현은 문서 및 평가에서 사용자와 Agent의 한 번의 상호작용을 가리킬 수 있다. 정확한 경계는 평가/실행 API 문맥 확인.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="13"><h2 id="s-13-1">13. <code>Session</code>과 <code>SessionService</code><a class="anchor" href="#s-13-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>세션은 <code>app_name</code>, <code>user_id</code>, <code>session_id</code>, <code>events</code>, <code>state</code> 등을 포함한다. <code>SessionService</code>가 생성/조회/이벤트 저장과 상태 반영을 수행한다. <a href="https://adk.dev/sessions/session/" target="_blank" rel="noopener noreferrer">[D04]</a><a href="https://adk.dev/sessions/state/" target="_blank" rel="noopener noreferrer">[D05]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>구현</th>
+<th>적합한 환경</th>
+<th>주의점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>InMemorySessionService</code></td>
+<td>로컬 예제/단위 테스트</td>
+<td>프로세스 재시작 시 소실</td>
+</tr>
+<tr>
+<td><code>DatabaseSessionService</code></td>
+<td>DB 기반 지속성</td>
+<td>DB 스키마, 트랜잭션, 운영 책임</td>
+</tr>
+<tr>
+<td><code>VertexAiSessionService</code></td>
+<td>Google Cloud 기반 관리형 저장</td>
+<td>클라우드 사용 권한·데이터 정책</td>
+</tr>
+<tr>
+<td>MongoDB 계열</td>
+<td>특정 운영 DB와 통합</td>
+<td>v2.13.0 신규 기능·배포 검증 필요</td>
+</tr>
+</tbody></table>
+</div><p><em>제안:</em> 반도체 기술 데모에서는 재현과 감사 추적이 필요하므로 지속형 Session 저장소를 기본으로 검토하되, 제품 설계 전에는 데이터 보존 정책·이벤트 민감정보 익명화 정책부터 정한다.</p>
+</section>
+<section class="source-section" data-source-chapter="14"><h2 id="s-14-1">14. <code>State</code>의 실제 의미와 스코프<a class="anchor" href="#s-14-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><code>session.state</code>는 키-값 저장소다. 공식 문서는 아래 접두어로 스코프를 구분한다. <a href="https://adk.dev/sessions/state/" target="_blank" rel="noopener noreferrer">[D05]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>키 예제</th>
+<th>스코프</th>
+<th>지속성·용도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>selected_metric</code></td>
+<td>Session</td>
+<td>현재 대화의 검사 항목</td>
+</tr>
+<tr>
+<td><code>user:preferred_unit</code></td>
+<td>사용자 범위</td>
+<td>사용자의 단위 선호; 저장소에 따라 지속</td>
+</tr>
+<tr>
+<td><code>app:default_limit</code></td>
+<td>앱 전체</td>
+<td>공통 설정. 민감/변경성 설정은 별도 정책 권장</td>
+</tr>
+<tr>
+<td><code>temp:query_plan</code></td>
+<td>현재 Invocation</td>
+<td>이번 실행의 임시 분석 계획; 호출 종료 후 폐기</td>
+</tr>
+</tbody></table>
+</div><p><strong>중요:</strong> Python dict를 직접 수정하는 것과 <code>EventActions.state_delta</code>로 상태 변경을 기록·반영하는 것은 다를 수 있다. 공식 문서는 <code>append_event</code> 기반 상태 변경을 권장한다. <code>ToolContext.state[...]</code> 등 도구 컨텍스트를 통해 변경한 내용은 서비스 처리와 이벤트 동기화까지 고려해야 한다. <a href="https://adk.dev/sessions/state/" target="_blank" rel="noopener noreferrer">[D05]</a></p>
+<h3 id="s-14-2">반도체 예시<a class="anchor" href="#s-14-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>session.state = {
+  &quot;selected_metric&quot;: &quot;CD_NM&quot;,
+  &quot;selected_lot&quot;: &quot;SYNTH_LOT_001&quot;,
+  &quot;temp:analysis_threshold&quot;: 2.5,
+  &quot;user:preferred_unit&quot;: &quot;nm&quot;
+}</code></pre></div><p>여기서 Lot ID는 <strong>합성 식별자</strong>다. 실제 Lot/Wafer ID가 영구 상태나 공용 로그에 남는지 사내 데이터 거버넌스 정책을 먼저 확인해야 한다.</p>
+</section>
+<section class="source-section" data-source-chapter="15"><h2 id="s-15-1">15. <code>Memory</code>는 Session History와 무엇이 다른가?<a class="anchor" href="#s-15-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><strong>Session History:</strong> 현재 대화 스레드의 과거 메시지와 Tool 이벤트.</p>
+<p><strong>State:</strong> 구조화된 현재 작업 상태.</p>
+<p><strong>MemoryService:</strong> 장기 보존 또는 별도 검색이 필요한 정보를 서비스에 기록·검색하는 인터페이스. 과거 대화의 내용이나 요약을 기반으로 검색할 수 있지만 실제 색인/검색 품질은 백엔드에 따라 달라진다. <a href="https://adk.dev/sessions/" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>이전 세션들 ----&gt; MemoryService 저장/색인
+                       |
+새 사용자 질문 ----&gt; 검색 요청(search_memory 등)
+                       |
+                  관련 메모리 회수
+                       |
+               현재 프롬프트에 활용</code></pre></div><p><strong>ADK에 MemoryService 인터페이스가 있다 = 고성능 RAG가 자동 완성된다</strong>는 뜻이 아니다. 무엇을 저장하고 언제 갱신하며 어떤 점수로 검색하고 어떤 내용만 회수할지는 별도 설계가 필요하다. <code>MemoryService</code>와 외부 기술 문서 RAG(벡터 DB/검색엔진)는 개념상 구분한다.</p>
+<h3 id="s-15-2">기억 설계 평가 질문<a class="anchor" href="#s-15-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>메모리를 누가 언제 저장하는가: 자동/명시적 호출/후처리?</li>
+<li>저장 대상: 전체 이벤트, 특정 요약, 사용자 선호, 검증된 사실?</li>
+<li>검색: 텍스트 매칭, 벡터, 필터, 하이브리드 중 무엇인가?</li>
+<li>여러 사용자·프로젝트의 메모리는 완전히 격리되는가?</li>
+<li>삭제 및 정정: 수정 이력이 남는가? 최신/폐기 문서는 무효화되는가?</li>
+<li>컨텍스트 예산: 몇 개를 불러와 어느 부분에 삽입하는가?</li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="16"><h2 id="s-16-1">16. Artifact와 Memory의 차이<a class="anchor" href="#s-16-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><code>ArtifactService</code>는 파일·이미지·보고서·코드 등 상대적으로 큰 결과물의 저장과 버전 관리를 위해 사용한다. <code>InMemoryArtifactService</code>, GCS 기반 구현 등이 문서화돼 있다. <a href="https://adk.dev/artifacts/" target="_blank" rel="noopener noreferrer">[D07]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>저장할 대상</th>
+<th>권장 개념</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이번 대화의 질의·응답</td>
+<td>Session Events</td>
+<td>실행 순서와 맥락 필요</td>
+</tr>
+<tr>
+<td>현재 분석 대상 Lot/변수</td>
+<td>State</td>
+<td>구조화된 상태 필요</td>
+</tr>
+<tr>
+<td>과거 선호·비슷한 문의의 기억</td>
+<td>Memory</td>
+<td>세션 간 검색 필요</td>
+</tr>
+<tr>
+<td>분석 결과 CSV·PNG·보고서 PDF</td>
+<td>Artifact</td>
+<td>파일·버전 추적 필요</td>
+</tr>
+<tr>
+<td>공정 SOP 수만 건</td>
+<td>외부 문서 저장소 + RAG</td>
+<td>전문 검색/권한/문서 버전 필요</td>
+</tr>
+</tbody></table>
+</div><p>Memory에 파일 전체를 넣어 ‘저장했다’고 생각하거나, Artifact를 검색 인덱스와 동일하게 취급하면 혼동이 생긴다.</p>
+</section>
+<section class="source-section" data-source-chapter="17"><h2 id="s-17-1">17. Context 관리: 모든 과거 이벤트를 매번 보내지 않는다<a class="anchor" href="#s-17-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Agent의 <strong>Session 저장</strong>과 <strong>모델에 전달되는 Context</strong>는 서로 다른 개념이다. Session은 실행 이력을 저장할 수 있지만, 실제 모델 요청은 컨텍스트 창 한계와 비용을 고려해 내용을 선택·압축한다.</p>
+<p>공식 Context Compaction은 오래된 이벤트 내용을 요약하는 방법을 제공하고 <code>EventsCompactionConfig</code>로 간격/토큰 기반 정책을 설정할 수 있다. 토큰 임계값과 최근 이벤트 보존량, sliding-window 간격과 overlap 등을 조정할 수 있다. <a href="https://adk.dev/context/compaction/" target="_blank" rel="noopener noreferrer">[D14]</a></p>
+<div class="code-block"><div class="code-caption"><span>핵심 구조를 재구성한 예시</span><span>python</span></div><pre tabindex="0" aria-label="핵심 구조를 재구성한 예시"><code># [공식 구조를 단순화한 설정 예]
+from google.adk.apps.app import App, EventsCompactionConfig
+
+app = App(
+    name=&quot;semiconductor_assistant&quot;,
+    root_agent=root_agent,
+    events_compaction_config=EventsCompactionConfig(
+        token_threshold=4000,
+        event_retention_size=5,
+    ),
+)</code></pre></div><p><strong>Compaction ≠ Long-term Memory ≠ Context Caching</strong></p>
+<ul>
+<li><strong>Compaction:</strong> 과거 대화 이벤트를 요약해 모델 입력 크기를 줄임.</li>
+<li><strong>Memory Search:</strong> 필요한 과거 정보를 별도 검색해 불러옴.</li>
+<li><strong>Context Cache:</strong> 동일한 프롬프트/도구 목록 등의 재사용을 통해 API 비용·지연을 최적화하는 기법.</li>
+</ul>
+<p>v2.13.0의 Runner 소스에는 Invocation 종료 후 best-effort compaction을 수행하고, 다른 요청이 세션을 갱신했으면 오래된 요약을 버리는 로직도 있다. 이는 병행 업데이트와 오래된 요약 덮어쓰기의 위험을 고려한 것으로 해석된다. <a href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/runners.py" target="_blank" rel="noopener noreferrer">[S01]</a></p>
+<p>반도체 업무의 수치·검사 조건은 단순 자연어 요약 시 소실되거나 변형될 수 있으므로, <strong>원본 값은 State/DB/Artifact에 보관하고 Compaction은 대화 이해용으로 제한</strong>하는 방향을 권장한다.</p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="getting-started.html"><small>이전 단원</small>← 설정·도구·모델</a><a class="next" href="execution.html"><small>다음 단원</small>Agent Loop와 확장 →</a></nav><footer>Google ADK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-10-1">10. ADK 아키텍처: Agent가 아니라 실행 시스템으로 보기</a><a href="#s-11-1">11. Event가 핵심인 이유</a><a href="#s-12-1">12. Invocation, Turn, Session의 관계</a><a href="#s-13-1">13. Session과 SessionService</a><a href="#s-14-1">14. State의 실제 의미와 스코프</a><a href="#s-15-1">15. Memory는 Session History와 무엇이 다른가?</a><a href="#s-16-1">16. Artifact와 Memory의 차이</a><a href="#s-17-1">17. Context 관리: 모든 과거 이벤트를 매번 보내지 않는다</a></nav></aside></div></body></html>

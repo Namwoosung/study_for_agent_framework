@@ -1,0 +1,102 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI의 원리·구현·한계를 배우는 개인 학습 교재"><title>기억과 지식, 절차의 경계 나누기 — PydanticAI</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">P.</span><span>PydanticAI<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="core.html" ><span class="nav-number">02</span><span>Agent·Deps·Tools</span></a><a href="validation.html" ><span class="nav-number">03</span><span>출력·Retry·종료</span></a><a href="history.html" ><span class="nav-number">04</span><span>Messages와 영속성</span></a><a href="architecture.html" ><span class="nav-number">05</span><span>Graph·Loop·Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" class="current" aria-current="page"><span class="nav-number">06</span><span>Memory·Skills·MCP</span></a><a href="orchestration.html" ><span class="nav-number">07</span><span>협업과 Harness</span></a><p class="nav-group">구현과 운영</p><a href="code.html" ><span class="nav-number">08</span><span>소스코드 경계 추적</span></a><a href="operations.html" ><span class="nav-number">09</span><span>모델·보안·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용과 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >용어와 복습</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Core v2.61.0</span><a href="../PydanticAI.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">PydanticAI</a><span aria-hidden="true">/</span><span>Memory·Skills·MCP</span></div><header class="chapter-header"><p class="eyebrow">확장과 운영 / 단원 06</p><h1>기억과 지식, 절차의 경계 나누기</h1><p class="lead">History·Compaction·Memory·RAG와 별도 Harness</p><div class="chapter-meta">원문 14–15장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>현재 대화 기록, 입력 길이를 줄이는 Compaction, 여러 대화에 걸친 Memory와 외부 문서 RAG는 같은 기능이 아닙니다. Core의 메시지 제어와 Harness의 기억·검색·압축 기능도 범위를 나누어야 합니다.</p><p>Skills는 절차와 참고자료를 필요할 때 제공하며, MCP는 외부 도구를 연결합니다. 이 연결만으로 새 권한이나 검증된 지식이 자동으로 생기지는 않습니다. 민감정보와 정확한 수치는 원본·출처·보존 정책을 함께 설계하세요.</p><p class="reading-question"><strong>읽는 관점</strong>어디서 무엇을 저장·선택·주입하는지, 어떤 기능이 추가 패키지와 정책을 필요로 하는지 확인하세요.</p></section><section class="source-section" data-source-chapter="14"><h2 id="s-14-1">14. Memory와 Context 관리<a class="anchor" href="#s-14-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-14-2">14.1 반드시 구분해야 할 5개<a class="anchor" href="#s-14-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>저장/관리 대상</th>
+<th>PydanticAI의 위치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Message History</td>
+<td>현재/과거 대화의 메시지</td>
+<td>Core의 모델 메시지 및 이력 API</td>
+</tr>
+<tr>
+<td>Context Window</td>
+<td>모델에 실제 전송되는 토큰 구성</td>
+<td>Runtime + 프롬프트/History 처리 + 모델 제약</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>오래된 Context를 요약·삭제/압축</td>
+<td>Core/별도 Harness Capability 등</td>
+</tr>
+<tr>
+<td>Long-term Memory</td>
+<td>여러 세션에 걸쳐 보존할 정보</td>
+<td>PydanticAI Harness Memory 또는 별도 저장소</td>
+</tr>
+<tr>
+<td>RAG Knowledge</td>
+<td>기술 문서, SOP, 공정 지식의 검색</td>
+<td>Tool·MCP·외부 검색 시스템으로 구현</td>
+</tr>
+</tbody></table>
+</div><p>RAG는 <strong>지식을 찾는 시스템</strong>이고, Memory는 <strong>어떤 사실을 어떤 기준으로 기억·갱신할지 관리하는 체계</strong>다. 같은 벡터 검색을 활용할 수 있어도 역할은 다르다.</p>
+<h3 id="s-14-3">14.2 Core와 Harness의 차이<a class="anchor" href="#s-14-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>Core: 대화 메시지 유지·재사용, 모델에 넘길 History 제어, Capability 기반 조절 등.</li>
+<li>Harness: <code>Memory</code>, <code>ConversationSearch</code>, <code>Compaction</code>, <code>ToolOutputLimits</code> 등을 제공한다. <a href="https://pydantic.dev/docs/ai/harness/" target="_blank" rel="noopener noreferrer">[S04]</a><a href="https://pydantic.dev/docs/ai/harness/memory/" target="_blank" rel="noopener noreferrer">[S19]</a><a href="https://pydantic.dev/docs/ai/harness/compaction/" target="_blank" rel="noopener noreferrer">[S20]</a></li>
+<li>Memory는 파일·PostgreSQL 등 저장소 구현을 선택할 수 있으며, 자동으로 무한히 무엇이든 영구 기억하는 것이 아니라 <strong>기능 활성화와 정책 설계</strong>가 필요하다.</li>
+<li>Conversation Search는 저장된 대화에 대한 검색 기능이고, Memory의 노트북형 영구 기억과는 다른 기능이다.</li>
+</ul>
+<h3 id="s-14-4">14.3 전형적인 Long-term Memory 아키텍처 [설계 예]<a class="anchor" href="#s-14-4" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="4"><figcaption><span>그림 4</span> 장기 기억 저장·검색의 설계 예시</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="장기 기억 저장·검색의 설계 예시"><img src="assets/diagram-4.svg" alt="장기 기억 저장·검색의 설계 예시. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+  RUN[Agent Run] --&gt; H[대화 메시지]
+  H --&gt; EXTRA[기억할 정보 추출·검증]
+  EXTRA --&gt; POLICY[민감도/TTL/테넌트 판단]
+  POLICY --&gt; STORE[(Memory Store)]
+  RUN --&gt; SEARCH[필요할 때 메모리 검색]
+  SEARCH --&gt; STORE
+  STORE --&gt; SEARCH --&gt; CONTEXT[제한된 Context 주입]
+  CONTEXT --&gt; RUN</code></pre></details></figure><p><strong>이 도식은 실제 Harness 내부 구현을 1:1 묘사한 것이 아니라 기업용 설계 원칙을 설명한다.</strong> 장기 기억은 기록 대상·검색·삭제·출처·충돌 해결·정보 보존 정책에 따라 별도로 설계되어야 한다. 공정 기밀/개인정보/고객사 데이터는 기억 저장 대상에서 기본 제외하는 편이 안전하다.</p>
+<h3 id="s-14-5">14.4 Context Compaction은 무슨 역할인가?<a class="anchor" href="#s-14-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>긴 Agent 실행에서는 메시지 이력이 커져 비용·지연이 증가하고 모델 컨텍스트 제한에 도달한다. 공식 Harness는 다음과 같은 방식을 제공한다. <a href="https://pydantic.dev/docs/ai/harness/compaction/" target="_blank" rel="noopener noreferrer">[S20]</a></p>
+<ul>
+<li>Sliding Window: 오래된 기록을 제거하고 최근 맥락만 유지.</li>
+<li>Summarization: 오래된 기록을 모델 요약으로 대체.</li>
+<li>Tool Result Clearing: 지나치게 큰 Tool 결과를 치우거나 제한.</li>
+<li>Provider-native Compaction: 해당 모델 공급자의 서버측 기능 활용(지원 모델 한정).</li>
+</ul>
+<p><strong>주의:</strong> 요약은 추정·누락을 일으킬 수 있다. 공정 수율 수치·LOT ID·고장코드처럼 정확한 식별자가 필요한 데이터는 <strong>요약본만 신뢰하지 말고 원본 데이터와 참조 링크를 유지</strong>하는 방식이 적절하다.</p>
+</section>
+<section class="source-section" data-source-chapter="15"><h2 id="s-15-1">15. Skills, MCP, RAG, 외부 시스템 연동<a class="anchor" href="#s-15-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-15-2">15.1 Skills<a class="anchor" href="#s-15-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>PydanticAI Harness의 <code>Skills</code>는 Agent Skill 패키지(<code>SKILL.md</code>)를 읽어 해당 작업 절차를 필요할 때 모델에 제공하는 기능이다. 최근 공식 문서는 디렉터리 스캔 → 유효한 Skill을 등록 → 모델이 <code>load_capability</code>로 선택적으로 로딩하는 방식을 설명한다. <a href="https://pydantic.dev/docs/ai/harness/skills/" target="_blank" rel="noopener noreferrer">[S21]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>.agents/skills/
+  lot-analysis/
+    SKILL.md
+    references/
+      metric_dictionary.md
+  equipment-diagnostics/
+    SKILL.md</code></pre></div><p>예시 <code>SKILL.md</code>:</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>markdown</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>---
+name: lot-analysis
+description: LOT 수율 지표를 보고할 때 참조하는 절차
+---
+LOT ID를 확인하고, 읽기 전용 조회 도구만 사용한 다음,
+사용한 데이터 시점·필터·산식·근거를 보고서에 명시한다.</code></pre></div><p><strong>Skill은 지식·절차의 패키지</strong>이며, 그 자체로 Agent의 모델 가중치를 학습시키는 기능은 아니다. Skill 파일 안에 임의 명령이 포함될 수 있으므로 신뢰하는 출처에서만 가져와 검토한다. <a href="https://pydantic.dev/docs/ai/harness/skills/" target="_blank" rel="noopener noreferrer">[S21]</a></p>
+<h3 id="s-15-3">15.2 MCP 연결<a class="anchor" href="#s-15-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>PydanticAI는 MCP Client/Server 및 별도 MCP Capability·Toolset 구성 방식을 제공한다. <a href="https://pydantic.dev/docs/ai/mcp/client/" target="_blank" rel="noopener noreferrer">[S22]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>PydanticAI Agent (MCP Client)
+    └── 사내 MCP 서버
+          ├── read_lot_summary
+          ├── find_equipment_alarm
+          └── search_process_sop</code></pre></div><ul>
+<li><strong>MCP 서버</strong>: Tool·리소스 등을 표준 인터페이스로 노출.</li>
+<li><strong>MCP 클라이언트</strong>: Agent가 서버를 연결하여 도구를 발견·호출.</li>
+<li><strong>업무 데이터 권한</strong>: MCP를 쓴다고 자동으로 안전해지지 않는다. 권한·네트워크·로그 보안은 별도 설계.</li>
+</ul>
+<h3 id="s-15-4">15.3 RAG와 Memory는 어떻게 다른가?<a class="anchor" href="#s-15-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>반도체 전문 문서 RAG를 만든다고 가정할 때:</p>
+<ol>
+<li>공식 SOP·공정 지침을 청크로 분할하여 검색 인덱스 구성.</li>
+<li>사용자 질문에 맞는 문서를 검색.</li>
+<li>검색 결과를 Tool Return으로 반환.</li>
+<li>Agent가 참조 근거와 함께 답변.</li>
+<li>최종 답변에 문서 버전, 문단 ID 등 검증 가능한 출처를 포함.</li>
+</ol>
+<p>PydanticAI가 자동으로 <strong>사용자의 사내 문서 전체를 수집·임베딩·평가</strong>해 주는 것은 아니다. RAG 검색 파이프라인은 외부 컴포넌트·코드로 구성한다. 공식 RAG 예제가 출발점이 될 수 있다. <a href="https://pydantic.dev/docs/ai/examples/data-analytics/rag/" target="_blank" rel="noopener noreferrer">[S23]</a></p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="architecture.html"><small>이전 단원</small>← Graph·Loop·Hooks</a><a class="next" href="orchestration.html"><small>다음 단원</small>협업과 Harness →</a></nav><footer>PydanticAI 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-14-1">14. Memory와 Context 관리</a><a href="#s-15-1">15. Skills, MCP, RAG, 외부 시스템 연동</a></nav></aside></div></body></html>

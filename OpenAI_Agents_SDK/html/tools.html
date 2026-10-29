@@ -1,0 +1,174 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>함수 계약을 실제 실행으로 연결하기 — OpenAI Agents SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">O.</span><span>OpenAI Agents SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK의 역할과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>Runner와 모델 계층</span></a><a href="tools.html" class="current" aria-current="page"><span class="nav-number">03</span><span>Function Tool과 MCP</span></a><a href="orchestration.html" ><span class="nav-number">04</span><span>Handoff와 Agent-as-Tool</span></a><a href="guardrails.html" ><span class="nav-number">05</span><span>Guardrail과 권한</span></a><p class="nav-group">구현과 운영</p><a href="state.html" ><span class="nav-number">06</span><span>Context·Session·승인</span></a><a href="operations.html" ><span class="nav-number">07</span><span>관측·출력·Sandbox</span></a><a href="code.html" ><span class="nav-number">08</span><span>소스코드 상태 전이</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계 검토</span></a><a href="comparison.html" ><span class="nav-number">10</span><span>장점·한계·선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습과 용어</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v0.24.0</span><a href="../OpenAI_Agents_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">OpenAI Agents SDK</a><span aria-hidden="true">/</span><span>Function Tool과 MCP</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 03</p><h1>함수 계약을 실제 실행으로 연결하기</h1><p class="lead">스키마·승인·인자 검증·권한·실행 위치</p><div class="chapter-meta">원문 9–10장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Function Tool은 함수의 이름·설명·입력 스키마와 실행 핸들러를 묶습니다. 모델이 요청한 인자를 파싱할 수 있어도, 그 사용자가 해당 데이터를 조회해도 되는지는 실행 경계에서 다시 판단해야 합니다.</p><p>로컬 함수, SDK가 관리하는 MCP, Hosted 도구와 Sandbox는 실행 위치와 데이터 전송 경계가 다릅니다. 도구 연결 방식만 보고 같은 권한이나 격리 수준을 가정하지 마세요.</p><p class="reading-question"><strong>읽는 관점</strong>누가 자격증명을 보유하고 어디서 실행하며 어떤 결과가 모델로 전달되는지 따라가세요.</p></section><section class="source-section" data-source-chapter="9"><h2 id="s-9-1">9. Tool — Python 함수에서 실제 업무 실행까지<a class="anchor" href="#s-9-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-9-2">9.1 Tool의 기본 의미<a class="anchor" href="#s-9-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Tool은 LLM이 호출 <em>요청</em>을 만들 수 있는 기능을 선언한 것이다. 함수 이름, 설명, JSON 입력 스키마, 실행 핸들러를 SDK가 묶는다. 예를 들어 <code>get_lot_summary(lot_id)</code>를 제공하면 모델은 어떤 lot 정보를 조회할지 선택하지만, 서버는 요청 받은 lot이 사용자에게 허용된 데이터인지 <strong>별도로 검증</strong>해야 한다.</p>
+<h3 id="s-9-3">9.2 <code>@function_tool</code> 내부 개념<a class="anchor" href="#s-9-3" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="4"><figcaption><span>그림 4</span> Python 함수 정의에서 도구 실행까지</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Python 함수 정의에서 도구 실행까지"><img src="assets/diagram-4.svg" alt="Python 함수 정의에서 도구 실행까지. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  F[Python 함수 정의] --&gt; I[inspect: signature]
+  I --&gt; D[docstring 파싱]
+  D --&gt; S[Pydantic/JSON Schema]
+  S --&gt; T[FunctionTool 인스턴스]
+  T --&gt; L[모델에 도구 정의 노출]
+  L --&gt; Q[모델: function_call 이름+JSON 인자]
+  Q --&gt; V[실행 허용? 승인 필요?]
+  V --&gt; P[인자 검증·파싱]
+  P --&gt; E[Python 함수 실행]
+  E --&gt; O[결과를 모델 입력으로 변환]
+  O --&gt; L</code></pre></details></figure><p><strong>핵심:</strong> Tool 정의는 &#39;인터페이스&#39;이며, 실행은 도구 런타임에서 일어난다. 이 과정에서 guardrails, timeout, 실패 변환, tracing 같은 요소가 관여한다. <a href="https://openai.github.io/openai-agents-python/tools/" target="_blank" rel="noopener noreferrer">[S04]</a>, <a href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/tool.py" target="_blank" rel="noopener noreferrer">[C04]</a>, <a href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/function_schema.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<h3 id="s-9-4">9.3 실제 업무용 안전한 함수 형태<a class="anchor" href="#s-9-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from dataclasses import dataclass
+from agents import Agent, RunContextWrapper, Runner, function_tool
+
+@dataclass
+class ProcessContext:
+    user_id: str
+    permitted_fabs: frozenset[str]
+    db: object   # 실제 개발에서는 읽기 전용 Repository 프로토콜 정의
+
+@function_tool
+async def get_lot_metrics(
+    ctx: RunContextWrapper[ProcessContext],
+    fab_id: str,
+    lot_id: str,
+) -&gt; str:
+    &quot;&quot;&quot;허용된 FAB 내 Lot의 승인된 KPI 요약을 조회한다.&quot;&quot;&quot;
+    if fab_id not in ctx.context.permitted_fabs:
+        raise PermissionError(&quot;해당 FAB 조회 권한 없음&quot;)
+    # 실제 구현: 고정 SQL 템플릿 + 바인딩 변수 + 행 수 제한 + 감사 로그
+    return f&quot;조회 예시: {fab_id}/{lot_id}&quot;
+
+agent = Agent[ProcessContext](
+    name=&quot;ProcessReader&quot;,
+    instructions=&quot;권한이 있는 데이터만 조회하며 결과의 근거를 보존한다.&quot;,
+    tools=[get_lot_metrics],
+)
+
+# 예시 호출: 실제 DB 클라이언트 주입 전에는 조회되는 코드가 아님
+# result = await Runner.run(agent, &quot;Lot A의 KPI 확인&quot;, context=ProcessContext(...))</code></pre></div><p>주의: <strong>예제의 <code>PermissionError</code>가 SDK에서 어떻게 노출되는지는 Tool failure 설정에 달려 있다.</strong> 비밀 토큰이나 상세 SQL 오류가 모델 응답에 그대로 노출되지 않도록 실패 응답을 설계해야 한다. 데이터 접근 권한은 프롬프트가 아니라 실행 함수의 보안 경계에서 강제한다.</p>
+<h3 id="s-9-5">9.4 세부 검토 항목<a class="anchor" href="#s-9-5" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>확인할 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JSON Schema</td>
+<td>필수 인자·숫자 범위·열거형·중첩 타입 변환</td>
+</tr>
+<tr>
+<td>Tool 표시</td>
+<td><code>is_enabled</code>, Tool 선택 제한, 이름 충돌</td>
+</tr>
+<tr>
+<td>오류</td>
+<td><code>failure_error_function</code>으로 모델에 오류 전달 vs 예외 발생</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>비동기 함수의 호출별 제한; 모델 timeout과 별도</td>
+</tr>
+<tr>
+<td>승인</td>
+<td><code>needs_approval</code> 및 동적 승인 조건</td>
+</tr>
+<tr>
+<td>Guardrails</td>
+<td>Tool 전/후 입력·출력 검사</td>
+</tr>
+<tr>
+<td>결과 형식</td>
+<td>텍스트/구조화된 결과, 민감 필드 제거, 데이터 크기 제한</td>
+</tr>
+<tr>
+<td>취소·재시도</td>
+<td>실패 후 재실행 시 부작용·중복 처리 여부</td>
+</tr>
+<tr>
+<td>관측</td>
+<td>Tool 호출자·입력 매개변수·허가 결정·결과 요약 기록</td>
+</tr>
+</tbody></table>
+</div><p>공식 도구 문서는 <code>inspect</code>, <code>griffe</code>, <code>pydantic</code>이 Function Tool 생성에 사용되며, <code>@function_tool(timeout=...)</code>은 <strong>비동기 함수 핸들러의 timeout</strong>을 지원한다고 설명한다. 기본 timeout 정책은 모델에 오류 결과를 전달하는 형태이며, 예외 발생 방식으로 전환할 수도 있다. <a href="https://openai.github.io/openai-agents-python/tools/" target="_blank" rel="noopener noreferrer">[S04]</a></p>
+<h3 id="s-9-6">9.5 Agent에게 도구를 많이 주면 좋은가?<a class="anchor" href="#s-9-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>그렇지 않다. Tool이 많아지면 모델 선택 정확도가 흔들릴 수 있고 권한 표면도 넓어진다. 도구 노출을 최소화하고, 조회·분석·승인·쓰기 등 역할별로 분리한다. 특히 공정 파라미터 수정이나 레시피 배포 같은 변경 기능은 <strong>read-only 분석 Agent에 넣지 않는 것</strong>을 기본으로 한다.</p>
+</section>
+<section class="source-section" data-source-chapter="10"><h2 id="s-10-1">10. MCP, Hosted Tool, Shell 및 Sandbox 도구<a class="anchor" href="#s-10-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-10-2">10.1 MCP는 무엇을 해결하나?<a class="anchor" href="#s-10-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>MCP(Model Context Protocol)는 Agent 측 클라이언트와 외부 도구 제공자 사이의 표준 프로토콜이다. SDK의 Function Tool은 직접 정의한 함수와 가까운 반면, MCP는 별도 서버가 도구를 제공하고 SDK가 이를 검색·연결할 수 있도록 한다. <strong>MCP는 Agent Loop 그 자체가 아니다.</strong> <a href="https://openai.github.io/openai-agents-python/mcp/" target="_blank" rel="noopener noreferrer">[S12]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>실행 위치 / 특성</th>
+<th>적합한 경우</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FunctionTool</code></td>
+<td>내 Python 프로세스의 핸들러</td>
+<td>안전한 사내 SQL 추상화, 단순한 API 호출</td>
+</tr>
+<tr>
+<td><code>MCPServerStdio</code></td>
+<td>연결한 로컬 프로세스</td>
+<td>개발 도구, 동일 머신의 검증된 도구 서버</td>
+</tr>
+<tr>
+<td><code>MCPServerStreamableHttp</code></td>
+<td>HTTP MCP 서버</td>
+<td>사내 망의 공통 도구 서비스</td>
+</tr>
+<tr>
+<td><code>MCPServerSse</code></td>
+<td>SSE 기반 서버</td>
+<td>기존 SSE MCP 연결</td>
+</tr>
+<tr>
+<td><code>HostedMCPTool</code></td>
+<td>Responses API가 관리하는 원격 호출 경로</td>
+<td>별도 외부 접근·승인이 허용된 경우</td>
+</tr>
+<tr>
+<td>Hosted Web/File 등의 도구</td>
+<td>공급자 서버에서 제공하는 기능</td>
+<td>외부 조사·파일 검색 등, 정책과 지원 모델 확인</td>
+</tr>
+<tr>
+<td>Shell / ApplyPatch / Sandbox Tool</td>
+<td>실행 환경·권한·격리 필요</td>
+<td>소스 코드 수정·격리된 파일 분석</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-10-3">10.2 사내 반도체 환경에서 중요한 구분<a class="anchor" href="#s-10-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>외부 Hosted MCP:</strong> 도구 요청·응답이 어디에서 처리되는지와 어떤 데이터가 외부 경계를 통과하는지 반드시 검토.</li>
+<li><strong>내부 MCP:</strong> 도구 서버 자체가 사내 네트워크 안에 있어도 SDK가 사용하는 모델이 외부라면 프롬프트/Tool 결과가 외부로 전달될 수 있다.</li>
+<li><strong>MCP Tool 설명은 불신 입력:</strong> 잘못된 도구 설명이나 외부 서버의 프롬프트 인젝션은 Agent의 행동에 영향을 줄 수 있다.</li>
+<li><strong>인증은 서버가 시행:</strong> 서버가 사용자와 데이터 권한을 강제해야 하며, MCP 서버 URL을 안다고 사용 권한이 생기는 것은 아니다.</li>
+</ul>
+<p>공식 MCP 문서는 Hosted 경로와 Local/Remote SDK 관리 경로를 구분하며, Tool 필터링·캐싱·승인·Tracing을 설명한다. <a href="https://openai.github.io/openai-agents-python/mcp/" target="_blank" rel="noopener noreferrer">[S12]</a></p>
+<h3 id="s-10-4">10.3 예: 사내 Streamable HTTP MCP (개념 예시)<a class="anchor" href="#s-10-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>import asyncio
+import os
+from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+async def main():
+    async with MCPServerStreamableHttp(
+        name=&quot;InternalTools&quot;,
+        params={
+            &quot;url&quot;: os.environ[&quot;INTERNAL_MCP_URL&quot;],
+            &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {os.environ[&#39;INTERNAL_MCP_TOKEN&#39;]}&quot;},
+        },
+    ) as server:
+        agent = Agent(
+            name=&quot;InternalKnowledgeReader&quot;,
+            instructions=&quot;승인된 사내 자료만 조회한다.&quot;,
+            mcp_servers=[server],
+        )
+        result = await Runner.run(agent, &quot;허용된 용어 정의만 확인해줘.&quot;)
+        print(result.final_output)
+
+# asyncio.run(main())</code></pre></div><p>실제로 적용할 때는 TLS, 서버 인증, allowlist, credential 관리, 호출 시간·응답 크기 제한, 도구 목록 필터 등을 추가해야 한다.</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="execution.html"><small>이전 단원</small>← Runner와 모델 계층</a><a class="next" href="orchestration.html"><small>다음 단원</small>Handoff와 Agent-as-Tool →</a></nav><footer>OpenAI Agents SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-9-1">9. Tool — Python 함수에서 실제 업무 실행까지</a><a href="#s-10-1">10. MCP, Hosted Tool, Shell 및 Sandbox 도구</a></nav></aside></div></body></html>

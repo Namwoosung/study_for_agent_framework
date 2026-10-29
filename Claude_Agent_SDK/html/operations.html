@@ -1,0 +1,159 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>형식·재개·보안·관측의 경계 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" class="current" aria-current="page"><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>출력·복구·격리·평가</span></div><header class="chapter-header"><p class="eyebrow">구현과 운영 / 단원 07</p><h1>형식·재개·보안·관측의 경계</h1><p class="lead">Structured Output과 사실, File Rewind와 외부 부작용</p><div class="chapter-meta">원문 17–20장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>JSON Schema에 맞는 결과라도 값의 범위나 실제 데이터와 어긋날 수 있습니다. 타입과 업무 규칙, Tool 원본 수치와 근거를 단계별로 검증해야 합니다.</p><p>Session Resume, File Rewind와 DB 트랜잭션 복구도 같은 기능이 아닙니다. 작업 디렉터리나 도구 거부 옵션만으로 OS 격리가 완성되지는 않습니다. 관측에서는 CLI가 내보내는 Telemetry와 SDK의 설정 전달, 실제 결과 평가를 구분하세요.</p><p class="reading-question"><strong>읽는 관점</strong>출력이 형식에 맞는지뿐 아니라 사실인지, 복원이 외부 효과까지 되돌리는지 확인하세요.</p></section><section class="source-section" data-source-chapter="17"><h2 id="s-17-1">17. Structured Output과 정확성의 경계<a class="anchor" href="#s-17-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-17-2">17.1 문제 상황<a class="anchor" href="#s-17-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>모델이 “수율은 대략 양호합니다”라고만 반환하면 자동 분석 시스템이 처리하기 어렵다. JSON Schema로 <code>lot_id</code>, <code>sample_count</code>, <code>yield_rate</code>, <code>evidence_ids</code>, <code>hypotheses</code> 등의 필드를 지정하면 프로그램이 후처리하기 좋아진다. <a href="https://code.claude.com/docs/en/agent-sdk/structured-outputs" target="_blank" rel="noopener noreferrer">[D16]</a></p>
+<h3 id="s-17-3">17.2 JSON Schema 예시<a class="anchor" href="#s-17-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>schema = {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;lot_id&quot;: {&quot;type&quot;: &quot;string&quot;},
+        &quot;yield_rate&quot;: {&quot;type&quot;: &quot;number&quot;},
+        &quot;sample_count&quot;: {&quot;type&quot;: &quot;integer&quot;},
+        &quot;conclusion&quot;: {&quot;type&quot;: &quot;string&quot;},
+    },
+    &quot;required&quot;: [&quot;lot_id&quot;, &quot;yield_rate&quot;, &quot;sample_count&quot;, &quot;conclusion&quot;],
+    &quot;additionalProperties&quot;: False,
+}
+
+options = ClaudeAgentOptions(output_format={&quot;type&quot;: &quot;json_schema&quot;, &quot;schema&quot;: schema})</code></pre></div><p><strong>분석 포인트:</strong> Claude Code가 출력 스키마 처리용 <code>StructuredOutput</code> Tool을 도입할 수 있으며, SDK 최종 메시지에 <code>structured_output</code>이 표시될 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/structured-outputs" target="_blank" rel="noopener noreferrer">[D16]</a></p>
+<h3 id="s-17-4">17.3 형식 검증 ≠ 도메인 정확성<a class="anchor" href="#s-17-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>아래와 같은 응답은 스키마에 맞을 수 있다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>{&quot;lot_id&quot;:&quot;L-001&quot;,&quot;yield_rate&quot;:999.0,&quot;sample_count&quot;:-1,&quot;conclusion&quot;:&quot;정상&quot;}</code></pre></div><p>하지만 공정 수율과 표본 수 측면에서 명백히 문제가 있다. <strong>따라서 JSON Schema, Python/Pydantic 검증, DB 근거 검증, 통계 계산 재검증을 함께 사용</strong>해야 한다. [설계]</p>
+<h3 id="s-17-5">17.4 검증 계층<a class="anchor" href="#s-17-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>JSON 파싱 가능 여부.</li>
+<li>Schema 필수 필드·타입 검사.</li>
+<li>값 범위(0≤yield_rate≤1 등)·단위·표본 수 검사.</li>
+<li>실제 Tool 조회값과 수치 일치 검증.</li>
+<li>근거 ID 존재 및 접근 권한 확인.</li>
+<li>가설/사실/권고가 논리적으로 분리되었는지 도메인 평가.</li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="18"><h2 id="s-18-1">18. Checkpoint·중단/재개·오류 처리<a class="anchor" href="#s-18-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-18-2">18.1 서로 다른 ‘재개’<a class="anchor" href="#s-18-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Session Resume</td>
+<td>과거 대화·도구 이력을 이어서 진행</td>
+</tr>
+<tr>
+<td>Session Fork</td>
+<td>기존 이력을 복사하여 다른 방향으로 분기</td>
+</tr>
+<tr>
+<td><code>interrupt()</code></td>
+<td>현재 실행을 중단하도록 요청</td>
+</tr>
+<tr>
+<td>File Checkpoint/Rewind</td>
+<td>변경된 파일을 특정 지점의 상태로 되돌림</td>
+</tr>
+<tr>
+<td>업무 트랜잭션 복구</td>
+<td>DB 쓰기 등 외부 부작용의 상태 복구 — 별도 설계 필요</td>
+</tr>
+</tbody></table>
+</div><p><strong>File Rewind와 DB 트랜잭션 롤백은 다르다.</strong> 파일 변경을 되돌려도 이미 외부 API로 전송한 알림·DB 쓰기·설비 명령이 자동 복원된다고 가정하면 안 된다. <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/file-checkpointing" target="_blank" rel="noopener noreferrer">[D18]</a></p>
+<h3 id="s-18-3">18.2 File Checkpointing<a class="anchor" href="#s-18-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>SDK에는 <code>enable_file_checkpointing</code> 옵션과 <code>ClaudeSDKClient.rewind_files(user_message_id)</code>가 제공된다. 추적·복원하는 대상과 제약이 있고, 기능을 활성화하지 않은 Session은 해당 기능으로 복원할 수 없다. <a href="https://code.claude.com/docs/en/agent-sdk/file-checkpointing" target="_blank" rel="noopener noreferrer">[D18]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<h3 id="s-18-4">18.3 운영에서 자주 만나는 실패<a class="anchor" href="#s-18-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>CLI 실행 파일 없음, 프로세스 시작 실패.</li>
+<li>API 인증/쿼터/네트워크 오류.</li>
+<li>MCP 서버 연결 실패 또는 타임아웃.</li>
+<li>Hook/Permission Callback 실패.</li>
+<li>도구 결과가 너무 큼 또는 예상치 못한 형식.</li>
+<li>예산/턴 상한 도달.</li>
+<li>Session JSONL 손상 또는 복구 대상 누락.</li>
+<li>출력 스키마 실패.</li>
+</ul>
+<h3 id="s-18-5">18.4 안전한 재시도 기준<a class="anchor" href="#s-18-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>SELECT</code>처럼 부작용 없는 조회는 제한적 재시도가 상대적으로 쉽다. 반면 파일 삭제·서버 재시작·외부 DB 쓰기는 요청 중복에 따른 부작용이 발생할 수 있으므로 idempotency key, 트랜잭션, 승인 및 복구 절차가 필요하다. [설계]</p>
+</section>
+<section class="source-section" data-source-chapter="19"><h2 id="s-19-1">19. Sandbox·프로세스 보안·배포<a class="anchor" href="#s-19-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-19-2">19.1 Sandbox의 역할<a class="anchor" href="#s-19-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Agent가 Bash/파일 조작 도구를 사용할 때 <strong>실제 OS 자원에 접근할 수 있는 범위</strong>를 제한하기 위한 환경 격리가 중요하다. 공식 문서는 Sandbox 설정, 호스팅 및 안전한 배포를 별도 주제로 다룬다. <a href="https://code.claude.com/docs/en/agent-sdk/secure-deployment" target="_blank" rel="noopener noreferrer">[D19]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/hosting" target="_blank" rel="noopener noreferrer">[D20]</a></p>
+<p>보안 계층은 다음처럼 구분한다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>사용자 인증 / 프로젝트별 접근권한
+       ↓
+SDK Options (tools / deny / permissions / hooks)
+       ↓
+CLI 실행 사용자 / Sandbox 정책
+       ↓
+컨테이너/VM 파일시스템·네트워크 권한
+       ↓
+MCP 서비스별 인증·감사·레이트 제한
+       ↓
+DB 계정 RBAC / 뷰 / 읽기 전용 / 행 제한</code></pre></div><h3 id="s-19-3">19.2 금지해야 할 과도한 가정<a class="anchor" href="#s-19-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><code>bypassPermissions</code> = 안전한 자동 실행이 아니다.</li>
+<li><code>disallowed_tools=[&quot;Write&quot;]</code> = 모든 쓰기 경로 차단이 아니다.</li>
+<li><code>cwd</code> 지정 = OS 파일 경로 격리가 아니다.</li>
+<li>‘사내망에서 실행’ = 외부 모델 API에 자료가 전달되지 않는다는 뜻이 아니다.</li>
+<li>‘MCP 서버 연결됨’ = 호출자별 권한이 자동 부여된다는 뜻이 아니다.</li>
+</ul>
+<h3 id="s-19-4">19.3 기업 배포 체크리스트<a class="anchor" href="#s-19-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> 인증 방식과 데이터 처리·전송 계약을 조직 정책에 맞게 확인한다.</li>
+<li><input disabled="" type="checkbox"> SDK/CLI/모델 버전, 환경변수, 이미지 해시를 고정한다.</li>
+<li><input disabled="" type="checkbox"> 프로세스 격리, 파일 접근, 네트워크 Egress 제한을 설정한다.</li>
+<li><input disabled="" type="checkbox"> Tool 호출별 사용자·프로젝트·데이터셋 권한을 확인한다.</li>
+<li><input disabled="" type="checkbox"> Shell, Python, 파일 변경 및 임시 디렉터리 정리 정책을 정한다.</li>
+<li><input disabled="" type="checkbox"> 기밀 데이터의 로그/세션/Telemetry 수집 범위를 제한한다.</li>
+<li><input disabled="" type="checkbox"> 결과 검증과 승인 체계를 도메인 규칙으로 구현한다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="20"><h2 id="s-20-1">20. Observability·평가·비용·성능<a class="anchor" href="#s-20-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-20-2">20.1 Observability의 구성<a class="anchor" href="#s-20-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>신호</th>
+<th>수집 대상</th>
+<th>분석 목적</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Trace</td>
+<td>세션/모델/Tool/서브에이전트 흐름</td>
+<td>어디서 시간이 소요되는가</td>
+</tr>
+<tr>
+<td>Metrics</td>
+<td>토큰, 비용, 지연시간, 도구 오류율</td>
+<td>자원·운영 안정성</td>
+</tr>
+<tr>
+<td>Logs</td>
+<td>승인 거부, 모델 오류, 사용자 작업 이벤트</td>
+<td>디버깅·감사</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>계산값·근거·행동의 정답성</td>
+<td>Agent 품질 평가</td>
+</tr>
+</tbody></table>
+</div><p>공식 문서에서 OpenTelemetry 정보는 <strong>Claude Code CLI가 내보내며 SDK는 환경설정 전달 역할을 한다</strong>고 설명한다. Python SDK가 독자적으로 모든 모델 Span을 계산·전송하는 구조로 설명하면 부정확하다. <a href="https://code.claude.com/docs/en/agent-sdk/observability" target="_blank" rel="noopener noreferrer">[D21]</a></p>
+<h3 id="s-20-3">20.2 성능 평가 시 나눌 지표<a class="anchor" href="#s-20-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>정확도:</strong> 도출된 수율/이상치/근거가 정답 데이터와 일치하는가?</li>
+<li><strong>Tool Accuracy:</strong> 적절한 Tool을 호출했는가? 불필요하거나 위험한 도구 호출은 없나?</li>
+<li><strong>Task Completion:</strong> 목표를 충족하는 최종 보고서를 만들었는가?</li>
+<li><strong>Cost:</strong> 성공한 작업 1건당 API 비용, 도구 호출, 총 소요 시간.</li>
+<li><strong>Stability:</strong> 동일/유사 입력에서 실패율과 결과 편차.</li>
+<li><strong>Security:</strong> 권한 없는 데이터 접근 거부, Prompt Injection 방어, 비밀정보 유출 방지.</li>
+<li><strong>Traceability:</strong> 결과의 출처(데이터·코드·설정·버전)를 재현할 수 있는가?</li>
+</ul>
+<h3 id="s-20-4">20.3 프레임워크 성능과 모델 성능을 구분<a class="anchor" href="#s-20-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Claude Agent SDK의 결과가 다른 프레임워크보다 좋더라도 <strong>동일 모델, 동일 Tool, 동일 데이터, 동일 정책·예산</strong>으로 통제하지 않으면 그 원인을 프레임워크만으로 돌릴 수 없다. 단순히 출력이 그럴듯한지도 아닌 실제 값 기반 테스트셋으로 평가한다. [설계]</p>
+<hr>
+<blockquote>
+<p>이 Part의 가장 중요한 원칙: <strong>Python SDK의 공개 코드에서 확인한 제어·통신 경로는 코드 수준으로 설명할 수 있지만, 번들 CLI 내부 Agent Loop 전체는 공개 Python 코드에 존재하지 않는다.</strong> 따라서 Claude Code 내부 모델 요청 분기·Tool 실행 상태 머신을 Python 파일의 구현이라고 꾸며내지 않는다.</p>
+</blockquote>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="memory.html"><small>이전 단원</small>← Session·Skills·위임</a><a class="next" href="code.html"><small>다음 단원</small>공개 Python 코드 추적 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-17-1">17. Structured Output과 정확성의 경계</a><a href="#s-18-1">18. Checkpoint·중단/재개·오류 처리</a><a href="#s-19-1">19. Sandbox·프로세스 보안·배포</a><a href="#s-20-1">20. Observability·평가·비용·성능</a></nav></aside></div></body></html>

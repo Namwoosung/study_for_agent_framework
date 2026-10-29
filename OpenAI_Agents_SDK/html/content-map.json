@@ -1,0 +1,473 @@
+{
+  "name": "OpenAI Agents SDK",
+  "source": "../OpenAI_Agents_SDK.md",
+  "sourceSha256": "a3da164340ff2daf411b7c23aa123a93ff722a30cd8b70d2e692430b63fc6e51",
+  "sourceSections": [
+    "intro",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "appendix-a",
+    "appendix-b"
+  ],
+  "sourceCodes": 36,
+  "sourceDiagrams": 11,
+  "pages": [
+    "index.html",
+    "foundations.html",
+    "execution.html",
+    "tools.html",
+    "orchestration.html",
+    "guardrails.html",
+    "state.html",
+    "operations.html",
+    "code.html",
+    "semiconductor.html",
+    "comparison.html",
+    "review.html",
+    "sources.html"
+  ],
+  "mapping": [
+    {
+      "page": "foundations.html",
+      "chapters": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "page": "execution.html",
+      "chapters": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    {
+      "page": "tools.html",
+      "chapters": [
+        "9",
+        "10"
+      ]
+    },
+    {
+      "page": "orchestration.html",
+      "chapters": [
+        "11"
+      ]
+    },
+    {
+      "page": "guardrails.html",
+      "chapters": [
+        "12"
+      ]
+    },
+    {
+      "page": "state.html",
+      "chapters": [
+        "13",
+        "14",
+        "15"
+      ]
+    },
+    {
+      "page": "operations.html",
+      "chapters": [
+        "16",
+        "17",
+        "18"
+      ]
+    },
+    {
+      "page": "code.html",
+      "chapters": [
+        "19",
+        "20",
+        "21",
+        "22"
+      ]
+    },
+    {
+      "page": "semiconductor.html",
+      "chapters": [
+        "23",
+        "24",
+        "25"
+      ]
+    },
+    {
+      "page": "comparison.html",
+      "chapters": [
+        "26",
+        "27"
+      ]
+    },
+    {
+      "page": "review.html",
+      "chapters": [
+        "28",
+        "appendix-a",
+        "appendix-b"
+      ]
+    },
+    {
+      "page": "sources.html",
+      "chapters": [
+        "intro",
+        "29"
+      ]
+    }
+  ],
+  "references": {
+    "S01": "https://openai.github.io/openai-agents-python/",
+    "S02": "https://openai.github.io/openai-agents-python/agents/",
+    "S03": "https://openai.github.io/openai-agents-python/running_agents/",
+    "S04": "https://openai.github.io/openai-agents-python/tools/",
+    "S05": "https://openai.github.io/openai-agents-python/handoffs/",
+    "S06": "https://openai.github.io/openai-agents-python/multi_agent/",
+    "S07": "https://openai.github.io/openai-agents-python/guardrails/",
+    "S08": "https://openai.github.io/openai-agents-python/sessions/",
+    "S09": "https://openai.github.io/openai-agents-python/quickstart/",
+    "S10": "https://openai.github.io/openai-agents-python/models/",
+    "S11": "https://openai.github.io/openai-agents-python/models/litellm/",
+    "S12": "https://openai.github.io/openai-agents-python/mcp/",
+    "S13": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+    "S14": "https://openai.github.io/openai-agents-python/context/",
+    "S15": "https://openai.github.io/openai-agents-python/sessions/encrypted_session/",
+    "S16": "https://openai.github.io/openai-agents-python/streaming/",
+    "S17": "https://openai.github.io/openai-agents-python/results/",
+    "S18": "https://openai.github.io/openai-agents-python/tracing/",
+    "S19": "https://openai.github.io/openai-agents-python/ref/run_state/",
+    "S20": "https://openai.github.io/openai-agents-python/sessions/advanced_sqlite_session/",
+    "S21": "https://openai.github.io/openai-agents-python/ref/tool/",
+    "S22": "https://developers.openai.com/api/docs/guides/agents/sdk",
+    "S23": "https://openai.github.io/openai-agents-python/sandbox_agents/",
+    "S24": "https://openai.github.io/openai-agents-python/release/",
+    "S25": "https://github.com/openai/openai-agents-python",
+    "S26": "https://github.com/openai/openai-agents-python/releases/tag/v0.24.0",
+    "S27": "https://github.com/openai/openai-agents-python/blob/main/.agents/references/run-item-lifecycle.md",
+    "S28": "https://github.com/openai/openai-agents-python/blob/main/.agents/references/tool-execution-lifecycle.md",
+    "C01": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py",
+    "C02": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_steps.py",
+    "C03": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py",
+    "C04": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/tool.py",
+    "C05": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/function_schema.py",
+    "C06": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py",
+    "C07": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_planning.py",
+    "C08": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_state.py",
+    "C09": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run.py",
+    "C10": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_loop.py",
+    "C11": "https://github.com/openai/openai-agents-python/blob/main/.agents/references/run-item-lifecycle.md",
+    "C12": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/items.py"
+  },
+  "codeBlocks": [
+    {
+      "chapter": "1",
+      "language": "mermaid",
+      "hash": "51ca0efa971541e3291eea3f9d205cce4cbbfaf1ddb4c11d5325d111d181e640"
+    },
+    {
+      "chapter": "4",
+      "language": "bash",
+      "hash": "b7b48724d50f0a2e8a83774dbfffaf9bc24734b311fa4b58f7d63737ccc8854c"
+    },
+    {
+      "chapter": "4",
+      "language": "python",
+      "hash": "8ac856cbd91129df653ee6549d04c56d2ab16cb8bc906572d8fba5cd0cc75645"
+    },
+    {
+      "chapter": "4",
+      "language": "python",
+      "hash": "3ad527f9150259a3cf06db775a3585cbf79c27a676833f2141114967196e7408"
+    },
+    {
+      "chapter": "5",
+      "language": "mermaid",
+      "hash": "e2b224aed3b0b2660df3a1e6429bbfc23876dc3589065deee26c6a58d4459958"
+    },
+    {
+      "chapter": "6",
+      "language": "python",
+      "hash": "f79ea37e79687d67c2083bdb607f1e5e47290a0666d9a6caab892f7eb35abece"
+    },
+    {
+      "chapter": "6",
+      "language": "python",
+      "hash": "175f7eebfaf1eaa7cd1928a15a3cb2e841bba43404bbdbb251cc477118114d7c"
+    },
+    {
+      "chapter": "7",
+      "language": "python",
+      "hash": "cdac58cca5c6ce56c40bb5e73f5d51fb9ae945856fcecbf8372ca059174c6ae4"
+    },
+    {
+      "chapter": "8",
+      "language": "mermaid",
+      "hash": "b3404b5e3aaa1f8bc1aa7f6a3d75f95133687698a22164698f6a9863bf169d11"
+    },
+    {
+      "chapter": "8",
+      "language": "python",
+      "hash": "27841a34389df53b8a6b78c1fe8e7e785d4dd93af5f7eec8de4ea9bc7482098c"
+    },
+    {
+      "chapter": "9",
+      "language": "mermaid",
+      "hash": "5587b3f775cc326ff8a227fbf12b6e4e6d4e7a7e187ea836d09948856104ff39"
+    },
+    {
+      "chapter": "9",
+      "language": "python",
+      "hash": "716c9b3ff9617f6f570afe133b0a6b39f31ca4a90e860d0fc1c05844dd7098a1"
+    },
+    {
+      "chapter": "10",
+      "language": "python",
+      "hash": "e2af8c818f5a590d8983a497fe9887061c4dc6b0011d7e3010c6181a8fffad62"
+    },
+    {
+      "chapter": "11",
+      "language": "python",
+      "hash": "0d2364040589bb63fb9d214c0caf589303f73600282a9c7c269128f708daa805"
+    },
+    {
+      "chapter": "11",
+      "language": "python",
+      "hash": "98c6cec3324ad9b72f5f4b2c436cf1f927d884024ca89da3bf180c8e56e92636"
+    },
+    {
+      "chapter": "11",
+      "language": "python",
+      "hash": "ff6f4c558440d69ab9b2934ef1f7958ee1028563b672c3d219b0dc69a96fe16c"
+    },
+    {
+      "chapter": "12",
+      "language": "mermaid",
+      "hash": "5a056e8f0f1bdcc17a987bea638637751e112e58655d52451608aae6eacade57"
+    },
+    {
+      "chapter": "13",
+      "language": "python",
+      "hash": "79d754f94aafa85d1ef99e0dff69043fda84b0f70635b4340a806825d0959abc"
+    },
+    {
+      "chapter": "13",
+      "language": "python",
+      "hash": "d4f6a158076c3d1fce4148ada664bfe00acf8db3832eef452cc9a0f72659c271"
+    },
+    {
+      "chapter": "14",
+      "language": "mermaid",
+      "hash": "4d3a804bc7f23c0273a513e313de3e48625b9af0e30e095823ebe15b148c45c3"
+    },
+    {
+      "chapter": "14",
+      "language": "python",
+      "hash": "b00f9e745c7d99c5fe53e69c9a7e646ab695167f266a6bbaa3394563d3416877"
+    },
+    {
+      "chapter": "15",
+      "language": "python",
+      "hash": "de74ab160557aa88a7934d885b906a4819bc9041cf6e7372f56f200ddf7a0f8f"
+    },
+    {
+      "chapter": "15",
+      "language": "python",
+      "hash": "28b8022a169e6305810c9e7ce3bdb80ce8fdfad34be00ca0ed93bacf81ead07d"
+    },
+    {
+      "chapter": "16",
+      "language": "mermaid",
+      "hash": "a35a9ec6d23972fff99687ef2164884d4ba21efd4eeaed055949fecbdd633bcb"
+    },
+    {
+      "chapter": "17",
+      "language": "python",
+      "hash": "8adb8f7f795f8cd2cfd981b78727d3b0809089321baae07d6bc2c9ace14cb622"
+    },
+    {
+      "chapter": "19",
+      "language": "python",
+      "hash": "f1901072cf2617c46cc422ad460002efda12e3edbb2b3e1a2873c2fe66ed3a1b"
+    },
+    {
+      "chapter": "20",
+      "language": "python",
+      "hash": "e68341b4f66b88e2a013a8e18954e7dd23e7eb52afe2757cb6fc1597f95490d2"
+    },
+    {
+      "chapter": "20",
+      "language": "python",
+      "hash": "2c3e4467173a7bc7591994892d3dccd761429a7270679e1e5fbff4c201b85d80"
+    },
+    {
+      "chapter": "20",
+      "language": "mermaid",
+      "hash": "a2c34653c86e6d3d56546ba3322b2dd42fb92b724e3dd551d47dd3903146a202"
+    },
+    {
+      "chapter": "21",
+      "language": "python",
+      "hash": "df2f8f64ce5d81f8e666bbf044df3c1513d2eea4daa85adc7a051abacc8f3017"
+    },
+    {
+      "chapter": "21",
+      "language": "python",
+      "hash": "3dd5d6cacfca4393439da5c4f205afa54cb3b55902ba4785b03f72a6e43d9e11"
+    },
+    {
+      "chapter": "22",
+      "language": "python",
+      "hash": "8e1142f44a5214376bd125188b2416532122adf67f2cef5bd2f87678c10fe310"
+    },
+    {
+      "chapter": "24",
+      "language": "mermaid",
+      "hash": "bf35701e5cdfb43344e8dd8389b11c2d2ef0134572470a6eb2608078bad80c3a"
+    },
+    {
+      "chapter": "24",
+      "language": "mermaid",
+      "hash": "67be1edeb3255fd71ab4ed44e0c4792edf4ef0d9196684b8537571d14c814c0f"
+    },
+    {
+      "chapter": "24",
+      "language": "mermaid",
+      "hash": "e6855af0fd96e0a49660b8bd757a6f73e190b3282b33f06a9b52e69523e472a4"
+    },
+    {
+      "chapter": "25",
+      "language": "json",
+      "hash": "f474ee241befd33bc17bd2f03730de8839b8d74259c2892a07e30b9ffbbf21c7"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "type": "flow",
+      "file": "assets/diagram-1.svg",
+      "nodes": 10,
+      "edges": 12,
+      "chapter": "1",
+      "title": "Agent Loop의 도구·위임·승인·종료 분기"
+    },
+    {
+      "number": 2,
+      "type": "flow",
+      "file": "assets/diagram-2.svg",
+      "nodes": 12,
+      "edges": 13,
+      "chapter": "5",
+      "title": "애플리케이션과 SDK의 책임·데이터 경계"
+    },
+    {
+      "number": 3,
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": 7,
+      "edges": 8,
+      "chapter": "8",
+      "title": "모델 제공자와 공통 응답의 연결"
+    },
+    {
+      "number": 4,
+      "type": "flow",
+      "file": "assets/diagram-4.svg",
+      "nodes": 11,
+      "edges": 11,
+      "chapter": "9",
+      "title": "Python 함수 정의에서 도구 실행까지"
+    },
+    {
+      "number": 5,
+      "type": "flow",
+      "file": "assets/diagram-5.svg",
+      "nodes": 5,
+      "edges": 4,
+      "chapter": "12",
+      "title": "권한 검사를 놓는 세 계층"
+    },
+    {
+      "number": 6,
+      "type": "sequence",
+      "messages": 9,
+      "chapter": "14",
+      "title": "승인·거절과 RunState 재개 순서"
+    },
+    {
+      "number": 7,
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": 7,
+      "edges": 6,
+      "chapter": "16",
+      "title": "Trace와 개별 실행 Span의 관계"
+    },
+    {
+      "number": 8,
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": 13,
+      "edges": 14,
+      "chapter": "20",
+      "title": "응답 분류와 네 가지 다음 상태"
+    },
+    {
+      "number": 9,
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": 8,
+      "edges": 9,
+      "chapter": "24",
+      "title": "가상 공정 데이터 분석 구조"
+    },
+    {
+      "number": 10,
+      "type": "flow",
+      "file": "assets/diagram-10.svg",
+      "nodes": 7,
+      "edges": 6,
+      "chapter": "24",
+      "title": "가상 SOP 문서 검색과 근거 확인"
+    },
+    {
+      "number": 11,
+      "type": "flow",
+      "file": "assets/diagram-11.svg",
+      "nodes": 8,
+      "edges": 10,
+      "chapter": "24",
+      "title": "가상 설비 원인 분석의 중앙 통합"
+    }
+  ]
+}

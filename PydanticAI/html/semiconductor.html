@@ -1,0 +1,411 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI의 원리·구현·한계를 배우는 개인 학습 교재"><title>Typed Output을 검증 가능한 분석으로 잇기 — PydanticAI</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">P.</span><span>PydanticAI<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="core.html" ><span class="nav-number">02</span><span>Agent·Deps·Tools</span></a><a href="validation.html" ><span class="nav-number">03</span><span>출력·Retry·종료</span></a><a href="history.html" ><span class="nav-number">04</span><span>Messages와 영속성</span></a><a href="architecture.html" ><span class="nav-number">05</span><span>Graph·Loop·Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Memory·Skills·MCP</span></a><a href="orchestration.html" ><span class="nav-number">07</span><span>협업과 Harness</span></a><p class="nav-group">구현과 운영</p><a href="code.html" ><span class="nav-number">08</span><span>소스코드 경계 추적</span></a><a href="operations.html" ><span class="nav-number">09</span><span>모델·보안·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" class="current" aria-current="page"><span class="nav-number">10</span><span>반도체 적용과 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >용어와 복습</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Core v2.61.0</span><a href="../PydanticAI.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">PydanticAI</a><span aria-hidden="true">/</span><span>반도체 적용과 선정</span></div><header class="chapter-header"><p class="eyebrow">적용과 판단 / 단원 10</p><h1>Typed Output을 검증 가능한 분석으로 잇기</h1><p class="lead">정성적 장단점과 가상 사례를 후속 실험으로 연결하기</p><div class="chapter-meta">원문 26–29장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>정형 결과와 Python 도구를 쉽게 연결하는 장점이 제조 데이터의 의미까지 해결하지는 않습니다. 수율의 단위·분모·시점, 원본 집계, 문서 개정과 가설의 근거를 독립적으로 검증해야 합니다.</p><p>공정 데이터 분석, 문서 Q&A와 설비 이상 분석은 원문의 합성·공개 데이터 기반 설계 예시입니다. 단일 Agent와 읽기 전용 Tool을 기준선으로 두고, 같은 모델·도구·데이터·평가 조건에서 확장의 이득을 확인하세요.</p><p class="reading-question"><strong>읽는 관점</strong>기능의 존재, 직접 구현할 도메인 계약, 실제 환경에서 검증할 조건을 구분해 선정 질문을 정리하세요.</p></section><section class="source-section" data-source-chapter="26"><h2 id="s-26-1">26. 기술적 장단점 및 한계<a class="anchor" href="#s-26-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-26-2">26.1 강점 — 공식 기능과 코드 구조에서 도출한 평가<a class="anchor" href="#s-26-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>강점</th>
+<th>이유</th>
+<th>적용 상황</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>타입 중심 설계</strong></td>
+<td>Pydantic Schema/출력 검증/Type Hints</td>
+<td>정형 분석 결과·표준 보고서</td>
+</tr>
+<tr>
+<td><strong>Python 친화적</strong></td>
+<td>Tool/Validator/Dependencies를 Python으로 선언</td>
+<td>데이터 분석·기존 Python 서비스</td>
+</tr>
+<tr>
+<td><strong>핵심 Loop 제공</strong></td>
+<td>모델 호출, 도구, 응답/재시도 분기</td>
+<td>반복 로직 직접 구현 부담 감소</td>
+</tr>
+<tr>
+<td><strong>Model/Provider 추상화</strong></td>
+<td>다양한 모델을 공통 Agent 방식으로 사용</td>
+<td>모델 교체·Gateway 실험</td>
+</tr>
+<tr>
+<td><strong>Dependency Injection</strong></td>
+<td>실행마다 DB·권한·환경 객체 전달</td>
+<td>멀티테넌트 사내 시스템</td>
+</tr>
+<tr>
+<td><strong>확장성</strong></td>
+<td>Capability, Toolsets, Hooks, Harness</td>
+<td>공통 보안·정책·관측 모듈</td>
+</tr>
+<tr>
+<td><strong>관측/평가 생태계</strong></td>
+<td>Logfire/OTel, Pydantic Evals, TestModel</td>
+<td>실험 설계와 지속적 품질 관리</td>
+</tr>
+<tr>
+<td><strong>공개 코드 분석 가능</strong></td>
+<td>Agent Loop·Tool Manager 코드 공개</td>
+<td>아키텍처 연구/내부 동작 이해</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-26-3">26.2 한계 — 기술 선택 전에 감수해야 할 비용<a class="anchor" href="#s-26-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>한계/주의</th>
+<th>이유</th>
+<th>대응 방향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>직접 개발할 부분이 많음</td>
+<td>완성된 특정 업무 Agent가 아니라 개발 프레임워크</td>
+<td>요구사항·Tool·데이터 파이프라인 설계</td>
+</tr>
+<tr>
+<td>사실 정확성 미보증</td>
+<td>스키마에 맞는 틀린 값도 존재</td>
+<td>도메인 검증·실데이터 계산·근거 대조</td>
+</tr>
+<tr>
+<td>모델별 편차</td>
+<td>Provider·Model Function Calling 품질 상이</td>
+<td>지원 모델·Gateway PoC 검증</td>
+</tr>
+<tr>
+<td>복잡한 Hook 동작</td>
+<td>조합 순서·중단/재개·Stream 경로 복잡</td>
+<td>코드 리뷰, 최소 구성부터 확장</td>
+</tr>
+<tr>
+<td>별도 장기 기억 관리</td>
+<td>Core History와 장기 Memory는 다름</td>
+<td>Harness 또는 별도 정책·저장소 구축</td>
+</tr>
+<tr>
+<td>Harness API 진화</td>
+<td>별도 0.x 패키지와 다양한 Capability</td>
+<td>버전 고정·단위 테스트·변경관리</td>
+</tr>
+<tr>
+<td>운영 보안은 별개</td>
+<td>Tool 권한/DB 접근은 앱·인프라 영역</td>
+<td>Least Privilege, 승인, Trace 마스킹</td>
+</tr>
+<tr>
+<td>성능 보장 없음</td>
+<td>실제 병목은 모델·검색·DB·재시도에 좌우</td>
+<td>정량적인 실험 필요</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-26-4">26.3 어떤 상황에 적합한가?<a class="anchor" href="#s-26-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>상대적으로 적합:</strong></p>
+<ul>
+<li>Python 데이터 분석 생태계를 이미 사용하고 있는 팀.</li>
+<li>DB 조회, 모델 추론, 통계 계산 등 구조화된 Tool 중심의 Agent.</li>
+<li>보고서 JSON Schema, 수치 범위, 증빙 필드 등 강한 출력 계약이 필요한 경우.</li>
+<li>모델별 Function Calling/출력 검증을 실험하고 싶은 경우.</li>
+<li>사내 API·권한 정책을 코드 수준에서 자세히 통제하려는 팀.</li>
+</ul>
+<p><strong>별도 검토가 필요한 경우:</strong></p>
+<ul>
+<li>Claude Code처럼 설치만으로 일상적인 터미널·코딩 작업을 폭넓게 수행하는 완성형 도구가 목표인 경우.</li>
+<li>제공된 기능의 대부분을 직접 설계할 인력·시간이 부족한 경우.</li>
+<li>조직에서 Python 외의 특정 런타임만 허용하는 경우.</li>
+<li>사람이 정한 복잡한 절차를 반드시 동일하게 실행해야 하는데, 이를 Agent 자율 선택에 맡기려는 경우.</li>
+<li>세션·분산 트랜잭션·승인·장기 기억·격리까지 <strong>추가 구성 없이</strong> 모두 기본 제공해야 하는 경우.</li>
+</ul>
+<h3 id="s-26-5">26.4 프레임워크 비교 시 혼동하지 말 것<a class="anchor" href="#s-26-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>PydanticAI vs OpenAI Agents SDK</code> 공식 비교 문서도 있지만, 한 제품의 자체 비교 페이지는 선택 기준을 만드는 참고자료일 뿐 독립적인 성능 증거는 아니다. 실제 비교는 <strong>동일한 모델·동일한 Tool·동일한 데이터·동일한 평가 문제</strong>를 사용해 검증해야 한다. <a href="https://pydantic.dev/docs/ai/comparisons/vs-openai-agents-sdk/" target="_blank" rel="noopener noreferrer">[S30]</a></p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="27"><h2 id="s-27-1">27. 시나리오별 적용 구조<a class="anchor" href="#s-27-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p>다음 시나리오는 <strong>공개 또는 합성 제조 데이터</strong>로 만든 교육·연구용 Agent를 전제로 한다. 실제 생산 설비를 직접 제어하거나 회사 기밀 데이터를 외부 LLM에 전송하는 사용법을 의미하지 않는다.</p>
+</blockquote>
+<h3 id="s-27-2">27.1 사례 A — 공정/수율 데이터 분석 Agent<a class="anchor" href="#s-27-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>사용자 질문:</strong> &quot;최근 7일간 LOT별 수율 이상치를 요약하고 근거를 알려 줘.&quot;</p>
+<p><strong>권장 구조:</strong></p>
+<figure class="diagram" data-source-diagram="6"><figcaption><span>그림 6</span> 합성 공정 데이터 분석의 가상 구성</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-6.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="합성 공정 데이터 분석의 가상 구성"><img src="assets/diagram-6.svg" alt="합성 공정 데이터 분석의 가상 구성. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+ U[질문] --&gt; AG[PydanticAI Agent]
+ AG --&gt; Q[읽기 전용 데이터 Tool]
+ Q --&gt; DB[(합성 MES/공정 데이터)]
+ DB --&gt; Q --&gt; AG
+ AG --&gt; CALC[결정적 통계 계산 Tool]
+ CALC --&gt; AG
+ AG --&gt; OUT[구조화 Report Output]
+ OUT --&gt; VAL[스키마·수치·근거 검증]
+ VAL --&gt; HUMAN[엔지니어 리뷰]</code></pre></details></figure><p><strong>Tool 후보:</strong> <code>list_allowed_lots</code>, <code>read_yield_aggregates</code>, <code>get_data_dictionary</code>, <code>calculate_control_limits</code>, <code>read_equipment_alarms</code>.</p>
+<p><strong>Output 후보:</strong></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from pydantic import BaseModel, Field
+
+class Evidence(BaseModel):
+    source: str
+    snapshot_version: str
+    filter_expression: str
+
+class Anomaly(BaseModel):
+    lot_id: str
+    metric: str
+    observed: float
+    baseline: float
+    explanation: str
+    evidence: list[Evidence]
+
+class AnalysisReport(BaseModel):
+    window_start: str
+    window_end: str
+    anomalies: list[Anomaly]
+    confidence_note: str
+    needs_human_review: bool = True</code></pre></div><p><strong>직접 구현해야 할 것:</strong></p>
+<ul>
+<li>데이터 권한과 읽기 전용 쿼리 API.</li>
+<li>지표의 단위·분모·샘플 수·시간 기준 일관성.</li>
+<li>원본 집계와 생성 보고서 숫자 일치 검증.</li>
+<li>데이터 결측/이상값의 처리 정책.</li>
+<li>보고서에 사용된 SQL/파라미터·데이터 스냅샷의 재현.</li>
+</ul>
+<p><strong>선정 포인트:</strong> PydanticAI는 Output Type과 Python Tool 구조에 강점이 있으나, 품질의 핵심인 제조 데이터 의미 체계는 별도로 정의해야 한다.</p>
+<h3 id="s-27-3">27.2 사례 B — 반도체 기술 문서 Q&amp;A Agent<a class="anchor" href="#s-27-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>사용자 질문:</strong> &quot;식각 공정에서 챔버 컨디션 변화가 특정 지표에 주는 영향을 SOP 기준으로 정리해 줘.&quot;</p>
+<p><strong>권장 구조:</strong> 질문 → 문서 검색 Tool(RAG) → 결과 후보 및 문서 버전 확인 → 근거 선택 → Structured Answer → 근거 검증.</p>
+<p><strong>주요 설계 요소:</strong></p>
+<ul>
+<li>문서의 기밀 등급/사업부별 접근 통제.</li>
+<li>인용할 때 문서 ID, Revision, Section, 원문 참조 범위 보존.</li>
+<li>벡터 검색만으로 부족할 수 있어 키워드·메타데이터·재정렬 등을 검토.</li>
+<li>Skill에는 문서 검색 절차를 기록하되 기술 문서 전문은 별도 인덱스에서 조회.</li>
+<li><code>source</code> 필드에 존재하지 않는 문서 ID를 생성하지 못하게 Validator 또는 별도 검증 적용.</li>
+</ul>
+<p><strong>선정 포인트:</strong> RAG 시스템 자체는 PydanticAI의 기본 Agent Loop와 별개다. PydanticAI는 검색 Tool과 결과 검증을 조합하기 좋은 Python 실행 골격을 제공한다.</p>
+<h3 id="s-27-4">27.3 사례 C — 설비 이상 원인 분석 Multi-Agent<a class="anchor" href="#s-27-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>사용자 질문:</strong> &quot;동일 시간대 발생한 온도 이상과 수율 저하의 관련 가능성을 검토해 줘.&quot;</p>
+<p><strong>권장 구조:</strong></p>
+<ol>
+<li>Orchestrator가 조사 범위·데이터 허용 범위를 명시.</li>
+<li>Data Tool/Agent가 시계열·수율 집계를 조회.</li>
+<li>Equipment Tool/Agent가 설비 알람·유지보수 기록을 조회.</li>
+<li>Knowledge Tool/Agent가 절차서·과거 검증된 사례 검색.</li>
+<li>결정적 분석 단계가 시간 정렬·기본 통계 계산.</li>
+<li>모델이 가설과 대안 가설을 생성하되 <strong>인과관계가 확정된 것으로 표현하지 않음</strong>.</li>
+<li>엔지니어 승인 전에는 설비 명령·공정 변경 API를 호출하지 않음.</li>
+</ol>
+<p><strong>선정 포인트:</strong> 단일 Agent 대비 Multi-Agent의 정확도·비용·지연시간이 실제로 나아지는지 테스트한 뒤 채택. Multi-Agent는 구조 자체가 목표가 아니다.</p>
+</section>
+<section class="source-section" data-source-chapter="28"><h2 id="s-28-1">28. PydanticAI 선정 시 검토해야 할 세부 체크리스트<a class="anchor" href="#s-28-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-28-2">28.1 요구사항별 지원 수준<a class="anchor" href="#s-28-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>아래는 <strong>공식 문서상 기능을 기반으로 한 개략적인 설계 평가</strong>다. &#39;기본 지원&#39;도 권한·성능·품질의 완성을 의미하지 않는다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>지원 방식</th>
+<th>분류</th>
+<th>반도체 적용 시 추가 작업</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent Loop</td>
+<td><code>Agent</code>, Graph 기반</td>
+<td><strong>Core 기본</strong></td>
+<td>도메인 종료·검증 정책</td>
+</tr>
+<tr>
+<td>Function Tools</td>
+<td>Decorator, Toolsets</td>
+<td><strong>Core 기본</strong></td>
+<td>읽기 전용 데이터 API, 인가</td>
+</tr>
+<tr>
+<td>Structured Output</td>
+<td><code>output_type</code>, Validators</td>
+<td><strong>Core 기본</strong></td>
+<td>수치/근거 실검증</td>
+</tr>
+<tr>
+<td>Dependency Injection</td>
+<td><code>deps_type</code>, <code>RunContext</code></td>
+<td><strong>Core 기본</strong></td>
+<td>Tenant·DB 연결 수명주기</td>
+</tr>
+<tr>
+<td>Model 추상화</td>
+<td>Provider/Model API</td>
+<td><strong>Core 기본</strong></td>
+<td>사내 Gateway 호환 시험</td>
+</tr>
+<tr>
+<td>Conversation History</td>
+<td>메시지·대화 객체</td>
+<td><strong>Core 기본</strong></td>
+<td>영구 저장·삭제·보존 정책</td>
+</tr>
+<tr>
+<td>Agent Hooks</td>
+<td>Capabilities / Hooks</td>
+<td><strong>Core 기본</strong></td>
+<td>중앙 정책·테스트</td>
+</tr>
+<tr>
+<td>Tool Approval</td>
+<td>Deferred Tools</td>
+<td><strong>Core 지원</strong></td>
+<td>승인 주체·만료·감사 UI</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>MCP Toolset/Capability</td>
+<td><strong>Core 및 확장</strong></td>
+<td>MCP 서버와 권한/네트워크</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Harness Memory</td>
+<td><strong>별도 Harness</strong></td>
+<td>저장소·검색·민감도 정책</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>Harness Skills</td>
+<td><strong>별도 Harness</strong></td>
+<td>검수된 Skill 라이브러리</td>
+</tr>
+<tr>
+<td>Context Compaction</td>
+<td>Core/별도 Harness 기능</td>
+<td><strong>확장 구성</strong></td>
+<td>원본·정확 수치 보존</td>
+</tr>
+<tr>
+<td>Multi-Agent</td>
+<td>코드 위임·Graph·Harness</td>
+<td><strong>구성 가능</strong></td>
+<td>역할·상태·예산·결과 조정</td>
+</tr>
+<tr>
+<td>Guardrails</td>
+<td>Validator / Hooks / Harness</td>
+<td><strong>계층별 구성</strong></td>
+<td>실제 권한·유출 방지</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>pydantic-evals</td>
+<td><strong>별도 도구</strong></td>
+<td>정답 데이터·평가 설계</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>OTel/Logfire</td>
+<td><strong>연동 지원</strong></td>
+<td>Trace 민감정보 통제</td>
+</tr>
+<tr>
+<td>Durable Execution</td>
+<td>외부 엔진 통합</td>
+<td><strong>확장 지원</strong></td>
+<td>Checkpoint, 멱등성, 복구</td>
+</tr>
+<tr>
+<td>추론 서버/GPU 스케줄링</td>
+<td>PydanticAI 자체 역할 아님</td>
+<td><strong>별도 인프라</strong></td>
+<td>모델 서비스·Gateway 운영</td>
+</tr>
+<tr>
+<td>기업 데이터 계약</td>
+<td>프레임워크 자동 제공 아님</td>
+<td><strong>직접 구현</strong></td>
+<td>스키마·보존·보안·감사</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-28-3">28.2 도입 결정의 핵심 질문<a class="anchor" href="#s-28-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>기능과 기술 적합성</strong></p>
+<ul>
+<li>내 목표는 정형 분석 Agent인가, 완성형 코딩 Agent인가, 장기 실행 업무 Agent인가?</li>
+<li>각 시나리오는 LLM의 계획 능력이 필요한가, 결정적 Workflow로 충분한가?</li>
+<li>도구 호출·결과·출처를 충분히 검증할 수 있는가?</li>
+<li>사내 DB·문서 저장소·모델 Gateway에 쉽게 연결되는가?</li>
+<li>모델이 바뀌어도 Function Calling·Output 계약이 유지되는가?</li>
+</ul>
+<p><strong>운영과 보안</strong></p>
+<ul>
+<li>데이터는 어디로 전송·저장·로그되는가?</li>
+<li>사용자·Tenant·Fab별 접근 통제가 Tool/DB까지 일관되는가?</li>
+<li>장기 Memory는 누가 만들고 변경·삭제할 수 있는가?</li>
+<li>중단/복구 시 Tool 재실행 부작용은 어떻게 관리할 것인가?</li>
+<li>PydanticAI Core와 Harness의 버전을 관리할 계획이 있는가?</li>
+</ul>
+<p><strong>실험</strong></p>
+<ul>
+<li>모델·Prompt·Tool·데이터 고정 조건에서 프레임워크별 성능을 비교할 수 있는가?</li>
+<li>수치 정확도·근거 신뢰성·보안 오류율을 측정할 수 있는가?</li>
+<li>단일 Agent와 Multi-Agent를 동일한 문제에서 비교할 것인가?</li>
+<li>비용/지연시간 증가가 정확도 향상에 비례하는가?</li>
+</ul>
+<h3 id="s-28-4">28.3 권장 도입 순서 [후속 구현 로드맵]<a class="anchor" href="#s-28-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>Stage A — 기술 이해 (현재)
+  Agent / Tools / Output / History / Graph / Harness 분석
+        ↓
+Stage B — 작은 통제형 데모
+  TestModel → 합성 CSV → 읽기 전용 Tool → Typed Output
+        ↓
+Stage C — 실제 모델 비교
+  동일 합성 데이터로 다중 Provider/Gateway 평가
+        ↓
+Stage D — 지식·운영 확장
+  RAG, Trace, Evals, 경량 Multi-Agent, 승인 기능
+        ↓
+Stage E — 사내 도입 검토
+  접근통제, 데이터 분류, 인프라 심사, 안전성·유지보수 검증</code></pre></div><p>추천하는 첫 실험은 <strong>&#39;반도체 LOT 데이터로 수율 통계 하나를 읽고, Pydantic 구조화 결과를 생성한 뒤, 원본 데이터로 수치를 재검증하는 작은 Agent&#39;</strong>다. 복잡한 Subagent·Memory를 도입하기 전에 Tool 정확성과 출력 계약부터 점검하는 데 적합하다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="29"><h2 id="s-29-1">29. 다른 프레임워크 비교를 위한 기준표<a class="anchor" href="#s-29-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>이 문서는 6개 학습 주제 중 PydanticAI 하나를 분석한 것이다. 아래 표는 아직 나머지 프레임워크를 정량 평가하지 않은 상태의 <strong>비교 방향 제시</strong>이지 객관적 순위가 아니다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>비교 대상</th>
+<th>가장 먼저 비교할 포인트</th>
+<th>후속 검증 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hermes Agent</td>
+<td>완성형 Harness vs 직접 설계 중심 SDK</td>
+<td>파일·도구·메모리·Gateway의 기본 제공 범위는?</td>
+</tr>
+<tr>
+<td>OpenAI Agents SDK</td>
+<td>경량 Runner/Handoff/Guardrails vs 타입·Capability 중심</td>
+<td>Tool/Output 검증·조합·운영 API는 어떻게 다른가?</td>
+</tr>
+<tr>
+<td>Claude Agent SDK</td>
+<td>Claude Code 런타임 활용 vs 모델·도구 추상화</td>
+<td>기본 자율 도구·권한 및 교체 가능성은?</td>
+</tr>
+<tr>
+<td>Google ADK</td>
+<td>Agent/Workflow/Runner/Event vs Python graph 기반 루프</td>
+<td>State, Session, Multi-Agent가 실제로 어떻게 다른가?</td>
+</tr>
+<tr>
+<td>Microsoft Agent Framework</td>
+<td>Enterprise Workflow/Harness/Middleware</td>
+<td>Checkpoint/HITL/보안·운영 지원 경계는?</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-29-2">29.1 PydanticAI를 한 문장으로 평가<a class="anchor" href="#s-29-2" aria-label="이 절의 고유 링크">#</a></h3>
+<blockquote>
+<p><strong>Python으로 데이터를 다루는 업무 Agent를 타입·검증·도구·정책 중심으로 설계하고자 할 때 유력한 후보</strong>이지만, 제조 도메인 지식·인과 검증·보안·실제 운영 품질까지 자동 해결하는 완제품은 아니다.</p>
+</blockquote>
+<h3 id="s-29-3">29.2 핵심 판단 요약<a class="anchor" href="#s-29-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>최대 강점</strong>: 정형 결과, Python 업무 함수 통합, Dependency Injection, 상세한 확장 Hook, 관측/테스트 생태계.</li>
+<li><strong>가장 큰 오해</strong>: PydanticAI만 설치하면 장기 Memory·완성형 자율 Tool 실행 환경·RAG·보안·사실 정확도가 자동 생긴다는 생각.</li>
+<li><strong>반도체 업무에 유리한 이유</strong>: 공정·설비·수율 데이터가 정형 데이터와 결정적 계산을 많이 포함하고, 권한/검증이 중요하기 때문.</li>
+<li><strong>남는 숙제</strong>: 사용 모델, 데이터 플랫폼, 권한, 평가 데이터셋, 인과 추론 오류, 업무 승인 구조.</li>
+</ul>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="operations.html"><small>이전 단원</small>← 모델·보안·평가</a><a class="next" href="review.html"><small>다음 단원</small>용어와 복습 →</a></nav><footer>PydanticAI 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-26-1">26. 기술적 장단점 및 한계</a><a href="#s-27-1">27. 시나리오별 적용 구조</a><a href="#s-28-1">28. PydanticAI 선정 시 검토해야 할 세부 체크리스트</a><a href="#s-29-1">29. 다른 프레임워크 비교를 위한 기준표</a></nav></aside></div></body></html>

@@ -1,0 +1,138 @@
+{
+  "source": "../Hermes_Agent.md",
+  "sha256": "d552b3008e3fc3542ebcb60f3a94129e07d47fe4de564734163e72a3071480d8",
+  "pages": [
+    "index.html",
+    "foundations.html",
+    "execution.html",
+    "context.html",
+    "memory.html",
+    "skills.html",
+    "tools.html",
+    "orchestration.html",
+    "code.html",
+    "operations.html",
+    "semiconductor.html",
+    "glossary.html",
+    "sources.html"
+  ],
+  "chapterMapping": [
+    {
+      "page": "foundations.html",
+      "chapters": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "page": "execution.html",
+      "chapters": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "page": "context.html",
+      "chapters": [
+        7,
+        8
+      ]
+    },
+    {
+      "page": "memory.html",
+      "chapters": [
+        9
+      ]
+    },
+    {
+      "page": "skills.html",
+      "chapters": [
+        10
+      ]
+    },
+    {
+      "page": "tools.html",
+      "chapters": [
+        11,
+        12
+      ]
+    },
+    {
+      "page": "orchestration.html",
+      "chapters": [
+        13
+      ]
+    },
+    {
+      "page": "code.html",
+      "chapters": [
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "page": "operations.html",
+      "chapters": [
+        18,
+        19
+      ]
+    },
+    {
+      "page": "semiconductor.html",
+      "chapters": [
+        20,
+        21,
+        22
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "title": "전체 아키텍처: 구성요소 사이의 관계",
+      "nodes": 12,
+      "edges": 14
+    },
+    {
+      "number": 2,
+      "title": "Agent Loop: 정상 호출과 반복 경로",
+      "nodes": 7,
+      "edges": 7
+    },
+    {
+      "number": 3,
+      "title": "Context: 압축 여부에 따른 분기",
+      "nodes": 7,
+      "edges": 6
+    },
+    {
+      "number": 4,
+      "title": "Tool 실행: 일반 도구와 상태 기반 도구의 분기",
+      "nodes": 11,
+      "edges": 11
+    },
+    {
+      "number": 5,
+      "title": "MCP: 외부 도구가 연결되는 경로",
+      "nodes": 7,
+      "edges": 6
+    },
+    {
+      "number": 6,
+      "title": "Subagent: 위임과 결과 통합",
+      "nodes": 6,
+      "edges": 8
+    },
+    {
+      "number": 7,
+      "title": "반도체 분석: 가상 구성요소와 책임",
+      "nodes": 8,
+      "edges": 7
+    }
+  ],
+  "sourceSections": 25
+}

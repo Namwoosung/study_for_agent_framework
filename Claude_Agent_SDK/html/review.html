@@ -1,0 +1,240 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>복습과 개념 경계 정리 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" class="current" aria-current="page">복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>복습·용어·Auto Memory</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / REFERENCE</p><h1>복습과 개념 경계 정리</h1><p class="lead">용어, 자동 메모리의 범위와 후속 코드 읽기 과제를 연결합니다.</p></header><section class="source-section" data-source-chapter="29"><h2 id="s-29-1">29. 복습 문제·학습 체크리스트·용어<a class="anchor" href="#s-29-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-29-2">29.1 반드시 답할 수 있어야 하는 질문<a class="anchor" href="#s-29-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>Claude 모델 API를 직접 부르는 것과 Agent SDK를 사용하는 것은 어떻게 다른가?</li>
+<li>Python SDK의 Agent Loop가 Claude Code CLI와 어떤 관계인지 설명할 수 있는가?</li>
+<li><code>query()</code>와 <code>ClaudeSDKClient</code>는 언제 각각 쓰는가?</li>
+<li><code>tools</code>, <code>allowed_tools</code>, <code>disallowed_tools</code>는 어떻게 다른가?</li>
+<li><code>can_use_tool</code>과 <code>PreToolUse</code> 중 전수 검증에 더 적합한 것은 무엇이며 왜 그런가?</li>
+<li>Session, Context, Compaction, Auto Memory, RAG의 차이는 무엇인가?</li>
+<li><code>CLAUDE.md</code>, <code>SKILL.md</code>, MCP Tool의 역할은 어떻게 다르나?</li>
+<li>Subagent 사용이 언제 유리하고 오히려 불리한 경우는 언제인가?</li>
+<li><code>SessionStore</code>는 어떤 데이터를 보존하며 벡터 검색과 어떻게 다른가?</li>
+<li>공개 Python 코드에서 CLI의 Tool Loop 전체 알고리즘을 확인했다고 주장하면 왜 부정확한가?</li>
+<li><code>StructuredOutput</code>의 스키마 검증만으로 반도체 분석의 참·거짓을 검증할 수 있는가?</li>
+<li>CLI OTel, Tool Audit, Evaluation의 차이를 설명할 수 있는가?</li>
+<li>읽기 전용 도구를 만들었다고 해도 DB 계정·OS 권한을 따로 제한해야 하는 이유는?</li>
+<li>재시도, Session Resume, File Rewind, DB Rollback은 왜 서로 다른가?</li>
+<li>Claude Agent SDK가 아닌 PydanticAI나 Google ADK가 더 적합할 수 있는 조건은 무엇인가?</li>
+</ol>
+<h3 id="s-29-3">29.2 완료 체크리스트<a class="anchor" href="#s-29-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> 단일 요청→CLI 실행→Tool→결과 반환 전체 경로를 다이어그램 없이 설명 가능.</li>
+<li><input disabled="" type="checkbox"> <code>query.py</code>, <code>_internal/client.py</code>, <code>_internal/query.py</code>, <code>subprocess_cli.py</code>의 역할 설명 가능.</li>
+<li><input disabled="" type="checkbox"> Python SDK에서 확인한 기능과 Claude CLI 내부 블랙박스를 구별 가능.</li>
+<li><input disabled="" type="checkbox"> Tool 노출/자동 승인/거부/실제 OS·DB 권한을 구별 가능.</li>
+<li><input disabled="" type="checkbox"> Session/Auto Memory/Skills/RAG/Checkpoint를 구별 가능.</li>
+<li><input disabled="" type="checkbox"> Permission Callback과 Hooks의 정확한 실행 조건 이해.</li>
+<li><input disabled="" type="checkbox"> JSON Schema와 도메인 정확도 검증의 차이 이해.</li>
+<li><input disabled="" type="checkbox"> 반도체 데이터 조회 Tool의 최소권한 설계를 제안할 수 있음.</li>
+<li><input disabled="" type="checkbox"> 3가지 반도체 시나리오의 예상 실패 모드를 설명할 수 있음.</li>
+<li><input disabled="" type="checkbox"> 공식 문서와 코드 경로를 직접 열어 사실 여부를 확인할 수 있음.</li>
+</ul>
+<h3 id="s-29-4">29.3 핵심 용어 사전<a class="anchor" href="#s-29-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>한 줄 정의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent Loop</td>
+<td>모델 판단과 Tool 실행을 결과가 나올 때까지 반복하는 흐름</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>Tool·상태·권한·실행 환경을 모델 주변에 제공하는 실행 시스템</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>SDK와 CLI 등 실행 주체 사이의 통신 계층</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>명령줄 실행 프로그램, 여기서는 Claude Code Runtime</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>외부 도구와 데이터 소스를 일관된 방식으로 연결하는 프로토콜</td>
+</tr>
+<tr>
+<td>Session</td>
+<td>작업/대화/도구 상호작용의 기록</td>
+</tr>
+<tr>
+<td>SessionStore</td>
+<td>Session Transcript를 외부 저장소에 저장·복원하는 어댑터</td>
+</tr>
+<tr>
+<td>Context Window</td>
+<td>한 모델 호출에 함께 제공할 수 있는 정보 범위</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>긴 Context를 압축·요약하는 과정</td>
+</tr>
+<tr>
+<td>Auto Memory</td>
+<td>프로젝트 관련 정보를 저장하고 향후 실행에서 재사용하는 Claude Code의 파일 기반 메모리 기능</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>반복 작업용 지침·자료를 가진 재사용 패키지</td>
+</tr>
+<tr>
+<td>Hook</td>
+<td>Agent 실행 이벤트 전후에 실행되는 사용자 코드</td>
+</tr>
+<tr>
+<td>Permission Mode</td>
+<td>Tool 실행 승인·거부의 기본 동작 정책</td>
+</tr>
+<tr>
+<td>Guardrail</td>
+<td>입력·행동·출력의 위험을 통제하는 검사 체계</td>
+</tr>
+<tr>
+<td>Subagent</td>
+<td>메인 Agent가 전문 업무를 위임하는 하위 Agent</td>
+</tr>
+<tr>
+<td>Structured Output</td>
+<td>결과를 JSON Schema 등 정해진 구조로 제어</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>무엇이, 언제, 얼마나 실행되었는지 기록·추적</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>실제 목표에 대해 결과의 품질·안전성을 측정</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>사람의 승인·검토가 실행 과정에 포함되는 방식</td>
+</tr>
+<tr>
+<td>Idempotency</td>
+<td>같은 요청이 반복되어도 불필요한 중복 부작용이 생기지 않는 성질</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-29-5">29.4 자주 하는 오해 최종 정리<a class="anchor" href="#s-29-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>Claude Agent SDK는 ‘Claude 모델 API의 별명’이 아니다.</strong></li>
+<li><strong>Python SDK 공개 코드 = Claude Code 내부 Loop 전체 공개가 아니다.</strong></li>
+<li><strong><code>allowed_tools</code>에 없으면 항상 실행 불가라는 뜻이 아니다.</strong></li>
+<li><strong><code>can_use_tool</code>만으로 모든 호출을 보안 검사했다고 볼 수 없다.</strong></li>
+<li><strong><code>cwd</code>는 Sandbox가 아니다.</strong></li>
+<li><strong>Session과 RAG는 다르다.</strong></li>
+<li><strong><code>CLAUDE.md</code>와 <code>SKILL.md</code>는 목적과 로딩 시점이 다르다.</strong></li>
+<li><strong>자동 Compaction이 모든 중요한 수치를 보존한다는 보장은 없다.</strong></li>
+<li><strong>Structured Output은 신뢰도·사실 정확성을 보장하지 않는다.</strong></li>
+<li><strong>여러 Subagent의 합의가 정답을 보증하지 않는다.</strong></li>
+<li><strong>File Rewind는 설비 명령이나 DB 트랜잭션을 되돌리지 않는다.</strong></li>
+<li><strong>사내 사용 가능 여부는 모델 연결, 계약, 외부 전송, 배포 제약을 포함해 별도 검토해야 한다.</strong></li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="appendix-a"><h2 id="s-appendix-a-1">부록 A. Claude Agent SDK의 자동 메모리 상세 구분<a class="anchor" href="#s-appendix-a-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>공식 Claude Code Features 문서에 따르면 <code>~/.claude/projects/&lt;project&gt;/memory/</code> 경로의 <strong>Auto Memory</strong>는 프로젝트와 관련된 기억을 저장·활용하는 별도 파일 기반 기능이다. 세션 시작 시 해당 정보가 컨텍스트에 반영될 수 있고, 새 기억 저장은 표준 <code>Write</code>/<code>Edit</code> 도구의 실행 권한에 영향을 받는다. <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1</code>과 관련 설정으로 제어할 수 있다고 문서화되어 있다. <a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<p>이 사실 때문에 <strong>“Claude Agent SDK는 장기 메모리를 전혀 지원하지 않는다”는 주장은 부정확</strong>하다. 다만 자동 메모리의 존재가 곧바로 기업용 RAG·정형 DB·출처 관리·사용자별 ACL·기억의 진실성 평가를 제공한다는 뜻은 아니다. 다음을 분리해야 한다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>저장 대상</th>
+<th>일반적인 목적</th>
+<th>검증할 점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Session JSONL</td>
+<td>대화·도구 호출과 결과</td>
+<td>작업 이어가기</td>
+<td>세션 보안, 추적 정확성</td>
+</tr>
+<tr>
+<td>Auto Memory 파일</td>
+<td>프로젝트 관련 기억</td>
+<td>향후 실행에 지침/정보 재사용</td>
+<td>파일 쓰기 권한, 정보 최신성·정확성</td>
+</tr>
+<tr>
+<td><code>CLAUDE.md</code></td>
+<td>인간이 관리하는 상시 지침</td>
+<td>정책·프로젝트 원칙</td>
+<td>우선순위 충돌과 버전관리</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>작업 절차와 자료</td>
+<td>특정 업무 재사용</td>
+<td>적절한 선택·내용 검증</td>
+</tr>
+<tr>
+<td>External RAG</td>
+<td>검색 가능한 문서/근거</td>
+<td>전문 지식 탐색</td>
+<td>인덱스·ACL·문서 버전·인용</td>
+</tr>
+<tr>
+<td>Analytical DB</td>
+<td>원본 수치·실험 자료</td>
+<td>재현 가능한 사실 계산</td>
+<td>데이터 품질·계산 코드·권한</td>
+</tr>
+</tbody></table>
+</div><p>반도체 Agent에서는 <strong>원시 수치·레시피·Lot·설비 이력을 Auto Memory에 임의로 계속 복사해 두는 방식</strong>보다, 보호된 DB에서 권한에 맞게 조회하고 분석 결과에는 원본 ID를 남기는 설계가 더 적절하다. [설계]</p>
+</section>
+<section class="source-section" data-source-chapter="appendix-b"><h2 id="s-appendix-b-1">부록 B. 후속 심화 코드 읽기 과제<a class="anchor" href="#s-appendix-b-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>과제</th>
+<th>위치</th>
+<th>확인할 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SDK 진입점</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer">[C01]</a></td>
+<td>어떤 객체에 실행을 위임하는가?</td>
+</tr>
+<tr>
+<td>스트림 관리</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer">[C04]</a></td>
+<td>메시지 수신과 사용자 입력이 어떻게 병행되는가?</td>
+</tr>
+<tr>
+<td>CLI 생성</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></td>
+<td><code>tools</code>, <code>model</code>, <code>max_turns</code>, <code>skills</code>는 어떤 인자로 매핑되는가?</td>
+</tr>
+<tr>
+<td>Hook/Permission</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer">[C04]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></td>
+<td>Callback 호출과 자동 승인 예외는 어디서 갈리는가?</td>
+</tr>
+<tr>
+<td>SDK MCP</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer">[C04]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/custom-tools" target="_blank" rel="noopener noreferrer">[D05]</a></td>
+<td>CLI의 JSON-RPC 호출은 어느 Handler로 전달되는가?</td>
+</tr>
+<tr>
+<td>Parser</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer">[C07]</a></td>
+<td>AssistantMessage와 ResultMessage를 어떻게 다르게 파싱하는가?</td>
+</tr>
+<tr>
+<td>Resume</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/client.py" target="_blank" rel="noopener noreferrer">[C03]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/session_resume.py" target="_blank" rel="noopener noreferrer">[C08]</a></td>
+<td>Store에서 복원한 파일을 어느 프로세스가 읽는가?</td>
+</tr>
+<tr>
+<td>실패 처리</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer">[C04]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></td>
+<td>Timeout·연결 종료·Cancellation에서 어떤 정리가 일어나는가?</td>
+</tr>
+</tbody></table>
+</div><p><strong>최종 결론:</strong> Claude Agent SDK를 배우는 핵심은 Claude 모델 호출법을 외우는 것이 아니라, <strong>‘완성된 자율 실행 환경을 내 서비스에 연결할 때 어떤 통제·보안·데이터 검증·추적 계층을 사용자 코드로 추가해야 하는가’</strong>를 이해하는 것이다. 반도체 Agent 데모에서는 이 기준으로 다른 프레임워크와 비교해야 한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="semiconductor.html"><small>이전 단원</small>← 반도체 설계와 선정</a><a class="next" href="sources.html"><small>다음 단원</small>출처와 공개 범위 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-29-1">29. 복습 문제·학습 체크리스트·용어</a><a href="#s-appendix-a-1">부록 A. Claude Agent SDK의 자동 메모리 상세 구분</a><a href="#s-appendix-b-1">부록 B. 후속 심화 코드 읽기 과제</a></nav></aside></div></body></html>

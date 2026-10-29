@@ -1,0 +1,236 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code의 원리·구현·한계를 배우는 개인 학습 교재"><title>모델을 넘어서는 작업 환경 이해하기 — Claude Code</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Code<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" class="current" aria-current="page"><span class="nav-number">01</span><span>정체성과 사용 환경</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처·Loop·Tools</span></a><a href="instructions-memory.html" ><span class="nav-number">03</span><span>지침·기억·Context</span></a><a href="skills-mcp.html" ><span class="nav-number">04</span><span>Skills와 MCP</span></a><p class="nav-group">확장과 운영</p><a href="collaboration.html" ><span class="nav-number">05</span><span>위임·Teams·Hooks</span></a><a href="security-models.html" ><span class="nav-number">06</span><span>권한·격리·모델 연결</span></a><p class="nav-group">구현과 운영</p><a href="evaluation.html" ><span class="nav-number">07</span><span>관측·평가·재현성</span></a><a href="public-analysis.html" ><span class="nav-number">08</span><span>공개 분석·구성·장애</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 적용과 비교</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·비교·연구 노트</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.30 · Claude Code v2.1.310</span><a href="../Claude_Code.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Code</a><span aria-hidden="true">/</span><span>정체성과 사용 환경</span></div><header class="chapter-header"><p class="eyebrow">큰 그림 / 단원 01</p><h1>모델을 넘어서는 작업 환경 이해하기</h1><p class="lead">Agent·Harness·SDK와 CLI·IDE·자동화의 차이</p><div class="chapter-meta">원문 1–4장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>모델에 질문해 문장을 받는 것과, 파일·명령·도구의 결과를 관찰하면서 작업을 이어 가는 것은 다릅니다. Claude Code는 이미 구성된 실행 환경을 사용하고 확장하는 관점에서 이해해야 합니다.</p><p>먼저 Claude 모델과 Claude Code, Agent SDK의 역할을 나누세요. CLI·IDE·데스크톱·웹과 비대화형 실행은 파일·인증·승인 경계가 같지 않을 수 있습니다. 아래 설치와 명령은 원문의 학습용 예시이며 이 페이지에서 실행하지 않습니다.</p><p class="reading-question"><strong>읽는 관점</strong>모델, 실행 환경, 프로그램 인터페이스와 모델 서빙 인프라를 같은 제품 범위로 비교하지 마세요.</p></section><section class="source-section" data-source-chapter="1"><h2 id="s-1-1">1. 핵심 요약과 학습 지도<a class="anchor" href="#s-1-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-1-2">1.1 한 문장 정의<a class="anchor" href="#s-1-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>Claude Code는 Claude 모델을 중심으로 파일 탐색·수정·명령 실행·도구 연동·검증을 반복 수행하는 Agentic Coding 환경이자 Agent Harness</strong>다. CLI를 중심으로 시작했지만 IDE, 데스크톱, 웹 등의 다양한 표면에서도 접근한다. <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer">[R01]</a><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a></p>
+<ul>
+<li><strong>Claude 모델</strong>은 무엇을 조사하고 어떤 행동을 할지 판단한다.</li>
+<li><strong>Claude Code Harness</strong>는 모델이 실제 환경과 상호작용하도록 도구·실행·권한·컨텍스트·세션·확장 구조를 제공한다.</li>
+<li><strong>Claude Agent SDK</strong>는 이 능력을 Python/TypeScript 애플리케이션에서 재사용하게 하는 별도 프로그램 인터페이스다. <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[R25]</a></li>
+</ul>
+<blockquote>
+<p>쉬운 비유: <strong>모델 = 문제 해결을 생각하는 두뇌</strong>, <strong>Claude Code = 두뇌가 파일을 읽고 코드를 수정하고 테스트를 실행하도록 연결하는 작업 환경</strong>, <strong>Agent SDK = 그 작업 환경을 다른 프로그램에서 호출하는 연결 인터페이스</strong>.</p>
+</blockquote>
+<h3 id="s-1-3">1.2 반드시 구분할 여섯 개의 용어<a class="anchor" href="#s-1-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>의미</th>
+<th>Claude Code에서의 위치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLM</td>
+<td>입력을 받아 텍스트·도구 호출 요청을 생성하는 모델</td>
+<td>Claude 계열 모델, 추론 담당</td>
+</tr>
+<tr>
+<td>Agent</td>
+<td>목표를 따라 관찰·판단·행동을 반복하는 시스템</td>
+<td>모델과 Harness가 결합된 실행 주체</td>
+</tr>
+<tr>
+<td>Agent Loop</td>
+<td>모델 호출 → 도구 실행 → 결과 관찰의 반복</td>
+<td>Claude Code의 핵심 동작 패턴</td>
+</tr>
+<tr>
+<td>Harness/Runtime</td>
+<td>루프와 도구·컨텍스트·권한·실행 환경을 붙이는 계층</td>
+<td>Claude Code 본체</td>
+</tr>
+<tr>
+<td>Framework/SDK</td>
+<td>개발자에게 Agent를 만드는 API·추상화를 제공</td>
+<td>Claude Agent SDK와 비교 대상</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>정해진 흐름과 상태 전이를 통해 작업 수행</td>
+<td>Claude Code에서 계획·Skills·Hooks·외부 시스템 등으로 구성 가능. 곧바로 BPMN 같은 결정적 엔진을 뜻하지는 않음</td>
+</tr>
+</tbody></table>
+</div><p><strong>핵심 오류 방지:</strong> <code>CLAUDE.md</code>는 지시·컨텍스트이고, <code>SKILL.md</code>는 필요시 적용할 작업 지식, MCP는 도구 연결 프로토콜, Hooks는 특정 이벤트에 실행되는 제어 로직이다. 서로 대체 개념이 아니다.</p>
+<h3 id="s-1-4">1.3 학습 흐름<a class="anchor" href="#s-1-4" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="1"><figcaption><span>그림 1</span> 학습 개념을 연결하는 읽기 순서</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-1.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="학습 개념을 연결하는 읽기 순서"><img src="assets/diagram-1.svg" alt="학습 개념을 연결하는 읽기 순서. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  A[Claude Code의 정체성] --&gt; B[모델과 Harness 분리]
+  B --&gt; C[Agent Loop / Tool 실행]
+  C --&gt; D[Instruction / Memory / Context]
+  D --&gt; E[Skills / MCP / Plugins]
+  E --&gt; F[Subagents / Hooks / 권한]
+  F --&gt; G[실제 명령과 공개 자료 분석]
+  G --&gt; H[반도체 Agent 설계 가능성 평가]</code></pre></details></figure><h4 id="s-1-5">이 문서를 읽은 후 설명할 수 있어야 할 것<a class="anchor" href="#s-1-5" aria-label="이 절의 고유 링크">#</a></h4>
+<ol>
+<li>Claude Code 자체와 Claude Agent SDK가 어디서 겹치고 구분되는가?</li>
+<li>모델의 계획·행동과 Harness의 도구·승인·실행은 어떻게 연결되는가?</li>
+<li>같은 프로젝트의 <code>CLAUDE.md</code>, Auto Memory, Session transcript, <code>SKILL.md</code>는 어디에 어떤 정보를 넣는가?</li>
+<li>Tool을 허용한다고 해도 데이터 보안을 지킬 방법은 무엇인가?</li>
+<li>반도체용 DB/RAG/분석 Tool을 연결할 때 무엇을 직접 개발해야 하는가?</li>
+</ol>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="2"><h2 id="s-2-1">2. Claude Code의 정체성과 기술 관계<a class="anchor" href="#s-2-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-2-2">2.1 Claude 모델 vs Claude Code vs Claude Agent SDK<a class="anchor" href="#s-2-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Claude 모델/API</th>
+<th>Claude Code</th>
+<th>Claude Agent SDK</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>정체성</td>
+<td>추론·생성 모델을 호출하는 API</td>
+<td>완성형 Agent 실행 환경과 도구</td>
+<td>그 Agent 실행 능력을 프로그래밍 방식으로 호출하는 SDK</td>
+</tr>
+<tr>
+<td>개발자가 준비할 것</td>
+<td>API 호출, 루프, 도구, 상태, 정책 구현</td>
+<td>사용 환경과 지시·권한·도구 설정</td>
+<td>호스트 애플리케이션, 사용자 경험, 정책·서비스 통합</td>
+</tr>
+<tr>
+<td>일반 사용</td>
+<td>모델로 답변 생성</td>
+<td>코드 검색·편집·테스트·Git 자동화</td>
+<td>웹서비스·배치·내부 서비스에 Agent 탑재</td>
+</tr>
+<tr>
+<td>Agent Loop</td>
+<td>API 자체에 완료된 범용 코딩 Harness가 있는 것은 아님</td>
+<td>자체 Agent Loop 수행</td>
+<td>Claude Code 계열 루프 사용</td>
+</tr>
+<tr>
+<td>관점</td>
+<td>모델·API 엔지니어링</td>
+<td>상호작용하는 완성형 에이전트</td>
+<td>애플리케이션 임베딩</td>
+</tr>
+</tbody></table>
+</div><p>Claude Code를 PydanticAI, OpenAI Agents SDK와 동등한 <strong>저수준 라이브러리</strong>로 단정하면 비교가 틀어진다. Claude Code는 이미 구성된 Harness를 <strong>사용하고 확장</strong>하는 측면이 강하다. SDK는 그 기능을 개발자가 호출하는 관점이다. <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer">[R01]</a><a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[R25]</a></p>
+<h3 id="s-2-3">2.2 Codex·Hermes·ADK 같은 기술과 비교할 때<a class="anchor" href="#s-2-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Hermes Agent</strong>: 완성형 Agent Harness 관점에서 비교하기 유용하다. 공개 소스 수준·메모리 구성·기본 도구·운영 철학이 핵심 비교 항목.</li>
+<li><strong>PydanticAI/OpenAI Agents SDK</strong>: 자체 애플리케이션에 Agent 로직을 넣을 때의 개발 자유도·책임 범위가 비교 포인트.</li>
+<li><strong>Google ADK/Microsoft Agent Framework</strong>: 다중 Agent·세션·워크플로·운영 통제의 추상화를 비교한다.</li>
+<li><strong>vLLM/SGLang</strong>: 원칙적으로 모델 서빙/추론 인프라 계층이다. Agent Harness와 동일한 비교 집합에 넣지 않는다.</li>
+</ul>
+<p>비교할 때 “기능이 있다/없다”만 보지 말고 <strong>기본 제공 / 설정·플러그인 / 외부 서버 / 사용자 코드 / 미확인</strong>을 나눈다.</p>
+<h3 id="s-2-4">2.3 Claude Code가 일반적인 챗봇을 넘어서는 이유<a class="anchor" href="#s-2-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>질문: “공정 데이터 EDA를 수행해 이상 징후를 요약해 줘.”</p>
+<ul>
+<li>일반적인 텍스트 챗봇: 데이터 설명이나 분석 코드 예시를 답할 수 있다.</li>
+<li>Claude Code: 권한이 주어진 경우 데이터 파일을 읽고, Python 코드를 작성하고, 실행하고, 오류를 확인하고, 수정해 결과 파일을 만들 수 있다.</li>
+<li>단, <strong>Tool 실행 결과가 올바르거나 안전하다고 자동 보장하지 않는다.</strong> 데이터 권한, 통계 설계, 결과의 도메인 타당성은 별도 검증해야 한다.</li>
+</ul>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="3"><h2 id="s-3-1">3. Agent와 Harness의 기초<a class="anchor" href="#s-3-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-3-2">3.1 단일 응답형 LLM vs Agent<a class="anchor" href="#s-3-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>단일 응답형</strong>: 입력 → 모델 → 결과.<br><strong>Agent형</strong>: 입력 → 모델 → 행동 선택 → Tool 실행 → 결과 관찰 → 다음 행동 → 완료.</p>
+<figure class="diagram" data-source-diagram="2"><figcaption><span>그림 2</span> 모델 판단과 정책·도구·사용자 개입</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-2.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="모델 판단과 정책·도구·사용자 개입"><img src="assets/diagram-2.svg" alt="모델 판단과 정책·도구·사용자 개입. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+  U[사용자 목표] --&gt; P[현재 Context]
+  P --&gt; M[Claude 모델]
+  M --&gt; D{다음 행동?}
+  D --&gt;|도구| G[권한/정책 검사]
+  G --&gt; T[Tool 실행]
+  T --&gt; R[실행 결과]
+  R --&gt; P
+  D --&gt;|완료| O[최종 답변]
+  D --&gt;|질문/승인| H[사용자 개입]
+  H --&gt; P</code></pre></details></figure><p>이 다이어그램은 설명용 추상화다. 실제 서비스 내부 분기와 함수 이름을 뜻하지 않는다.</p>
+<h3 id="s-3-3">3.2 Agent Loop의 핵심 구성요소<a class="anchor" href="#s-3-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>Goal</strong>: 수행할 목표. 예: 웨이퍼 불량 패턴 분석.</li>
+<li><strong>Context</strong>: 현재 프로젝트 파일, 지시, 대화 요약, 도구 출력.</li>
+<li><strong>Model</strong>: 다음 행동을 판단하고 Tool 입력을 생성.</li>
+<li><strong>Tool layer</strong>: Read, Grep, Edit, Bash, MCP 등.</li>
+<li><strong>Permission/Policy</strong>: Tool 사용 승인·차단·격리.</li>
+<li><strong>State/History</strong>: 이전 메시지와 작업 상태.</li>
+<li><strong>Observation</strong>: Tool 실행 결과, 에러, 테스트 결과.</li>
+<li><strong>Stop</strong>: 모델이 결과를 마무리하거나 실행이 중단·차단·실패하는 시점.</li>
+</ol>
+<h3 id="s-3-4">3.3 왜 Harness가 중요한가?<a class="anchor" href="#s-3-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>같은 Claude 모델을 써도 Harness에 따라 다음이 달라진다.</p>
+<ul>
+<li>어떤 파일·시스템·도구를 읽고 실행할 수 있는가?</li>
+<li>반복 실행 중 Context를 어떻게 관리하는가?</li>
+<li>악성 지시와 위험한 명령을 어떻게 차단하는가?</li>
+<li>Subagent를 어떻게 실행하고 결과를 통합하는가?</li>
+<li>오류 발생 시 누가 재시도하고 언제 멈추는가?</li>
+<li>로그, 비용, 결과 재현성을 어떻게 확보하는가?</li>
+</ul>
+<p>이 때문에 모델 성능만으로 Agent 프레임워크를 평가할 수 없다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="4"><h2 id="s-4-1">4. 실행 환경·설치·인터페이스<a class="anchor" href="#s-4-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-4-2">4.1 지원 표면과 특징<a class="anchor" href="#s-4-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식적으로 터미널 CLI, VS Code/JetBrains 연동, 데스크톱, 브라우저 등의 사용자 경험이 있다. <strong>모든 화면·기능이 완전히 동일하다고 가정하지 않는다.</strong> 일부 기능은 특정 계정, 호스팅, 플랫폼, 배포 기능 플래그에 좌우된다. <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>표면</th>
+<th>주된 장점</th>
+<th>주의할 점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Terminal CLI</td>
+<td>프로젝트 탐색·쉘·Git·스크립트 자동화</td>
+<td>로컬 권한·네트워크 노출 주의</td>
+</tr>
+<tr>
+<td>IDE 확장</td>
+<td>코드 탐색·변경 확인·개발 흐름 통합</td>
+<td>IDE별 지원 차이</td>
+</tr>
+<tr>
+<td>Desktop / Web</td>
+<td>비개발자 접근성, 원격 세션 연계</td>
+<td>로컬과 클라우드의 파일·인증·보안 경계가 다름</td>
+</tr>
+<tr>
+<td><code>claude -p</code></td>
+<td>단발 자동화, CI, 셸 파이프</td>
+<td>대화형 승인 흐름이 없는 경우 정책을 더 엄격히 설계</td>
+</tr>
+<tr>
+<td>Python/TypeScript SDK</td>
+<td>애플리케이션 내부 통합</td>
+<td>SDK와 인증·실행 인프라 개발 책임 구분</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-4-3">4.2 설치 및 기본 명령<a class="anchor" href="#s-4-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 저장소는 네이티브 설치 경로를 안내하고, npm 전역 설치는 더 이상 권장하지 않는다고 표시한다. 기업 PC에서는 우선 소프트웨어 설치 정책을 확인한다. <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code># macOS / Linux 공식 설치 예시: 실행하기 전 스크립트 출처와 회사 정책을 검토
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Windows PowerShell의 공식 안내 예시
+# irm https://claude.ai/install.ps1 | iex
+
+# 시작
+cd /path/to/your/project
+claude
+
+# 현재 설치 상태 확인: 명령과 출력 형태는 설치 버전에 따름
+claude --version</code></pre></div><p>쉘에서 받은 스크립트를 곧바로 실행하는 습관은 폐쇄망·사내 PC에 적절하지 않을 수 있다. 회사가 승인한 패키지/서명 검증 절차를 우선한다.</p>
+<h3 id="s-4-4">4.3 자주 쓰는 CLI 명령<a class="anchor" href="#s-4-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code>claude                             # 대화형 실행
+claude &quot;이 코드베이스를 설명해줘&quot;     # 첫 질문과 함께 실행
+claude -p &quot;현재 디렉터리 구조를 요약해줘&quot; # 비대화형 1회 작업
+claude -c                          # 최근 대화 이어서 실행
+claude -r                          # 저장된 대화 선택/이어가기 (버전별 도움말 확인)
+claude --help</code></pre></div><p><code>-p</code>는 모델 응답만 출력하는 단순 1회 LLM 호출과는 다르다. <strong>Tool 사용·Agent Loop가 필요한 질문이라면 내부에서 복수 행동을 수행</strong>할 수 있다. <code>--allowedTools</code>, <code>--output-format</code>, <code>--max-turns</code> 같은 옵션은 CLI 레퍼런스의 조합·버전 제약을 반드시 확인한다. <a href="https://code.claude.com/docs/en/cli-reference" target="_blank" rel="noopener noreferrer">[R17]</a><a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener noreferrer">[R18]</a></p>
+<h3 id="s-4-5">4.4 Plan mode·수정·검증<a class="anchor" href="#s-4-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>다음 세 가지 작동 스타일을 의식적으로 구분하면 좋다.</p>
+<ul>
+<li><strong>탐색·질문:</strong> 파일을 조사하고 분석 내용을 제시하되 변경은 최소화.</li>
+<li><strong>계획 수립:</strong> 변경 전에 목표·영향·검증 계획을 승인받는다. 계획은 실행의 결정성을 보장하지 않는다.</li>
+<li><strong>실행·검증:</strong> 변경 후 테스트·린트·정형 결과 확인을 반복한다.</li>
+</ul>
+<p>반도체 데모 준비에서는 처음부터 자동 수정하기보다 분석 경로를 먼저 고정하고, 계산 코드를 검증한 다음 변경 권한을 단계적으로 넓히는 접근이 좋다.</p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="index.html"><small>이전 단원</small>← 학습 안내</a><a class="next" href="execution.html"><small>다음 단원</small>아키텍처·Loop·Tools →</a></nav><footer>Claude Code 개인 학습 교재<span>원문 기반 편집 / 제품 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-1-1">1. 핵심 요약과 학습 지도</a><a href="#s-2-1">2. Claude Code의 정체성과 기술 관계</a><a href="#s-3-1">3. Agent와 Harness의 기초</a><a href="#s-4-1">4. 실행 환경·설치·인터페이스</a></nav></aside></div></body></html>

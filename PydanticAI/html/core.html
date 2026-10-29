@@ -1,0 +1,218 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI의 원리·구현·한계를 배우는 개인 학습 교재"><title>실행마다 필요한 정보와 도구 구성하기 — PydanticAI</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">P.</span><span>PydanticAI<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="core.html" class="current" aria-current="page"><span class="nav-number">02</span><span>Agent·Deps·Tools</span></a><a href="validation.html" ><span class="nav-number">03</span><span>출력·Retry·종료</span></a><a href="history.html" ><span class="nav-number">04</span><span>Messages와 영속성</span></a><a href="architecture.html" ><span class="nav-number">05</span><span>Graph·Loop·Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Memory·Skills·MCP</span></a><a href="orchestration.html" ><span class="nav-number">07</span><span>협업과 Harness</span></a><p class="nav-group">구현과 운영</p><a href="code.html" ><span class="nav-number">08</span><span>소스코드 경계 추적</span></a><a href="operations.html" ><span class="nav-number">09</span><span>모델·보안·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용과 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >용어와 복습</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Core v2.61.0</span><a href="../PydanticAI.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">PydanticAI</a><span aria-hidden="true">/</span><span>Agent·Deps·Tools</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 02</p><h1>실행마다 필요한 정보와 도구 구성하기</h1><p class="lead">RunContext와 의존성 주입, Toolset과 실행 위치</p><div class="chapter-meta">원문 5–7장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Agent 정의를 공유하더라도 사용자와 테넌트, DB 접근 범위는 실행마다 달라질 수 있습니다. Dependencies는 이러한 런타임 객체를 전달하는 통로이며, 모델 입력으로 자동 전송되는 정보와는 다릅니다.</p><p>Function Tool, Toolset, Provider Native Tool의 실행 위치와 역할을 나누세요. 도구를 모델에 숨기거나 노출하는 정책과 실제 함수·서버가 권한을 확인하는 정책도 서로 보완해야 합니다.</p><p class="reading-question"><strong>읽는 관점</strong>누가 도구를 실행하고 어떤 의존성으로 데이터에 접근하는지, 무엇이 모델에 전달되는지 확인하세요.</p></section><section class="source-section" data-source-chapter="5"><h2 id="s-5-1">5. Agent, Model, Provider, Run의 역할<a class="anchor" href="#s-5-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-5-2">5.1 주요 객체<a class="anchor" href="#s-5-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>구성요소</th>
+<th>역할</th>
+<th>알아야 하는 API·개념</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Agent</code></td>
+<td>모델·도구·지시문·출력·기능 집합의 중심 객체</td>
+<td><code>Agent(...)</code></td>
+</tr>
+<tr>
+<td><code>Model</code></td>
+<td>특정 LLM과 통신하는 공통 추상화</td>
+<td>Provider별 Model 구현, 모델 식별자</td>
+</tr>
+<tr>
+<td><code>Provider</code></td>
+<td>모델 서비스의 인증·URL·클라이언트 설정 계층</td>
+<td>API Key, <code>base_url</code>, HTTP Client</td>
+</tr>
+<tr>
+<td><code>AgentRunResult</code></td>
+<td>실행 후 출력·메시지·사용량 등을 제공</td>
+<td><code>result.output</code>, <code>all_messages()</code></td>
+</tr>
+<tr>
+<td><code>RunContext</code></td>
+<td>Tool·Instructions·Validator에서 실행 문맥 접근</td>
+<td><code>ctx.deps</code>, <code>ctx.usage</code>, <code>ctx.retry</code> 등</td>
+</tr>
+<tr>
+<td><code>UsageLimits</code></td>
+<td>요청·토큰 등의 한도 관리</td>
+<td>사전 설정된 리소스/모델 사용량 제한</td>
+</tr>
+<tr>
+<td><code>AgentRun</code></td>
+<td>실행 중 노드 단위 조작/관찰</td>
+<td><code>agent.iter()</code></td>
+</tr>
+<tr>
+<td><code>ModelMessage</code></td>
+<td>모델 요청·응답의 타입 있는 기록</td>
+<td><code>ModelRequest</code>, <code>ModelResponse</code>, Part들</td>
+</tr>
+<tr>
+<td><code>Capability</code></td>
+<td>재사용 가능한 Agent 기능·Hook 묶음</td>
+<td><code>capabilities=[...]</code></td>
+</tr>
+</tbody></table>
+</div><p>공식 Agent 문서는 <code>run</code>, <code>run_sync</code>, <code>run_stream</code>, <code>run_stream_events</code>, <code>iter</code> 등 여러 실행 방식을 제공한다. 내부적으로 <code>pydantic-graph</code>를 사용하며, 대부분의 단순 사용에서는 직접 그래프를 건드릴 필요가 없다. <a href="https://pydantic.dev/docs/ai/core-concepts/agent/" target="_blank" rel="noopener noreferrer">[S03]</a></p>
+<h3 id="s-5-3">5.2 Run, Step, Conversation, Session의 차이<a class="anchor" href="#s-5-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Run</strong>: 사용자가 Agent를 한 번 실행하여 결과를 얻는 단위(도구·모델을 여러 번 호출할 수 있음).</li>
+<li><strong>Step</strong>: Run 내부에서 모델 요청이 진행되는 반복 단계.</li>
+<li><strong>Conversation</strong>: 여러 Run에 걸쳐 이어지는 대화 맥락과 기록.</li>
+<li><strong>Session</strong>: 일반적 애플리케이션 개념(사용자별 상호작용 단위)과 PydanticAI의 구체 API 이름은 혼동하지 말 것. 현행 공식 문서는 Conversation과 메시지 이력의 구분을 강조한다.</li>
+<li><strong>Persistent Memory</strong>: 여러 대화에 걸쳐 기억할 정보를 검색하는 별도 계층. 단순히 <code>message_history</code>를 넘기는 것과 다르다. <a href="https://pydantic.dev/docs/ai/core-concepts/message-history/" target="_blank" rel="noopener noreferrer">[S10]</a><a href="https://pydantic.dev/docs/ai/core-concepts/persistence/" target="_blank" rel="noopener noreferrer">[S11]</a></li>
+</ul>
+<h3 id="s-5-4">5.3 스트리밍 방식 비교<a class="anchor" href="#s-5-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>실행 API</th>
+<th>사용 시점</th>
+<th>세부 특징</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>run_sync()</code></td>
+<td>CLI·간단한 동기 코드</td>
+<td>완료된 결과를 한 번에 받음</td>
+</tr>
+<tr>
+<td><code>await run()</code></td>
+<td>비동기 웹 서비스</td>
+<td>완료 결과를 async로 받음</td>
+</tr>
+<tr>
+<td><code>run_stream()</code></td>
+<td>사용자에게 응답을 점진적으로 출력</td>
+<td>스트림과 최종 결과를 추적, 조기 종료 조건 이해 필요</td>
+</tr>
+<tr>
+<td><code>run_stream_events()</code></td>
+<td>도구 호출·모델 출력 등 이벤트를 세밀하게 처리</td>
+<td>이벤트를 직접 조합하는 소비자 코드 필요</td>
+</tr>
+<tr>
+<td><code>iter()</code></td>
+<td>내부 그래프를 노드 단위로 연구·수정</td>
+<td><code>UserPromptNode</code>, <code>ModelRequestNode</code>, <code>CallToolsNode</code> 관찰 가능</td>
+</tr>
+</tbody></table>
+</div><p><strong>비교 시사점</strong>: 애플리케이션 개발자는 <code>run()</code>으로 시작하되, 실제 Agent Loop 분석을 할 때 <code>iter()</code>와 소스코드를 같이 보면 좋다. <a href="https://pydantic.dev/docs/ai/core-concepts/agent/" target="_blank" rel="noopener noreferrer">[S03]</a></p>
+</section>
+<section class="source-section" data-source-chapter="6"><h2 id="s-6-1">6. Instructions / System Prompt / Dependency Injection<a class="anchor" href="#s-6-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-6-2">6.1 지시문은 어디에 존재하는가?<a class="anchor" href="#s-6-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Instructions</strong>: Agent 수행 목적·규칙 등 개발자가 모델에 전달하는 지시.</li>
+<li><strong>System Prompt</strong>: 시스템 레벨 메시지로 들어가는 지시. Instructions와 동일시하지 말고 공식 API의 구성·메시지 처리 규칙을 확인해야 한다.</li>
+<li><strong>Dynamic Instructions</strong>: 실행 시점의 <code>RunContext</code>를 참조하여 지시를 생성 가능.</li>
+<li><strong>Tool Description</strong>: Tool의 목적·인자 설명을 모델에 전달하는 별도 스키마/설명.</li>
+<li><strong>Capability Instructions</strong>: Capability가 모델에 추가하는 지시문.</li>
+</ul>
+<p>PydanticAI v2에는 명명된 instruction part, 출처 식별 및 Capability·Toolset 기반 지시 결합 기능이 있다. 이를 단순히 문자열 하나로 합쳐진 불변 시스템 프롬프트라고 이해하면 중요한 부분을 놓친다. <a href="https://pydantic.dev/docs/ai/core-concepts/agent/" target="_blank" rel="noopener noreferrer">[S03]</a><a href="https://pydantic.dev/docs/ai/core-concepts/hooks/" target="_blank" rel="noopener noreferrer">[S12]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<h3 id="s-6-3">6.2 Dependency Injection이 중요한 이유<a class="anchor" href="#s-6-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>DB 접근 객체나 사용자의 승인 범위 등을 Agent 생성 시 전역 변수로 붙잡지 않고, <strong>각 실행에 필요한 의존성을 <code>deps</code>로 주입</strong>한다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from dataclasses import dataclass
+from pydantic_ai import Agent, RunContext
+
+@dataclass
+class AnalysisDeps:
+    tenant_id: str
+    allowed_lots: set[str]
+    # 실제 구현에서는 read_only_db, query_service 등도 포함
+
+agent = Agent(&#39;openai:&lt;model-id&gt;&#39;, deps_type=AnalysisDeps)
+
+@agent.tool
+def get_lot_meta(ctx: RunContext[AnalysisDeps], lot_id: str) -&gt; dict:
+    &quot;&quot;&quot;해당 실행에서 조회 권한이 있는 LOT 정보만 반환한다.&quot;&quot;&quot;
+    if lot_id not in ctx.deps.allowed_lots:
+        raise PermissionError(&#39;허용되지 않은 LOT 조회&#39;)
+    return {&#39;lot_id&#39;: lot_id, &#39;tenant&#39;: ctx.deps.tenant_id}
+
+result = agent.run_sync(
+    &#39;LOT-A 정보를 조회해 줘.&#39;,
+    deps=AnalysisDeps(tenant_id=&#39;fab-demo&#39;, allowed_lots={&#39;LOT-A&#39;}),
+)</code></pre></div><p><strong>왜 중요한가?</strong></p>
+<ol>
+<li>여러 사용자·Fab·공장 그룹을 동일 Agent 정의로 처리할 수 있다.</li>
+<li>테넌트 경계를 Tool에 구현할 수 있다.</li>
+<li>DB Mock을 주입하여 테스트하기 쉽다.</li>
+<li>모델 프롬프트에 실제 비밀키/DB 접속 정보를 넣을 이유가 없다.</li>
+<li>요청마다 서로 다른 자원·정책을 적용할 수 있다.</li>
+</ol>
+<p>주의: Dependency Injection은 <strong>그 자체가 보안 격리 수단은 아니다</strong>. 도구 구현에서 실제 서버 측 권한 확인이 필요하다. <a href="https://pydantic.dev/docs/ai/core-concepts/dependencies/" target="_blank" rel="noopener noreferrer">[S07]</a></p>
+</section>
+<section class="source-section" data-source-chapter="7"><h2 id="s-7-1">7. Function Tools · Toolsets · Native Tools<a class="anchor" href="#s-7-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-7-2">7.1 세 가지 Tool의 개념<a class="anchor" href="#s-7-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>유형</th>
+<th>수행자</th>
+<th>예시</th>
+<th>핵심 구분</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Function Tool</strong></td>
+<td>Agent 호스트의 Python 코드</td>
+<td>사내 DB 읽기·수치 계산</td>
+<td>모델 요청 → PydanticAI가 실행</td>
+</tr>
+<tr>
+<td><strong>Toolset</strong></td>
+<td>PydanticAI가 관리하는 도구 묶음/추상화</td>
+<td>공정 조회 Tool 5개 묶음</td>
+<td>여러 도구를 동적으로 제공·필터·조합</td>
+</tr>
+<tr>
+<td><strong>Native Tool</strong></td>
+<td>지원하는 모델 공급자 측</td>
+<td>서버에서 수행되는 검색 등</td>
+<td>Provider가 처리할 수 있는 기능, Python 함수와 다름</td>
+</tr>
+</tbody></table>
+</div><p>모든 &#39;Tool&#39;이 로컬에서 실행되는 것은 아니다. 특히 Provider-native tool은 공급자에 따라 API·성능·로그·데이터 이동 범위가 달라진다. <a href="https://pydantic.dev/docs/ai/tools-toolsets/tools/" target="_blank" rel="noopener noreferrer">[S09]</a><a href="https://pydantic.dev/docs/ai/tools-toolsets/toolsets/" target="_blank" rel="noopener noreferrer">[S13]</a><a href="https://pydantic.dev/docs/ai/tools-toolsets/native-tools/" target="_blank" rel="noopener noreferrer">[S14]</a></p>
+<h3 id="s-7-3">7.2 Tool 등록 방식<a class="anchor" href="#s-7-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from pydantic_ai import Agent, RunContext
+
+agent = Agent(&#39;openai:&lt;model-id&gt;&#39;, deps_type=str)
+
+@agent.tool
+async def query_with_context(ctx: RunContext[str], equipment: str) -&gt; str:
+    &quot;&quot;&quot;권한/환경 문맥이 필요한 도구.&quot;&quot;&quot;
+    return f&#39;project={ctx.deps}, equipment={equipment}&#39;
+
+@agent.tool_plain
+def calculate_ratio(numerator: float, denominator: float) -&gt; float:
+    &quot;&quot;&quot;문맥이 필요 없는 순수 계산 도구.&quot;&quot;&quot;
+    if denominator == 0:
+        raise ValueError(&#39;분모는 0일 수 없음&#39;)
+    return numerator / denominator</code></pre></div><p><code>@agent.tool</code>은 기본적으로 <code>RunContext</code>를 받는 Tool이며, <code>@agent.tool_plain</code>은 그렇지 않은 Tool로 이해하면 편하다. 함수의 시그니처와 Docstring은 Tool 정의·입력 스키마를 구성할 때 사용한다. <a href="https://pydantic.dev/docs/ai/tools-toolsets/tools/" target="_blank" rel="noopener noreferrer">[S09]</a></p>
+<h3 id="s-7-4">7.3 Tool 정의에서 추적할 요소<a class="anchor" href="#s-7-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>함수명과 Tool 명칭이 모델에 어떻게 노출되는가?</li>
+<li>함수 파라미터의 타입·선택 여부·기본값이 JSON Schema에 어떻게 표현되는가?</li>
+<li>누락/오타 인자가 전달되면 어느 단계에서 검증되는가?</li>
+<li>같은 응답에서 Tool 여러 개가 호출되면 병렬인가, 순차인가?</li>
+<li>일정 권한 이하의 사용자에게 Tool을 감추거나 거절할 수 있는가?</li>
+<li>Tool 반환값이 모델 컨텍스트에 어느 크기까지 들어가는가?</li>
+<li>예외를 모델에 재시도 피드백으로 돌려줄지 실행 자체를 실패시킬지 정책이 있는가?</li>
+</ul>
+<h3 id="s-7-5">7.4 Toolset 합성·필터링<a class="anchor" href="#s-7-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 Toolset은 Tool 묶음과 그 변형을 관리하는 추상화다. <code>FilteredToolset</code>은 실행 컨텍스트와 Tool 정의를 보고 특정 Tool의 노출 여부를 결정할 수 있다. <code>CombinedToolset</code>, <code>PrefixedToolset</code> 등 다른 합성 형태도 문서에서 확인할 수 있다. <a href="https://pydantic.dev/docs/ai/tools-toolsets/toolsets/" target="_blank" rel="noopener noreferrer">[S13]</a></p>
+<p>예: &#39;엔지니어는 <code>read_wafer_data</code>만&#39;, &#39;승인된 관리자만 <code>write_maintenance_note</code>&#39;를 모델에 노출하더라도 <strong>백엔드 실행 시점의 권한 검사를 반드시 반복</strong>해야 한다.</p>
+<h3 id="s-7-6">7.5 Tool 호출 = Tool 실행이 아님<a class="anchor" href="#s-7-6" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>LLM: &quot;query_lot_data(lot_id=&#39;LOT-A&#39;) 호출&quot;
+    ↓
+PydanticAI: tool_name 조회 + JSON 인자 검증
+    ↓
+실행 정책·Hooks·승인 확인
+    ↓
+Python Tool 실행 (DB/API 호출)
+    ↓
+반환값/예외를 메시지에 기록
+    ↓
+LLM에 후속 요청</code></pre></div><p>이 구분이 Agent 보안과 디버깅에서 핵심이다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/tool_manager.py" target="_blank" rel="noopener noreferrer">[C03]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="foundations.html"><small>이전 단원</small>← 개념과 첫 예제</a><a class="next" href="validation.html"><small>다음 단원</small>출력·Retry·종료 →</a></nav><footer>PydanticAI 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-5-1">5. Agent, Model, Provider, Run의 역할</a><a href="#s-6-1">6. Instructions / System Prompt / Dependency Injection</a><a href="#s-7-1">7. Function Tools · Toolsets · Native Tools</a></nav></aside></div></body></html>

@@ -1,0 +1,279 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Hermes Agent의 개념, 실행 원리, 코드와 반도체 적용 판단을 배우는 개인 학습 교재"><title>출처와 검증 범위 — Hermes Agent</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent</a><button id="menu-button" type="button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">H.</span><span>Hermes Agent<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro " href="index.html" >학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>기초와 구성요소</span></a><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처와 Agent Loop</span></a><p class="nav-group">핵심 원리</p><a href="context.html" ><span class="nav-number">03</span><span>Prompt와 Context</span></a><a href="memory.html" ><span class="nav-number">04</span><span>Memory와 Session History</span></a><a href="skills.html" ><span class="nav-number">05</span><span>Skills와 자기 개선</span></a><a href="tools.html" ><span class="nav-number">06</span><span>Tool · MCP · Plugin</span></a><p class="nav-group">구현과 운영</p><a href="orchestration.html" ><span class="nav-number">07</span><span>Subagent와 Gateway</span></a><a href="code.html" ><span class="nav-number">08</span><span>코드 탐색과 핵심 로직</span></a><a href="operations.html" ><span class="nav-number">09</span><span>Guardrails와 관측·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 PoC와 기술 평가</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" class="current" aria-current="page">출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29</span><a href="../Hermes_Agent.md">원본 Markdown ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Hermes Agent</a><span aria-hidden="true">/</span><span>출처와 검증 범위</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / EVIDENCE & SCOPE</p><h1>출처와 검증 범위</h1><p class="lead">문서로 확인한 내용과 실험으로 확인해야 할 내용을 구분합니다.</p></header><div class="callout"><strong>자료 기준: 2026년 10월 29일</strong><p>이 교재는 사용자의 원문을 학습 교재로 편집한 결과입니다. 이번 웹페이지 제작에서 Hermes 공식 문서의 최신 상태나 소스 구현을 추가로 검증하지 않았습니다. 원문의 검토 범위와 한계를 아래에 보존했습니다.</p></div><section class="source-section" data-source-chapter="0"><h2 id="s-0-0">0. 읽기 안내와 검증 범위<a class="anchor" href="#s-0-0" aria-label="0. 읽기 안내와 검증 범위 섹션 링크">#</a></h2>
+<h3 id="s-0-0-1">0.1 이 문서의 학습 방법<a class="anchor" href="#s-0-0-1" aria-label="0.1 이 문서의 학습 방법 섹션 링크">#</a></h3>
+<ul>
+<li><strong>기초 (1~4장)</strong>: &#39;Hermes가 무엇인가?&#39;, &#39;LLM과 Agent는 어떻게 다른가?&#39;, &#39;어떤 구성요소가 있는가?&#39;부터 이해한다.</li>
+<li><strong>구조 (5~13장)</strong>: 하나의 요청이 실행되고 저장되는 과정, Prompt, Tool, Memory, Skills, MCP, Subagent의 역할을 연결한다.</li>
+<li><strong>코드 (14~17장)</strong>: 실제 소스 파일의 책임과 함수 경계, 흐름, 예외·보안 처리를 추적한다.</li>
+<li><strong>설계 (18~22장)</strong>: 반도체 데모 적용성, 기술적 장단점, 향후 6개 기술 비교에 필요한 의사결정 기준을 정리한다.</li>
+</ul>
+<p>표기 규칙:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>표기</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>[공식]</strong></td>
+<td>공식 문서에서 명시적으로 설명한 사실</td>
+</tr>
+<tr>
+<td><strong>[코드]</strong></td>
+<td>공식 GitHub 공개 코드 또는 공식 개발 가이드가 특정 구현에 연결한 사실</td>
+</tr>
+<tr>
+<td><strong>[해석]</strong></td>
+<td>위 근거를 이용해 정리한 기술적 판단</td>
+</tr>
+<tr>
+<td><strong>[예시]</strong></td>
+<td>학습 목적으로 작성한 가상 시나리오·의사코드. 실행·검증 완료 코드가 아님</td>
+</tr>
+<tr>
+<td><strong>[확인 필요]</strong></td>
+<td>선택한 설치 버전, 배포 환경, 실제 실험으로 검증해야 할 조건</td>
+</tr>
+</tbody></table>
+</div><p><strong>중요한 한계</strong>: 이번 조사는 공식 사이트와 공개 GitHub의 조회 가능한 내용에 대한 <em>문헌·소스 검토</em>이다. 저장소를 로컬에 클론해 테스트를 실행하거나 특정 커밋 전체를 감사하지 않았다. GitHub 링크는 조회 시점의 <code>main</code> 경로이므로 향후 파일 내용·함수명·기본값이 달라질 수 있다. 구현 직전에는 <strong>tag/commit SHA를 고정</strong>해 재검증해야 한다. 본문에 나오는 &#39;간소화 코드&#39;는 실제 원본 인용이 아니라 흐름을 설명하기 위한 재구성이다.</p>
+<h3 id="s-0-0-2">0.2 30초 핵심 요약<a class="anchor" href="#s-0-0-2" aria-label="0.2 30초 핵심 요약 섹션 링크">#</a></h3>
+<p><strong>Hermes Agent는 Nous Research가 공개한, 실행 기능을 이미 갖춘 범용 자율 Agent/Harness</strong>다. 모델 가중치 자체도, LLM 추론 서버도 아니다. 선택한 LLM의 응답을 바탕으로 도구를 실행하고, 결과를 다시 모델에 전달하고, 세션·기억·Skills를 관리하며, CLI·메신저·API 등으로 사용자와 연결한다. <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">S01</a>, <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/architecture" target="_blank" rel="noopener noreferrer">S02</a></p>
+<p>다음 네 문장을 먼저 기억하자.</p>
+<ol>
+<li><strong>LLM</strong>이 &#39;다음에 무엇을 할지&#39; 결정하고, <strong>Hermes Runtime</strong>이 실제 도구 호출·세션·권한·반복을 처리한다.</li>
+<li><strong>Memory(기억)</strong>와 <strong>History(대화 이력)</strong>와 <strong>Skills(작업 절차)</strong>는 서로 다른 저장·검색 경로를 가진다.</li>
+<li>Hermes의 자율성은 <strong>LLM의 행동 선택 + Hermes의 실행 루프/권한/환경</strong>이 결합된 결과이지, 모델이 운영체제 명령을 직접 실행하는 것이 아니다.</li>
+<li>&#39;자기 개선(self-improving)&#39;은 주로 <strong>기억·Skills의 자동 기록·수정·정리</strong>를 가리킨다. 이것을 Hermes 모델 가중치의 자동 재학습과 혼동하면 안 된다.</li>
+</ol>
+<hr>
+</section><section class="source-section" data-source-chapter="sources"><h2 id="s-sources-부록-b-공식-자료-및-코드-출처-검증-가능한-링크-">부록 B. 공식 자료 및 코드 출처 (검증 가능한 링크)<a class="anchor" href="#s-sources-부록-b-공식-자료-및-코드-출처-검증-가능한-링크-" aria-label="부록 B. 공식 자료 및 코드 출처 (검증 가능한 링크) 섹션 링크">#</a></h2>
+<p>본문의 <code>[Sxx]</code>는 <strong>공식 설명 문서</strong>, <code>[Cxx]</code>는 <strong>공식 소스코드 위치</strong>를 가리킨다. 모두 Nous Research가 관리하는 공식 홈페이지 또는 공식 GitHub 저장소를 우선했다. 문서 작성 시점의 소스를 조회했으며, 특정 커밋으로 고정된 영구 링크가 필요한 실제 개발 단계에서 SHA를 확보할 것을 권장한다.</p>
+<h2 id="s-sources-b-1">B.1 공식 설명 문서<a class="anchor" href="#s-sources-b-1" aria-label="B.1 공식 설명 문서 섹션 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>자료명</th>
+<th>활용 주제</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">S01</a></td>
+<td>Hermes Agent Docs — 홈</td>
+<td>정의, 핵심 기능, 설치</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/architecture" target="_blank" rel="noopener noreferrer">S02</a></td>
+<td>Architecture</td>
+<td>전체 파일 구조, 데이터 흐름</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/provider-runtime" target="_blank" rel="noopener noreferrer">S03</a></td>
+<td>Provider Runtime Resolution</td>
+<td>모델·API Provider 설정</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop" target="_blank" rel="noopener noreferrer">S04</a></td>
+<td>Agent Loop Internals</td>
+<td>반복 실행, Tool, 예외, 예산</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/memory" target="_blank" rel="noopener noreferrer">S05</a></td>
+<td>Persistent Memory</td>
+<td>Memory/USER, session_search</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" target="_blank" rel="noopener noreferrer">S06</a></td>
+<td>Skills System</td>
+<td>Skill 형식, 관리, 개선</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage" target="_blank" rel="noopener noreferrer">S07</a></td>
+<td>Session Storage</td>
+<td>SQLite/FTS5, 프로필/세션</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime" target="_blank" rel="noopener noreferrer">S08</a></td>
+<td>Tools Runtime</td>
+<td>Tool Registry, Toolset, Dispatch</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly" target="_blank" rel="noopener noreferrer">S09</a></td>
+<td>Prompt Assembly</td>
+<td>Prompt 3계층, 캐싱</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching" target="_blank" rel="noopener noreferrer">S10</a></td>
+<td>Context Compression and Caching</td>
+<td>압축, Context Engine, Cache</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/security" target="_blank" rel="noopener noreferrer">S11</a></td>
+<td>Security</td>
+<td>승인, 격리, 허용 범위</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener noreferrer">S12</a></td>
+<td>Plugins</td>
+<td>확장 Tool, Hooks</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp" target="_blank" rel="noopener noreferrer">S13</a></td>
+<td>MCP</td>
+<td>외부 MCP 서버 연결</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation" target="_blank" rel="noopener noreferrer">S14</a></td>
+<td>Subagent Delegation</td>
+<td>위임, 병렬 처리, 결과 계약</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/curator" target="_blank" rel="noopener noreferrer">S15</a></td>
+<td>Curator</td>
+<td>Skills 정리, 배경 유지보수</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/honcho" target="_blank" rel="noopener noreferrer">S16</a></td>
+<td>Honcho Memory</td>
+<td>외부 메모리 사례</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration" target="_blank" rel="noopener noreferrer">S17</a></td>
+<td>Programmatic Integration</td>
+<td>ACP, JSON-RPC, API</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback" target="_blank" rel="noopener noreferrer">S18</a></td>
+<td>Checkpoints and Rollback</td>
+<td>복구·안전장치</td>
+</tr>
+<tr>
+<td><a href="https://hermes-agent.nousresearch.com/docs/reference/cli-commands" target="_blank" rel="noopener noreferrer">S19</a></td>
+<td>CLI Commands Reference</td>
+<td>실제 명령 확인</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">S20</a></td>
+<td>Official GitHub Repository</td>
+<td>라이선스/소스/개발 기준</td>
+</tr>
+</tbody></table>
+</div><h2 id="s-sources-b-2">B.2 공개 소스코드 바로가기<a class="anchor" href="#s-sources-b-2" aria-label="B.2 공개 소스코드 바로가기 섹션 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>소스 위치</th>
+<th>핵심 관찰점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/conversation_loop.py" target="_blank" rel="noopener noreferrer">C01</a></td>
+<td><code>agent/conversation_loop.py</code></td>
+<td>반복·분기·실행·오류 처리</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/tree/main/agent" target="_blank" rel="noopener noreferrer">C02</a></td>
+<td><code>agent/</code></td>
+<td>Turn 단계 파일·Mixin·Helper</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/model_tools.py" target="_blank" rel="noopener noreferrer">C03</a></td>
+<td><code>model_tools.py</code></td>
+<td><code>handle_function_call()</code></td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/tools/registry.py" target="_blank" rel="noopener noreferrer">C04</a></td>
+<td><code>tools/registry.py</code></td>
+<td>등록·Discovery·Dispatch</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/tool_executor.py" target="_blank" rel="noopener noreferrer">C05</a></td>
+<td><code>agent/tool_executor.py</code></td>
+<td>상태 의존 Tool 실행</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py" target="_blank" rel="noopener noreferrer">C06</a></td>
+<td><code>agent/memory_manager.py</code></td>
+<td>메모리 관리</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/hermes_state.py" target="_blank" rel="noopener noreferrer">C07</a></td>
+<td><code>hermes_state.py</code></td>
+<td>세션 DB facade</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">C08</a></td>
+<td>Repository <code>hermes_state_*.py</code></td>
+<td>DB 세부 모듈</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/context_engine.py" target="_blank" rel="noopener noreferrer">C09</a></td>
+<td><code>agent/context_engine.py</code></td>
+<td>Context Engine 추상화</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/context_compressor.py" target="_blank" rel="noopener noreferrer">C10</a></td>
+<td><code>agent/context_compressor.py</code></td>
+<td>기본 압축 정책</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_caching.py" target="_blank" rel="noopener noreferrer">C11</a></td>
+<td><code>agent/prompt_caching.py</code></td>
+<td>캐싱 전략</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/compression_facade.py" target="_blank" rel="noopener noreferrer">C12</a></td>
+<td><code>agent/compression_facade.py</code></td>
+<td>압축 호출 경계</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/hermes_cli/runtime_provider.py" target="_blank" rel="noopener noreferrer">C13</a></td>
+<td><code>hermes_cli/runtime_provider.py</code></td>
+<td>Provider 해석</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/hermes_cli/auth.py" target="_blank" rel="noopener noreferrer">C14</a></td>
+<td><code>hermes_cli/auth.py</code></td>
+<td>인증·Provider 선택</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/anthropic_adapter.py" target="_blank" rel="noopener noreferrer">C15</a></td>
+<td><code>agent/anthropic_adapter.py</code></td>
+<td>메시지 변환</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/gateway/run.py" target="_blank" rel="noopener noreferrer">C16</a></td>
+<td><code>gateway/run.py</code></td>
+<td>Gateway 조정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/gateway/session.py" target="_blank" rel="noopener noreferrer">C17</a></td>
+<td><code>gateway/session.py</code></td>
+<td>Gateway SessionStore</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/gateway/platforms/api_server.py" target="_blank" rel="noopener noreferrer">C18</a></td>
+<td><code>gateway/platforms/api_server.py</code></td>
+<td>REST/SSE 인터페이스</td>
+</tr>
+<tr>
+<td><a href="https://github.com/NousResearch/hermes-agent/blob/main/tools/approval.py" target="_blank" rel="noopener noreferrer">C19</a></td>
+<td><code>tools/approval.py</code></td>
+<td>위험 명령 정책</td>
+</tr>
+</tbody></table>
+</div><h2 id="s-sources-b-3">B.3 재검증 절차 (개발 착수 직전)<a class="anchor" href="#s-sources-b-3" aria-label="B.3 재검증 절차 (개발 착수 직전) 섹션 링크">#</a></h2>
+<ol>
+<li>공식 GitHub에서 학습할 release/tag 및 정확한 commit SHA를 고정한다.</li>
+<li><code>git grep</code>/IDE 검색으로 함수·파일 존재와 실제 호출관계를 확인한다.</li>
+<li>해당 commit의 공식 문서·예제·테스트와 코드가 일치하는지 확인한다.</li>
+<li>회사 보안정책을 만족하는 최소 설정의 로컬/격리 PoC를 만든다.</li>
+<li>고정된 Model + 합성 데이터 + Tool + 평가 질문으로 반복 실험한다.</li>
+<li>측정 결과를 기반으로 본 문서의 <strong>정성적 판단</strong>을 <strong>실증적 판단</strong>으로 업데이트한다.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>최종 결론</strong>: Hermes는 <em>완성형 Agent Harness가 실제로 어떻게 구성되는가</em>를 배우기에 풍부한 공개 사례다. 다만 반도체 Agent 선택 기준은 기능 개수보다 <strong>정확성·재현성·데이터 접근 통제·도구 실행의 안전성·운영 가능성</strong>에 둬야 한다. 본 문서는 그 선택을 위한 기초 지식과 소스코드 탐색 지도로 사용한다.</p>
+</blockquote>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="glossary.html"><small>이전 단원</small>← 용어 사전</a><a class="next" href="index.html"><small>처음으로</small>학습 안내 →</a></nav><footer>Hermes Agent 학습 교재<span>문헌·소스 검토 기반 / 실제 설치·벤치마크 미수행</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-0-0">0. 읽기 안내와 검증 범위</a><a href="#s-sources-부록-b-공식-자료-및-코드-출처-검증-가능한-링크-">부록 B. 공식 자료 및 코드 출처 (검증 가능한 링크)</a><a href="#s-sources-b-1">B.1 공식 설명 문서</a><a href="#s-sources-b-2">B.2 공개 소스코드 바로가기</a><a href="#s-sources-b-3">B.3 재검증 절차 (개발 착수 직전)</a></nav></aside></div></body></html>

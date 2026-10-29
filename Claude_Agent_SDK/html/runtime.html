@@ -1,0 +1,231 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>프로세스 통신과 실행 결과 연결하기 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" class="current" aria-current="page"><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>Client·메시지·Loop</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 02</p><h1>프로세스 통신과 실행 결과 연결하기</h1><p class="lead">query와 ClaudeSDKClient, 메시지 스트림과 종료 상태</p><div class="chapter-meta">원문 5–8장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>단발 query와 양방향 ClaudeSDKClient는 입력·제어·연결 수명주기가 다릅니다. 출력 스트림이 있다는 사실만으로 같은 연결에서 지속적인 중단·승인 제어가 가능한 것은 아닙니다.</p><p>AssistantMessage와 ResultMessage, 중간 이벤트와 최종 성공을 구분하세요. 실행 Loop는 CLI의 기능이며 Python SDK에 모든 도구 선택 로직이 들어 있다고 해석하면 안 됩니다. 턴·비용·오류·중단 조건을 결과 메시지와 연결해 읽으세요.</p><p class="reading-question"><strong>읽는 관점</strong>ResultMessage 수신 여부와 성공 여부, 클라이언트 연결 수명과 Session 수명을 따로 확인하세요.</p></section><section class="source-section" data-source-chapter="5"><h2 id="s-5-1">5. 전체 아키텍처와 실행 주체<a class="anchor" href="#s-5-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-5-2">5.1 주요 컴포넌트<a class="anchor" href="#s-5-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>컴포넌트</th>
+<th>주된 역할</th>
+<th>주요 코드/출처</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>query()</code></td>
+<td>단발 실행/단방향 스트림 인터페이스</td>
+<td><code>query.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer">[C01]</a></td>
+</tr>
+<tr>
+<td><code>ClaudeSDKClient</code></td>
+<td>양방향 대화, 연속 질의, interrupt, 연결 관리</td>
+<td><code>client.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a></td>
+</tr>
+<tr>
+<td><code>ClaudeAgentOptions</code></td>
+<td>Model, Tools, Permissions, Hooks, Session 등 설정</td>
+<td><code>types.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/types.py" target="_blank" rel="noopener noreferrer">[C06]</a></td>
+</tr>
+<tr>
+<td><code>InternalClient</code></td>
+<td>단발 쿼리 실행 연결·정리</td>
+<td><code>_internal/client.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/client.py" target="_blank" rel="noopener noreferrer">[C03]</a></td>
+</tr>
+<tr>
+<td><code>SubprocessCLITransport</code></td>
+<td>CLI 바이너리 실행, 인자 구성, stdin/stdout 통신</td>
+<td><code>_internal/transport/subprocess_cli.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></td>
+</tr>
+<tr>
+<td><code>Query</code></td>
+<td>제어 요청·응답, Hook/Permission 호출, 메시지 스트림</td>
+<td><code>_internal/query.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer">[C04]</a></td>
+</tr>
+<tr>
+<td><code>parse_message()</code></td>
+<td>CLI 원시 메시지를 SDK 메시지 타입으로 변환</td>
+<td><code>_internal/message_parser.py</code> <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer">[C07]</a></td>
+</tr>
+<tr>
+<td>Claude Code CLI</td>
+<td>Agent Loop, Built-in Tool, 모델/컨텍스트 실행</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>—코드 공개 범위 제한</td>
+</tr>
+<tr>
+<td><code>SessionStore</code></td>
+<td>세션 기록 외부 저장 및 재개</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/session-storage" target="_blank" rel="noopener noreferrer">[D09]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/session_resume.py" target="_blank" rel="noopener noreferrer">[C08]</a></td>
+</tr>
+</tbody></table>
+</div><h3 id="s-5-3">5.2 데이터 흐름<a class="anchor" href="#s-5-3" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="2"><figcaption><span>그림 2</span> 요청이 CLI와 도구를 거쳐 메시지로 돌아오는 순서</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출 순서도"><table class="sequence"><thead><tr><th>순서</th><th>호출자 → 수신자</th><th>전달 내용</th></tr></thead><tbody><tr><td>1</td><td>Python Application → Agent SDK</td><td>query(prompt, options)</td></tr><tr><td>2</td><td>Agent SDK → Subprocess Transport</td><td>설정 및 스트림 초기화</td></tr><tr><td>3</td><td>Subprocess Transport → Claude Code CLI</td><td>프로세스 실행 + 메시지</td></tr><tr><td>4</td><td>Claude Code CLI → Claude Model</td><td>Prompt/Context/Tool Definition</td></tr><tr><td>5</td><td>Claude Model → Claude Code CLI</td><td>text/tool_use</td></tr><tr class="sequence-control"><td colspan="3">조건 분기：Tool 요청</td></tr><tr><td>6</td><td>Claude Code CLI → Claude Code CLI</td><td>Hook·Permission 평가</td></tr><tr><td>7</td><td>Claude Code CLI → Tool/MCP</td><td>Tool 실행</td></tr><tr><td>8</td><td>Tool/MCP → Claude Code CLI</td><td>Tool 결과</td></tr><tr><td>9</td><td>Claude Code CLI → Claude Model</td><td>Tool 결과 포함 재호출</td></tr><tr class="sequence-control"><td colspan="3">↳ 다른 분기：최종 응답</td></tr><tr><td>10</td><td>Claude Code CLI → Subprocess Transport</td><td>result</td></tr><tr class="sequence-control"><td colspan="3">구간 종료</td></tr><tr><td>11</td><td>Subprocess Transport → Agent SDK</td><td>stream-json / control</td></tr><tr><td>12</td><td>Agent SDK → Python Application</td><td>Typed Message / ResultMessage</td></tr></tbody></table></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 호출 순서와 반복·분기 조건을 표 형태의 순서도로 보존했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+    participant App as Python Application
+    participant SDK as Agent SDK
+    participant T as Subprocess Transport
+    participant CLI as Claude Code CLI
+    participant M as Claude Model
+    participant Tool as Tool/MCP
+    App-&gt;&gt;SDK: query(prompt, options)
+    SDK-&gt;&gt;T: 설정 및 스트림 초기화
+    T-&gt;&gt;CLI: 프로세스 실행 + 메시지
+    CLI-&gt;&gt;M: Prompt/Context/Tool Definition
+    M--&gt;&gt;CLI: text/tool_use
+    alt Tool 요청
+        CLI-&gt;&gt;CLI: Hook·Permission 평가
+        CLI-&gt;&gt;Tool: Tool 실행
+        Tool--&gt;&gt;CLI: Tool 결과
+        CLI-&gt;&gt;M: Tool 결과 포함 재호출
+    else 최종 응답
+        CLI--&gt;&gt;T: result
+    end
+    T--&gt;&gt;SDK: stream-json / control
+    SDK--&gt;&gt;App: Typed Message / ResultMessage</code></pre></details></figure><p><strong>[의사도식]</strong> CLI 내부 세부 함수 호출 순서를 가리키는 코드 레벨 구현도는 아니다. 통신 경계와 책임을 이해하기 위한 시퀀스다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/client.py" target="_blank" rel="noopener noreferrer">[C03]</a>–<a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer">[C07]</a></p>
+<h3 id="s-5-4">5.3 ‘프로세스가 생긴다’는 것의 의미<a class="anchor" href="#s-5-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Python 패키지가 단지 <code>requests.post()</code>만 실행하는 것과 다르게, 기본 Transport는 별도 실행 바이너리와 JSON 기반 스트림을 주고받는다. 따라서 프로세스 생명주기, 배포 이미지 구성, 환경변수 전달, 파일시스템 격리, OS 사용자 권한, 세션 스토리지, CLI 업데이트가 운영 요소가 된다. <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/secure-deployment" target="_blank" rel="noopener noreferrer">[D19]</a></p>
+</section>
+<section class="source-section" data-source-chapter="6"><h2 id="s-6-1">6. <code>query()</code> vs <code>ClaudeSDKClient</code><a class="anchor" href="#s-6-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th><code>query()</code></th>
+<th><code>ClaudeSDKClient</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>기본 성격</td>
+<td>단발·단방향 사용</td>
+<td>양방향 지속 세션</td>
+</tr>
+<tr>
+<td>입력</td>
+<td>호출 시 prompt/입력 스트림 제공</td>
+<td>연결 후 <code>client.query()</code> 반복</td>
+</tr>
+<tr>
+<td>출력</td>
+<td><code>async for</code>로 메시지 스트림</td>
+<td><code>receive_messages()</code> / <code>receive_response()</code></td>
+</tr>
+<tr>
+<td>중단</td>
+<td>직접적 interactive interruption 제한</td>
+<td><code>interrupt()</code> 지원</td>
+</tr>
+<tr>
+<td>동적 제어</td>
+<td>초기 옵션 기반</td>
+<td>실행 중 model·permission 조정 등</td>
+</tr>
+<tr>
+<td>일반적 용도</td>
+<td>작업 1회 수행, 배치</td>
+<td>상담형 UI, 반복 분석, 승인 인터랙션</td>
+</tr>
+</tbody></table>
+</div><p>공식: <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a>; 소스: <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer">[C01]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<h3 id="s-6-2">6.1 상태 유지와 <code>query()</code>의 오해<a class="anchor" href="#s-6-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>‘<code>query()</code>가 stateless’라는 문구는 <strong>같은 Python 클라이언트 연결 상태를 유지하지 않는다는 뜻</strong>에 가깝다. 기존 Session ID와 <code>resume</code> 옵션을 통해 이전 세션을 재개할 수 있다는 사실과 모순되지 않는다. SDK 호출 객체의 수명과 대화 기록의 수명을 분리해서 생각해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a></p>
+<h3 id="s-6-3">6.2 연속 대화 예시<a class="anchor" href="#s-6-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>import asyncio
+from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions, ResultMessage
+
+async def main():
+    options = ClaudeAgentOptions(cwd=&quot;/path/to/project&quot;, max_turns=8)
+    async with ClaudeSDKClient(options=options) as client:
+        await client.query(&quot;CSV 파일의 열 이름을 요약해 줘&quot;)
+        async for msg in client.receive_response():
+            if isinstance(msg, ResultMessage):
+                print(msg.result)
+
+        await client.query(&quot;이 중 결측치가 발생할 가능성이 높은 열은?&quot;)
+        async for msg in client.receive_response():
+            if isinstance(msg, ResultMessage):
+                print(msg.result)
+
+asyncio.run(main())</code></pre></div><p><code>receive_response()</code>는 <code>ResultMessage</code>까지 수신한 뒤 멈추는 편의 인터페이스이고, <code>receive_messages()</code>는 전체 메시지를 계속 읽는 스트림이다. <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+</section>
+<section class="source-section" data-source-chapter="7"><h2 id="s-7-1">7. 메시지·스트리밍·최종 결과·비용<a class="anchor" href="#s-7-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-7-2">7.1 메시지 유형을 구분해야 하는 이유<a class="anchor" href="#s-7-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Agent의 출력을 단순히 최종 문자열 하나로 취급하면 <strong>어떤 도구를 호출했는지</strong>, <strong>도구 실행이 실패했는지</strong>, <strong>권한 거부가 있었는지</strong>를 잃어버릴 수 있다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>메시지</th>
+<th>대표 내용</th>
+<th>분석 활용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SystemMessage</code></td>
+<td>초기화·세션·사용 가능 도구 등 정보</td>
+<td>구동/설정 검사</td>
+</tr>
+<tr>
+<td><code>AssistantMessage</code></td>
+<td>텍스트 및 Tool 사용 요청 블록</td>
+<td>모델 판단 경로 추적</td>
+</tr>
+<tr>
+<td><code>UserMessage</code></td>
+<td>사용자 입력 또는 Tool 결과 표현</td>
+<td>근거 추적</td>
+</tr>
+<tr>
+<td><code>StreamEvent</code></td>
+<td>세밀한 부분 토큰/이벤트</td>
+<td>실시간 UI</td>
+</tr>
+<tr>
+<td><code>ResultMessage</code></td>
+<td>최종 상태·비용·사용량·세션 ID 등</td>
+<td>종료·과금·실패 검사</td>
+</tr>
+</tbody></table>
+</div><p>실제 버전에 따라 다른 메시지 유형도 존재한다. 운영 코드에서는 알려진 유형만 무조건 허용하거나 모든 결과를 <code>AssistantMessage</code>라고 가정하지 말고 API Reference와 Message Parser를 확인한다. <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer">[C07]</a></p>
+<h3 id="s-7-3">7.2 최종 결과의 중요한 필드<a class="anchor" href="#s-7-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>ResultMessage</code>에는 <code>subtype</code>, <code>is_error</code>, <code>num_turns</code>, <code>duration_ms</code>, <code>session_id</code>, <code>result</code>, <code>structured_output</code>, <code>total_cost_usd</code>, <code>usage</code>, <code>permission_denials</code> 등이 포함될 수 있다. 필드는 결과 subtype 및 버전에 따라 <code>None</code>일 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<p><strong>실무 체크:</strong> <code>ResultMessage</code>를 받았다고 해서 성공을 단정하지 말고 <code>subtype</code>, <code>is_error</code>, 예외, 구조화 출력 존재 여부를 확인한다. 최소한 성공/예산 초과/최대 턴/실행 오류를 구분해 저장한다.</p>
+<h3 id="s-7-4">7.3 스트리밍<a class="anchor" href="#s-7-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><code>include_partial_messages</code> 등 관련 옵션으로 세밀한 출력 이벤트를 받을 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/streaming-output" target="_blank" rel="noopener noreferrer">[D17]</a></li>
+<li>각 <code>AssistantMessage</code>는 ‘완료된 전체 실행’과 같지 않다.</li>
+<li>streaming 도중 연결 실패, 중복 이벤트, partial 출력 노출에 주의한다.</li>
+<li>민감 데이터를 실시간 UI/로그로 그대로 전달하지 않도록 서버 측 필터가 필요하다. [설계]</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="8"><h2 id="s-8-1">8. Agent Loop와 종료 조건<a class="anchor" href="#s-8-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-8-2">8.1 실행 원리<a class="anchor" href="#s-8-2" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="3"><figcaption><span>그림 3</span> CLI Agent Loop의 설명용 반복·종료 분기</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-3.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="CLI Agent Loop의 설명용 반복·종료 분기"><img src="assets/diagram-3.svg" alt="CLI Agent Loop의 설명용 반복·종료 분기. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+    U[Prompt + Session + System Prompt] --&gt; L[Claude 모델 판단]
+    L --&gt; D{Tool 호출 필요?}
+    D --&gt;|Yes| P[Permission/Hook 검사]
+    P --&gt;|거부| E[거부 정보 반환]
+    P --&gt;|허용| T[Tool 실행]
+    T --&gt; R[Tool 결과를 Context에 포함]
+    E --&gt; R
+    R --&gt; L
+    D --&gt;|No| F[최종 응답 및 ResultMessage]
+    L --&gt; Z{턴/비용/중단 등의 제한}
+    Z --&gt;|중단| X[종료 상태/에러]
+    Z --&gt;|계속| D</code></pre></details></figure><p>공식: <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a> 이 플로우는 <strong>설명용 요약</strong>이다. CLI 내부 상태 머신의 정확한 구현 함수나 코드 분기를 나타내지는 않는다.</p>
+<h3 id="s-8-3">8.2 모델 Tool Use와 ‘실제 Tool 실행’ 구분<a class="anchor" href="#s-8-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>모델은 <strong>도구를 사용해 달라는 요청</strong>을 생성한다.</li>
+<li>런타임/정책 계층은 요청의 허용 여부, 실행 위치와 방식, 오류 처리를 결정한다.</li>
+<li>도구 결과는 다음 모델 호출에 반영된다.</li>
+<li>최종 답변은 실행 횟수·비용·사용 가능한 데이터 품질에 영향을 받는다.</li>
+</ul>
+<h3 id="s-8-4">8.3 종료와 상한 설정<a class="anchor" href="#s-8-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>최종 답변/정상 종료.</li>
+<li><code>max_turns</code>에 의한 턴 수 제한.</li>
+<li><code>max_budget_usd</code>에 의한 예산 제한.</li>
+<li>Tool 오류·모델 API 오류·CLI 연결 오류.</li>
+<li>승인이 거부되거나 <code>interrupt()</code>로 중단.</li>
+<li>Structured Output 재시도 실패.</li>
+</ul>
+<p>반환된 <code>ResultMessage.subtype</code>은 <code>success</code>, <code>error_max_turns</code>, <code>error_max_budget_usd</code>, <code>error_during_execution</code>, <code>error_max_structured_output_retries</code> 등의 값을 가질 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<h3 id="s-8-5">8.4 ‘턴’과 ‘사용자 요청’을 혼동하지 말 것<a class="anchor" href="#s-8-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>사용자 질문 한 번으로 여러 모델·도구 상호작용이 발생할 수 있다. 비용·시간·컨텍스트를 평가할 때 <code>num_turns</code>와 실제 API 호출/도구 호출 수를 분리하여 수집하는 편이 좋다. 정확한 과금 및 턴 정의는 해당 API Reference를 따른다.</p>
+<h3 id="s-8-6">8.5 Claude Agent SDK의 강점과 트레이드오프<a class="anchor" href="#s-8-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>장점:</strong> 도구 호출과 루프를 처음부터 직접 개발할 부담이 작다.</p>
+<p><strong>트레이드오프:</strong> CLI 내부의 모든 분기 알고리즘을 Python 사용자 코드에서 독립적으로 교체하기는 어렵다. 엄격한 프로세스 제어나 명시적 DAG가 중심인 업무는 상위 서비스의 워크플로 계층을 별도 설계해야 할 수 있다. [추론·설계]</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="foundations.html"><small>이전 단원</small>← SDK와 Claude Code</a><a class="next" href="instructions.html"><small>다음 단원</small>지침과 설정 병합 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-5-1">5. 전체 아키텍처와 실행 주체</a><a href="#s-6-1">6. query() vs ClaudeSDKClient</a><a href="#s-7-1">7. 메시지·스트리밍·최종 결과·비용</a><a href="#s-8-1">8. Agent Loop와 종료 조건</a></nav></aside></div></body></html>

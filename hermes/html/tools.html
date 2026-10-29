@@ -1,0 +1,151 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Hermes Agent의 개념, 실행 원리, 코드와 반도체 적용 판단을 배우는 개인 학습 교재"><title>도구 요청을 실제 함수로 연결하기 — Hermes Agent</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent</a><button id="menu-button" type="button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">H.</span><span>Hermes Agent<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro " href="index.html" >학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>기초와 구성요소</span></a><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처와 Agent Loop</span></a><p class="nav-group">핵심 원리</p><a href="context.html" ><span class="nav-number">03</span><span>Prompt와 Context</span></a><a href="memory.html" ><span class="nav-number">04</span><span>Memory와 Session History</span></a><a href="skills.html" ><span class="nav-number">05</span><span>Skills와 자기 개선</span></a><a href="tools.html" class="current" aria-current="page"><span class="nav-number">06</span><span>Tool · MCP · Plugin</span></a><p class="nav-group">구현과 운영</p><a href="orchestration.html" ><span class="nav-number">07</span><span>Subagent와 Gateway</span></a><a href="code.html" ><span class="nav-number">08</span><span>코드 탐색과 핵심 로직</span></a><a href="operations.html" ><span class="nav-number">09</span><span>Guardrails와 관측·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 PoC와 기술 평가</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29</span><a href="../Hermes_Agent.md">원본 Markdown ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Hermes Agent</a><span aria-hidden="true">/</span><span>Tool · MCP · Plugin</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 <span>/</span> 단원 06</p><h1>도구 요청을 실제 함수로 연결하기</h1><p class="lead">모델이 보는 계약과 실제 Handler의 책임</p><div class="chapter-meta">원문 11–12장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>모델에게 보이는 <strong>Tool Schema</strong>는 함수의 이름과 인자를 설명하는 계약입니다. 실제 작업은 Handler가 수행합니다. Registry는 이 연결을 관리하고, Toolset은 관련 도구의 노출 범위를 묶어 제어합니다.</p><p>MCP와 Plugin은 도구를 확장하는 서로 다른 연결 방식입니다. MCP는 외부 서버의 기능을 연결하고, Plugin은 Hermes 런타임에 Tool이나 Hook을 추가할 수 있습니다. 이 구분을 먼저 잡으면 아래 등록 코드와 실행 흐름을 읽기 쉽습니다. Schema가 정확하더라도 실제 데이터 접근권한은 백엔드에서 강제해야 한다는 조건을 놓치지 마세요.</p><p class="reading-question"><strong>읽는 관점</strong>“도구를 설명하는 것”, “등록하는 것”, “실행을 허용하는 것”은 각각 어느 계층의 책임인가요?</p></section><section class="source-section" data-source-chapter="11"><h2 id="s-11-11">11. Tool Runtime과 Registry: 실제 함수가 실행되는 경로<a class="anchor" href="#s-11-11" aria-label="11. Tool Runtime과 Registry: 실제 함수가 실행되는 경로 섹션 링크">#</a></h2>
+<h3 id="s-11-11-1">11.1 Tool, Toolset, MCP, Skill을 구분하자<a class="anchor" href="#s-11-11-1" aria-label="11.1 Tool, Toolset, MCP, Skill을 구분하자 섹션 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>이름</th>
+<th>무엇인가?</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tool</td>
+<td>LLM이 호출할 수 있는 개별 기능</td>
+<td><code>read_file</code>, <code>terminal</code></td>
+</tr>
+<tr>
+<td>Toolset</td>
+<td>관련 Tool들을 묶어 활성/비활성화하는 단위</td>
+<td>file/terminal 계열</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>외부 Tool 제공 서버와 통신하는 표준 연결 방식</td>
+<td>조직 내부 DB 조회 서버</td>
+</tr>
+<tr>
+<td>Plugin</td>
+<td>Hermes 런타임에 자체 Tool/Hook을 등록하는 확장</td>
+<td>사내 측정 API Tool</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>Tool들을 언제 어떻게 사용해야 할지 알려주는 절차</td>
+<td>웨이퍼 이상 분석 SOP</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-11-11-2">11.2 Registry의 등록 과정<a class="anchor" href="#s-11-11-2" aria-label="11.2 Registry의 등록 과정 섹션 링크">#</a></h3>
+<p>공식 Tools Runtime과 소스코드의 구조 <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime" target="_blank" rel="noopener noreferrer">S08</a>, <a href="https://github.com/NousResearch/hermes-agent/blob/main/tools/registry.py" target="_blank" rel="noopener noreferrer">C04</a>:</p>
+<ol>
+<li>개별 Tool Python 모듈에서 <code>registry.register(...)</code> 호출</li>
+<li>Registry가 이름, Toolset, 모델이 볼 JSON Schema, 실제 handler, 사용 가능성 검사를 보관</li>
+<li>모듈 Discovery가 등록 코드를 가진 모듈을 찾고 import</li>
+<li>활성 Toolset/환경/<code>check_fn</code>을 통과한 도구의 스키마만 모델에 전달</li>
+<li>LLM의 Tool Call이 들어오면 이름을 handler에 매핑하여 실행</li>
+</ol>
+<p><strong>실제 소스의 주요 시그니처 일부</strong> (<code>tools/registry.py</code>, 가독성을 위해 일부 선택):</p>
+<div class="code-block"><div class="code-caption"><span>실제 함수·시그니처 일부 / 생략 포함</span><span>python</span></div><pre tabindex="0" aria-label="실제 함수·시그니처 일부 / 생략 포함"><code class="language-python"># [코드] 원본 ToolRegistry.register() 시그니처 중 핵심 인자만 발췌
+# 전체 시그니처 및 구현: https://github.com/NousResearch/hermes-agent/blob/main/tools/registry.py
+
+def register(self, name: str, toolset: str, schema: dict, handler,
+             check_fn=None, requires_env=None, is_async: bool = False, ...):
+    ...</code></pre></div>
+<p>이 예시에서 <code>...</code>는 <strong>생략</strong>을 뜻하고, 실제 복사 실행 가능한 함수 정의가 아니다. 중요한 필드는 <code>schema</code>가 <em>LLM에 보이는 계약</em>, <code>handler</code>가 <em>실행 함수</em>, <code>check_fn</code>이 <em>도구 가용성 조건</em>이라는 점이다.</p>
+<h3 id="s-11-11-3">11.3 Tool 등록 의사코드<a class="anchor" href="#s-11-11-3" aria-label="11.3 Tool 등록 의사코드 섹션 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>설명용 예시</span><span>python</span></div><pre tabindex="0" aria-label="설명용 예시"><code class="language-python"># [예시] 읽기 전용 측정값 조회 Tool의 개념을 보여주는 의사코드
+registry.register(
+    name=&quot;get_measurement_summary&quot;,
+    toolset=&quot;semiconductor_readonly&quot;,
+    schema={
+        &quot;name&quot;: &quot;get_measurement_summary&quot;,
+        &quot;description&quot;: &quot;승인된 데이터의 측정 통계만 조회&quot;,
+        &quot;parameters&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {&quot;dataset_id&quot;: {&quot;type&quot;: &quot;string&quot;}},
+            &quot;required&quot;: [&quot;dataset_id&quot;]
+        }
+    },
+    handler=approved_readonly_handler,
+    check_fn=read_only_api_is_configured
+)</code></pre></div>
+<p>실제 통합은 Plugin API 등 확장 경로의 정확한 시그니처에 맞춰 구현해야 한다. <strong>LLM에 보이는 Tool Schema를 잘 정의해야 오호출을 줄일 수 있지만, Schema 자체가 데이터 접근 권한을 강제하는 보안 장치는 아니다.</strong> 백엔드에서 권한·필터·결과 크기를 검증해야 한다.</p>
+<h3 id="s-11-11-4">11.4 Tool 실행 시퀀스와 에러 처리<a class="anchor" href="#s-11-11-4" aria-label="11.4 Tool 실행 시퀀스와 에러 처리 섹션 링크">#</a></h3>
+<figure class="diagram" id="figure-4"><figcaption><span>그림 4</span> Tool 실행: 일반 도구와 상태 기반 도구의 분기</figcaption><p class="scroll-hint">넓은 도식은 가로로 스크롤하여 읽을 수 있습니다.</p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Tool 실행: 일반 도구와 상태 기반 도구의 분기"><img src="assets/diagram-4.svg" alt="Tool 실행: 일반 도구와 상태 기반 도구의 분기. 연결 관계는 도식 원문의 화살표로도 확인할 수 있습니다." loading="lazy"></div><p class="figure-note">[개념도] 원문의 연결 관계를 보존해 다시 배치했습니다. 실제 구현의 모든 호출·보안 경계를 표시한 그림은 아닙니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><details class="diagram-original"><summary>연결 관계 원문 (Mermaid)</summary><pre><code>flowchart TD
+  A[LLM tool_call] --&gt; B[Agent-level 특수 도구인가?]
+  B -- Yes --&gt; C[memory/todo/session_search/delegate 등 상태 기반 처리]
+  B -- No --&gt; D[pre_tool_call hooks / middleware]
+  D --&gt; E[위험 명령 승인·권한·실행환경 검토]
+  E --&gt; F[model_tools.handle_function_call]
+  F --&gt; G[registry.dispatch / handler]
+  G --&gt; H[결과 또는 표준 오류 문자열]
+  H --&gt; I[post_tool_call hooks / transform]
+  I --&gt; J[Tool 결과를 메시지에 추가]
+  C --&gt; J
+  J --&gt; K[다음 LLM 호출]</code></pre></details></figure><p><code>model_tools.handle_function_call()</code>은 Tool Call 인자를 처리하고 Middleware/Hook을 거쳐 Registry로 라우팅하는 실제 함수다. <code>registry.dispatch()</code>와 상위 핸들러의 예외 처리는 도구 호출 실패를 모델에 전달 가능한 오류 결과로 감싸는 역할을 한다. <em>에러가 모델에 돌아온다고 해서 작업 성공이 보장되는 것은 아니다.</em> <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime" target="_blank" rel="noopener noreferrer">S08</a>, <a href="https://github.com/NousResearch/hermes-agent/blob/main/model_tools.py" target="_blank" rel="noopener noreferrer">C03</a></p>
+<h3 id="s-11-11-5">11.5 Agent-level 특수 도구<a class="anchor" href="#s-11-11-5" aria-label="11.5 Agent-level 특수 도구 섹션 링크">#</a></h3>
+<p><code>memory</code>, <code>session_search</code>, <code>delegate_task</code>, 할 일 관리 도구는 단순한 외부 함수가 아니라 <strong>현재 AIAgent의 세션·MemoryStore·TodoStore 같은 내부 상태에 접근해야 하므로</strong> Agent Loop에서 일반 dispatch 전에 별도 처리될 수 있다. 이것이 &#39;Tool Schema만 등록하면 모든 것을 구현할 수 있다&#39;고 볼 수 없는 이유다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop" target="_blank" rel="noopener noreferrer">S04</a>, <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime" target="_blank" rel="noopener noreferrer">S08</a></p>
+</section>
+<section class="source-section" data-source-chapter="12"><h2 id="s-12-12">12. MCP·Plugins·Code Execution의 관계<a class="anchor" href="#s-12-12" aria-label="12. MCP·Plugins·Code Execution의 관계 섹션 링크">#</a></h2>
+<h3 id="s-12-12-1">12.1 MCP는 Tool의 공급 경로이지 Agent Loop의 대체재가 아니다<a class="anchor" href="#s-12-12-1" aria-label="12.1 MCP는 Tool의 공급 경로이지 Agent Loop의 대체재가 아니다 섹션 링크">#</a></h3>
+<figure class="diagram" id="figure-5"><figcaption><span>그림 5</span> MCP: 외부 도구가 연결되는 경로</figcaption><p class="scroll-hint">넓은 도식은 가로로 스크롤하여 읽을 수 있습니다.</p><div class="diagram-scroll" tabindex="0" role="region" aria-label="MCP: 외부 도구가 연결되는 경로"><img src="assets/diagram-5.svg" alt="MCP: 외부 도구가 연결되는 경로. 연결 관계는 도식 원문의 화살표로도 확인할 수 있습니다." loading="lazy"></div><p class="figure-note">[개념도] 원문의 연결 관계를 보존해 다시 배치했습니다. 실제 구현의 모든 호출·보안 경계를 표시한 그림은 아닙니다. <a href="assets/diagram-5.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><details class="diagram-original"><summary>연결 관계 원문 (Mermaid)</summary><pre><code>flowchart LR
+  A[Hermes Agent Loop] --&gt; B[Tool Registry]
+  B --&gt; C[Native Tool]
+  B --&gt; D[Hermes Plugin Tool]
+  B --&gt; E[MCP Client]
+  E --&gt; F[MCP Server]
+  F --&gt; G[(DB/API/File system)]</code></pre></details></figure><p><strong>MCP Server</strong>는 외부 기능을 제공하고, <strong>Hermes는 MCP Client</strong>로 연결한다. Hermes의 문서는 로컬 stdio 및 원격 HTTP MCP 서버 설정, 도구 자동 발견, 서버별 Tool 필터링을 지원한다고 설명한다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp" target="_blank" rel="noopener noreferrer">S13</a></p>
+<div class="code-block"><div class="code-caption"><span>설명용 설정 예시</span><span>yaml</span></div><pre tabindex="0" aria-label="설명용 설정 예시"><code class="language-yaml"># [공식 문서 구조의 설명용 예시] 직접 설치·실행하지 않음
+mcp_servers:
+  internal_measurement:
+    command: &quot;python&quot;
+    args: [&quot;/approved/tools/read_only_mcp_server.py&quot;]</code></pre></div>
+<p>위 구성의 스크립트는 <strong>가상의 사내 MCP 서버 경로</strong>다. 설정 예시일 뿐 해당 파일이나 서버가 존재한다는 뜻이 아니다. 조직의 MCP 보안·인증·권한 정책을 우선 확인해야 한다.</p>
+<h3 id="s-12-12-2">12.2 Hermes Plugin과 MCP 중 무엇을 선택하나?<a class="anchor" href="#s-12-12-2" aria-label="12.2 Hermes Plugin과 MCP 중 무엇을 선택하나? 섹션 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>기준</th>
+<th>Hermes Plugin</th>
+<th>외부 MCP Server</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>실행 위치</td>
+<td>Hermes Python 확장과 결합</td>
+<td>별도 프로세스/서비스 가능</td>
+</tr>
+<tr>
+<td>확장 언어</td>
+<td>주로 Hermes의 Python 구조</td>
+<td>MCP 프로토콜을 구현하는 다양한 언어</td>
+</tr>
+<tr>
+<td>결합도</td>
+<td>Hermes 내부 API에 더 밀착</td>
+<td>표준 프로토콜 기반, 상대적으로 느슨함</td>
+</tr>
+<tr>
+<td>공유성</td>
+<td>Hermes 사용자/프로필 중심</td>
+<td>여러 Agent Client에서 재사용 가능</td>
+</tr>
+<tr>
+<td>권한 통제</td>
+<td>Hermes + Handler 구현에 의존</td>
+<td>Hermes + MCP 서버 양쪽에서 통제 가능</td>
+</tr>
+</tbody></table>
+</div><p>반도체 공정 조회 기능을 여러 Agent 프레임워크와 비교할 계획이라면 <strong>같은 읽기 전용 MCP 서버</strong>를 모든 프레임워크가 공유하게 만드는 편이 이후 공정한 비교에 유리할 수 있다. [해석]</p>
+<h3 id="s-12-12-3">12.3 Plugin 구조와 Hooks<a class="anchor" href="#s-12-12-3" aria-label="12.3 Plugin 구조와 Hooks 섹션 링크">#</a></h3>
+<p>공식 Plugin 문서의 기본 구조 <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener noreferrer">S12</a>:</p>
+<div class="code-block"><div class="code-caption"><span>구조·흐름 설명</span><span>text</span></div><pre tabindex="0" aria-label="구조·흐름 설명"><code class="language-text">~/.hermes/plugins/example/
+├── plugin.yaml
+├── __init__.py     # register(ctx)
+├── schemas.py
+└── tools.py</code></pre></div>
+<p>Plugin은 <code>ctx.register_tool(...)</code>로 Tool을, <code>ctx.register_hook(...)</code>로 실행 전후 이벤트 처리기를 추가할 수 있다. <code>pre_tool_call</code>, <code>post_tool_call</code>과 같은 Hook은 로깅, 추가 허용 정책, 실행 측정 등을 구현하는 접점이다.</p>
+<p><strong>주의</strong>: Hook이 호출된다고 모든 보안이 자동으로 적용되는 것은 아니다. 외부 서비스에 대한 리소스 기반 접근제어, SQL 쿼리 제한, 네트워크 egress 제한, 비밀정보 마스킹은 별도 설계가 필요하다.</p>
+<h3 id="s-12-12-4">12.4 Code Execution은 어디에 놓이나?<a class="anchor" href="#s-12-12-4" aria-label="12.4 Code Execution은 어디에 놓이나? 섹션 링크">#</a></h3>
+<p>일반 Tool Calling은 모델이 Tool별 인자를 작성한다. 코드 실행 방식은 Agent가 Python 스크립트 형태로 여러 단계를 계획하고 이를 실행환경에서 수행하도록 하는 방식이다. Hermes의 <code>execute_code</code>는 도구 접근이 가능한 샌드박스/RPC 경로를 제공할 수 있다. <a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">S01</a>, <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime" target="_blank" rel="noopener noreferrer">S08</a></p>
+<p>도메인 데이터가 중요하다면 <strong>임의 Python 실행</strong>과 <strong>사전 승인된 집계 Tool</strong>의 위험도를 구분해야 한다. 초기에 임의 실행 대신 후자를 우선하고, 필요할 때만 격리된 컨테이너·CPU/메모리·시간 제한을 갖춘 코드 실행을 허용하는 방향이 좋다.</p>
+</section><div class="next-bridge"><p>하나의 도구 실행 경로를 이해했다면, 여러 Agent와 여러 입력 채널의 실행 경계를 살펴봅니다.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="skills.html"><small>이전 단원</small>← Skills와 자기 개선</a><a class="next" href="orchestration.html"><small>다음 단원</small>Subagent와 Gateway →</a></nav><footer>Hermes Agent 학습 교재<span>문헌·소스 검토 기반 / 실제 설치·벤치마크 미수행</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-11-11">11. Tool Runtime과 Registry: 실제 함수가 실행되는 경로</a><a href="#s-12-12">12. MCP·Plugins·Code Execution의 관계</a></nav></aside></div></body></html>

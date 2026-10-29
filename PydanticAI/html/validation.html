@@ -1,0 +1,149 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI의 원리·구현·한계를 배우는 개인 학습 교재"><title>검증과 재시도가 실행을 바꾸는 방식 — PydanticAI</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">P.</span><span>PydanticAI<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="core.html" ><span class="nav-number">02</span><span>Agent·Deps·Tools</span></a><a href="validation.html" class="current" aria-current="page"><span class="nav-number">03</span><span>출력·Retry·종료</span></a><a href="history.html" ><span class="nav-number">04</span><span>Messages와 영속성</span></a><a href="architecture.html" ><span class="nav-number">05</span><span>Graph·Loop·Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Memory·Skills·MCP</span></a><a href="orchestration.html" ><span class="nav-number">07</span><span>협업과 Harness</span></a><p class="nav-group">구현과 운영</p><a href="code.html" ><span class="nav-number">08</span><span>소스코드 경계 추적</span></a><a href="operations.html" ><span class="nav-number">09</span><span>모델·보안·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용과 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >용어와 복습</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Core v2.61.0</span><a href="../PydanticAI.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">PydanticAI</a><span aria-hidden="true">/</span><span>출력·Retry·종료</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 03</p><h1>검증과 재시도가 실행을 바꾸는 방식</h1><p class="lead">Output 모드와 Validator, 한도와 end_strategy</p><div class="chapter-meta">원문 8–9장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>같은 출력 타입을 선언해도 모델과 OutputSpec에 따라 Tool, Native Schema 또는 텍스트 기반 경로를 사용할 수 있습니다. 타입 검증과 사용자 Validator, 실제 데이터의 재계산은 서로 다른 검증 단계입니다.</p><p>ModelRetry는 모델에게 수정 피드백을 돌려주는 제어이며 네트워크 오류 재시도와 다릅니다. 한 응답에 최종 출력과 함수 도구가 함께 있을 때는 end_strategy가 실행 순서와 부작용에 영향을 줄 수 있으므로 원문의 조건을 자세히 읽으세요.</p><p class="reading-question"><strong>읽는 관점</strong>early·graceful·exhaustive를 “항상 실행” 또는 “항상 생략”으로 단순화하지 마세요.</p></section><section class="source-section" data-source-chapter="8"><h2 id="s-8-1">8. Structured Output / 출력 검증<a class="anchor" href="#s-8-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-8-2">8.1 출력 모드를 구별해야 한다<a class="anchor" href="#s-8-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>PydanticAI의 출력은 단순 텍스트만 의미하지 않는다. 공식 문서는 <code>ToolOutput</code>, <code>NativeOutput</code>, <code>PromptedOutput</code>, <code>TextOutput</code> 등 다양한 형태를 설명한다. 모델/공급자의 기능에 따라 사용하는 전략과 지원 여부가 다를 수 있다. <a href="https://pydantic.dev/docs/ai/core-concepts/output/" target="_blank" rel="noopener noreferrer">[S15]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>방식</th>
+<th>개략적 원리</th>
+<th>고려점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ToolOutput</code></td>
+<td>결과를 모델의 Tool Call처럼 만들어 출력 타입으로 해석</td>
+<td>모델의 Function Calling 능력에 의존</td>
+</tr>
+<tr>
+<td><code>NativeOutput</code></td>
+<td>Provider의 구조화 응답 기능 활용</td>
+<td>Provider가 지원하는 스키마 범위를 확인</td>
+</tr>
+<tr>
+<td><code>PromptedOutput</code></td>
+<td>프롬프트로 형식을 안내하고 반환 텍스트 파싱·검증</td>
+<td>형식 위반 가능성, 재시도 설계 필요</td>
+</tr>
+<tr>
+<td><code>TextOutput</code></td>
+<td>텍스트 기반 종료 결과</td>
+<td>별도 검증·후처리 필요 가능</td>
+</tr>
+</tbody></table>
+</div><p><code>output_type=MyModel</code>이 단일 고정 경로로만 처리된다고 단정하지 않는다. 선택된 모델과 OutputSpec에 따라 출력용 Tool, Native Schema 또는 텍스트를 활용한다.</p>
+<h3 id="s-8-3">8.2 Pydantic Validation과 Output Validator<a class="anchor" href="#s-8-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from pydantic import BaseModel, Field
+from pydantic_ai import Agent, ModelRetry
+
+class YieldReport(BaseModel):
+    lot_id: str
+    yield_pct: float = Field(ge=0, le=100)
+    basis: str
+
+agent = Agent(&#39;openai:&lt;model-id&gt;&#39;, output_type=YieldReport, retries=2)
+
+@agent.output_validator
+def check_report(output: YieldReport) -&gt; YieldReport:
+    if len(output.basis.strip()) &lt; 10:
+        raise ModelRetry(&#39;basis에 근거를 구체적으로 제시해야 합니다.&#39;)
+    return output</code></pre></div><ul>
+<li><strong>스키마 검증</strong>: 타입·필수 필드·범위.</li>
+<li><strong>사용자 Validator</strong>: 추론 결과가 특정 업무 규칙을 충족하는지 추가 검증.</li>
+<li><strong>ModelRetry</strong>: 수정 요청을 모델에 전달해 다시 생성하게 만드는 제어 신호.</li>
+<li><strong>최종 검증</strong>: 관측 데이터에서 다시 계산한 실제 수율과 일치하는지 확인하는 별도 도메인 코드 필요.</li>
+</ul>
+<p>출력 검증을 무제한 재시도로 처리하면 비용·지연시간이 커질 수 있으므로 <strong>재시도 한도와 실패 시 정책</strong>을 함께 설계한다. <a href="https://pydantic.dev/docs/ai/core-concepts/output/" target="_blank" rel="noopener noreferrer">[S15]</a><a href="https://pydantic.dev/docs/ai/core-concepts/retries/" target="_blank" rel="noopener noreferrer">[S16]</a></p>
+<h3 id="s-8-4">8.3 모델 생성의 구조적 보장과 한계<a class="anchor" href="#s-8-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>Pydantic 검증은 <strong>허용된 스키마에 들어맞는 값</strong>을 판별한다.</li>
+<li><code>basis=&#39;엔지니어링 경험상 그럴 듯함&#39;</code>은 문자열로는 유효하지만 근거로는 부족하다.</li>
+<li>생성된 보고서의 데이터 검증은 <strong>DB 집계 재계산, 규칙 엔진, 출처 대조, 독립 검사</strong>로 수행해야 한다.</li>
+<li>Agent의 출력이 고위험 운영 판단으로 이어지면 <strong>사람의 승인과 변경 권한 분리</strong>가 필요하다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="9"><h2 id="s-9-1">9. Retry, 오류 처리, 실행 한도<a class="anchor" href="#s-9-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-9-2">9.1 Retry는 하나가 아니다<a class="anchor" href="#s-9-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>실패</th>
+<th>발생 지점</th>
+<th>예시</th>
+<th>주로 필요한 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tool 인자 검증 실패</td>
+<td>모델이 Tool 호출 인자를 만듦</td>
+<td>필수 인자 누락, 타입 오류</td>
+<td>Model에게 피드백하여 인자 재생성</td>
+</tr>
+<tr>
+<td>Tool 도메인 검증 실패</td>
+<td>Python 함수 수행 전후</td>
+<td>존재하지 않는 LOT, 허용 범위 외 요청</td>
+<td>업무 규칙 오류 반환 또는 <code>ModelRetry</code></td>
+</tr>
+<tr>
+<td>출력 검증 실패</td>
+<td><code>output_type</code> 및 Validator</td>
+<td>잘못된 필드·불충분한 근거</td>
+<td>Output Retry, 한도 소진 시 실패</td>
+</tr>
+<tr>
+<td>Provider/API 실패</td>
+<td>모델 네트워크 호출</td>
+<td>429, 5xx, 연결 끊김</td>
+<td>백오프, 모델 대체, 호출 예산 통제</td>
+</tr>
+<tr>
+<td>도구 시스템 장애</td>
+<td>DB/API/파일 시스템</td>
+<td>DB 타임아웃, 권한 거절</td>
+<td>재시도 가능성 판단, 중복 실행 방지</td>
+</tr>
+<tr>
+<td>비즈니스 의사결정 실패</td>
+<td>의미·논리적 결과</td>
+<td>정상 LOT을 불량으로 판단</td>
+<td>도메인 테스트, 평가, 사람의 검토</td>
+</tr>
+</tbody></table>
+</div><p><strong>핵심:</strong> 스키마 오류 수정에 사용하는 <code>ModelRetry</code>와 인프라 API 재시도는 같은 개념이 아니다. 정상성·안전성 검증도 별도 단계다. <a href="https://pydantic.dev/docs/ai/core-concepts/retries/" target="_blank" rel="noopener noreferrer">[S16]</a></p>
+<h3 id="s-9-3">9.2 사용량 제한과 종료 조건<a class="anchor" href="#s-9-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><code>UsageLimits</code>를 이용해 호출 수/토큰 등의 한도를 제어할 수 있다.</li>
+<li>Tool 실행 횟수, API 비용, 최장 실행 시간, 과도한 반복은 별도 정책으로 관리해야 할 수 있다.</li>
+<li>모든 오류에서 자동으로 무한 복구하는 것은 아니다. 한도를 초과하면 실행 오류가 발생할 수 있다.</li>
+<li>엔터프라이즈 환경에서는 한 요청의 사용량과 <strong>사용자·조직 단위 월간 예산</strong>을 구분한다.</li>
+</ul>
+<p><strong>반도체 사례:</strong> 긴 SQL 결과를 매 Tool Call마다 1만 행씩 반환하면 컨텍스트가 급증한다. 서버에서 집계한 요약·샘플만 반환하고 원본은 승인된 별도 저장소에서 관리하도록 설계한다.</p>
+<h3 id="s-9-4">9.3 <code>end_strategy</code>가 중요한 이유 (v2)<a class="anchor" href="#s-9-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>PydanticAI <code>v2.61.0</code>의 <code>_agent_graph.py</code>에는 <code>EndStrategy = Literal[&#39;early&#39;, &#39;graceful&#39;, &#39;exhaustive&#39;]</code>가 있으며, <strong>v2 기본값은 <code>graceful</code></strong>이다. 이는 모델이 한 응답에서 최종 출력과 Function Tool 호출을 함께 제안했을 때의 처리 방식을 좌우한다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>설정</th>
+<th>개념</th>
+<th>주의할 점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>early</code></td>
+<td>유효한 최종 결과가 나오면 불필요한 Function Tool 실행을 건너뛰는 조기 종료 성향</td>
+<td>v1 기본 동작을 유지하고자 할 때 검토</td>
+</tr>
+<tr>
+<td><code>graceful</code> <strong>(v2 기본)</strong></td>
+<td>응답에서 나열된 순서를 고려해 최종 출력 이전의 Function Tool은 처리하고 성공한 최종 출력으로 종료</td>
+<td>순서가 실제 비즈니스 부작용을 좌우할 수 있음</td>
+</tr>
+<tr>
+<td><code>exhaustive</code></td>
+<td>요청된 Tool을 폭넓게 실행하며 최종 출력 선택; 병렬이 기본이 될 수 있음</td>
+<td>부작용 있는 Tool에 특히 조심, 순차 실행 옵션 검토</td>
+</tr>
+</tbody></table>
+</div><p>실제 코드는 더 많은 예외(일반 텍스트 출력, <code>ModelRetry</code>, NativeOutput 등의 특별 경로)를 처리한다. <strong><code>graceful</code>=항상 모든 Tool 실행</strong>, <strong><code>early</code>=항상 모든 Tool 생략</strong>처럼 과도하게 단순화하면 안 된다. <a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py" target="_blank" rel="noopener noreferrer">[C02]</a><a href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py" target="_blank" rel="noopener noreferrer">[C04]</a></p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="core.html"><small>이전 단원</small>← Agent·Deps·Tools</a><a class="next" href="history.html"><small>다음 단원</small>Messages와 영속성 →</a></nav><footer>PydanticAI 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-8-1">8. Structured Output / 출력 검증</a><a href="#s-9-1">9. Retry, 오류 처리, 실행 한도</a></nav></aside></div></body></html>

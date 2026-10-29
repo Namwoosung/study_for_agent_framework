@@ -1,0 +1,462 @@
+{
+  "name": "Claude Code",
+  "source": "../Claude_Code.md",
+  "sourceSha256": "7074c2276f571e44c7bf93ee55834e460f5dd297ed1d971593208ebab193527c",
+  "sourceSections": [
+    "intro",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "appendix-a",
+    "appendix-b",
+    "appendix-c"
+  ],
+  "sourceCodes": 37,
+  "sourceDiagrams": 12,
+  "pages": [
+    "index.html",
+    "foundations.html",
+    "execution.html",
+    "instructions-memory.html",
+    "skills-mcp.html",
+    "collaboration.html",
+    "security-models.html",
+    "evaluation.html",
+    "public-analysis.html",
+    "semiconductor.html",
+    "review.html",
+    "sources.html"
+  ],
+  "mapping": [
+    {
+      "page": "foundations.html",
+      "chapters": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "page": "execution.html",
+      "chapters": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "page": "instructions-memory.html",
+      "chapters": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "page": "skills-mcp.html",
+      "chapters": [
+        "10",
+        "11"
+      ]
+    },
+    {
+      "page": "collaboration.html",
+      "chapters": [
+        "12",
+        "13"
+      ]
+    },
+    {
+      "page": "security-models.html",
+      "chapters": [
+        "14",
+        "15"
+      ]
+    },
+    {
+      "page": "evaluation.html",
+      "chapters": [
+        "16"
+      ]
+    },
+    {
+      "page": "public-analysis.html",
+      "chapters": [
+        "17",
+        "18",
+        "19"
+      ]
+    },
+    {
+      "page": "semiconductor.html",
+      "chapters": [
+        "20",
+        "21"
+      ]
+    },
+    {
+      "page": "review.html",
+      "chapters": [
+        "22",
+        "appendix-b",
+        "appendix-c"
+      ]
+    },
+    {
+      "page": "sources.html",
+      "chapters": [
+        "intro",
+        "23",
+        "appendix-a"
+      ]
+    }
+  ],
+  "references": {
+    "R01": "https://code.claude.com/docs/en/how-claude-code-works",
+    "R02": "https://github.com/anthropics/claude-code",
+    "R03": "https://github.com/anthropics/claude-code/releases/tag/v2.1.310",
+    "R17": "https://code.claude.com/docs/en/cli-reference",
+    "R18": "https://code.claude.com/docs/en/headless",
+    "R25": "https://code.claude.com/docs/en/agent-sdk/overview",
+    "R29": "https://code.claude.com/docs/en/agent-sdk/agent-loop",
+    "R04": "https://code.claude.com/docs/en/memory",
+    "R19": "https://code.claude.com/docs/en/sessions",
+    "R20": "https://code.claude.com/docs/en/context-window",
+    "R21": "https://code.claude.com/docs/en/prompt-caching",
+    "R05": "https://code.claude.com/docs/en/skills",
+    "R06": "https://code.claude.com/docs/en/sub-agents",
+    "R07": "https://code.claude.com/docs/en/agent-teams",
+    "R08": "https://code.claude.com/docs/en/mcp",
+    "R12": "https://code.claude.com/docs/en/plugins",
+    "R30": "https://code.claude.com/docs/en/features-overview",
+    "R09": "https://code.claude.com/docs/en/hooks-guide",
+    "R10": "https://code.claude.com/docs/en/permissions",
+    "R11": "https://code.claude.com/docs/en/hooks",
+    "R13": "https://code.claude.com/docs/en/sandboxing",
+    "R22": "https://code.claude.com/docs/en/security",
+    "R31": "https://code.claude.com/docs/en/settings",
+    "R23": "https://code.claude.com/docs/en/authentication",
+    "R24": "https://code.claude.com/docs/en/third-party-integrations",
+    "R26": "https://code.claude.com/docs/en/llm-gateway",
+    "R27": "https://code.claude.com/docs/en/monitoring-usage",
+    "R28": "https://code.claude.com/docs/en/costs",
+    "R32": "https://code.claude.com/docs/en/data-usage",
+    "R33": "https://code.claude.com/docs/en/checkpointing",
+    "R34": "https://code.claude.com/docs/en/best-practices"
+  },
+  "codeBlocks": [
+    {
+      "chapter": "1",
+      "language": "mermaid",
+      "hash": "738abe6924968e1e90f667858fa8591fb903b26b6996d91e5d0740f2b61f7c79"
+    },
+    {
+      "chapter": "3",
+      "language": "mermaid",
+      "hash": "ccd24debc438af0d65e783141689655e233e5d9fb990d20e10a5becb1e6663e7"
+    },
+    {
+      "chapter": "4",
+      "language": "bash",
+      "hash": "7bc28b8536510c061aa0ccfe4a14651b3019a54b9d2aea761bf9a6f3ba33b6ec"
+    },
+    {
+      "chapter": "4",
+      "language": "bash",
+      "hash": "78af8e7e91d9eb928394064a569fe61d92ae2fd02f2f15e7517fb2f41098922b"
+    },
+    {
+      "chapter": "5",
+      "language": "mermaid",
+      "hash": "5568f30fc2c32b2f0ad5e5d10aef18fe1a656d155d183760f1ff0453f87c01fa"
+    },
+    {
+      "chapter": "6",
+      "language": "python",
+      "hash": "1737e5961f24da6078a1bb32dc206c18e94649d396023a6ce642e70de8e2e4ed"
+    },
+    {
+      "chapter": "7",
+      "language": "mermaid",
+      "hash": "f2200a4ae691a54e107a23fa620cd9831e40d7c5c73fa42fd770ac1abe1c08a2"
+    },
+    {
+      "chapter": "8",
+      "language": "markdown",
+      "hash": "79d168ffc5be874cd16c96e6f304685a63fbbe45060b2da885634fca9fed1ae3"
+    },
+    {
+      "chapter": "8",
+      "language": "text",
+      "hash": "ed571361f97c60f0e91b772df5e5f177bad33ccb6bae6afcffd8cf20725d31f2"
+    },
+    {
+      "chapter": "8",
+      "language": "markdown",
+      "hash": "0eabd48e92416ad85de2fc0a8419535e0dd505969f402a28302aee924b78c40d"
+    },
+    {
+      "chapter": "8",
+      "language": "markdown",
+      "hash": "26dd4e038b117ee2517b0a2037d1fa7a378b6c265443d0b2d5be9aab5edb82bf"
+    },
+    {
+      "chapter": "9",
+      "language": "text",
+      "hash": "d1b36221c6edc70008b93193c37e21ce20131390d5a31d91d2988a0d4622ddae"
+    },
+    {
+      "chapter": "9",
+      "language": "mermaid",
+      "hash": "fd2c0d35a4970a893ef4bd8aead8b4ac28f1c87f6b5a1a94249816909f816235"
+    },
+    {
+      "chapter": "10",
+      "language": "text",
+      "hash": "3cc81499d3182567880fb1794e4490046326ce988594b0b6d07ac8552f902ee6"
+    },
+    {
+      "chapter": "10",
+      "language": "markdown",
+      "hash": "5ffcee5d07e1230d270f7b28748b47b848c8150cbaa66fdef6b710021ed089e8"
+    },
+    {
+      "chapter": "11",
+      "language": "mermaid",
+      "hash": "b53bef760bcc7048b6c9679111efb2d028ed3e92ec9324874df1c6c76f3aece0"
+    },
+    {
+      "chapter": "11",
+      "language": "bash",
+      "hash": "907c1953bdd73132eeaf90343dd37c7c297826280bdc88d2ec75f1629b46044f"
+    },
+    {
+      "chapter": "11",
+      "language": "json",
+      "hash": "7febda2804efea313f46866457566652d2669fa669d34e72986bd7ffda55f536"
+    },
+    {
+      "chapter": "12",
+      "language": "mermaid",
+      "hash": "06da6f756458d0f0c3f335c768a8a3959d40f5bf68835b18e78211a638200e28"
+    },
+    {
+      "chapter": "12",
+      "language": "markdown",
+      "hash": "7498add6a9c9b82c39cd74cc39b5d3006cadf037be26726a47bc1bf1c585c1b9"
+    },
+    {
+      "chapter": "12",
+      "language": "json",
+      "hash": "031de37773cd2daa2f1fd9607fa616eeedbd08cee511575ed95794f6d8e1c36b"
+    },
+    {
+      "chapter": "13",
+      "language": "json",
+      "hash": "91d551a5d24f10dd9921d465ca11386783b2045b9044156c5d003e3251e96e37"
+    },
+    {
+      "chapter": "13",
+      "language": "json",
+      "hash": "370477303973e32b0f53398658654945e6048cb6fbd77185254342c7e4247be7"
+    },
+    {
+      "chapter": "13",
+      "language": "bash",
+      "hash": "89410ac18db0e10e7646fcd88e7ee125a3fff2311f5139208d0881d8d76ab474"
+    },
+    {
+      "chapter": "14",
+      "language": "mermaid",
+      "hash": "89bd5442b24f2046727f5fab7b65897e97778c4350782e23b92ed5294bccd890"
+    },
+    {
+      "chapter": "15",
+      "language": "bash",
+      "hash": "e6d3f6169b53e6f75611104e6a92384d030a61034e86b4f49764a404aaa1b682"
+    },
+    {
+      "chapter": "16",
+      "language": "text",
+      "hash": "4017acfd12ebd86e63cfda264ff2e7ab63d3c93aa77706a0b65687de9536a385"
+    },
+    {
+      "chapter": "17",
+      "language": "mermaid",
+      "hash": "3fc1173db5916152af7e938e0185879792155ca3c4c4420f07d99c05967246f5"
+    },
+    {
+      "chapter": "18",
+      "language": "text",
+      "hash": "19f8a8ac15146a68e73ee05104ed370ba343c95012646e3c1017870fc6687615"
+    },
+    {
+      "chapter": "18",
+      "language": "json",
+      "hash": "225135cfb81b87ffb8c0ed56c1f882e58e76bd5e2160d0030430c7f24d8a6be7"
+    },
+    {
+      "chapter": "18",
+      "language": "json",
+      "hash": "8909144ed97fd5aa9bc9a4ee91a256ac9eb7d881be897a46cefe2b4d7b3dc7c8"
+    },
+    {
+      "chapter": "18",
+      "language": "python",
+      "hash": "698773456035ddd70d2fc1fa1daf3734b500f7c773a932b22f40e801064d6dc1"
+    },
+    {
+      "chapter": "18",
+      "language": "yaml",
+      "hash": "17e0290621e016a2232fa6c42a250ec9ac1d5a7ceead466febbd695a8782baad"
+    },
+    {
+      "chapter": "20",
+      "language": "mermaid",
+      "hash": "bebc1a19aefde5e211770a35c91c4e0dab5b36f84233b45dca3d73669a9055c5"
+    },
+    {
+      "chapter": "20",
+      "language": "mermaid",
+      "hash": "8a736c1412dae018e2e102a2b80d762e15d36b74bb183fef10a92454b641bf3f"
+    },
+    {
+      "chapter": "20",
+      "language": "mermaid",
+      "hash": "6078115379e83ff959eddfb4ed554d986b434e8c2a9e389aa09c4bf92b45a389"
+    },
+    {
+      "chapter": "appendix-c",
+      "language": "markdown",
+      "hash": "12ec7f9630fbfc60bb93fb8124adf6cafa0a228856a5967314ca17edf3077427"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "type": "flow",
+      "file": "assets/diagram-1.svg",
+      "nodes": 8,
+      "edges": 7,
+      "chapter": "1",
+      "title": "학습 개념을 연결하는 읽기 순서"
+    },
+    {
+      "number": 2,
+      "type": "flow",
+      "file": "assets/diagram-2.svg",
+      "nodes": 9,
+      "edges": 10,
+      "chapter": "3",
+      "title": "모델 판단과 정책·도구·사용자 개입"
+    },
+    {
+      "number": 3,
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": 13,
+      "edges": 15,
+      "chapter": "5",
+      "title": "공개 기능을 연결한 논리 아키텍처"
+    },
+    {
+      "number": 4,
+      "type": "sequence",
+      "messages": 12,
+      "chapter": "7",
+      "title": "도구 요청의 허용·승인·차단 순서"
+    },
+    {
+      "number": 5,
+      "type": "flow",
+      "file": "assets/diagram-5.svg",
+      "nodes": 6,
+      "edges": 5,
+      "chapter": "9",
+      "title": "Context 여유와 압축의 설명용 분기"
+    },
+    {
+      "number": 6,
+      "type": "flow",
+      "file": "assets/diagram-6.svg",
+      "nodes": 6,
+      "edges": 5,
+      "chapter": "11",
+      "title": "MCP Client와 외부 서비스의 책임 연결"
+    },
+    {
+      "number": 7,
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": 5,
+      "edges": 7,
+      "chapter": "12",
+      "title": "Subagent 위임과 메인 Agent의 통합"
+    },
+    {
+      "number": 8,
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": 7,
+      "edges": 6,
+      "chapter": "14",
+      "title": "도구·환경·데이터 권한의 정책 계층도"
+    },
+    {
+      "number": 9,
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": 6,
+      "edges": 5,
+      "chapter": "17",
+      "title": "공개 SDK 래퍼와 CLI 사이의 분석 경계"
+    },
+    {
+      "number": 10,
+      "type": "flow",
+      "file": "assets/diagram-10.svg",
+      "nodes": 8,
+      "edges": 7,
+      "chapter": "20",
+      "title": "합성 공정 데이터 EDA의 가상 구성"
+    },
+    {
+      "number": 11,
+      "type": "flow",
+      "file": "assets/diagram-11.svg",
+      "nodes": 5,
+      "edges": 6,
+      "chapter": "20",
+      "title": "승인 문서 검색과 근거 확인의 가상 경로"
+    },
+    {
+      "number": 12,
+      "type": "flow",
+      "file": "assets/diagram-12.svg",
+      "nodes": 7,
+      "edges": 9,
+      "chapter": "20",
+      "title": "설비 원인 후보 분석의 가상 위임과 검토"
+    }
+  ]
+}

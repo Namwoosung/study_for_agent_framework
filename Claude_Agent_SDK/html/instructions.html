@@ -1,0 +1,61 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>지침·설정·데이터의 신뢰 경계 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" class="current" aria-current="page"><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>지침과 설정 병합</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 03</p><h1>지침·설정·데이터의 신뢰 경계</h1><p class="lead">system_prompt, CLAUDE.md와 파일 설정의 차이</p><div class="chapter-meta">원문 9–9장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>행동 지침은 SDK 옵션, 프로젝트 파일, Skill, Subagent 정의와 사용자 요청 등 여러 경로에서 들어옵니다. 검색 문서와 Tool 결과는 같은 수준의 지침이 아니라 참고 데이터로 처리해야 합니다.</p><p>파일 설정의 우선순위, 여러 CLAUDE.md의 누적 로딩, Tool 권한 규칙의 평가 순서는 서로 다른 문제입니다. 아래 조건을 단순한 문자열 병합이나 하나의 보편적 우선순위로 줄여 해석하지 마세요.</p><p class="reading-question"><strong>읽는 관점</strong>어떤 설정이 적용되는지와 실제 행동을 허용하는 정책을 분리해 확인하세요.</p></section><section class="source-section" data-source-chapter="9"><h2 id="s-9-1">9. System Prompt·<code>CLAUDE.md</code>·설정 병합<a class="anchor" href="#s-9-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-9-2">9.1 Instruction은 한 곳에만 있지 않다<a class="anchor" href="#s-9-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>모델에게 ‘어떻게 행동해야 하는가’를 전달하는 규칙은 여러 계층에서 유입될 수 있다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>출처</th>
+<th>예시</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SDK 옵션</td>
+<td><code>system_prompt</code></td>
+<td>실행 시 주입하는 시스템 지침</td>
+</tr>
+<tr>
+<td>프로젝트 컨텍스트</td>
+<td><code>CLAUDE.md</code></td>
+<td>저장소·프로젝트의 지속적 지침</td>
+</tr>
+<tr>
+<td>사용자 설정</td>
+<td><code>~/.claude/</code> 관련 설정</td>
+<td>개인적 규칙과 설정</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td><code>SKILL.md</code></td>
+<td>특정 작업을 수행하는 절차·리소스</td>
+</tr>
+<tr>
+<td>Subagent</td>
+<td><code>AgentDefinition.prompt</code></td>
+<td>위임받은 역할의 전문 지침</td>
+</tr>
+<tr>
+<td>사용자 요청</td>
+<td><code>prompt</code></td>
+<td>이번 작업의 목표</td>
+</tr>
+<tr>
+<td>Tool 결과</td>
+<td>파일·문서·DB 응답</td>
+<td>참고 데이터이므로 신뢰 수준이 다름</td>
+</tr>
+</tbody></table>
+</div><p>공식: <a href="https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts" target="_blank" rel="noopener noreferrer">[D10]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">[D11]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<h3 id="s-9-3">9.2 <code>system_prompt</code>와 <code>CLAUDE.md</code>의 관계<a class="anchor" href="#s-9-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p><code>system_prompt</code>는 SDK 호출에서 실행 설정의 일부로 지정한다. <code>CLAUDE.md</code>는 프로젝트 설정 소스를 통해 읽히는 지속적인 프로젝트 지침에 가깝다. <strong>둘은 같은 파일·같은 책임이 아니다.</strong> <a href="https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts" target="_blank" rel="noopener noreferrer">[D10]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>options = ClaudeAgentOptions(
+    cwd=&quot;/path/to/project&quot;,
+    system_prompt=&quot;분석 결과에는 데이터 출처와 검증 불가능한 가설을 구분해 작성하라.&quot;,
+    setting_sources=[&quot;project&quot;],
+)</code></pre></div><p>위 코드는 사용자 정의 시스템 프롬프트와 프로젝트 설정을 함께 사용하는 개념 예시다. 실제로 어떤 기본 Claude Code 지침이 유지·교체되는지는 <code>system_prompt</code>의 형태(<code>str</code>, preset 등)와 문서의 규칙에 따르므로 <strong>단순 병합이라고 가정하지 않는다</strong>. <a href="https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts" target="_blank" rel="noopener noreferrer">[D10]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a></p>
+<h3 id="s-9-4">9.3 설정 우선순위<a class="anchor" href="#s-9-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 Python SDK 레퍼런스는 파일 기반 설정의 우선순위를 local &gt; project &gt; user로 설명하며, SDK 프로그래밍 옵션은 일반적인 파일 설정을 덮어쓸 수 있다. 관리형 정책은 SDK 프로그래밍 옵션보다 우선한다. 단, 특정 권한 결정에는 별도의 deny/ask/allow 순서가 있으므로 설정 병합과 Tool Permission을 혼동하면 안 된다. <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<p><strong>주의:</strong> 파일 설정의 우선순위와 여러 <code>CLAUDE.md</code>가 동시에 입력될 때의 지침 해석은 다르다. 공식 문서에서는 user/project/local <code>CLAUDE.md</code> 내용을 누적해 읽으며, 내용 충돌 시 엄격한 보편 우선순위가 자동 적용된다고 보장하지 않는다. 상충되는 지침은 피하거나 우선순위를 명시한다. <a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<h3 id="s-9-5">9.4 Prompt Injection과 Instruction의 구별<a class="anchor" href="#s-9-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공정 SOP 문서에 <code>ignore previous instructions</code> 같은 문장이 포함되었다고 해서 이 문서를 시스템 지침으로 승격시키면 안 된다. 문서/검색/Tool 결과는 <strong>데이터</strong>로 취급하고, 실행 가능한 행동은 별도 권한 정책으로 제어해야 한다. [설계]</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="runtime.html"><small>이전 단원</small>← Client·메시지·Loop</a><a class="next" href="tools.html"><small>다음 단원</small>Built-in Tools와 MCP →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-9-1">9. System Prompt·CLAUDE.md·설정 병합</a></nav></aside></div></body></html>

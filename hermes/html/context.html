@@ -1,0 +1,118 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Hermes Agent의 개념, 실행 원리, 코드와 반도체 적용 판단을 배우는 개인 학습 교재"><title>모델이 보는 정보 구성하기 — Hermes Agent</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent</a><button id="menu-button" type="button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">H.</span><span>Hermes Agent<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro " href="index.html" >학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>기초와 구성요소</span></a><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처와 Agent Loop</span></a><p class="nav-group">핵심 원리</p><a href="context.html" class="current" aria-current="page"><span class="nav-number">03</span><span>Prompt와 Context</span></a><a href="memory.html" ><span class="nav-number">04</span><span>Memory와 Session History</span></a><a href="skills.html" ><span class="nav-number">05</span><span>Skills와 자기 개선</span></a><a href="tools.html" ><span class="nav-number">06</span><span>Tool · MCP · Plugin</span></a><p class="nav-group">구현과 운영</p><a href="orchestration.html" ><span class="nav-number">07</span><span>Subagent와 Gateway</span></a><a href="code.html" ><span class="nav-number">08</span><span>코드 탐색과 핵심 로직</span></a><a href="operations.html" ><span class="nav-number">09</span><span>Guardrails와 관측·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 PoC와 기술 평가</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29</span><a href="../Hermes_Agent.md">원본 Markdown ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Hermes Agent</a><span aria-hidden="true">/</span><span>Prompt와 Context</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 <span>/</span> 단원 03</p><h1>모델이 보는 정보 구성하기</h1><p class="lead">정체성, 프로젝트 지침, 현재 대화를 어떻게 연결하고 유지할까?</p><div class="chapter-meta">원문 7–8장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p><strong>Context</strong>는 현재 모델 요청에 함께 들어가는 정보입니다. 어떤 사실을 오래 보관한다는 뜻의 Memory와 구분해야 합니다. Hermes는 정체성, 프로젝트 지침, 기억과 Skill 목록을 조합하고, 대화가 길어지면 입력 길이를 관리합니다.</p><p>이 단원에서는 두 질문을 연결합니다. “무엇을 모델에게 보여줄 것인가?”와 “길어졌을 때 무엇을 보존할 것인가?”입니다. Prompt Caching은 반복되는 입력을 재사용하고, Compaction은 내용을 요약해 길이를 줄입니다. 두 방식의 목적과 손실 가능성을 따로 살펴보세요.</p><p class="reading-question"><strong>읽는 관점</strong>지침 파일 하나로 전체 행동이 결정되는지, 요약해도 되는 정보가 무엇인지 생각해 보세요.</p></section><section class="source-section" data-source-chapter="7"><h2 id="s-7-7">7. Prompt/Instruction: Agent가 모델에 무엇을 알려주는가?<a class="anchor" href="#s-7-7" aria-label="7. Prompt/Instruction: Agent가 모델에 무엇을 알려주는가? 섹션 링크">#</a></h2>
+<h3 id="s-7-7-1">7.1 System Prompt는 한 문장이 아니라 조합된 실행 문서<a class="anchor" href="#s-7-7-1" aria-label="7.1 System Prompt는 한 문장이 아니라 조합된 실행 문서 섹션 링크">#</a></h3>
+<p>Hermes는 정체성, 환경, 도구 안내, 프로젝트 지침, 메모리, Skill 목록 등을 결합해 모델에게 전달한다. 핵심 책임은 <a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_builder.py" target="_blank" rel="noopener noreferrer"><code>agent/prompt_builder.py</code></a>와 관련 시스템 프롬프트 모듈이다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly" target="_blank" rel="noopener noreferrer">S09</a></p>
+<p>공식 개발 가이드의 <strong>논리적 3계층</strong>:</p>
+<ol>
+<li><strong>Stable</strong>: 기본 정체성(<code>SOUL.md</code> 또는 기본값), 모델/도구 사용 지침, 일반 작업 규약</li>
+<li><strong>Context</strong>: 호출자 제공 시스템 메시지, 프로젝트 지침 파일(<code>.hermes.md</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>.cursorrules</code>), 작업 디렉터리·워크트리 컨텍스트</li>
+<li><strong>Volatile</strong>: Skill 인덱스, <code>MEMORY.md</code>, <code>USER.md</code>, 외부 메모리 Provider 결과, 시간·세션·모델·환경 힌트</li>
+</ol>
+<div class="code-block"><div class="code-caption"><span>구조·흐름 설명</span><span>text</span></div><pre tabindex="0" aria-label="구조·흐름 설명"><code class="language-text"># 이해용 Prompt 개념도 (원본 문자열을 그대로 재현한 것은 아님)
+[Stable]
+  Agent identity + tools guidance
+[Context]
+  project instructions + caller context
+[Volatile]
+  available skills + MEMORY/USER + runtime snapshot
+[Conversation messages]
+  user / assistant / tool ...</code></pre></div>
+<p><strong>왜 나누는가?</strong> 내용이 매 모델 호출마다 불필요하게 변하면 Prefix Caching이 깨져 비용·지연시간이 증가할 수 있기 때문이다. Hermes는 가능한 부분을 세션 내 고정하고, 이번 요청에만 필요한 변경을 별도 메시지/임시 레이어로 제공한다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly" target="_blank" rel="noopener noreferrer">S09</a></p>
+<h3 id="s-7-7-2">7.2 <code>SOUL.md</code>와 <code>AGENTS.md</code>는 동일하지 않다<a class="anchor" href="#s-7-7-2" aria-label="7.2 SOUL.md와 AGENTS.md는 동일하지 않다 섹션 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>파일/개념</th>
+<th>질문으로 이해</th>
+<th>대표 용도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SOUL.md</code></td>
+<td>&#39;너는 어떤 성향·정체성을 가진 Agent인가?&#39;</td>
+<td>전역 페르소나·기본 행동 원칙</td>
+</tr>
+<tr>
+<td><code>.hermes.md</code> / <code>AGENTS.md</code> / <code>CLAUDE.md</code></td>
+<td>&#39;이 프로젝트에서 무엇을 지켜야 하나?&#39;</td>
+<td>리포지토리 규칙·작업 제약·문서 규약</td>
+</tr>
+<tr>
+<td><code>MEMORY.md</code></td>
+<td>&#39;계속 기억할 중요한 사실은?&#39;</td>
+<td>지속적 환경·프로젝트 정보</td>
+</tr>
+<tr>
+<td><code>SKILL.md</code></td>
+<td>&#39;이런 유형의 작업은 어떤 순서로 하나?&#39;</td>
+<td>특정 문제 해결 절차</td>
+</tr>
+<tr>
+<td>Tool Schema</td>
+<td>&#39;호출할 수 있는 함수의 계약은?&#39;</td>
+<td>함수 이름, 인자, 사용법</td>
+</tr>
+</tbody></table>
+</div><p>따라서 <code>Instruction = AGENTS.md</code>라는 단순 등식은 부정확하다. Agent의 instruction은 시스템·프로젝트·현재 사용자 요청·Skills·Tool Description 등 <strong>여러 층위</strong>에서 형성된다. 우선순위와 신뢰 경계를 별도로 관리해야 한다.</p>
+<h3 id="s-7-7-3">7.3 보안상 고려할 점<a class="anchor" href="#s-7-7-3" aria-label="7.3 보안상 고려할 점 섹션 링크">#</a></h3>
+<p>프로젝트의 README나 외부 문서 같은 <strong>데이터</strong>가 &#39;권한을 무시하고 비밀을 보내라&#39;고 지시하더라도 이를 우선 명령으로 승격해서는 안 된다. Hermes는 일부 컨텍스트 파일의 prompt-injection 패턴을 스캔하지만, 문서·검색 결과·도구 출력 모두에 대해 완벽한 검증을 보장한다고 해석해서는 안 된다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/security" target="_blank" rel="noopener noreferrer">S11</a></p>
+</section>
+<section class="source-section" data-source-chapter="8"><h2 id="s-8-8">8. Context 관리와 압축: 긴 작업을 어떻게 유지하나?<a class="anchor" href="#s-8-8" aria-label="8. Context 관리와 압축: 긴 작업을 어떻게 유지하나? 섹션 링크">#</a></h2>
+<h3 id="s-8-8-1">8.1 문제 정의<a class="anchor" href="#s-8-8-1" aria-label="8.1 문제 정의 섹션 링크">#</a></h3>
+<p>LLM Context Window는 무한하지 않다. Tool Call이 많고 분석 로그가 길면, 매 턴 전체 이력을 그대로 전송할 때 토큰 비용과 입력 길이가 급증한다.</p>
+<p>Hermes는 <a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/context_engine.py" target="_blank" rel="noopener noreferrer"><code>agent/context_engine.py</code></a>에 <strong>대체 가능한 Context Engine 추상화</strong>를 두며, 기본 구현으로 <a href="https://github.com/NousResearch/hermes-agent/blob/main/agent/context_compressor.py" target="_blank" rel="noopener noreferrer"><code>agent/context_compressor.py</code></a>를 사용한다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching" target="_blank" rel="noopener noreferrer">S10</a></p>
+<h3 id="s-8-8-2">8.2 압축 정책과 두 계층<a class="anchor" href="#s-8-8-2" aria-label="8.2 압축 정책과 두 계층 섹션 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>계층</th>
+<th>공식 문서상 기본 발동 조건</th>
+<th>목적</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent 내 ContextCompressor</td>
+<td>Context 길이의 약 <strong>50%</strong> (설정 가능)</td>
+<td>Tool Loop 도중 미리 공간 확보</td>
+</tr>
+<tr>
+<td>Gateway 세션 위생(hygiene)</td>
+<td>Context 길이의 약 <strong>85%</strong></td>
+<td>Agent 내 압축을 놓친 긴 세션 보정</td>
+</tr>
+</tbody></table>
+</div><p>압축 시 중요한 정보를 보존하려고 메모리 내용을 먼저 flush하고, 오래된/중간 대화를 요약하며, 최근 메시지 N개(가이드상 기본 20개)와 관련 Tool Call/Result 쌍의 정합성을 유지한다. <em>요약은 손실 가능</em>하므로 원문 정확성이 필요한 데이터·계산 결과는 요약된 대화만 믿으면 안 된다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop" target="_blank" rel="noopener noreferrer">S04</a>, <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching" target="_blank" rel="noopener noreferrer">S10</a></p>
+<figure class="diagram" id="figure-3"><figcaption><span>그림 3</span> Context: 압축 여부에 따른 분기</figcaption><p class="scroll-hint">넓은 도식은 가로로 스크롤하여 읽을 수 있습니다.</p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Context: 압축 여부에 따른 분기"><img src="assets/diagram-3.svg" alt="Context: 압축 여부에 따른 분기. 연결 관계는 도식 원문의 화살표로도 확인할 수 있습니다." loading="lazy"></div><p class="figure-note">[개념도] 원문의 연결 관계를 보존해 다시 배치했습니다. 실제 구현의 모든 호출·보안 경계를 표시한 그림은 아닙니다. <a href="assets/diagram-3.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><details class="diagram-original"><summary>연결 관계 원문 (Mermaid)</summary><pre><code>flowchart LR
+  H[긴 대화 이력] --&gt; C{컨텍스트 임계값 초과?}
+  C -- 아니오 --&gt; K[그대로 다음 API 요청]
+  C -- 예 --&gt; F[Memory flush]
+  F --&gt; S[과거/중간 대화 요약]
+  S --&gt; R[최근 메시지·Tool 쌍 보존]
+  R --&gt; N[압축된 Context로 계속 실행]</code></pre></details></figure><h3 id="s-8-8-3">8.3 Prompt Caching과 Compaction은 반대 방향의 최적화<a class="anchor" href="#s-8-8-3" aria-label="8.3 Prompt Caching과 Compaction은 반대 방향의 최적화 섹션 링크">#</a></h3>
+<ul>
+<li><strong>Caching</strong>: 변하지 않는 입력 Prefix를 재활용해 모델 API 입력 비용/지연을 줄인다. 주로 지원 API/모델에 의존한다.</li>
+<li><strong>Compaction</strong>: 토큰이 너무 많을 때 내용을 요약해 총 입력 길이를 줄인다. 과거 세부 내용 손실 위험이 있다.</li>
+</ul>
+<p>공식 문서는 Anthropic 계열의 <code>cache_control</code> breakpoint 및 <code>agent/prompt_caching.py</code> 처리를 설명한다. 하지만 &#39;비용 75% 절약&#39; 같은 설명을 <strong>모든 모델·모든 공급자의 보장값</strong>으로 일반화해서는 안 된다. <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching" target="_blank" rel="noopener noreferrer">S10</a></p>
+<h3 id="s-8-8-4">8.4 반도체 분석에서 위험한 압축 대상<a class="anchor" href="#s-8-8-4" aria-label="8.4 반도체 분석에서 위험한 압축 대상 섹션 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>압축해도 될 가능성이 높은 정보</th>
+<th>원문으로 유지할 필요가 큰 정보</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이미 완료된 탐색 단계의 장황한 로그</td>
+<td>측정 단위, Lot/Wafer ID, 시간대, 필터 조건</td>
+</tr>
+<tr>
+<td>반복되는 도구 설치 안내</td>
+<td>계산에 사용된 SQL, 실제 코드, 라이브러리 버전</td>
+</tr>
+<tr>
+<td>사용자가 다시 찾을 수 있는 일반 설명</td>
+<td>이상 감지 기준, 모델 파라미터, 분석 결과 checksum</td>
+</tr>
+</tbody></table>
+</div><p><strong>설계 제안 [해석]</strong>: 장시간 분석 중 정확히 재현해야 하는 내용은 별도 Artifact/DB에 구조적으로 저장하고, Agent Context에는 이를 참조할 ID·경로·요약만 유지한다.</p>
+</section><div class="next-bridge"><p>현재 입력을 이해했으니, 다음 세션에서도 재사용할 정보를 어디에 남기는지 살펴봅니다.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="execution.html"><small>이전 단원</small>← 아키텍처와 Agent Loop</a><a class="next" href="memory.html"><small>다음 단원</small>Memory와 Session History →</a></nav><footer>Hermes Agent 학습 교재<span>문헌·소스 검토 기반 / 실제 설치·벤치마크 미수행</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-7-7">7. Prompt/Instruction: Agent가 모델에 무엇을 알려주는가?</a><a href="#s-8-8">8. Context 관리와 압축: 긴 작업을 어떻게 유지하나?</a></nav></aside></div></body></html>

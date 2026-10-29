@@ -1,0 +1,324 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK의 원리·구현·한계를 배우는 개인 학습 교재"><title>적합성과 한계를 같은 기준으로 판단하기 — Google ADK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">G.</span><span>Google ADK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>개념과 버전</span></a><a href="getting-started.html" ><span class="nav-number">02</span><span>설정·도구·모델</span></a><p class="nav-group">핵심 원리</p><a href="state.html" ><span class="nav-number">03</span><span>Event와 저장 계층</span></a><a href="execution.html" ><span class="nav-number">04</span><span>Agent Loop와 확장</span></a><a href="workflow.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">06</span><span>보안·관측·평가</span></a><a href="code.html" ><span class="nav-number">07</span><span>소스코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">08</span><span>반도체 설계 검토</span></a><a href="comparison.html" class="current" aria-current="page"><span class="nav-number">09</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v2.13.0</span><a href="../Google_ADK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Google ADK</a><span aria-hidden="true">/</span><span>비교와 후속 실험</span></div><header class="chapter-header"><p class="eyebrow">적용과 판단 / 단원 09</p><h1>적합성과 한계를 같은 기준으로 판단하기</h1><p class="lead">정성적 비교를 실제 실험 질문으로 바꾸기</p><div class="chapter-meta">원문 57–66장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>기능이 많다는 사실은 더 높은 정확도나 더 낮은 비용을 뜻하지 않습니다. 필요한 업무를 얼마나 단순한 구성으로 안전하게 구현할 수 있는지가 비교의 기준입니다.</p><p>원문의 강점·한계와 다른 프레임워크 비교표를 읽은 뒤, 동일한 모델·데이터·도구·예산으로 확인할 후속 과제를 정리하세요. 마지막 질문과 답안은 읽기용 원문으로 보존하며 별도 채점 기능을 두지 않았습니다.</p><p class="reading-question"><strong>읽는 관점</strong>기본 제공·추가 설정·직접 구현·버전 검증이 필요한 항목을 구분하세요.</p></section><section class="source-section" data-source-chapter="57"><h2 id="s-57-1">57. Google ADK의 강점<a class="anchor" href="#s-57-1" aria-label="이 절의 고유 링크">#</a></h2>
+<ol>
+<li><strong>Event/Session/State 중심 실행 구조:</strong> 멀티턴·상태 기반 업무 흐름을 구성하기 수월하다. <a href="https://adk.dev/sessions/session/" target="_blank" rel="noopener noreferrer">[D04]</a><a href="https://adk.dev/sessions/state/" target="_blank" rel="noopener noreferrer">[D05]</a></li>
+<li><strong>다양한 실행 패턴:</strong> 모델 기반 단일 Agent, 템플릿 워크플로, 2.x Graph Workflow를 함께 다룬다. <a href="https://adk.dev/agents/llm-agents/" target="_blank" rel="noopener noreferrer">[D02]</a><a href="https://adk.dev/agents/workflow-agents/" target="_blank" rel="noopener noreferrer">[D08]</a><a href="https://adk.dev/graphs/" target="_blank" rel="noopener noreferrer">[D09]</a></li>
+<li><strong>서비스 인터페이스:</strong> Session/Memory/Artifact 서비스 연결을 통한 상태·파일 관리 설계가 가능하다. <a href="https://adk.dev/sessions/session/" target="_blank" rel="noopener noreferrer">[D04]</a><a href="https://adk.dev/sessions/" target="_blank" rel="noopener noreferrer">[D06]</a><a href="https://adk.dev/artifacts/" target="_blank" rel="noopener noreferrer">[D07]</a></li>
+<li><strong>확장 가능성:</strong> Function Tool, MCP, Plugins, Agent 간 전환과 A2A 통합을 활용한다. <a href="https://adk.dev/tools-custom/" target="_blank" rel="noopener noreferrer">[D10]</a><a href="https://adk.dev/mcp/" target="_blank" rel="noopener noreferrer">[D11]</a><a href="https://adk.dev/plugins/" target="_blank" rel="noopener noreferrer">[D15]</a><a href="https://adk.dev/a2a/" target="_blank" rel="noopener noreferrer">[D20]</a></li>
+<li><strong>운영과 평가 도구:</strong> OTel 기반 관찰성, trajectory/response 평가 및 관리형 배포 안내가 있다. <a href="https://adk.dev/observability/logging/" target="_blank" rel="noopener noreferrer">[D21]</a><a href="https://adk.dev/observability/metrics/" target="_blank" rel="noopener noreferrer">[D22]</a><a href="https://adk.dev/observability/traces/" target="_blank" rel="noopener noreferrer">[D23]</a><a href="https://adk.dev/evaluate/" target="_blank" rel="noopener noreferrer">[D24]</a><a href="https://adk.dev/deploy/cloud-run/" target="_blank" rel="noopener noreferrer">[D25]</a></li>
+<li><strong>모델 교체 경로:</strong> Gemini 외 모델 연결이 가능하다. 단, 실제 교체 비용은 호환성·품질 테스트 결과로 판단해야 한다. <a href="https://adk.dev/agents/models/litellm/" target="_blank" rel="noopener noreferrer">[D12]</a></li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="58"><h2 id="s-58-1">58. Google ADK의 한계 및 주의점<a class="anchor" href="#s-58-1" aria-label="이 절의 고유 링크">#</a></h2>
+<ol>
+<li><strong>개념 수가 많다:</strong> Agent, App, Runner, Session, Event, State, Memory, Graph, Toolset 등 학습 부담이 있다.</li>
+<li><strong>v2 전환의 변화:</strong> 예전 코드/튜토리얼이 새로운 Graph 구조와 차이가 있을 수 있다.</li>
+<li><strong>자동 정확성의 부재:</strong> 도메인 통계 검증과 근거 신뢰성은 자체 구현해야 한다.</li>
+<li><strong>모델 간 기능 차이:</strong> 비-Gemini 모델 연결은 실제 Tool/Streaming 호환성 검증이 필요하다.</li>
+<li><strong>운영 백엔드 선택 필요:</strong> InMemory만으로는 지속적 운영·복구가 어렵다.</li>
+<li><strong>권한/프롬프트 인젝션 대응:</strong> SDK가 정책 확장 지점을 제공해도 이를 안전하게 구성하는 것은 개발자의 책임이다.</li>
+<li><strong>Graph 복잡성:</strong> 노드 수·상태·분기가 증가할수록 디버깅/복구/버전 관리가 어렵다.</li>
+<li><strong>다중 Agent 비용:</strong> 협업 Agent 수가 늘수록 지연·비용·상태 동기화 부담이 증가할 수 있다.</li>
+<li><strong>실험적 기능:</strong> Skills, 일부 승인/신규 Workflow 기능의 상태 및 버전 제한에 유의한다. <a href="https://adk.dev/skills/" target="_blank" rel="noopener noreferrer">[D17]</a><a href="https://adk.dev/tools-custom/confirmation/" target="_blank" rel="noopener noreferrer">[D19]</a></li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="59"><h2 id="s-59-1">59. Hermes, PydanticAI, OpenAI Agents SDK와의 질적 비교<a class="anchor" href="#s-59-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>아래는 <strong>공식 기능과 일반 설계 철학을 바탕으로 한 분석용 비교</strong>이며, 동일한 조건에서 실행한 실측 벤치마크가 아니다. 정확한 지원 상태는 비교 시점의 버전에 따라 달라진다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>관점</th>
+<th>Google ADK</th>
+<th>OpenAI Agents SDK</th>
+<th>PydanticAI</th>
+<th>Hermes Agent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>기본 성격</td>
+<td>Agent 앱 개발 + Workflow 프레임워크</td>
+<td>경량 Agent 실행 SDK</td>
+<td>타입·검증 중심 Python Agent 프레임워크</td>
+<td>완성형 자율 Agent/Runtime</td>
+</tr>
+<tr>
+<td>주요 중심 개념</td>
+<td>Runner, App, Event, Session, Workflow</td>
+<td>Agent, Runner, Handoff, Tools, RunState</td>
+<td>Agent, Dependencies, Tools, Validation, Graph</td>
+<td>Loop, Tools, Sessions, Skills, Memory</td>
+</tr>
+<tr>
+<td>멀티에이전트</td>
+<td>Agent Routing + Graph + A2A</td>
+<td>Handoff/Agent as Tool 등</td>
+<td>코드/Graph/Delegation 패턴</td>
+<td>Subagent/Delegation 등</td>
+</tr>
+<tr>
+<td>정형 결과</td>
+<td>입출력 Schema/도구 검증 + 개발자 정책</td>
+<td>Output Type/검증 조합</td>
+<td>타입·Validator 관점 강점</td>
+<td>자체 구조에 맞는 구현 필요</td>
+</tr>
+<tr>
+<td>상태 관리</td>
+<td>Session·Event·State·Memory 분리</td>
+<td>Sessions·RunState 등</td>
+<td>Message History·State/Graph/외부 저장</td>
+<td>지속 메모리·세션·검색</td>
+</tr>
+<tr>
+<td>운영</td>
+<td>Evaluations/OTel/Cloud 통합</td>
+<td>Tracing와 평가/운영 연계</td>
+<td>Evals·Logfire 등 생태계</td>
+<td>자체 런타임·확장 구조</td>
+</tr>
+<tr>
+<td>직접 작성할 코드</td>
+<td>Tool, State, Policy, Backend, Flow</td>
+<td>Tool, Policy, Context, App</td>
+<td>타입/Tool/Dependency/정책</td>
+<td>확장·도메인 Tool/운영 통합</td>
+</tr>
+<tr>
+<td>반도체 데모 적합 사례</td>
+<td>검증 단계가 있는 복합 Workflow</td>
+<td>빠른 프로토타입, 명시적 Handoff</td>
+<td>정형 데이터 결과·검증 중심</td>
+<td>자율 작업자 탐구·기존 Agent 확장</td>
+</tr>
+</tbody></table>
+</div><p><strong>해석의 핵심:</strong> ADK가 무조건 더 많은 기능을 제공해 ‘최고’라는 뜻은 아니다. 동일한 목표를 얼마나 단순한 코드로 안전하게 구현할 수 있는지가 선택 기준이다.</p>
+</section>
+<section class="source-section" data-source-chapter="60"><h2 id="s-60-1">60. 기능별 지원 수준 평가(정성)<a class="anchor" href="#s-60-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>분류: <strong>기본</strong>(핵심/공식), <strong>설정</strong>(추가 서비스·연동 필요), <strong>직접</strong>(업무 코드 필요), <strong>확인</strong>(버전별 시험 필요).</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>기능</th>
+<th>지원 수준</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent Loop</td>
+<td>기본</td>
+<td>LlmAgent/Flow 제공</td>
+</tr>
+<tr>
+<td>Function Tools</td>
+<td>기본</td>
+<td>Python 함수·클래스 기반 도구</td>
+</tr>
+<tr>
+<td>MCP 연동</td>
+<td>설정</td>
+<td>서버/인증/네트워크 구성 필요</td>
+</tr>
+<tr>
+<td>Multi-Agent Routing</td>
+<td>기본</td>
+<td>Agent 계층·전환 패턴</td>
+</tr>
+<tr>
+<td>Sequential/Parallel/Loop</td>
+<td>기본(레거시 방향 확인)</td>
+<td>Template Workflow</td>
+</tr>
+<tr>
+<td>Graph Workflow</td>
+<td>기본(2.x)</td>
+<td>Node/Edge/Route 기반</td>
+</tr>
+<tr>
+<td>Session State</td>
+<td>기본</td>
+<td>State/Events 및 서비스 분리</td>
+</tr>
+<tr>
+<td>영속 Session</td>
+<td>설정</td>
+<td>DB/관리형 저장소 선택</td>
+</tr>
+<tr>
+<td>장기 Memory</td>
+<td>설정</td>
+<td>MemoryService와 검색 백엔드 설계</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>확인/설정</td>
+<td>실험 기능과 로딩 구조</td>
+</tr>
+<tr>
+<td>Context Compaction</td>
+<td>설정</td>
+<td>Config/요약 정책 적용</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>확인/설정</td>
+<td>Tool Confirmation, Graph RequestInput</td>
+</tr>
+<tr>
+<td>Guardrails</td>
+<td>직접+확장</td>
+<td>Tool 검증, Callbacks/Plugins, 보안 연동</td>
+</tr>
+<tr>
+<td>Tracing/Logging</td>
+<td>설정</td>
+<td>OTel exporter/정책</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>기본+설정</td>
+<td>Eval 지표, 외부 서비스 필요 기능 구분</td>
+</tr>
+<tr>
+<td>내부 LLM Gateway</td>
+<td>설정/검증</td>
+<td>모델 adapter와 기능 호환성 확인</td>
+</tr>
+<tr>
+<td>반도체 통계 정확성</td>
+<td>직접</td>
+<td>데이터 단위·검정·도메인 규칙</td>
+</tr>
+<tr>
+<td>내부 데이터 보안</td>
+<td>직접+설정</td>
+<td>SSO, RBAC, ACL, 네트워크</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-chapter="61"><h2 id="s-61-1">61. ADK가 특히 적합한 상황<a class="anchor" href="#s-61-1" aria-label="이 절의 고유 링크">#</a></h2>
+<ul>
+<li>대화형 Agent뿐 아니라 <strong>절차·조건·승인을 가진 복합 업무 흐름</strong>이 필요하다.</li>
+<li>여러 Agent와 결정적 Python 함수 사이의 데이터 전달 경계를 명시적으로 통제하고 싶다.</li>
+<li>Session·State·Memory·Artifact를 분리해 운영하고 싶다.</li>
+<li>Google Cloud 생태계를 활용하되 로컬 개발 또는 모델 교체 가능성을 함께 검토한다.</li>
+<li>Tool 궤적·실행 경로·평가/관찰성이 중요한 환경이다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="62"><h2 id="s-62-1">62. 다른 선택을 검토할 상황<a class="anchor" href="#s-62-1" aria-label="이 절의 고유 링크">#</a></h2>
+<ul>
+<li>Agent가 Tool 한두 개를 쓰는 매우 간단한 구조라서 ADK의 Service/Workflow 추상화가 부담이다.</li>
+<li>Pydantic 기반 입출력 검증과 의존성 주입 설계가 가장 중요하고 ADK의 Event/Workflow 계층을 별도로 쓸 이유가 적다.</li>
+<li>이미 완성형 Agent Harness를 활용하고 Skill/Memory 기반의 자율 작업자 경험이 목적이다.</li>
+<li>소스 변경 최소화보다 런타임 전체를 직접 통제해야 하는 특수 환경이다.</li>
+<li>기존 사내 플랫폼과의 통합이 매우 제한적이라 ADK 모델/서비스 인터페이스를 맞추는 비용이 크다.</li>
+</ul>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="63"><h2 id="s-63-1">63. 핵심 개념 셀프 테스트<a class="anchor" href="#s-63-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><strong>Q1. ADK는 Gemini 모델 그 자체인가?</strong><br>A. 아니다. 모델을 이용해 Agent를 개발·실행하는 프레임워크다.</p>
+<p><strong>Q2. <code>Runner</code>와 <code>LlmAgent</code>의 차이는?</strong><br>A. Runner는 앱·서비스·실행 컨텍스트·이벤트 관리를 담당하고, LlmAgent는 모델 중심의 작업 행동을 정의하며 Flow를 이용해 실행한다.</p>
+<p><strong>Q3. <code>MemoryService</code>가 있으면 문서 RAG도 자동으로 구성되는가?</strong><br>A. 아니다. Memory와 문서 검색 인덱스는 별개이며 색인/검색 정책을 구성해야 한다.</p>
+<p><strong>Q4. <code>temp:</code> State는 어디까지 유효한가?</strong><br>A. 해당 Invocation에서 공유되며 영구 저장 대상이 아니다.</p>
+<p><strong>Q5. Tool 호출 시 모델이 Python을 직접 실행하는가?</strong><br>A. 아니다. 모델이 호출 구조를 출력하고 ADK 런타임이 등록된 Tool을 실행한다.</p>
+<p><strong>Q6. ADK Agent Loop의 실제 코드는 어느 경로인가?</strong><br>A. <code>BaseLlmFlow.run_async()</code>의 반복과 <code>_run_one_step_async</code>를 확인한다. <code>LlmAgent._run_async_impl</code>은 그 Flow의 이벤트를 수신한다.</p>
+<p><strong>Q7. Graph Workflow는 무엇이 다른가?</strong><br>A. Agent들 간 동작을 프롬프트에 기대기보다 노드·엣지·조건 분기로 정의한다.</p>
+<p><strong>Q8. 최종 응답 이벤트가 있으면 멀티에이전트 시스템 전체가 끝난 것인가?</strong><br>A. 항상 그렇지는 않다. 개별 참여 Agent의 최종 응답이 존재할 수 있다.</p>
+<p><strong>Q9. ADK의 Tool Confirmation만 켜면 생산 설비 변경이 안전한가?</strong><br>A. 아니다. 위험 작업은 인증·인가·승인·멱등성·감사·실행권한 등 별도 통제가 필요하다.</p>
+<p><strong>Q10. 반도체 Agent에서 평균값 계산을 모델에게 시키는 것이 좋은가?</strong><br>A. 자연어로 계획/해석을 돕되 실제 계산과 단위/범위 검증은 결정적 Tool에 맡기는 것이 좋다.</p>
+</section>
+<section class="source-section" data-source-chapter="64"><h2 id="s-64-1">64. 학습 후 실험할 과제(실제 구현은 아직 수행하지 않음)<a class="anchor" href="#s-64-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>순서</th>
+<th>실험</th>
+<th>검증 목적</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E1</td>
+<td>단일 Agent가 Tool 호출 1회 수행</td>
+<td>Function Calling 경로 확인</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>한 요청에서 Tool 연쇄 호출</td>
+<td>Agent Loop 반복·종료</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>두 Session의 State 격리 확인</td>
+<td>사용자/세션 경계</td>
+</tr>
+<tr>
+<td>E4</td>
+<td><code>temp:</code>와 <code>user:</code> State 비교</td>
+<td>스코프와 지속성</td>
+</tr>
+<tr>
+<td>E5</td>
+<td>Session을 DB에 저장하고 재실행</td>
+<td>영속성 및 복구</td>
+</tr>
+<tr>
+<td>E6</td>
+<td>잘못된 Tool 인자 전달</td>
+<td>검증·오류 처리</td>
+</tr>
+<tr>
+<td>E7</td>
+<td>Tool Confirmation 승인/거부</td>
+<td>HITL 동작</td>
+</tr>
+<tr>
+<td>E8</td>
+<td>Sequential vs Graph 구조 비교</td>
+<td>데이터·제어 흐름</td>
+</tr>
+<tr>
+<td>E9</td>
+<td>Parallel 분석 후 Join</td>
+<td>동시 실행/충돌</td>
+</tr>
+<tr>
+<td>E10</td>
+<td>내부 Gateway 모델 연결</td>
+<td>인터페이스 호환성</td>
+</tr>
+<tr>
+<td>E11</td>
+<td>데이터 유출 시도/문서 Prompt Injection</td>
+<td>Guardrail 실효성</td>
+</tr>
+<tr>
+<td>E12</td>
+<td>동일 합성 데이터로 다른 SDK 비교</td>
+<td>품질·비용·개발 복잡도</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-chapter="65"><h2 id="s-65-1">65. 프레임워크 선정을 위한 질문<a class="anchor" href="#s-65-1" aria-label="이 절의 고유 링크">#</a></h2>
+<ol>
+<li>우리 데모의 핵심은 Q&amp;A, 데이터 분석, 복합 업무 절차 중 무엇인가?</li>
+<li>사용 모델의 기능이 ADK의 Tool Calling·Streaming 요구와 맞는가?</li>
+<li>DB·Memory·Artifact를 어디에 저장하고 누가 접근하는가?</li>
+<li>민감 데이터를 포함한 Tool 결과가 모델·로그에 어떻게 노출되는가?</li>
+<li>결과의 수치 정확성과 출처를 누가 검증하는가?</li>
+<li>모델 판단 단계와 결정적 코드 단계의 경계가 명확한가?</li>
+<li>수정/재시도/중단 시 외부 부작용을 안전하게 관리하는가?</li>
+<li>실무 담당자의 승인·정정 절차는 어디에 들어가는가?</li>
+<li>멀티에이전트가 단일 Agent보다 실제 품질/비용/지연에서 이득이 있는가?</li>
+<li>기능 추가 없이도 코드와 저장 데이터가 버전 업그레이드를 견딜 수 있는가?</li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="66"><h2 id="s-66-1">66. 최종 요약<a class="anchor" href="#s-66-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><strong>한 문장:</strong> Google ADK는 <code>Runner + LlmAgent + Event/Session + Tool + Workflow</code>를 중심으로 <strong>모델의 자율 판단과 코드로 정의된 업무 절차를 함께 구성하는 Python Agent 개발 프레임워크</strong>다.</p>
+<p>특히 중요한 학습 포인트는 다음 네 가지다.</p>
+<ul>
+<li><strong>Agent Loop:</strong> <code>LlmAgent</code>가 <code>BaseLlmFlow</code>의 반복 실행을 통해 모델/도구/이벤트를 관리한다.</li>
+<li><strong>State와 Memory:</strong> Session 이벤트, State 값, 장기 메모리, 파일 Artifact는 분리된 개념이다.</li>
+<li><strong>2.x Workflow:</strong> 결정적 검증과 LLM 기반 판단을 Node/Edge로 조합할 수 있다.</li>
+<li><strong>실제 개발 관점:</strong> 사내 보안, 데이터 품질, 통계 검증, 감사/재현성은 프레임워크만으로 해결되지 않는다.</li>
+</ul>
+<p><strong>반도체 데모에 대한 잠정 판단:</strong> Google ADK는 조회→데이터 검증→통계 계산→근거 기반 설명처럼 <strong>명시적 단계가 있는 분석 업무</strong>를 실험하기에 좋은 후보이다. 다만 그것이 다른 SDK보다 우수하다는 결론은 아니며, 동일한 데이터·모델·도구·평가 조건에서 비교해야 한다.</p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="semiconductor.html"><small>이전 단원</small>← 반도체 설계 검토</a><a class="next" href="glossary.html"><small>다음 단원</small>용어 사전 →</a></nav><footer>Google ADK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-57-1">57. Google ADK의 강점</a><a href="#s-58-1">58. Google ADK의 한계 및 주의점</a><a href="#s-59-1">59. Hermes, PydanticAI, OpenAI Agents SDK와의 질적 비교</a><a href="#s-60-1">60. 기능별 지원 수준 평가(정성)</a><a href="#s-61-1">61. ADK가 특히 적합한 상황</a><a href="#s-62-1">62. 다른 선택을 검토할 상황</a><a href="#s-63-1">63. 핵심 개념 셀프 테스트</a><a href="#s-64-1">64. 학습 후 실험할 과제(실제 구현은 아직 수행하지 않음)</a><a href="#s-65-1">65. 프레임워크 선정을 위한 질문</a><a href="#s-66-1">66. 최종 요약</a></nav></aside></div></body></html>

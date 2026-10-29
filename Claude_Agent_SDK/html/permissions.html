@@ -1,0 +1,163 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>자동 승인과 전수 검사의 조건 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" class="current" aria-current="page"><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>Permission과 Hooks</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 05</p><h1>자동 승인과 전수 검사의 조건</h1><p class="lead">deny·ask·mode·allow와 can_use_tool, PreToolUse</p><div class="chapter-meta">원문 12–13장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>can_use_tool은 모든 호출에 적용되는 전수 검사기가 아닙니다. 앞 단계의 규칙이나 모드로 자동 승인되면 콜백을 거치지 않을 수 있다는 조건을 원문이 강조합니다.</p><p>PreToolUse와 실제 도구·DB의 권한 검사를 함께 설계하고, Hook의 결과가 모든 후속 규칙을 무조건 무시한다고 가정하지 마세요. 타임아웃과 Hook 실패 시 동작도 선택한 SDK·CLI 환경에서 확인해야 합니다.</p><p class="reading-question"><strong>읽는 관점</strong>어느 요청이 콜백에 도달하지 않는지와 최종 자원 접근을 누가 강제하는지 확인하세요.</p></section><section class="source-section" data-source-chapter="12"><h2 id="s-12-1">12. Permission Mode·Allow/Deny·승인 콜백<a class="anchor" href="#s-12-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-12-2">12.1 이 장이 중요한 이유<a class="anchor" href="#s-12-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>실제 생산 환경에서 Agent를 사용할 때 가장 위험한 오해는 <strong>모델이 호출한 Tool을 곧바로 실행해도 된다</strong>는 생각이다. Claude Agent SDK에는 정책 계층이 있으나, 제대로 구성하지 않으면 위험한 실행이 승인되거나 반대로 필요한 조회가 막힐 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<h3 id="s-12-3">12.2 공식 권한 평가의 큰 순서<a class="anchor" href="#s-12-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><code>PreToolUse</code> 등 Hooks의 검사/차단.</li>
+<li>Deny 규칙 검사.</li>
+<li>Ask 규칙 검사.</li>
+<li>Permission Mode에 따른 처리.</li>
+<li>Allow 규칙과 자동 승인 가능 여부.</li>
+<li>필요할 때 <code>can_use_tool</code> 승인 콜백(또는 승인 처리 수단)으로 전달.</li>
+</ol>
+<p><strong>주의:</strong> 위 순서는 이해를 위한 요약. 특수 Tool, 조직 정책, critical path, read from network paths 및 버전에 따른 예외가 있으므로 운영 시 원문 흐름도를 확인한다. Hook의 <code>allow</code>는 모든 후속 deny/ask 규칙을 무시하지 않는다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<h3 id="s-12-4">12.3 주요 Permission Mode<a class="anchor" href="#s-12-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>기본 성향</th>
+<th>실무 권고</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>default</code></td>
+<td>필요한 도구는 승인 흐름을 거침</td>
+<td>사용자와 상호작용하는 서비스</td>
+</tr>
+<tr>
+<td><code>plan</code></td>
+<td>계획 중심, 실행 제한</td>
+<td>실행 전 분석 및 검토</td>
+</tr>
+<tr>
+<td><code>acceptEdits</code></td>
+<td>일부 수정·파일 관련 작업을 더 쉽게 승인</td>
+<td>격리된 개발 작업에 한정</td>
+</tr>
+<tr>
+<td><code>dontAsk</code></td>
+<td>승인 프롬프트가 필요한 호출을 거부</td>
+<td>미리 정의된 제한형 배치</td>
+</tr>
+<tr>
+<td><code>bypassPermissions</code></td>
+<td>폭넓은 자동 승인</td>
+<td>신뢰 가능한 격리 환경 외 사용 지양</td>
+</tr>
+<tr>
+<td><code>auto</code></td>
+<td>일부 자동 판단 기반 승인</td>
+<td>조직 보안 검토 후 테스트</td>
+</tr>
+</tbody></table>
+</div><p><code>auto</code> 등 모드와 예외는 CLI 업데이트에 따라 변할 수 있다. v0.2.174 번들 CLI와 최신 문서 간 차이는 고정된 버전에서 재검증해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<h3 id="s-12-5">12.4 <code>can_use_tool</code>을 전체 Tool 감시기로 쓰면 안 되는 이유<a class="anchor" href="#s-12-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 문서: 어떤 Tool이 앞 단계의 allow rule 또는 mode로 자동 승인되면 <code>can_use_tool</code> 콜백은 실행되지 않을 수 있다. 따라서 모든 데이터 접근의 권한 판단을 이 콜백 하나에 두면 보안 구멍이 생길 수 있다. 모든 호출을 확인하려면 <code>PreToolUse</code>를 사용하고, <strong>최종 자원 권한은 실제 Tool/DB 서버에서도 강제</strong>한다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<h3 id="s-12-6">12.5 정책 예시<a class="anchor" href="#s-12-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>가정: 사용자는 설비 데이터를 <strong>조회할 수 있지만 변경할 수 없다.</strong></p>
+<ul>
+<li>작업용 워크스페이스의 OS 쓰기 권한 최소화.</li>
+<li>Tool 기본 노출 목록에서 불필요한 Bash, Edit, Write 제거.</li>
+<li>유해한 작업과 범용 셸 실행을 별도 deny.</li>
+<li>DB MCP 서버 자체는 <code>SELECT</code> 전용 계정 및 서버 측 컬럼·행 권한 강제.</li>
+<li><code>PreToolUse</code>에서 계정·Lot/설비·시간범위·쿼리 정책 확인.</li>
+<li>실행 기록에 인증 주체와 승인 정책 버전을 저장.</li>
+</ul>
+<p>한 군데의 옵션만으로 이러한 속성이 모두 확보되는 것은 아니다. [설계]</p>
+</section>
+<section class="source-section" data-source-chapter="13"><h2 id="s-13-1">13. Hooks와 제어·감사·Guardrails<a class="anchor" href="#s-13-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-13-2">13.1 Hook란?<a class="anchor" href="#s-13-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Hook은 Agent 실행 흐름의 특정 시점에 호출되는 사용자 정의 함수다. 주요 이벤트는 Tool 호출 전·후, Session 라이프사이클, Subagent 시작·종료, 실행 중단/종료 등이다. Python과 TypeScript에서 지원되는 특정 Hook은 버전별로 차이가 있을 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></p>
+<h3 id="s-13-3">13.2 <code>PreToolUse</code> / <code>PostToolUse</code> 비교<a class="anchor" href="#s-13-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>타이밍</th>
+<th>적합한 사용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PreToolUse</code></td>
+<td>Tool 실행 전</td>
+<td>위험 명령 거부, 입력 변환, 권한 검사</td>
+</tr>
+<tr>
+<td><code>PostToolUse</code></td>
+<td>Tool 성공 후</td>
+<td>결과 검사, 지표 기록, 데이터 오염 탐지</td>
+</tr>
+<tr>
+<td><code>PostToolUseFailure</code></td>
+<td>Tool 실패 후</td>
+<td>에러 유형 기록, 제한적 복구</td>
+</tr>
+<tr>
+<td><code>SubagentStart/Stop</code></td>
+<td>하위 Agent 시작/종료</td>
+<td>비용·역할·부모-자식 추적</td>
+</tr>
+<tr>
+<td><code>Stop</code></td>
+<td>Agent가 멈추려는 시점</td>
+<td>결과 점검 등</td>
+</tr>
+</tbody></table>
+</div><p>최신 공식 문서에 모든 이벤트가 나열되어 있지만 <strong>특정 Python SDK 버전에서 구현되는 이벤트 범위</strong>와 <strong>CLI가 처리하는 이벤트</strong>를 나누어 확인해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></p>
+<h3 id="s-13-4">13.3 Hook 등록 예제 — 학습용<a class="anchor" href="#s-13-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from claude_agent_sdk import ClaudeAgentOptions, HookMatcher
+
+async def audit_tool(input_data, tool_use_id, context):
+    tool_name = input_data.get(&quot;tool_name&quot;)
+    # 운영 환경에서는 인증 주체/요청 ID와 함께 안전한 로그에 기록
+    print(&quot;Tool requested:&quot;, tool_name)
+    return {}
+
+options = ClaudeAgentOptions(
+    hooks={&quot;PreToolUse&quot;: [HookMatcher(hooks=[audit_tool])]},
+)</code></pre></div><p>여기서 <code>return {}</code>는 행동을 단순 기록만 한다는 예제다. <strong>로그에 실제 Tool 인자와 기밀 정보를 그대로 출력하는 코드는 운영에 사용하면 안 된다.</strong> Hook의 정확한 출력 스키마와 승인/거부 형태는 해당 버전의 API Reference를 확인한다. <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></p>
+<h3 id="s-13-5">13.4 Guardrail은 한 가지가 아니다<a class="anchor" href="#s-13-5" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>Guardrail 유형</th>
+<th>구현 지점</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>입력 검증</td>
+<td>앱의 요청 처리 계층</td>
+<td>허용 Lot ID / 시간 범위 제한</td>
+</tr>
+<tr>
+<td>Tool 실행 검증</td>
+<td><code>PreToolUse</code>, 도구 서버</td>
+<td>DML 실행 거부</td>
+</tr>
+<tr>
+<td>모델 입력 경계</td>
+<td>Prompt, 검색 인용문 처리</td>
+<td>SOP의 악성 지시문 무시</td>
+</tr>
+<tr>
+<td>출력 검증</td>
+<td>JSON Schema + 서버 검증</td>
+<td>수치 범위·단위·근거 누락 검사</td>
+</tr>
+<tr>
+<td>사람 승인</td>
+<td>Permission/업무 UI</td>
+<td>파일 삭제, 권한 변경 요구</td>
+</tr>
+<tr>
+<td>인프라 격리</td>
+<td>OS, container, DB</td>
+<td>프로세스 실행 권한 제한</td>
+</tr>
+</tbody></table>
+</div><p><strong>중요:</strong> Claude Agent SDK의 Hook은 보안 정책을 구성하는 데 유용하지만 조직 전체 데이터 거버넌스 또는 RBAC 시스템을 자동으로 제공하는 것은 아니다.</p>
+<h3 id="s-13-6">13.5 Hook 실패 정책<a class="anchor" href="#s-13-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Hook 시간 초과, 오류, 사용자 코드 예외는 Tool 실행 경로에 영향을 줄 수 있다. <strong>안전과 관련된 Hook은 실패 시 작업이 차단되는지(fail-closed)</strong> 실제 SDK/CLI 버전에서 검증한다. 모든 이벤트가 동일한 실패 정책을 가진다고 가정하지 않는다. <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="tools.html"><small>이전 단원</small>← Built-in Tools와 MCP</a><a class="next" href="memory.html"><small>다음 단원</small>Session·Skills·위임 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-12-1">12. Permission Mode·Allow/Deny·승인 콜백</a><a href="#s-13-1">13. Hooks와 제어·감사·Guardrails</a></nav></aside></div></body></html>

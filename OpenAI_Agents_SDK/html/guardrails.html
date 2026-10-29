@@ -1,0 +1,64 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>검사 시점과 실제 보안 경계 — OpenAI Agents SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">O.</span><span>OpenAI Agents SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK의 역할과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>Runner와 모델 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Function Tool과 MCP</span></a><a href="orchestration.html" ><span class="nav-number">04</span><span>Handoff와 Agent-as-Tool</span></a><a href="guardrails.html" class="current" aria-current="page"><span class="nav-number">05</span><span>Guardrail과 권한</span></a><p class="nav-group">구현과 운영</p><a href="state.html" ><span class="nav-number">06</span><span>Context·Session·승인</span></a><a href="operations.html" ><span class="nav-number">07</span><span>관측·출력·Sandbox</span></a><a href="code.html" ><span class="nav-number">08</span><span>소스코드 상태 전이</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계 검토</span></a><a href="comparison.html" ><span class="nav-number">10</span><span>장점·한계·선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습과 용어</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v0.24.0</span><a href="../OpenAI_Agents_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">OpenAI Agents SDK</a><span aria-hidden="true">/</span><span>Guardrail과 권한</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 05</p><h1>검사 시점과 실제 보안 경계</h1><p class="lead">입력·출력·도구 검사와 서버의 강제 권한</p><div class="chapter-meta">원문 12–12장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Guardrail은 어디에 적용되고 언제 완료되는지에 따라 통제 범위가 달라집니다. 원문은 병렬 입력 검사에서 검사 완료 전에 일부 Agent 작업이나 도구 실행이 일어날 수 있다는 점을 강조합니다.</p><p>위험한 작업은 입력 검사의 결과만 기다리는 구조로 보호하지 말고, Agent 시작 전 인증·인가와 Tool·DB의 실제 권한으로 제한해야 합니다. 출력 검사는 이미 발생한 외부 부작용을 되돌리는 기능이 아닙니다.</p><p class="reading-question"><strong>읽는 관점</strong>검사 실패 전에 어떤 작업이 이미 일어날 수 있는지, 각 계층이 무엇을 차단하는지 확인하세요.</p></section><section class="source-section" data-source-chapter="12"><h2 id="s-12-1">12. Guardrails: 검증 계층과 실제 보안 한계<a class="anchor" href="#s-12-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-12-2">12.1 Guardrails의 종류<a class="anchor" href="#s-12-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>종류</th>
+<th>대상</th>
+<th>언제 동작?</th>
+<th>대표 목적</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent 입력 Guardrail</td>
+<td>첫 Agent에 들어온 입력</td>
+<td>실행 시작 시</td>
+<td>사용자 요청 분류·차단</td>
+</tr>
+<tr>
+<td>Agent 출력 Guardrail</td>
+<td>마지막 Agent의 최종 출력</td>
+<td>종료 전</td>
+<td>민감 정보·정책·형식 검사</td>
+</tr>
+<tr>
+<td>Tool 입력 Guardrail</td>
+<td>함수 도구의 인자</td>
+<td>Tool 실행 전</td>
+<td>조회 범위·허용 파라미터 검증</td>
+</tr>
+<tr>
+<td>Tool 출력 Guardrail</td>
+<td>함수 도구의 결과</td>
+<td>Tool 실행 후</td>
+<td>민감 컬럼·위험 값 검사</td>
+</tr>
+<tr>
+<td>업무 코드·DB 정책</td>
+<td>실제 데이터/행동</td>
+<td>모든 호출 경계</td>
+<td>권한, SQL 허용, 보존 정책 강제</td>
+</tr>
+</tbody></table>
+</div><p>공식 문서상 <strong>입력 Guardrail은 체인의 첫 Agent</strong>, <strong>출력 Guardrail은 최종 출력 Agent</strong>를 기준으로 작동한다. Tool Guardrail은 해당 Function Tool 호출마다 적용되므로, Handoff나 nested Agent를 포함한 체인에서 세부 검증이 필요하면 Tool 경계에 배치해야 한다. <a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank" rel="noopener noreferrer">[S07]</a></p>
+<h3 id="s-12-3">12.2 병렬 vs 차단형 입력 Guardrail — 실무상 매우 중요<a class="anchor" href="#s-12-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><code>run_in_parallel=True</code>(기본): Guardrail과 Agent가 동시에 시작할 수 있으므로 검사 실패 시 이미 일부 토큰 사용이나 <strong>도구 실행이 발생했을 수 있다</strong>.</li>
+<li><code>run_in_parallel=False</code>: 입력 Guardrail을 먼저 완료한 후 Agent를 시작하므로 통과 전 모델·도구 실행을 막는 형태에 적합하다.</li>
+</ul>
+<p><strong>공정 DB에 대한 권한 검사가 입력 Guardrail뿐인 설계는 안전하지 않다.</strong> 예를 들어 사용자 FAB 권한 확인이 실패한 경우, 병렬 검사가 끝나기 전에 조회가 시작되는 경로를 남겨서는 안 된다. 따라서 인증·인가를 Agent 시작 전 업무 계층에서 결정하고 Tool 내부에서도 재검사하는 것이 안전하다. <a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank" rel="noopener noreferrer">[S07]</a></p>
+<h3 id="s-12-4">12.3 Tripwire와 일반 Exception<a class="anchor" href="#s-12-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Guardrail에서 <code>tripwire_triggered=True</code>를 반환하면 Runner가 해당 Tripwire 예외를 발생시키는 흐름이 있다. 잘못된 파라미터로 Tool 실행을 막는 것과 단순히 최종 답변에 &#39;그렇게 해서는 안 된다&#39;고 쓰는 것은 전혀 다르다. 출력 Guardrail로 거부된 최종 답변은 이력 저장에서도 별도 처리 규칙이 있으므로, 실패·재개·세션 정책까지 확인한다. <a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank" rel="noopener noreferrer">[S07]</a></p>
+<h3 id="s-12-5">12.4 검증은 적어도 세 층에 놓는다<a class="anchor" href="#s-12-5" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="5"><figcaption><span>그림 5</span> 권한 검사를 놓는 세 계층</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-5.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="권한 검사를 놓는 세 계층"><img src="assets/diagram-5.svg" alt="권한 검사를 놓는 세 계층. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  U[사용자 요청] --&gt; A[1. API 인증/권한/요청 정책]
+  A --&gt; M[2. Agent + Tool Guardrail]
+  M --&gt; D[3. DB·시스템에서 최종 권한 강제]
+  D --&gt; O[데이터 반환 최소화·감사 로그]</code></pre></details></figure><ol>
+<li>앱 권한: 요청자는 누구이고 어떤 FAB/Project의 데이터를 조회할 수 있는가?</li>
+<li>Agent/Tool 정책: 어떤 도구·파라미터·민감 데이터가 허용되는가?</li>
+<li>데이터 계층: 최소 권한 계정, 읽기 전용 view, 행 필터링, 실행 시간·반환 행 수 제한.</li>
+</ol>
+<p>프롬프트 인젝션은 외부 문서, Tool 결과, MCP 메타데이터, 사용자 입력에서 유입될 수 있다. <strong>출처 없는 문장의 지시를 시스템 명령이나 권한 변경으로 승격하지 않는다.</strong></p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="orchestration.html"><small>이전 단원</small>← Handoff와 Agent-as-Tool</a><a class="next" href="state.html"><small>다음 단원</small>Context·Session·승인 →</a></nav><footer>OpenAI Agents SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-12-1">12. Guardrails: 검증 계층과 실제 보안 한계</a></nav></aside></div></body></html>

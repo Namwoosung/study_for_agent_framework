@@ -1,0 +1,152 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code의 원리·구현·한계를 배우는 개인 학습 교재"><title>출처와 검증 범위 — Claude Code</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Code<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>정체성과 사용 환경</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처·Loop·Tools</span></a><a href="instructions-memory.html" ><span class="nav-number">03</span><span>지침·기억·Context</span></a><a href="skills-mcp.html" ><span class="nav-number">04</span><span>Skills와 MCP</span></a><p class="nav-group">확장과 운영</p><a href="collaboration.html" ><span class="nav-number">05</span><span>위임·Teams·Hooks</span></a><a href="security-models.html" ><span class="nav-number">06</span><span>권한·격리·모델 연결</span></a><p class="nav-group">구현과 운영</p><a href="evaluation.html" ><span class="nav-number">07</span><span>관측·평가·재현성</span></a><a href="public-analysis.html" ><span class="nav-number">08</span><span>공개 분석·구성·장애</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 적용과 비교</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·비교·연구 노트</a><a href="sources.html" class="current" aria-current="page">출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.30 · Claude Code v2.1.310</span><a href="../Claude_Code.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Code</a><span aria-hidden="true">/</span><span>출처와 검증 범위</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / REFERENCE</p><h1>출처와 검증 범위</h1><p class="lead">공개 자료의 근거와 실제 실험이 필요한 조건을 나눕니다.</p></header><div class="callout"><strong>원문의 조사·버전 기준을 확인하세요.</strong><p>원문 기준 2026.10.30 · Claude Code v2.1.310. 공식 자료에 대한 원문의 조사 결과와 직접 실행해서 확인해야 할 조건을 구분합니다. 이번 페이지 제작에서 최신 구현을 추가 검증하지 않았습니다.</p></div><section class="source-section" data-source-chapter="intro"><h2 id="s-intro-1">원문 읽기 안내와 조사 범위<a class="anchor" href="#s-intro-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p><strong>학습용 기술 분석서 | 독립 교재</strong><br>조사 기준일: <strong>2026-10-30 (KST)</strong><br>기본 분석 기준: <strong>Claude Code v2.1.310</strong> (공식 GitHub 릴리스, 2026-10-23 UTC 공개)<br>주요 출처: Anthropic Claude Code 공식 문서, <code>anthropics/claude-code</code> 공식 저장소의 공개 자료, 공식 릴리스 노트<br>대상 독자: Agent 개념을 기초부터 배우며 장차 <strong>반도체 도메인 Agent</strong>를 설계·시연하려는 개발자/연구자<br>범위: 설계·구조·사용·운영·보안·확장·평가·적용 검토. <strong>실제 데모 구현이나 성능 벤치마크는 이 문서에서 수행하지 않음.</strong></p>
+</blockquote>
+<hr>
+<h3 id="s-intro-2">읽기 전에 — 신뢰도 표시와 코드 분석의 한계<a class="anchor" href="#s-intro-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>이 문서는 다음 네 가지 근거 등급을 구분한다.</p>
+<ul>
+<li><strong>[공식 문서]</strong>: Anthropic이 문서에서 공개적으로 설명한 기능·동작. 버전·플랫폼·계정 조건에 따라 달라질 수 있다.</li>
+<li><strong>[공개 자료 확인]</strong>: 공식 CLI 레퍼런스, 설정 스키마, 예제, 공식 GitHub 저장소의 공개 파일·릴리스 노트에 직접 나타나는 사실.</li>
+<li><strong>[개념 모델/의사코드]</strong>: 여러 공식 설명을 학습에 유리하도록 재구성한 개략 구조. <strong>내부 구현 소스코드가 아니다.</strong></li>
+<li><strong>[설계 제안]</strong>: 향후 반도체 Agent 개발에 도움이 될 수 있는 권장안. 제품 자체의 보장 기능이나 검증된 성능을 뜻하지 않는다.</li>
+</ul>
+<p><strong>중요:</strong> Claude Code의 공식 GitHub 저장소가 공개되어 있다고 해서 Claude Code CLI 엔진 전체가 소스코드 형태로 공개된 것은 아니다. 저장소에서 직접 조사할 수 있는 것은 README, 설정/예제/확장, 플러그인, 릴리스 기록 등 <strong>공개된 범위</strong>다. 아래의 <code>while</code> 반복문이나 정책 의사코드는 사용자 이해를 위한 모델일 뿐 Anthropic의 비공개 엔진에서 추출한 함수가 아니다. 반면, <code>claude</code> CLI 명령, <code>settings.json</code> 구조, <code>SKILL.md</code>/Subagent/Hooks의 파일 규격은 공식 문서에 따라 확인할 수 있다. <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer">[R01]</a><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.310" target="_blank" rel="noopener noreferrer">[R03]</a><a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener noreferrer">[R28]</a></p>
+<p>공식 문서는 지속적으로 수정된다. 본문에 있는 <strong>버전별/실험적 기능</strong>은 재사용 전에 링크에서 다시 확인한다. 코드 예시는 별도 언급이 없으면 <strong>학습용 예시이며 실행 테스트를 완료한 코드는 아니다.</strong></p>
+<hr>
+<h3 id="s-intro-3">전체 목차<a class="anchor" href="#s-intro-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>핵심 요약과 학습 지도</li>
+<li>Claude Code의 정체성 및 주변 기술 관계</li>
+<li>Agent·Harness·Runtime의 기초</li>
+<li>실행 환경·설치·사용 인터페이스</li>
+<li>전체 아키텍처와 생명주기</li>
+<li>Agent Loop의 원리와 종료·오류·재시도</li>
+<li>Built-in Tools와 Tool 호출 구조</li>
+<li>Instruction: CLAUDE.md·AGENTS.md·Rules</li>
+<li>Memory·Session·Context·Compaction</li>
+<li>Skills 및 점진적 컨텍스트 로딩</li>
+<li>MCP와 외부 도구·데이터 연결</li>
+<li>Subagents·Agent Teams·병렬 오케스트레이션</li>
+<li>Hooks·Plugins 및 자동화</li>
+<li>Permission·Guardrails·Sandbox·보안</li>
+<li>Models·인증·Gateway·기업 환경</li>
+<li>관찰 가능성·평가·비용·재현성</li>
+<li>공개 자료 기반 내부 구조 추적 가이드</li>
+<li>코드와 구성 예시 모음</li>
+<li>장애 시나리오·안전성·운영 체크</li>
+<li>반도체 도메인 Agent 적용 설계</li>
+<li>장단점·적합성·비교 프레임</li>
+<li>요약·자가 학습문제·학습 완료 기준</li>
+<li>공식 자료와 버전별 확인 링크</li>
+</ol>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="23"><h2 id="s-23-1">23. 공식 자료와 검증 가능한 링크<a class="anchor" href="#s-23-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p><strong>출처 표기</strong>: 본문 <code>[Rxx]</code>는 아래 공식 링크에 대응한다. 모든 URL은 Anthropic의 공식 문서 또는 공식 GitHub 저장소를 우선했다. <strong>문서 내용과 버전은 변할 수 있으므로 실제 구현 직전에 다시 확인한다.</strong> 본 분석은 제품을 직접 설치해 실행하거나 독립적인 벤치마크를 수행한 결과가 아니다.</p>
+</blockquote>
+<h3 id="s-23-2">23.1 제품·실행 구조·소스 공개 범위<a class="anchor" href="#s-23-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong><a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer">[R01]</a></strong> Claude Code 공식 아키텍처 설명 — <em>How Claude Code works</em><br><a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/how-claude-code-works</a><br>Agentic Loop, Gather/Act/Verify, 모델·도구·Harness의 역할.</li>
+<li><strong><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a></strong> Anthropic 공식 GitHub — <em>anthropics/claude-code</em><br><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/claude-code</a><br>공개 저장소 파일, README, 설치 및 공개 예제의 범위.</li>
+<li><strong><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.310" target="_blank" rel="noopener noreferrer">[R03]</a></strong> 공식 릴리스 노트 — <em>Claude Code Releases</em><br><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.310" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/claude-code/releases/tag/v2.1.310</a><br>버전 v2.1.310, 2026-10-23 릴리스와 해당 시점의 수정 내역. 보안 수정 관련 비교 시 v2.1.309 릴리스도 함께 참조:<br><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.309" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/claude-code/releases/tag/v2.1.309</a></li>
+<li><strong><a href="https://code.claude.com/docs/en/cli-reference" target="_blank" rel="noopener noreferrer">[R17]</a></strong> <em>CLI reference</em><br><a href="https://code.claude.com/docs/en/cli-reference" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/cli-reference</a><br>인터랙티브/비대화형 실행 및 옵션.</li>
+<li><strong><a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener noreferrer">[R18]</a></strong> <em>Run Claude Code programmatically</em><br><a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/headless</a><br><code>claude -p</code>, 스크립트 및 CI 자동화.</li>
+<li><strong><a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[R25]</a></strong> <em>Claude Agent SDK overview</em><br><a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/overview</a><br>Claude Code의 Agent 기능과 SDK 관계.</li>
+<li><strong><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[R29]</a></strong> <em>How the agent loop works (Agent SDK)</em><br><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/agent-loop</a><br>Agent SDK에서 설명하는 모델·도구·루프 의미.</li>
+</ul>
+<h3 id="s-23-3">23.2 Instruction·Memory·Context<a class="anchor" href="#s-23-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong><a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener noreferrer">[R04]</a></strong> <em>How Claude remembers your project</em><br><a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/memory</a><br>CLAUDE.md/AGENTS.md, Auto Memory, 파일 위치·로딩 조건, 2026년 지원 기능.</li>
+<li><strong><a href="https://code.claude.com/docs/en/sessions" target="_blank" rel="noopener noreferrer">[R19]</a></strong> <em>Manage sessions</em><br><a href="https://code.claude.com/docs/en/sessions" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/sessions</a><br>Session 시작·재개·분기와 기록 관리.</li>
+<li><strong><a href="https://code.claude.com/docs/en/context-window" target="_blank" rel="noopener noreferrer">[R20]</a></strong> <em>Explore the context window</em><br><a href="https://code.claude.com/docs/en/context-window" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/context-window</a><br>Context 사용량·압축 관련 개념.</li>
+<li><strong><a href="https://code.claude.com/docs/en/prompt-caching" target="_blank" rel="noopener noreferrer">[R21]</a></strong> <em>Prompt caching</em><br><a href="https://code.claude.com/docs/en/prompt-caching" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/prompt-caching</a><br>반복 컨텍스트의 캐싱과 비용 최적화.</li>
+</ul>
+<h3 id="s-23-4">23.3 Tools·Skills·MCP·Subagents·Plugins<a class="anchor" href="#s-23-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener noreferrer">[R05]</a></strong> <em>Extend Claude with skills</em><br><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/skills</a><br><code>SKILL.md</code>, frontmatter, 로딩·자동/수동 호출 제어.</li>
+<li><strong><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener noreferrer">[R06]</a></strong> <em>Create custom subagents</em><br><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/sub-agents</a><br><code>.claude/agents/</code>, Subagent 모델·도구·메모리·실행 방식.</li>
+<li><strong><a href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener noreferrer">[R07]</a></strong> <em>Orchestrate teams of Claude Code sessions</em><br><a href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-teams</a><br>실험적 Agent Teams, Subagent와의 차이, 제한사항.</li>
+<li><strong><a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener noreferrer">[R08]</a></strong> <em>Connect Claude Code to tools via MCP</em><br><a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/mcp</a><br>MCP Server 구성, stdio/HTTP, 인증·도구 관리.</li>
+<li><strong><a href="https://code.claude.com/docs/en/plugins" target="_blank" rel="noopener noreferrer">[R12]</a></strong> <em>Plugins overview</em><br><a href="https://code.claude.com/docs/en/plugins" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/plugins</a><br>Skills·Hooks·Agents 등의 재사용·배포 구조.</li>
+<li><strong><a href="https://code.claude.com/docs/en/features-overview" target="_blank" rel="noopener noreferrer">[R30]</a></strong> <em>Extend Claude Code</em><br><a href="https://code.claude.com/docs/en/features-overview" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/features-overview</a><br>Instruction·Skills·Hooks·MCP·Plugins 중 무엇을 사용할지 결정하는 안내.</li>
+</ul>
+<h3 id="s-23-5">23.4 Hooks·권한·Sandbox·보안<a class="anchor" href="#s-23-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong><a href="https://code.claude.com/docs/en/hooks-guide" target="_blank" rel="noopener noreferrer">[R09]</a></strong> <em>Automate actions with hooks</em><br><a href="https://code.claude.com/docs/en/hooks-guide" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/hooks-guide</a><br>Hook 작성, 주요 이벤트, 입력·출력 예제.</li>
+<li><strong><a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener noreferrer">[R10]</a></strong> <em>Configure permissions</em><br><a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/permissions</a><br>Tool 권한, 모드, 규칙, 관리 정책, 우선순위.</li>
+<li><strong><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener noreferrer">[R11]</a></strong> <em>Hooks reference</em><br><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/hooks</a><br>공식 이벤트 스키마, JSON, 종료 코드 및 상세 동작.</li>
+<li><strong><a href="https://code.claude.com/docs/en/sandboxing" target="_blank" rel="noopener noreferrer">[R13]</a></strong> <em>Configure the sandboxed Bash tool</em><br><a href="https://code.claude.com/docs/en/sandboxing" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/sandboxing</a><br>파일·네트워크 경계, 정책, 플랫폼 제약.</li>
+<li><strong><a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener noreferrer">[R22]</a></strong> <em>Security</em><br><a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/security</a><br>제품 보안·환경별 위협·보안 권장사항.</li>
+<li><strong><a href="https://code.claude.com/docs/en/settings" target="_blank" rel="noopener noreferrer">[R31]</a></strong> <em>Settings files and precedence</em><br><a href="https://code.claude.com/docs/en/settings" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/settings</a><br><code>settings.json</code> 로딩·범위·우선순위.</li>
+</ul>
+<h3 id="s-23-6">23.5 모델·운영·비용·조직 배포<a class="anchor" href="#s-23-6" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong><a href="https://code.claude.com/docs/en/authentication" target="_blank" rel="noopener noreferrer">[R23]</a></strong> <em>Authentication</em><br><a href="https://code.claude.com/docs/en/authentication" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/authentication</a><br>계정/키 및 공급자별 인증.</li>
+<li><strong><a href="https://code.claude.com/docs/en/third-party-integrations" target="_blank" rel="noopener noreferrer">[R24]</a></strong> <em>Enterprise deployment overview</em><br><a href="https://code.claude.com/docs/en/third-party-integrations" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/third-party-integrations</a><br>Bedrock·Vertex·Foundry 등 배포 경로와 정책.</li>
+<li><strong><a href="https://code.claude.com/docs/en/llm-gateway" target="_blank" rel="noopener noreferrer">[R26]</a></strong> <em>Other LLM gateways</em><br><a href="https://code.claude.com/docs/en/llm-gateway" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/llm-gateway</a><br>Gateway 연결과 호환성 관련 공식 안내.</li>
+<li><strong><a href="https://code.claude.com/docs/en/monitoring-usage" target="_blank" rel="noopener noreferrer">[R27]</a></strong> <em>Monitoring</em><br><a href="https://code.claude.com/docs/en/monitoring-usage" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/monitoring-usage</a><br>OpenTelemetry와 운영 지표·주의사항.</li>
+<li><strong><a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener noreferrer">[R28]</a></strong> <em>Manage costs effectively</em><br><a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/costs</a><br>비용 측정·관리.</li>
+<li><strong><a href="https://code.claude.com/docs/en/data-usage" target="_blank" rel="noopener noreferrer">[R32]</a></strong> <em>Data usage</em><br><a href="https://code.claude.com/docs/en/data-usage" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/data-usage</a><br>데이터 처리·정책 확인.</li>
+<li><strong><a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener noreferrer">[R33]</a></strong> <em>Checkpointing</em><br><a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/checkpointing</a><br>파일 편집·되돌리기와 세션 상태 관리.</li>
+<li><strong><a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">[R34]</a></strong> <em>Best practices for Claude Code</em><br><a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/best-practices</a><br>프로젝트 지시·작업 분해·검증 습관.</li>
+</ul>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="appendix-a"><h2 id="s-appendix-a-1">부록 A. 추가로 확인할 사항과 미실험 항목<a class="anchor" href="#s-appendix-a-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>본 문서 상태</th>
+<th>추후 검증 방법</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v2.1.310 릴리스 기준</td>
+<td>공식 릴리스 페이지 확인</td>
+<td>설치된 <code>claude --version</code>으로 대조</td>
+</tr>
+<tr>
+<td>Claude Code 비공개 루프의 함수 구현</td>
+<td><strong>소스 미확인; 의사코드만 수록</strong></td>
+<td>공식 공개 범위 변화 시 재검토</td>
+</tr>
+<tr>
+<td><code>AGENTS.md</code> 기본 로딩 조건</td>
+<td>공식 문서 기반</td>
+<td>실제 파일 구성별 <code>/context</code> 점검</td>
+</tr>
+<tr>
+<td>Auto Memory 파일 구조</td>
+<td>공식 문서 기반</td>
+<td><code>~/.claude/projects/.../memory/</code> 점검</td>
+</tr>
+<tr>
+<td>Tool/Permission/Hook 정책</td>
+<td>공식 문서 기반</td>
+<td>별도 Sandbox에서 allow/deny 통합 테스트</td>
+</tr>
+<tr>
+<td>MCP 연동</td>
+<td>형식·명령 문서 기반, 미연결</td>
+<td>실제 테스트 서버와 연결·ACL 검증</td>
+</tr>
+<tr>
+<td>비용·지연시간</td>
+<td><strong>벤치마크 미실시</strong></td>
+<td>합성 데이터 질문 세트로 측정</td>
+</tr>
+<tr>
+<td>반도체 분석 정확도</td>
+<td><strong>정량 평가 미실시</strong></td>
+<td>기준 정답 데이터와 비교</td>
+</tr>
+<tr>
+<td>사내 망/인증·보안</td>
+<td><strong>사용자 환경 미검증</strong></td>
+<td>조직 정책·보안팀 승인 후 검토</td>
+</tr>
+</tbody></table>
+</div></section><nav class="page-nav" aria-label="이전 다음 단원"><a href="review.html"><small>이전 단원</small>← 복습·비교·연구 노트</a><a class="next" href="index.html"><small>처음으로</small>학습 안내 →</a></nav><footer>Claude Code 개인 학습 교재<span>원문 기반 편집 / 제품 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-intro-1">원문 읽기 안내와 조사 범위</a><a href="#s-23-1">23. 공식 자료와 검증 가능한 링크</a><a href="#s-appendix-a-1">부록 A. 추가로 확인할 사항과 미실험 항목</a></nav></aside></div></body></html>

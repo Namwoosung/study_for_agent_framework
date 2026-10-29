@@ -1,0 +1,255 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>출처와 검증·공개 범위 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" class="current" aria-current="page">출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>출처와 공개 범위</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / REFERENCE</p><h1>출처와 검증·공개 범위</h1><p class="lead">고정 SDK 소스와 CLI의 문서화된 동작을 구분합니다.</p></header><div class="callout"><strong>원문의 조사·버전 기준을 확인하세요.</strong><p>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310. 공식 자료에 대한 원문의 조사 결과와 직접 실행해서 확인해야 할 조건을 구분합니다. 이번 페이지 제작에서 최신 구현을 추가 검증하지 않았습니다.</p></div><section class="source-section" data-source-chapter="intro"><h2 id="s-intro-1">원문 읽기 안내와 조사 범위<a class="anchor" href="#s-intro-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p><strong>독립 학습 교재 | 기준일: 2026-10-29 | Python SDK <code>claude-agent-sdk</code> v0.2.174 (2026-10-24 릴리스)</strong><br><strong>번들 Claude CLI: v2.1.310 (해당 SDK 릴리스 노트 기준)</strong><br><strong>학습 목적:</strong> 개념 이해 → 실행 아키텍처 → 공개 코드 추적 → 장단점 분석 → 반도체 Agent 개발의 기술 선정 기준<br><strong>분석 범위:</strong> 공식 Claude Agent SDK 문서, Python SDK의 <code>v0.2.174</code> 태그, Claude Code CLI와의 연결 경계. TypeScript는 필요한 경우에만 비교한다.<br><strong>검증 상태:</strong> 공개 문서·공개 GitHub 소스 정적 조사. <strong>실제 설치, API 실행, 성능 벤치마크는 수행하지 않았음.</strong></p>
+</blockquote>
+<h2 id="s-intro-2">문서를 읽는 방법과 검증 기준<a class="anchor" href="#s-intro-2" aria-label="이 절의 고유 링크">#</a></h2>
+<ul>
+<li><strong>[공식]</strong>: Anthropic의 공식 문서 또는 공식 릴리스에 명시된 사실.</li>
+<li><strong>[소스]</strong>: 고정된 Python SDK 태그에서 확인한 함수·클래스·분기 로직.</li>
+<li><strong>[추론]</strong>: 공식 설명과 공개 구조를 근거로 한 해석. 확정된 내부 구현이라고 주장하지 않음.</li>
+<li><strong>[설계]</strong>: 향후 반도체 데모에 권장하는 접근. SDK의 내장 기능과 혼동하지 않음.</li>
+<li><strong>[의사코드]</strong>: 전체 구조를 배우기 위해 간략화한 코드. 실제 SDK 소스나 실행 가능한 예제와 구분.</li>
+<li>출처는 본문에 <code>[[D01]](https://code.claude.com/docs/en/agent-sdk/overview)</code>, <code>[[C01]](https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py)</code> 형식으로 표시하고 마지막 장에 <strong>클릭 가능한 원문 URL과 역할</strong>을 제공한다. 공식 웹 문서는 계속 업데이트될 수 있으므로 2026-10-29 시점의 최신 문서와 고정 태그 간 차이는 별도로 주의한다.</li>
+<li><strong>중요:</strong> Claude Agent SDK의 <strong>공개 Python 코드</strong>와 별도로 실행되는 <strong>Claude Code CLI 내부 Agent Loop</strong>는 공개 범위가 다르다. SDK 공개 코드만으로 CLI의 모든 내부 알고리즘을 검증했다고 말할 수 없다.</li>
+</ul>
+<hr>
+<h2 id="s-intro-3">목차<a class="anchor" href="#s-intro-3" aria-label="이 절의 고유 링크">#</a></h2>
+<ol>
+<li>한눈에 보는 핵심 요약</li>
+<li>LLM API·Claude Code·Claude Agent SDK·Agent Harness의 관계</li>
+<li>등장 배경과 설계 철학</li>
+<li>설치·인증·개발 환경과 최소 예제</li>
+<li>전체 아키텍처와 실행 주체</li>
+<li><code>query()</code> vs <code>ClaudeSDKClient</code></li>
+<li>메시지·스트리밍·최종 결과·비용</li>
+<li>Agent Loop와 종료 조건</li>
+<li>System Prompt·<code>CLAUDE.md</code>·설정 병합</li>
+<li>Built-in Tools와 Tool 선택·실행</li>
+<li>커스텀 Tool·SDK MCP Server·외부 MCP</li>
+<li>Permission Mode·Allow/Deny·승인 콜백</li>
+<li>Hooks와 제어·감사·Guardrails</li>
+<li>Sessions·Context·Compaction·Memory</li>
+<li>Skills·Commands·Plugins</li>
+<li>Subagents·Task 위임·멀티에이전트</li>
+<li>Structured Output과 정확성의 경계</li>
+<li>Checkpoint·중단/재개·오류 처리</li>
+<li>Sandbox·프로세스 보안·배포</li>
+<li>Observability·평가·비용·성능</li>
+<li>코드 추적 ① <code>query()</code>에서 CLI 프로세스 시작까지</li>
+<li>코드 추적 ② <code>ClaudeSDKClient</code>와 메시지 스트림</li>
+<li>코드 추적 ③ Control Protocol·Hook·Permission·MCP</li>
+<li>코드 추적 ④ SessionStore와 Resume</li>
+<li>프레임워크가 지원하는 것과 직접 구현할 것</li>
+<li>반도체 도메인 적용 시나리오 3개</li>
+<li>평가 계획·안전 설계·예상 실패 모드</li>
+<li>장단점·선정 기준·다른 프레임워크 비교</li>
+<li>복습 문제·학습 체크리스트·용어</li>
+<li>공식 참고문헌 및 소스코드 색인</li>
+</ol>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="30"><h2 id="s-30-1">30. 공식 참고문헌 및 소스코드 색인<a class="anchor" href="#s-30-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-30-2">30.1 출처 검증 정책<a class="anchor" href="#s-30-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>이 문서의 기술적 사실은 아래 Anthropic 공식 문서와 GitHub 저장소를 우선했다. 웹 문서는 업데이트될 수 있으므로 코드 주장에는 <code>v0.2.174</code> 태그 링크를 사용했다. 코드 발췌보다는 <strong>함수명·파일·역할·처리 흐름과 원문 링크</strong>를 제공했다. 소스가 공개되지 않은 CLI 내부 메커니즘은 공식 동작 설명 범위 안에서만 기술했다.</p>
+<h4 id="s-30-3">A. 공식 문서<a class="anchor" href="#s-30-3" aria-label="이 절의 고유 링크">#</a></h4>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>번호</th>
+<th>공식 자료</th>
+<th>주요 사용 부분</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D01</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">Claude Agent SDK Overview</a></td>
+<td>개요, Claude Code와 관계, 적용 범위</td>
+</tr>
+<tr>
+<td>D02</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">How the Agent Loop Works</a></td>
+<td>실행 루프, 메시지·Tool·Context</td>
+</tr>
+<tr>
+<td>D03</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">Python SDK Reference</a></td>
+<td>Options, API, 결과 타입</td>
+</tr>
+<tr>
+<td>D04</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/quickstart" target="_blank" rel="noopener noreferrer">Quickstart</a></td>
+<td>설치·인증·첫 실행</td>
+</tr>
+<tr>
+<td>D05</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/custom-tools" target="_blank" rel="noopener noreferrer">Give Claude Custom Tools</a></td>
+<td>Python Tool, SDK MCP Server</td>
+</tr>
+<tr>
+<td>D06</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">Configure Permissions</a></td>
+<td>권한 평가 순서, 모드, 승인</td>
+</tr>
+<tr>
+<td>D07</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">Hooks</a></td>
+<td>Tool 이벤트/Guardrails</td>
+</tr>
+<tr>
+<td>D08</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">Work with Sessions</a></td>
+<td>세션 생성·재개·분기</td>
+</tr>
+<tr>
+<td>D09</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/session-storage" target="_blank" rel="noopener noreferrer">Persist Sessions to External Storage</a></td>
+<td>SessionStore/JSONL 복원</td>
+</tr>
+<tr>
+<td>D10</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts" target="_blank" rel="noopener noreferrer">Modifying System Prompts</a></td>
+<td>Prompt 구성/CLAUDE.md 관계</td>
+</tr>
+<tr>
+<td>D11</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">Skills</a></td>
+<td>Skill 구조·로딩·Commands</td>
+</tr>
+<tr>
+<td>D12</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">Claude Code Features in the SDK</a></td>
+<td>설정 파일·자동 메모리·프로젝트 지침</td>
+</tr>
+<tr>
+<td>D13</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/mcp" target="_blank" rel="noopener noreferrer">MCP</a></td>
+<td>MCP 서버 연결</td>
+</tr>
+<tr>
+<td>D14</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener noreferrer">Subagents</a></td>
+<td>AgentDefinition·위임</td>
+</tr>
+<tr>
+<td>D15</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/plugins" target="_blank" rel="noopener noreferrer">Plugins in the SDK</a></td>
+<td>확장 패키지</td>
+</tr>
+<tr>
+<td>D16</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/structured-outputs" target="_blank" rel="noopener noreferrer">Structured Outputs</a></td>
+<td>JSON Schema·구조화 결과</td>
+</tr>
+<tr>
+<td>D17</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/streaming-output" target="_blank" rel="noopener noreferrer">Streaming Output</a></td>
+<td>부분 이벤트와 스트림 처리</td>
+</tr>
+<tr>
+<td>D18</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/file-checkpointing" target="_blank" rel="noopener noreferrer">File Checkpointing</a></td>
+<td>파일 복원과 제약</td>
+</tr>
+<tr>
+<td>D19</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/secure-deployment" target="_blank" rel="noopener noreferrer">Secure Deployment</a></td>
+<td>보안 운영·격리</td>
+</tr>
+<tr>
+<td>D20</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/hosting" target="_blank" rel="noopener noreferrer">Hosting the Agent SDK</a></td>
+<td>배포 환경</td>
+</tr>
+<tr>
+<td>D21</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/observability" target="_blank" rel="noopener noreferrer">Observability with OpenTelemetry</a></td>
+<td>CLI Telemetry 경로</td>
+</tr>
+<tr>
+<td>D22</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/cost-tracking" target="_blank" rel="noopener noreferrer">Cost and Usage Tracking</a></td>
+<td>Usage/비용/턴 제한</td>
+</tr>
+<tr>
+<td>D23</td>
+<td><a href="https://code.claude.com/docs/en/agent-sdk/user-input" target="_blank" rel="noopener noreferrer">Handle Approvals and User Input</a></td>
+<td>사람 승인·질의 응답</td>
+</tr>
+</tbody></table>
+</div><h4 id="s-30-4">B. 고정 버전 공개 소스<a class="anchor" href="#s-30-4" aria-label="이 절의 고유 링크">#</a></h4>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>번호</th>
+<th>버전 고정 GitHub 원문</th>
+<th>핵심 분석 대상</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C00</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/releases/tag/v0.2.174" target="_blank" rel="noopener noreferrer">Official Releases: v0.2.174</a></td>
+<td>2026-10-24 릴리스, 번들 CLI 2.1.310</td>
+</tr>
+<tr>
+<td>C01</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer"><code>src/claude_agent_sdk/query.py</code></a></td>
+<td><code>query()</code> 진입점</td>
+</tr>
+<tr>
+<td>C02</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py" target="_blank" rel="noopener noreferrer"><code>src/claude_agent_sdk/client.py</code></a></td>
+<td><code>ClaudeSDKClient</code> 및 세션·메시지</td>
+</tr>
+<tr>
+<td>C03</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/client.py" target="_blank" rel="noopener noreferrer"><code>_internal/client.py</code></a></td>
+<td><code>InternalClient.process_query</code></td>
+</tr>
+<tr>
+<td>C04</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py" target="_blank" rel="noopener noreferrer"><code>_internal/query.py</code></a></td>
+<td>Control Protocol, Callback, SDK MCP Bridge</td>
+</tr>
+<tr>
+<td>C05</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer"><code>_internal/transport/subprocess_cli.py</code></a></td>
+<td>CLI 실행과 명령줄 인자/Stream</td>
+</tr>
+<tr>
+<td>C06</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/types.py" target="_blank" rel="noopener noreferrer"><code>src/claude_agent_sdk/types.py</code></a></td>
+<td>Options/Message/Callback 타입</td>
+</tr>
+<tr>
+<td>C07</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer"><code>_internal/message_parser.py</code></a></td>
+<td><code>parse_message</code></td>
+</tr>
+<tr>
+<td>C08</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/session_resume.py" target="_blank" rel="noopener noreferrer"><code>_internal/session_resume.py</code></a></td>
+<td>SessionStore Resume·임시 디렉터리</td>
+</tr>
+<tr>
+<td>C09</td>
+<td><a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/sessions.py" target="_blank" rel="noopener noreferrer"><code>_internal/sessions.py</code></a></td>
+<td>Session 목록·조회 등</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-30-5">30.2 버전별 주의사항 (문서화된 변경·관찰 지점)<a class="anchor" href="#s-30-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>v0.2.174 (2026-10-24):</strong> 공식 릴리스 페이지에서 번들 Claude CLI가 <code>2.1.310</code>으로 변경되었다고 명시. <a href="https://github.com/anthropics/claude-agent-sdk-python/releases/tag/v0.2.174" target="_blank" rel="noopener noreferrer">[C00]</a></li>
+<li><strong>v0.2.170 (2026-10-21):</strong> 병렬 Tool 호출이 있을 때 세션 메시지 조회에서 일부 Tool 호출/결과가 누락되던 문제 수정이 릴리스 노트에 기재. 오래된 버전의 감사 추적 신뢰도를 비교할 때 중요하다. <a href="https://github.com/anthropics/claude-agent-sdk-python/releases" target="_blank" rel="noopener noreferrer">공식 릴리스 목록</a></li>
+<li><strong>Skills 기본값:</strong> v0.2.174의 <code>_apply_skills_defaults()</code>는 <code>skills</code>가 지정된 경우 Tool 승인과 setting sources의 기본값을 계산한다. <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a> 최신 문서에서의 <code>setting_sources</code> 생략 동작과 함께 확인해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">[D12]</a></li>
+<li><strong>Managed Policy/Auto Memory:</strong> <code>setting_sources=[]</code>만으로 CLI가 참조하는 모든 설정과 자동 메모리가 없어지는 것은 아니라는 주의가 최신 문서에 있다. 다중 사용자 환경에서는 CLI 설정 디렉터리와 자동 메모리 정책까지 통제해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/claude-code-features" target="_blank" rel="noopener noreferrer">[D12]</a></li>
+<li><strong>Hooks/Permissions:</strong> 최신 공식 문서가 기술하는 일부 예외 동작은 SDK 자체보다는 함께 번들된 CLI 버전에 의해 달라질 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener noreferrer">[D07]</a></li>
+</ul>
+<h3 id="s-30-6">30.3 정보의 공개·비공개 경계<a class="anchor" href="#s-30-6" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>확실히 코드로 볼 수 있는 것:</strong> Python <code>query</code>, Client, Control Protocol, CLI 프로세스 실행, 메시지 파서, SDK MCP Bridge, SessionStore 연동.</li>
+<li><strong>공식 문서로 동작이 설명되는 것:</strong> Claude Code Agent Loop, Built-in Tool 실행, Context Compaction, Subagent 위임, 권한 정책.</li>
+<li><strong>직접 소스 증거가 부족한 것:</strong> 번들 CLI 내부 모델 호출 상태 머신의 모든 함수, 모든 휴리스틱, 모델의 Tool 선택 결정 근거.</li>
+<li><strong>향후 실행으로 검증할 것:</strong> 보안 정책의 실제 차단율, 기능별 성능, 도구 재시도·복구, Session 품질, 사내 환경 호환성.</li>
+</ol>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="review.html"><small>이전 단원</small>← 복습·용어·Auto Memory</a><a class="next" href="index.html"><small>처음으로</small>학습 안내 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-intro-1">원문 읽기 안내와 조사 범위</a><a href="#s-intro-2">문서를 읽는 방법과 검증 기준</a><a href="#s-intro-3">목차</a><a href="#s-30-1">30. 공식 참고문헌 및 소스코드 색인</a></nav></aside></div></body></html>

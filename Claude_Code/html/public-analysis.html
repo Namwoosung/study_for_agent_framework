@@ -1,0 +1,303 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code의 원리·구현·한계를 배우는 개인 학습 교재"><title>공개 자료로 확인할 범위와 후속 실험 — Claude Code</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Code<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>정체성과 사용 환경</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처·Loop·Tools</span></a><a href="instructions-memory.html" ><span class="nav-number">03</span><span>지침·기억·Context</span></a><a href="skills-mcp.html" ><span class="nav-number">04</span><span>Skills와 MCP</span></a><p class="nav-group">확장과 운영</p><a href="collaboration.html" ><span class="nav-number">05</span><span>위임·Teams·Hooks</span></a><a href="security-models.html" ><span class="nav-number">06</span><span>권한·격리·모델 연결</span></a><p class="nav-group">구현과 운영</p><a href="evaluation.html" ><span class="nav-number">07</span><span>관측·평가·재현성</span></a><a href="public-analysis.html" class="current" aria-current="page"><span class="nav-number">08</span><span>공개 분석·구성·장애</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 적용과 비교</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·비교·연구 노트</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.30 · Claude Code v2.1.310</span><a href="../Claude_Code.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Code</a><span aria-hidden="true">/</span><span>공개 분석·구성·장애</span></div><header class="chapter-header"><p class="eyebrow">구현과 운영 / 단원 08</p><h1>공개 자료로 확인할 범위와 후속 실험</h1><p class="lead">SDK 통신 경계, 설정 예시와 실패·복구 조건</p><div class="chapter-meta">원문 17–19장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>공식 저장소의 README·릴리스·설정·예제와 SDK 래퍼는 확인 가능한 자료이지만, CLI 내부 모델 루프 전체의 소스는 아닙니다. 분석 가능한 외부 계약과 후속 관찰 실험을 나누어 읽으세요.</p><p>프로젝트 트리·권한 JSON·분석 산출물·수치 검증 코드와 연구 기록은 원문의 구성 예시입니다. 샘플 정책을 복사한 것과 실제 우회 차단을 검증한 것은 다릅니다. 장애 대응과 SLO 목표도 측정된 제품 성능으로 오해하지 마세요.</p><p class="reading-question"><strong>읽는 관점</strong>실제 공개 API·구성, 개념용 의사코드, 권장 실험과 미검증 항목을 분명히 나누세요.</p></section><section class="source-section" data-source-chapter="17"><h2 id="s-17-1">17. 공개 자료 기반 내부 구조 추적 가이드<a class="anchor" href="#s-17-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-17-2">17.1 코드 분석의 시작점과 제한<a class="anchor" href="#s-17-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>[공개 자료 확인] <code>anthropics/claude-code</code> 저장소에는 README, CHANGELOG, 예제, 플러그인, 설정 파일, 개발 컨테이너 등 공개 자료가 있다. 그러나 Python Agent SDK의 <code>internal_client.py</code> 같은 코드가 존재한다고 <strong>Claude Code CLI의 모델 판단 루프 본체까지 같은 방식으로 공개되었다고 가정할 수 없다.</strong> <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer">[R02]</a><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.310" target="_blank" rel="noopener noreferrer">[R03]</a><a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[R25]</a></p>
+<p>이 문서는 비공개 실행 엔진의 클래스명이나 함수명을 꾸며 내지 않는다. 대신 <strong>반드시 소스로 확인 가능한 연결 지점</strong>을 중심으로 조사 절차를 제공한다.</p>
+<h3 id="s-17-3">17.2 실제 확인할 수 있는 코드·구성 대상<a class="anchor" href="#s-17-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>공개 확인 대상</th>
+<th>실제 볼 수 있는 것</th>
+<th>이로부터 단정하면 안 되는 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>공식 GitHub README</td>
+<td>설치·제품 개요·기본 CLI</td>
+<td>비공개 루프 전체 구현</td>
+</tr>
+<tr>
+<td>Releases/CHANGELOG</td>
+<td>기능 추가·보안 패치·회귀 이력</td>
+<td>내부 알고리즘의 정확한 자료구조</td>
+</tr>
+<tr>
+<td><code>.claude</code> 예제</td>
+<td>Instruction·Skills·Hooks 구성 예</td>
+<td>제품의 모든 기본 내장 프롬프트</td>
+</tr>
+<tr>
+<td>Plugins/Mods 자료</td>
+<td>확장 API·도구 등록 패턴</td>
+<td>모든 런타임 Tool Dispatch 구현</td>
+</tr>
+<tr>
+<td>CLI reference</td>
+<td>외부 입력·옵션·출력 계약</td>
+<td>내부 실행 스레드/큐 구조</td>
+</tr>
+<tr>
+<td>Agent SDK 공개 Python 래퍼</td>
+<td>CLI 프로세스 실행 및 메시지 통신 경계</td>
+<td>Claude Code 엔진의 전체 내부 Loop</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-17-4">17.3 내부 동작 분석을 위한 7단계 실험 계획<a class="anchor" href="#s-17-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>아래는 실제 실행하지 않은 후속 분석 계획이다.</strong></p>
+<h4 id="s-17-5">실험 A — 모델과 Tool의 실행 경계<a class="anchor" href="#s-17-5" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>통제된 빈 프로젝트에서 Claude Code 실행.</li>
+<li>“파일 목록을 확인하고 파일 개수만 알려 달라” 요청.</li>
+<li>어떤 Tool이 호출되고 어떤 인자를 받는지 기록.</li>
+<li>Tool 결과만 바꿨을 때 후속 모델 답변이 어떻게 달라지는지 비교.</li>
+</ul>
+<h4 id="s-17-6">실험 B — CLAUDE.md 로딩<a class="anchor" href="#s-17-6" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>프로젝트 내 CLAUDE.md를 추가하고 세션 새로 시작.</li>
+<li><code>/context</code>에서 실제 로딩 여부 확인.</li>
+<li>사용자 홈과 프로젝트 파일의 충돌 사례를 만들어 우선순위·적용 여부 관찰.</li>
+<li>단, 모델이 지시를 따르는 비율로 정책의 보안성을 판단하지 않는다.</li>
+</ul>
+<h4 id="s-17-7">실험 C — AGENTS.md 로딩<a class="anchor" href="#s-17-7" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>동일한 저장소에 <code>AGENTS.md</code>만 둘 때와 <code>CLAUDE.md</code>를 함께 둘 때 비교.</li>
+<li>Project instructions 기본값과 <code>claude-md-and-agents-md</code> 차이를 확인.</li>
+<li><code>@AGENTS.md</code> import 및 버전 조건 재검증.</li>
+</ul>
+<h4 id="s-17-8">실험 D — Skill 로딩<a class="anchor" href="#s-17-8" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>간단한 <code>SKILL.md</code> 생성.</li>
+<li>Skill 설명만 제공한 상태와 실제 호출했을 때 Context 차이 확인.</li>
+<li>수동 호출/자동 호출/<code>disable-model-invocation</code>의 작동 비교.</li>
+</ul>
+<h4 id="s-17-9">실험 E — Permission + Hooks<a class="anchor" href="#s-17-9" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>읽기 Tool과 Bash 호출을 각각 요청.</li>
+<li>허용/거부, Hook 기록과 입력 경로를 관찰.</li>
+<li>위험 명령 우회 패턴은 프로덕션 환경이 아닌 격리된 테스트 컨테이너에서만 시도.</li>
+</ul>
+<h4 id="s-17-10">실험 F — Session·Context 압축<a class="anchor" href="#s-17-10" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>장시간 문서 분석에서 <code>/context</code>를 점검.</li>
+<li>압축 전후에 세부 수치·경로·작업 상태의 손실 가능성을 평가.</li>
+<li>중요한 값을 외부 파일에 기록한 그룹과 기록하지 않은 그룹 비교.</li>
+</ul>
+<h4 id="s-17-11">실험 G — Subagent/Team<a class="anchor" href="#s-17-11" aria-label="이 절의 고유 링크">#</a></h4>
+<ul>
+<li>독립된 두 개의 조사 업무를 Subagent로 위임.</li>
+<li>대화 Context 절약, 비용, 출력 품질, 상호 의존·충돌을 비교.</li>
+<li>Team 기능은 별도 실험 환경에서만 검토.</li>
+</ul>
+<h3 id="s-17-12">17.4 로그에서 추출할 수 있는 기술적 사실<a class="anchor" href="#s-17-12" aria-label="이 절의 고유 링크">#</a></h3>
+<p>관측 가능한 것:</p>
+<ul>
+<li>어떤 Tool이 호출됐는지.</li>
+<li>어떤 파일·API에 접근했는지(노출된 로그 범위 내).</li>
+<li>도구 실행 후 어떤 결과가 모델에 반환됐는지.</li>
+<li>Permission/Hook이 실제로 차단했는지.</li>
+<li>파일 변경과 테스트 결과가 일치하는지.</li>
+</ul>
+<p>확정하기 어려운 것:</p>
+<ul>
+<li>모델의 비공개 내부 사고 과정.</li>
+<li>압축 알고리즘의 모든 휴리스틱.</li>
+<li>내부 모델 라우팅·실행 큐의 상세 코드.</li>
+<li>문서에서 설명하지 않은 비공개 사전·사후 필터.</li>
+</ul>
+<h3 id="s-17-13">17.5 Claude Agent SDK와 연결하는 코드 수준 경계<a class="anchor" href="#s-17-13" aria-label="이 절의 고유 링크">#</a></h3>
+<p>이미 별도로 학습한 Claude Agent SDK Python의 공개 코드는 보통 <strong>호스트 Python → SDK 클라이언트 → CLI 프로세스 전송 → 메시지 스트림·제어 이벤트</strong>의 범위를 조사하기 좋다. 반면 CLI 안에서 모델이 어떤 Tool을 고르고 컨텍스트를 어떻게 재구성하는지의 실제 소스 추적과는 구별해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[R25]</a><a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[R29]</a></p>
+<figure class="diagram" data-source-diagram="9"><figcaption><span>그림 9</span> 공개 SDK 래퍼와 CLI 사이의 분석 경계</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-9.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="공개 SDK 래퍼와 CLI 사이의 분석 경계"><img src="assets/diagram-9.svg" alt="공개 SDK 래퍼와 CLI 사이의 분석 경계. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+  PY[Python/TypeScript App] --&gt; SDK[Agent SDK: 공개 래퍼]
+  SDK --&gt; IPC[Transport / CLI 프로세스]
+  IPC --&gt; CLI[Claude Code Harness]
+  CLI --&gt; API[Claude 모델 API]
+  CLI --&gt; TOOLS[Tool / MCP / Hooks]</code></pre></details></figure><p><strong>중요:</strong> 위 그림의 <code>SDK</code>와 <code>CLI</code> 사이를 문서·공개 코드로 추적하더라도, CLI 자체가 완전 오픈소스라고 결론 내려서는 안 된다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="18"><h2 id="s-18-1">18. 실전 분석용 구성 예시 모음<a class="anchor" href="#s-18-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-18-2">18.1 권장 프로젝트 트리<a class="anchor" href="#s-18-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>claude-code-semi-study/
+├── README.md
+├── AGENTS.md                     # 다른 Agent와 공유하는 기본 규칙
+├── CLAUDE.md                     # @AGENTS.md + Claude 전용 지시
+├── .claude/
+│   ├── settings.json
+│   ├── settings.local.json       # 로컬에만 유지
+│   ├── rules/
+│   │   ├── data-quality.md
+│   │   └── report-style.md
+│   ├── agents/
+│   │   ├── data-auditor.md
+│   │   └── method-reviewer.md
+│   ├── skills/
+│   │   ├── wafer-eda/SKILL.md
+│   │   └── sop-review/SKILL.md
+│   └── hooks/
+│       └── inspect_command.py
+├── .mcp.json                    # 프로젝트 공통 MCP 서버 선언(비밀값 금지)
+├── data/
+│   ├── README.md
+│   └── synthetic_wafer.csv
+├── src/
+│   ├── metrics.py
+│   └── validate.py
+├── tests/
+│   └── test_metrics.py
+├── experiments/
+│   └── run_config.yaml
+└── reports/</code></pre></div><p>이 트리는 실제 파일 생성 명령이 아니라 <strong>추천 구성 예시</strong>다.</p>
+<h3 id="s-18-3">18.2 기본 설정 예시<a class="anchor" href="#s-18-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;Read(.env)&quot;,
+      &quot;Read(.env.*)&quot;,
+      &quot;Bash(rm -rf *)&quot;
+    ]
+  }
+}</code></pre></div><p><strong>매우 중요:</strong> 위 <code>deny</code> 샘플은 형식 설명에 불과하다. CLI의 Bash 규칙은 복합 Shell 명령·리다이렉션·스크립트 호출 등의 우회를 완전히 포착하지 못할 수 있으므로 <strong>이 JSON만으로 데이터 삭제나 비밀 파일 읽기 차단을 보장하지 않는다.</strong> 실제 프로젝트에서는 허용 목록, OS·컨테이너 read-only 마운트, DB 최소 권한, 정책 테스트로 보완해야 한다. 또한 일부 도구와 경로 패턴의 상세 문법·매칭 대상은 공식 Permission 문서를 따라 검증해야 한다. <a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener noreferrer">[R10]</a></p>
+<h3 id="s-18-4">18.3 간단한 분석 산출물 스키마<a class="anchor" href="#s-18-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>{
+  &quot;dataset_id&quot;: &quot;synthetic_wafer_2026_01&quot;,
+  &quot;input_hash&quot;: &quot;sha256:replace-with-real-hash&quot;,
+  &quot;filters&quot;: {
+    &quot;date_from&quot;: &quot;2026-01-01&quot;,
+    &quot;date_to&quot;: &quot;2026-01-31&quot;
+  },
+  &quot;metric&quot;: {
+    &quot;name&quot;: &quot;yield_rate&quot;,
+    &quot;numerator&quot;: 980,
+    &quot;denominator&quot;: 1000,
+    &quot;value&quot;: 0.98,
+    &quot;unit&quot;: &quot;ratio&quot;
+  },
+  &quot;validation&quot;: {
+    &quot;schema_check&quot;: &quot;passed&quot;,
+    &quot;metric_check&quot;: &quot;passed&quot;
+  },
+  &quot;notes&quot;: [
+    &quot;Synthetic data only; production data not used&quot;
+  ]
+}</code></pre></div><p>위 JSON은 <strong>권장 보고 형식</strong>이다. Claude Code의 기본 Structured Output 기능이 이 형식을 자동으로 보장한다고 주장하는 것이 아니다. 실제로는 <code>--json-schema</code> 같은 지원 옵션, 별도 검증 스크립트, SDK의 출력 스키마 또는 Tool 서버에서 강제할 수 있는지 환경에 맞춰 확인한다.</p>
+<h3 id="s-18-5">18.4 통계 검증 코드 예시<a class="anchor" href="#s-18-5" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code># [학습용 Python 예시] 순수 수학 검증 로직. Claude Code 내장 코드가 아님.
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class YieldMetric:
+    good_count: int
+    total_count: int
+
+    def value(self) -&gt; float:
+        if self.total_count &lt;= 0:
+            raise ValueError(&quot;total_count must be positive&quot;)
+        if self.good_count &lt; 0 or self.good_count &gt; self.total_count:
+            raise ValueError(&quot;count invariant violated&quot;)
+        return self.good_count / self.total_count
+
+assert YieldMetric(980, 1000).value() == 0.98</code></pre></div><p><strong>왜 중요한가?</strong> Agent는 산식을 제안할 수 있지만 검증된 코드에서 분모·분자·범위를 강제하면 결과 해석과 계산을 분리할 수 있다.</p>
+<h3 id="s-18-6">18.5 재현 가능한 실험 기록 템플릿<a class="anchor" href="#s-18-6" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>yaml</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>experiment_id: demo_wafer_eda_001
+agent_environment:
+  product: Claude Code
+  version: 2.1.310
+  model: record_actual_model_id
+input:
+  dataset_id: synthetic_wafer_2026_01
+  checksum: replace_with_sha256
+  schema_version: 1.0.0
+policy:
+  db_access: read_only
+  network_egress: restricted
+  human_approval_for_write: required
+analysis:
+  tool_limit: record_actual_limit
+  statistical_test: record_actual_test
+result:
+  run_status: not_executed
+  validation_status: not_executed</code></pre></div><p>이를 대화나 Auto Memory에만 맡기지 말고 프로젝트 파일 및 실험 관리 시스템에 보관한다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="19"><h2 id="s-19-1">19. 실패·장애·보안 운영 시나리오<a class="anchor" href="#s-19-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-19-2">19.1 실패 유형별 대응 표<a class="anchor" href="#s-19-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>실패 사례</th>
+<th>흔한 원인</th>
+<th>실무 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>잘못된 파일 분석</td>
+<td>파일명 유사, 작업 디렉터리 혼동</td>
+<td>입력 경로·해시·파일 헤더 확인</td>
+</tr>
+<tr>
+<td>문서의 오래된 공정 기준 사용</td>
+<td>Memory/문서 버전 충돌</td>
+<td>승인된 최신 문서 버전과 출처 강제</td>
+</tr>
+<tr>
+<td>반복 Tool 호출로 비용 증가</td>
+<td>잘못된 종료 조건, 에러 재시도 반복</td>
+<td>턴·시간·호출 상한, 에러 분류</td>
+</tr>
+<tr>
+<td>Shell 명령 실패</td>
+<td>패키지 미설치, 권한, OS 차이</td>
+<td>환경 점검, 사용 가능한 대체 경로</td>
+</tr>
+<tr>
+<td>Sandbox 오류</td>
+<td>경로/네트워크 제한</td>
+<td>정책 위반인지 환경 구성 문제인지 구분</td>
+</tr>
+<tr>
+<td>MCP 서버 응답 실패</td>
+<td>인증·타임아웃·서비스 장애</td>
+<td>오류·재시도·회로 차단·캐시 정책</td>
+</tr>
+<tr>
+<td>Context 요약 손실</td>
+<td>긴 대화·대용량 출력</td>
+<td>상태를 외부 문서/테스트 결과로 보존</td>
+</tr>
+<tr>
+<td>분석 숫자 불일치</td>
+<td>중복, 누락, 시간대, 단위</td>
+<td>수치 검증 모듈과 샘플 대조</td>
+</tr>
+<tr>
+<td>개인정보/기밀 노출 위험</td>
+<td>민감 로그·외부 API 호출</td>
+<td>필드 마스킹, 정책, 로깅·송신 차단</td>
+</tr>
+<tr>
+<td>외부 문서의 악성 지시</td>
+<td>Prompt Injection</td>
+<td>Tool 출력 신뢰도 분리, 권한 고정</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-19-3">19.2 정량적인 운영 SLO 예시<a class="anchor" href="#s-19-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>다음은 실제 벤치마크 수치가 아닌 <strong>실험 설계 예시</strong>다.</p>
+<ul>
+<li>읽기 전용 Tool 요청 성공률 ≥ 99% 목표.</li>
+<li>분석 결과 스키마 검사 통과율 ≥ 99% 목표.</li>
+<li>잘못된 단위·분모 사용 0건 목표.</li>
+<li>금지된 Tool 실행 0건 목표.</li>
+<li>1회 분석 95백분위 완료 시간 목표를 데이터 크기별로 지정.</li>
+<li>단위 테스트 없는 분석을 ‘검증 완료’로 표시한 사례 0건 목표.</li>
+</ul>
+<p>이 수치가 Claude Code의 실제 성능이라는 뜻은 아니다.</p>
+<h3 id="s-19-4">19.3 안전한 도입 단계<a class="anchor" href="#s-19-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>오프라인 분석:</strong> 모의·공개 데이터, 텍스트 위주, 읽기 전용.</li>
+<li><strong>통제된 Tools:</strong> 사전 정의된 함수·출력 스키마·사용자 검증.</li>
+<li><strong>사내 서비스 연계:</strong> 권한·감사·로그 마스킹·승인된 망 경로.</li>
+<li><strong>Multi-Agent 연구:</strong> 독립 역할·비용·결과 검증 기준 마련.</li>
+<li><strong>업무용 파일럿:</strong> 사용자 승인과 검토자 책임·복구 절차.</li>
+</ol>
+<p>실제 생산 설비의 제어·레시피 변경 등 고위험 행동을 데모의 기본 기능으로 삼지 않는다.</p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="evaluation.html"><small>이전 단원</small>← 관측·평가·재현성</a><a class="next" href="semiconductor.html"><small>다음 단원</small>반도체 적용과 비교 →</a></nav><footer>Claude Code 개인 학습 교재<span>원문 기반 편집 / 제품 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-17-1">17. 공개 자료 기반 내부 구조 추적 가이드</a><a href="#s-18-1">18. 실전 분석용 구성 예시 모음</a><a href="#s-19-1">19. 실패·장애·보안 운영 시나리오</a></nav></aside></div></body></html>

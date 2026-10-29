@@ -1,0 +1,140 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>이력과 절차, 하위 역할 나누기 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" class="current" aria-current="page"><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>Session·Skills·위임</span></div><header class="chapter-header"><p class="eyebrow">확장과 운영 / 단원 06</p><h1>이력과 절차, 하위 역할 나누기</h1><p class="lead">Context·외부 SessionStore·Skills·Subagents의 책임</p><div class="chapter-meta">원문 14–16장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Session은 우선 대화·도구 이력이며, 외부 SessionStore는 그 Transcript를 저장·복원하는 연결점입니다. 장기 도메인 지식 검색이나 기업용 RAG가 자동으로 완성되는 것은 아닙니다.</p><p>Skill은 반복 절차를 재사용하고 Subagent는 역할을 나누어 결과를 돌려줍니다. 지침·기억·이력·외부 지식을 나누고, Skills의 로딩 기본값과 위임의 권한·비용·근거 통합 조건도 함께 확인하세요. Auto Memory의 상세 비교는 복습 페이지에 보존했습니다.</p><p class="reading-question"><strong>읽는 관점</strong>무엇을 저장하고 언제 읽는지, 절차가 검증된 사실을 자동 보장하는지를 구분하세요.</p></section><section class="source-section" data-source-chapter="14"><h2 id="s-14-1">14. Sessions·Context·Compaction·Memory<a class="anchor" href="#s-14-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-14-2">14.1 먼저 네 가지를 구분<a class="anchor" href="#s-14-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>의미</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Session</td>
+<td>실행 과정의 대화/Tool 기록</td>
+<td>user→Tool→assistant transcript</td>
+</tr>
+<tr>
+<td>Context Window</td>
+<td>이번 모델 호출에 들어갈 수 있는 정보 범위</td>
+<td>시스템 지침+대화+Tool 결과</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>오래된 정보를 요약하여 Context 비용을 줄이는 과정</td>
+<td>오래된 호출 기록 요약</td>
+</tr>
+<tr>
+<td>Long-term Domain Memory</td>
+<td>프로젝트 지식·운영 규칙을 장기간 관리하는 기능</td>
+<td>반도체 SOP·분석 결과 인덱스</td>
+</tr>
+</tbody></table>
+</div><p>Session이 있다고 해서 자동으로 사용자별 벡터 DB 검색이나 공정 문서 RAG까지 완성된 것은 아니다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a>, 설계</p>
+<h3 id="s-14-3">14.2 Session 동작<a class="anchor" href="#s-14-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 문서에 따르면 일반적인 세션 기록은 로컬 <code>~/.claude/projects/</code> 아래 JSONL 형태로 저장된다. <code>resume=&lt;session_id&gt;</code>로 다시 읽고, <code>continue_conversation</code>으로 최근 세션을 이어가거나 <code>fork_session</code>으로 분기할 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/session-storage" target="_blank" rel="noopener noreferrer">[D09]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code># 앞선 작업에서 얻은 session_id가 있다고 가정
+options = ClaudeAgentOptions(resume=session_id, max_turns=6)
+async for msg in query(prompt=&quot;방금 분석한 이상 징후의 근거를 다시 정리해&quot;, options=options):
+    ...</code></pre></div><p><strong>운영 시 주의:</strong> 세션에는 민감한 Tool 인자와 결과가 저장될 수 있다. 프로젝트별 접근통제, 파일 저장 위치, 암호화, 보존 기간, 삭제 정책을 별도로 정의한다. [설계]</p>
+<h3 id="s-14-4">14.3 Context 압축<a class="anchor" href="#s-14-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>긴 작업에서는 모든 과거 Tool 결과를 모델 Context에 그대로 포함할 수 없으므로 Claude Code는 컨텍스트를 관리하거나 압축할 수 있다. 일반적인 모델 API 직접 호출과 달리 Agent Runtime의 컨텍스트 관리 기능을 활용할 수 있다는 것이 장점이다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<p>하지만 압축 과정에서 숫자·단위·작업 조건·출처가 사라질 수 있다. <strong>공정 실험 결과나 통계 계산값을 단순 자연어 요약에만 의존해서 저장하면 안 된다.</strong> 중요한 수치는 별도 영구 아티팩트/DB에 저장하고 ID로 참조한다. [설계]</p>
+<h3 id="s-14-5">14.4 Memory는 어떻게 구축하는가?<a class="anchor" href="#s-14-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>프로젝트 지침: <code>CLAUDE.md</code>에 상시 지켜야 할 규칙을 둠.</li>
+<li>Skills: 반복 분석 절차를 Markdown+리소스에 저장.</li>
+<li>Session: 특정 사용자·작업의 대화와 Tool 실행 기록을 보존.</li>
+<li>Subagent memory: 특정 Agent별 파일 기반 지식/기억 소스를 구성 가능.</li>
+<li>RAG/MCP: 전문 문서, 운영 DB, 검색 인덱스를 별도로 연결.</li>
+</ul>
+<p>즉 <strong>지침·절차·대화·외부 지식은 서로 다른 저장 체계</strong>로 설계하는 편이 안전하다. <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">[D11]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener noreferrer">[D14]</a></p>
+<h3 id="s-14-6">14.5 외부 SessionStore<a class="anchor" href="#s-14-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 SDK는 <code>SessionStore</code> 어댑터를 제공한다. <code>append()</code>와 <code>load()</code> 등의 인터페이스를 구현해 대화 기록을 외부 데이터 저장소로 미러링하고 여러 호스트 간 재개에 활용할 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/session-storage" target="_blank" rel="noopener noreferrer">[D09]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>사용자 작업 실행
+    → CLI가 로컬 Session JSONL 생성
+    → SDK SessionStore.append(...)로 미러링
+    → 외부 DB/Object Storage 저장
+
+다른 실행 호스트에서 resume
+    → SDK SessionStore.load(...)
+    → 임시 Claude 설정 디렉터리에 복원
+    → CLI가 기존 Session을 재개</code></pre></div><p>이것은 <strong>트랜스크립트 저장·복원</strong>이지 자동 의미 검색(RAG)과 동일한 개념이 아니다. <code>project_key</code>와 working directory의 대응, 동시 append 순서, 인증 정보 보존, subagent subpath 보존 등이 운영 조건이다. <a href="https://code.claude.com/docs/en/agent-sdk/session-storage" target="_blank" rel="noopener noreferrer">[D09]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/session_resume.py" target="_blank" rel="noopener noreferrer">[C08]</a></p>
+</section>
+<section class="source-section" data-source-chapter="15"><h2 id="s-15-1">15. Skills·Commands·Plugins<a class="anchor" href="#s-15-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-15-2">15.1 Skill은 ‘도구 함수’가 아니다<a class="anchor" href="#s-15-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Skill은 특정 작업을 수행하는 <strong>재사용 가능한 지침과 관련 리소스</strong>를 담는 패키지이다. 보통 <code>.claude/skills/&lt;name&gt;/SKILL.md</code>처럼 구성하며, 이름·설명·사용 조건을 메타데이터로 제공한다. Tool은 실제 행동을 실행하는 인터페이스다. <a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">[D11]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>fab-workspace/
+├── CLAUDE.md
+└── .claude/
+    ├── skills/
+    │   └── yield-analysis/
+    │       ├── SKILL.md
+    │       └── references/
+    │           └── feature_rules.md
+    └── settings.json</code></pre></div><h3 id="s-15-3">15.2 Skill 내용 예시<a class="anchor" href="#s-15-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>markdown</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>---
+name: yield-analysis
+description: 합성 수율 테이블에서 이상 분포를 확인할 때 사용
+---
+
+1. 데이터 출처와 스키마를 확인한다.
+2. 누락값, 중복, 범주형 컬럼의 분포를 확인한다.
+3. lot/설비/기간 단위로 요약 통계를 만든다.
+4. 결과는 관측 사실과 원인 가설로 분리한다.
+5. 실제 원인 확정 또는 설비 조치를 제안하지 않는다.</code></pre></div><p>[설계 예시] 도메인 규칙을 재사용할 수 있지만 <strong>Skill에 쓴 내용이 진실인지 검증하는 자동 장치가 되는 것은 아니다.</strong> 실측 데이터 검증은 Tool와 외부 평가로 수행한다.</p>
+<h3 id="s-15-4">15.3 Skill 로딩의 조건과 버전 차이<a class="anchor" href="#s-15-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 문서는 SDK의 <code>skills</code> 및 <code>setting_sources</code> 옵션을 설명한다. <strong>v0.2.174의 공개 Python 코드</strong>에서는 <code>options.skills=&quot;all&quot;</code> 또는 개별 스킬 목록이 있으면 Tool 승인 목록에 대응 규칙을 추가하고, <code>setting_sources</code>가 미지정이면 user/project 소스를 기본값으로 계산한다. 반면 <code>setting_sources=[]</code>를 명시하면 파일에서 Skill을 찾지 못할 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">[D11]</a>, <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<p>이 부분은 <strong>예전 버전의 ‘항상 setting_sources를 직접 지정해야 한다’는 설명을 그대로 반복하면 안 되는 대표적인 사례</strong>다. 공식 문서와 정확한 설치 버전의 구현을 함께 비교해야 한다.</p>
+<h3 id="s-15-5">15.4 Commands·Plugins와의 차이<a class="anchor" href="#s-15-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>Commands: <code>/compact</code>와 같은 내장 명령, <code>.claude/commands/</code>에 정의된 커스텀 명령 등.</li>
+<li>Skill: 특정 작업에 활용할 전문 지침과 자료.</li>
+<li>Plugin: 여러 Skills·Hooks·Subagents·MCP 설정 등을 함께 배포하는 확장 패키지.</li>
+<li>Tool: 파일 접근·API 호출·실제 계산 같은 실행 능력.</li>
+</ul>
+<p><a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener noreferrer">[D11]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/plugins" target="_blank" rel="noopener noreferrer">[D15]</a></p>
+<h3 id="s-15-6">15.5 자동 학습과 Skill 저장은 동일하지 않다<a class="anchor" href="#s-15-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Skill 파일을 설치하면 Claude가 적절한 때 사용할 수 있지만, <strong>매번 성공적인 작업을 분석해 새 Skill을 자동 생성·검증·승격하는 전체 학습 파이프라인이 기본 제공된다는 뜻은 아니다.</strong> 그런 기능이 필요하면 품질 평가, 승인·버전관리, 롤백 정책을 직접 설계해야 한다. [설계]</p>
+</section>
+<section class="source-section" data-source-chapter="16"><h2 id="s-16-1">16. Subagents·Task 위임·멀티에이전트<a class="anchor" href="#s-16-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-16-2">16.1 Subagent란?<a class="anchor" href="#s-16-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>메인 Agent가 특정 작업을 전문 Agent에게 위임하고 결과를 받아 종합하는 실행 패턴이다. 분리된 역할, 컨텍스트, Tool 목록, 모델 설정을 활용할 수 있다. <a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener noreferrer">[D14]</a></p>
+<figure class="diagram" data-source-diagram="4"><figcaption><span>그림 4</span> Subagent 위임과 메인 Agent의 결과 통합</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Subagent 위임과 메인 Agent의 결과 통합"><img src="assets/diagram-4.svg" alt="Subagent 위임과 메인 Agent의 결과 통합. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+    U[사용자: 설비 데이터 이상 분석] --&gt; O[Main Agent]
+    O --&gt; A[문서 검색 Subagent]
+    O --&gt; B[데이터 통계 Subagent]
+    O --&gt; C[근거 검토 Subagent]
+    A --&gt; O
+    B --&gt; O
+    C --&gt; O
+    O --&gt; V[최종 보고서]</code></pre></details></figure><h3 id="s-16-3">16.2 프로그래밍 정의 예시<a class="anchor" href="#s-16-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from claude_agent_sdk import AgentDefinition, ClaudeAgentOptions
+
+options = ClaudeAgentOptions(
+    agents={
+        &quot;stat-reviewer&quot;: AgentDefinition(
+            description=&quot;합성 데이터의 통계 분석 검토가 필요할 때 위임&quot;,
+            prompt=&quot;당신은 통계 검토자다. 수치, 단위, 표본 수를 확인하고 검증 불가능한 원인 추정은 분리하라.&quot;,
+            tools=[&quot;Read&quot;, &quot;Grep&quot;],
+        ),
+    },
+)</code></pre></div><p>공식: <a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener noreferrer">[D14]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/python" target="_blank" rel="noopener noreferrer">[D03]</a> <strong>주의:</strong> <code>tools=[&quot;Read&quot;, &quot;Grep&quot;]</code> 같은 서브에이전트 도구 설정만으로 OS 파일 접근 범위와 기업용 DB 권한이 정해지는 것은 아니다. 실행 주체별 데이터 권한을 별도로 통제한다.</p>
+<h3 id="s-16-4">16.3 위임에 따른 실익<a class="anchor" href="#s-16-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>컨텍스트 분리: 주 Agent에 불필요한 중간 자료를 덜 노출.</li>
+<li>작업 전문화: 검증용 Agent와 데이터 처리용 Agent를 분리.</li>
+<li>Tool 권한 분리: 역할별 노출 도구 최소화.</li>
+<li>독립 추적: 어느 Subagent가 어떤 근거를 생성했는지 기록.</li>
+</ul>
+<h3 id="s-16-5">16.4 한계<a class="anchor" href="#s-16-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>여러 Agent를 사용하면 모델 호출·토큰·오류 가능성이 늘어날 수 있다.</li>
+<li>Agent별 추론이 서로 다를 때 어느 결과를 채택할지 별도 합의·검증 로직이 필요하다.</li>
+<li>생성 결과의 독립성이 충분하지 않으면 ‘여러 Agent가 같은 오류를 반복’할 수 있다.</li>
+<li>병렬 실행·백그라운드 작업·depth/concurrency 제한은 CLI 버전의 공식 지원 범위에서 검증한다. <a href="https://code.claude.com/docs/en/agent-sdk/subagents" target="_blank" rel="noopener noreferrer">[D14]</a></li>
+</ul>
+<h3 id="s-16-6">16.5 명시적 Workflow vs 자율 위임<a class="anchor" href="#s-16-6" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>자율 위임:</strong> Main Agent가 언제 어느 Subagent를 부를지 판단. 탐색에 유연하지만 실행 경로가 달라질 수 있다.</p>
+<p><strong>명시적 Workflow:</strong> 앱 코드가 조회→통계→검증→승인 순서를 강제. 운영상 재현성이 높고 업무 규칙을 집행하기 쉽다.</p>
+<p><strong>반도체 데모 권장:</strong> 탐색과 설명 부분에는 자율성을 주되, 정형 데이터 추출·검증·최종 보고서 승인과 같은 단계는 외부 서비스의 명시적 워크플로로 감싸는 혼합형 구성을 검토한다. [설계]</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="permissions.html"><small>이전 단원</small>← Permission과 Hooks</a><a class="next" href="operations.html"><small>다음 단원</small>출력·복구·격리·평가 →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-14-1">14. Sessions·Context·Compaction·Memory</a><a href="#s-15-1">15. Skills·Commands·Plugins</a><a href="#s-16-1">16. Subagents·Task 위임·멀티에이전트</a></nav></aside></div></body></html>

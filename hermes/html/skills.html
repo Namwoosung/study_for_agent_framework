@@ -1,0 +1,58 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Hermes Agent의 개념, 실행 원리, 코드와 반도체 적용 판단을 배우는 개인 학습 교재"><title>작업 방법을 절차로 남기기 — Hermes Agent</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent</a><button id="menu-button" type="button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">H.</span><span>Hermes Agent<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro " href="index.html" >학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>기초와 구성요소</span></a><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처와 Agent Loop</span></a><p class="nav-group">핵심 원리</p><a href="context.html" ><span class="nav-number">03</span><span>Prompt와 Context</span></a><a href="memory.html" ><span class="nav-number">04</span><span>Memory와 Session History</span></a><a href="skills.html" class="current" aria-current="page"><span class="nav-number">05</span><span>Skills와 자기 개선</span></a><a href="tools.html" ><span class="nav-number">06</span><span>Tool · MCP · Plugin</span></a><p class="nav-group">구현과 운영</p><a href="orchestration.html" ><span class="nav-number">07</span><span>Subagent와 Gateway</span></a><a href="code.html" ><span class="nav-number">08</span><span>코드 탐색과 핵심 로직</span></a><a href="operations.html" ><span class="nav-number">09</span><span>Guardrails와 관측·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 PoC와 기술 평가</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" >용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29</span><a href="../Hermes_Agent.md">원본 Markdown ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Hermes Agent</a><span aria-hidden="true">/</span><span>Skills와 자기 개선</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 <span>/</span> 단원 05</p><h1>작업 방법을 절차로 남기기</h1><p class="lead">SKILL.md가 재사용되는 과정과 자기 개선의 정확한 범위</p><div class="chapter-meta">원문 10장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p><a href="memory.html">Memory</a>가 “무엇을 알아야 하는가”에 대한 짧은 사실이라면, <strong>Skill</strong>은 “이런 일을 어떤 순서로 할 것인가”에 대한 절차입니다. 절차를 담은 문서를 읽는 것과 실제 도구를 실행하는 것은 별개의 단계입니다.</p><p>Skill 전체를 매번 입력하기보다는 목록에서 관련 항목을 고르고, 필요할 때 본문과 참고 자료를 읽습니다. 실행 경험으로 Skill을 갱신해 재사용하는 흐름이 원문에서 설명하는 자기 개선의 중심입니다. 모델 가중치의 자동 재학습과 구별하고, 잘못된 절차도 다시 사용될 수 있다는 한계까지 함께 읽으세요.</p><p class="reading-question"><strong>읽는 관점</strong>목록 → 절차 본문 → 상세 참조의 로딩 순서와, 절차 변경의 검증·승인 경계를 확인하세요.</p></section><section class="source-section" data-source-chapter="10"><h2 id="s-10-10">10. Skills: Agent의 &#39;작업 방법&#39;을 저장하는 체계<a class="anchor" href="#s-10-10" aria-label="10. Skills: Agent의 &#39;작업 방법&#39;을 저장하는 체계 섹션 링크">#</a></h2>
+<h3 id="s-10-10-1">10.1 Memory와 Skills의 차이<a class="anchor" href="#s-10-10-1" aria-label="10.1 Memory와 Skills의 차이 섹션 링크">#</a></h3>
+<ul>
+<li><strong>Memory</strong>: &#39;이 프로젝트의 데이터는 UTC 기반이다&#39;처럼 <strong>사실</strong>을 남긴다.</li>
+<li><strong>Skill</strong>: &#39;장비 이상 로그를 분석할 때 먼저 시간대를 정규화하고 중복 측정을 제거한 뒤 기준 시점과 비교한다&#39;처럼 <strong>절차·검증 방법</strong>을 남긴다.</li>
+</ul>
+<p>Hermes Skills는 기본적으로 <code>SKILL.md</code> 중심의 문서형 지식이다. <strong>Skill 자체가 실행함수·모델·별도 Agent인 것은 아니다.</strong> 필요한 스크립트·참고 파일을 포함할 수 있지만, 실제 외부 작업에는 권한 있는 Tool을 사용해야 한다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" target="_blank" rel="noopener noreferrer">S06</a></p>
+<h3 id="s-10-10-2">10.2 파일 구조와 간단한 예시<a class="anchor" href="#s-10-10-2" aria-label="10.2 파일 구조와 간단한 예시 섹션 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>구조·흐름 설명</span><span>text</span></div><pre tabindex="0" aria-label="구조·흐름 설명"><code class="language-text">~/.hermes/skills/
+└── semiconductor/
+    └── wafer-anomaly-review/
+        ├── SKILL.md
+        ├── references/
+        │   └── metric-definitions.md
+        ├── templates/
+        │   └── report.md
+        └── scripts/
+            └── validate_schema.py</code></pre></div>
+<div class="code-block"><div class="code-caption"><span>학습용 Skill 문서 예시</span><span>markdown</span></div><pre tabindex="0" aria-label="학습용 Skill 문서 예시"><code class="language-markdown">---
+name: wafer-anomaly-review
+description: Wafer-level measurement anomaly review procedure
+version: 1.0.0
+---
+
+# Wafer Anomaly Review
+
+## When to Use
+Wafer별 측정값의 이상 패턴이 의심될 때
+
+## Procedure
+1. 데이터 출처, 스키마, 시간대와 단위를 확인한다.
+2. ID 중복, 결측, outlier 처리 기준을 명시한다.
+3. 설정된 기준선과 비교한다.
+4. 근거가 부족하면 원인을 단정하지 않는다.
+5. 결과·코드·실행시각·제약을 보고서에 기록한다.
+
+## Pitfalls
+- 모델이 임의로 관리 기준치를 생성하지 않도록 한다.</code></pre></div>
+<p>이는 사용자가 직접 만들 수 있는 <strong>가상 Skill 예시</strong>다. <code>name</code> 및 <code>description</code> 등이 포함된 YAML frontmatter와 <code>SKILL.md</code> 내용 구조를 학습하도록 작성했다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" target="_blank" rel="noopener noreferrer">S06</a></p>
+<h3 id="s-10-10-3">10.3 Progressive Disclosure (점진적 로딩)<a class="anchor" href="#s-10-10-3" aria-label="10.3 Progressive Disclosure (점진적 로딩) 섹션 링크">#</a></h3>
+<p>Skills 전체를 매번 모델에 다 넣으면 토큰이 낭비된다. Hermes는 주로 다음 단계를 사용한다.</p>
+<div class="code-block"><div class="code-caption"><span>구조·흐름 설명</span><span>text</span></div><pre tabindex="0" aria-label="구조·흐름 설명"><code class="language-text">Level 0: skills_list()               이름·설명 등 인덱스
+Level 1: skill_view(name)            해당 SKILL.md 본문
+Level 2: skill_view(name, path)      특정 참조 문서</code></pre></div>
+<p>핵심은 <strong>목록 → 관련 절차만 선택 → 상세 참조</strong>다. RAG와 닮은 &#39;필요 시 검색/선택&#39;은 있지만, 기본 Skills의 동작을 임베딩 검색으로 일반화하면 안 된다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" target="_blank" rel="noopener noreferrer">S06</a></p>
+<h3 id="s-10-10-4">10.4 Agent가 Skills를 자동 작성·수정할 수 있나?<a class="anchor" href="#s-10-10-4" aria-label="10.4 Agent가 Skills를 자동 작성·수정할 수 있나? 섹션 링크">#</a></h3>
+<p>그렇다. 공식 문서는 <code>skill_manage</code>가 Skills의 생성·수정·삭제·지원 파일 작성 등을 지원한다고 설명한다. 모델은 유용한 새로운 절차, 오류를 해결하며 배운 방법, 사용자 피드백 등을 미래의 Skill로 남길 수 있다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills" target="_blank" rel="noopener noreferrer">S06</a></p>
+<p><strong>그러나 &#39;자기 개선&#39;의 의미를 정확히 제한해야 한다.</strong></p>
+<div class="code-block"><div class="code-caption"><span>구조·흐름 설명</span><span>text</span></div><pre tabindex="0" aria-label="구조·흐름 설명"><code class="language-text">실행 경험 → 유용한 절차 판단 → skill_manage로 SKILL.md 생성/수정
+                                   ↓
+                            다음 작업에 재사용</code></pre></div>
+<p>이는 <strong>지식·행동 지침의 갱신</strong>이다. 자동으로 기반 LLM 가중치를 fine-tuning/LoRA 업데이트한다는 뜻은 아니다. <code>skill_manage</code> 도구 호출이 없거나 승인 대기 상태면 실제 파일이 바뀌지 않을 수 있다.</p>
+<h3 id="s-10-10-5">10.5 Curator: Skills가 무한히 쌓이는 문제의 보완<a class="anchor" href="#s-10-10-5" aria-label="10.5 Curator: Skills가 무한히 쌓이는 문제의 보완 섹션 링크">#</a></h3>
+<p>Hermes는 오래 쓰지 않은 Agent 생성 Skill의 사용 이력을 추적하고 <code>active → stale → archived</code> 상태로 정리하는 <strong>Curator</strong>를 제공한다. 공식 문서에 따르면 무조건 삭제하지 않고 아카이브하며, 기본적으로 Agent가 생성한 Skill을 관리한다. <code>interval_hours</code>와 유휴시간 조건이 만족될 때 검토가 동작하고, 필요 시 보조 모델이 통합·수정 제안을 할 수 있다. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/curator" target="_blank" rel="noopener noreferrer">S15</a></p>
+<blockquote>
+<p>Skills의 생성·변경도 위험하다. 반도체 업무에서는 <strong>Skill 자동 쓰기 승인</strong>, 버전 관리, 사람이 검증한 내용만 운영 반영하는 절차를 권장한다. 특히 &#39;지난 분석에서 맞았던 임계값&#39;을 다음 공정의 공식 기준으로 자동 승격해서는 안 된다.</p>
+</blockquote>
+</section><div class="next-bridge"><p>절차가 행동의 안내라면, 실제 행동을 수행할 함수는 어떻게 등록하고 연결할까요?</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="memory.html"><small>이전 단원</small>← Memory와 Session History</a><a class="next" href="tools.html"><small>다음 단원</small>Tool · MCP · Plugin →</a></nav><footer>Hermes Agent 학습 교재<span>문헌·소스 검토 기반 / 실제 설치·벤치마크 미수행</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-10-10">10. Skills: Agent의 &#39;작업 방법&#39;을 저장하는 체계</a></nav></aside></div></body></html>

@@ -1,0 +1,202 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>결과 검증과 장기 작업의 조건 — OpenAI Agents SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">O.</span><span>OpenAI Agents SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>SDK의 역할과 첫 예제</span></a><p class="nav-group">핵심 원리</p><a href="execution.html" ><span class="nav-number">02</span><span>Runner와 모델 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Function Tool과 MCP</span></a><a href="orchestration.html" ><span class="nav-number">04</span><span>Handoff와 Agent-as-Tool</span></a><a href="guardrails.html" ><span class="nav-number">05</span><span>Guardrail과 권한</span></a><p class="nav-group">구현과 운영</p><a href="state.html" ><span class="nav-number">06</span><span>Context·Session·승인</span></a><a href="operations.html" class="current" aria-current="page"><span class="nav-number">07</span><span>관측·출력·Sandbox</span></a><a href="code.html" ><span class="nav-number">08</span><span>소스코드 상태 전이</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계 검토</span></a><a href="comparison.html" ><span class="nav-number">10</span><span>장점·한계·선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습과 용어</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29 · Python v0.24.0</span><a href="../OpenAI_Agents_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">OpenAI Agents SDK</a><span aria-hidden="true">/</span><span>관측·출력·Sandbox</span></div><header class="chapter-header"><p class="eyebrow">구현과 운영 / 단원 07</p><h1>결과 검증과 장기 작업의 조건</h1><p class="lead">Trace와 Evaluation, 형식과 사실, 기본 Agent와 확장</p><div class="chapter-meta">원문 16–18장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Trace는 실행 경로를 남기고 Evaluation은 결과와 행동을 기준에 비교합니다. 기록이 많다고 정확성이 증명되는 것은 아니며, 민감정보의 저장·외부 전송 정책도 함께 설계해야 합니다.</p><p>Structured Output은 결과를 검증하기 좋은 구조로 만들지만 사실과 계산을 보장하지 않습니다. Sandbox의 파일·Skills·Memory 기능은 일반 Agent의 Session과 별도로 보고, 실제 격리와 재개 조건을 확인하세요.</p><p class="reading-question"><strong>읽는 관점</strong>형식 검증과 업무 검증, 실행 기록과 품질 평가, 일반 Agent와 Sandbox 확장을 구분하세요.</p></section><section class="source-section" data-source-chapter="16"><h2 id="s-16-1">16. Tracing, Observability, Evaluation<a class="anchor" href="#s-16-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-16-2">16.1 Trace와 Span<a class="anchor" href="#s-16-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Trace는 사용자 작업 전체를 기록하는 상위 단위, Span은 LLM 호출·Tool 실행·Handoff·Guardrail 등 각 작업을 나타내는 하위 단위다. 공식 SDK는 tracing을 기본 활성화할 수 있으며, 환경변수 <code>OPENAI_AGENTS_DISABLE_TRACING=1</code>, 코드 <code>set_tracing_disabled(True)</code>, RunConfig 설정 등으로 비활성화할 수 있다. <a href="https://openai.github.io/openai-agents-python/tracing/" target="_blank" rel="noopener noreferrer">[S18]</a></p>
+<figure class="diagram" data-source-diagram="7"><figcaption><span>그림 7</span> Trace와 개별 실행 Span의 관계</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-7.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Trace와 개별 실행 Span의 관계"><img src="assets/diagram-7.svg" alt="Trace와 개별 실행 Span의 관계. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  TR[Trace: lot_analysis_20261029] --&gt; S1[Agent 시작]
+  TR --&gt; S2[LLM Request 1]
+  TR --&gt; S3[Tool: read-only DB]
+  TR --&gt; S4[LLM Request 2]
+  TR --&gt; S5[Output Guardrail]
+  TR --&gt; S6[Final Result]</code></pre></details></figure><h3 id="s-16-3">16.2 반도체 데이터의 관측 주의사항<a class="anchor" href="#s-16-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Tracing을 켜면 입력 프롬프트·Tool 인자·응답·오류 메시지 등의 민감한 내용이 관측 시스템에 포함될 수 있다. <strong>외부 Trace 전송이 허용되는지</strong>, 기록되는 필드·보존기간·접근 권한·데이터 마스킹 정책을 우선 검토해야 한다. 추적이 전혀 없다면 사고 원인 분석·비용 통제가 어려우므로, 필요하다면 내부 전송 대상/프로세서 커스터마이징을 검토한다. <a href="https://openai.github.io/openai-agents-python/tracing/" target="_blank" rel="noopener noreferrer">[S18]</a></p>
+<h3 id="s-16-4">16.3 Trace ≠ Evaluation<a class="anchor" href="#s-16-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Tracing:</strong> 어떤 모델·Tool이 어떤 순서로 작동했는지 기록.</li>
+<li><strong>Evaluation:</strong> 정답·근거·업무 기준에 비교하여 품질을 측정.</li>
+<li><strong>Monitoring:</strong> 장기간 오류율·지연·사용량·정책 위반 추세를 수집.</li>
+</ul>
+<p>반도체 Agent라면 <code>SQL 허용 여부</code>, <code>조회된 데이터 버전</code>, <code>실제 KPI 계산 정확성</code>, <code>인용한 문서와 답변 일치</code>, <code>근거 없는 원인 단정 비율</code>을 별도 평가해야 한다.</p>
+<h3 id="s-16-5">16.4 평가 데이터셋 예시<a class="anchor" href="#s-16-5" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>평가 질문</th>
+<th>측정 지표</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>데이터 접근</td>
+<td>권한 없는 FAB 조회를 막았나?</td>
+<td>차단율, 정보 노출 건수</td>
+</tr>
+<tr>
+<td>Tool 선택</td>
+<td>올바른 DB 조회 도구를 선택했나?</td>
+<td>Tool 선택 정확도</td>
+</tr>
+<tr>
+<td>집계</td>
+<td>수율·불량률 산식을 정확히 적용했나?</td>
+<td>정확도, 허용 오차</td>
+</tr>
+<tr>
+<td>근거</td>
+<td>원문·계산 결과의 근거를 제시했나?</td>
+<td>근거 적합률</td>
+</tr>
+<tr>
+<td>사용자 UX</td>
+<td>모호한 질문에서 추가 조건을 요구했나?</td>
+<td>누락 조건 비율</td>
+</tr>
+<tr>
+<td>운영</td>
+<td>실패 후 안전하게 복구했나?</td>
+<td>복구 성공률, 중복 실행 비율</td>
+</tr>
+<tr>
+<td>비용</td>
+<td>요청당 모델/API 비용은?</td>
+<td>토큰, 도구 호출 수, 95p 지연</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-chapter="17"><h2 id="s-17-1">17. Structured Output과 실패·재시도·비용 통제<a class="anchor" href="#s-17-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-17-2">17.1 Output Schema는 왜 중요한가?<a class="anchor" href="#s-17-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>자연어 답변은 사람이 읽기 좋지만 시스템 연동에는 형식이 불안정하다. <code>output_type=BaseModel</code>로 구조화된 결과를 요구하면 다음 단계가 필드를 직접 검증하기 쉽다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from pydantic import BaseModel, Field
+from agents import Agent
+
+class ProcessFinding(BaseModel):
+    issue: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    hypotheses: list[str] = Field(default_factory=list)
+    confidence_level: str = Field(description=&quot;high/medium/low 중 하나로 사용하도록 설계&quot;)
+
+agent = Agent(name=&quot;EvidenceAnalyzer&quot;, output_type=ProcessFinding)</code></pre></div><p><strong>주의:</strong> <code>Field(description=...)</code>은 범위 검증이 아니다. 선택지를 강제하려면 <code>Literal[&#39;high&#39;,&#39;medium&#39;,&#39;low&#39;]</code> 또는 enum을 쓰자. 모델의 &#39;confidence&#39;는 반드시 통계적으로 보정된 확률을 의미하지 않는다. <a href="https://openai.github.io/openai-agents-python/agents/" target="_blank" rel="noopener noreferrer">[S02]</a>, <a href="https://openai.github.io/openai-agents-python/results/" target="_blank" rel="noopener noreferrer">[S17]</a></p>
+<h3 id="s-17-3">17.2 Tool 파싱 검증과 Output 검증의 차이<a class="anchor" href="#s-17-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>Tool 인자 검증: 모델이 요청한 Python 함수의 입력 인자가 올바른가?</li>
+<li>최종 출력 스키마 검증: Agent의 답변이 지정된 자료형/구조에 맞는가?</li>
+<li>업무 검증: <strong>결과가 사실이며 허용 가능한 수치와 증거를 갖는가?</strong> → 별도 검증 함수·도메인 규칙·테스트가 필요.</li>
+</ul>
+<h3 id="s-17-4">17.3 실패 유형별 대책<a class="anchor" href="#s-17-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>실패</th>
+<th>예상되는 결과</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델 API 실패/timeout</td>
+<td>호출 실패 또는 재시도</td>
+<td>호출별 timeout·지원 retry policy</td>
+</tr>
+<tr>
+<td>모델의 잘못된 Tool 이름</td>
+<td>행동 실패·Behavior Error 가능</td>
+<td>Tool 목록/호환성 검증</td>
+</tr>
+<tr>
+<td>잘못된 JSON 인자</td>
+<td>스키마/파싱 오류</td>
+<td>Tool 검증·실패 메시지 정책</td>
+</tr>
+<tr>
+<td>Tool 내부 Exception</td>
+<td>모델에 오류로 반환 또는 run 실패</td>
+<td><code>failure_error_function</code>, 코드 예외 처리</td>
+</tr>
+<tr>
+<td>Tool timeout</td>
+<td>시간 초과 결과 또는 예외</td>
+<td>도구별 timeout·업무 deadline</td>
+</tr>
+<tr>
+<td>Guardrail Tripwire</td>
+<td>실행 중단/예외</td>
+<td>사유 로깅, 사용자 안내, 보존 정책</td>
+</tr>
+<tr>
+<td>Max Turns 초과</td>
+<td><code>MaxTurnsExceeded</code></td>
+<td>Tool 오용 분석, 최대 턴·예산 설정</td>
+</tr>
+<tr>
+<td>승인 중단</td>
+<td><code>interruptions</code> 반환</td>
+<td>서버 저장·권한 승인·재개</td>
+</tr>
+<tr>
+<td>외부 부작용 후 응답 유실</td>
+<td>중복 변경 위험</td>
+<td>멱등성 키·외부 상태 대조</td>
+</tr>
+</tbody></table>
+</div><p>일부 재시도 정책과 model-call timeout은 SDK 기능으로 제공되지만, <strong>모든 Tool 호출에 무조건 안전한 재시도를 자동으로 적용한다고 가정하면 안 된다.</strong> <a href="https://openai.github.io/openai-agents-python/running_agents/" target="_blank" rel="noopener noreferrer">[S03]</a>, <a href="https://openai.github.io/openai-agents-python/tools/" target="_blank" rel="noopener noreferrer">[S04]</a>, <a href="https://openai.github.io/openai-agents-python/models/" target="_blank" rel="noopener noreferrer">[S10]</a></p>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="18"><h2 id="s-18-1">18. Sandbox Agents, Skills, Memory, 장기 실행 확장<a class="anchor" href="#s-18-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-18-2">18.1 일반 Agent와 Sandbox Agent를 분리해서 이해<a class="anchor" href="#s-18-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>이전 세대의 OpenAI Agents SDK 소개는 주로 <code>Agent + Runner + Function Tool</code>에 초점을 맞춘다. 그러나 <strong>v0.24.0 기준 Sandbox Agent 기능을 별도 주제로 포함해야 정확하다.</strong> 공식 SDK는 파일·작업 공간을 갖는 격리된 작업을 위한 Sandbox Agent 관련 기능을 제공한다. <a href="https://openai.github.io/openai-agents-python/" target="_blank" rel="noopener noreferrer">[S01]</a>, <a href="https://openai.github.io/openai-agents-python/sandbox_agents/" target="_blank" rel="noopener noreferrer">[S23]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>관심사</th>
+<th>일반 <code>Agent</code> 중심 개발</th>
+<th>Sandbox Agent 확장 관점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>주요 작업</td>
+<td>API/DB/함수 중심의 업무 분석</td>
+<td>파일·코드·쉘·장기 작업 중심</td>
+</tr>
+<tr>
+<td>작업 공간</td>
+<td>개발자가 직접 설계</td>
+<td>Sandbox 및 workspace 추상화</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>직접 Tool/Prompt로 구현 가능</td>
+<td>Sandbox의 Skills capability 등 검토</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Session + 외부 저장소</td>
+<td>별도 Sandbox Memory 기능 검토</td>
+</tr>
+<tr>
+<td>재개</td>
+<td>RunState 및 앱 저장 설계</td>
+<td>Sandbox 세션·스냅샷 관련 기능</td>
+</tr>
+<tr>
+<td>보안 경계</td>
+<td>앱 권한 및 Tool 실행 통제</td>
+<td>실행 환경 격리·마운트·권한 추가 검토</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-18-3">18.2 반드시 조사할 Sandbox 요소<a class="anchor" href="#s-18-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><code>SandboxAgent</code>와 일반 <code>Agent</code>의 차이, 런타임 준비 과정.</li>
+<li>Workspace: 어떤 파일이 준비되고 어떤 파일이 외부 시스템으로 반영되는가?</li>
+<li>Sandbox Client: 로컬·컨테이너·원격 제공자 선택, 격리 수준과 API 자격 증명.</li>
+<li>Skills: 문서·작업 절차를 언제 노출하고 실행하는가? 동적 로딩 및 권한 경계.</li>
+<li>Memory: 세션 정보와 반복 작업에서 얻은 교훈이 어디에 저장되고 언제 적용되는가?</li>
+<li>Resume/Snapshot: 중단 후 재개가 파일·도구 측 부작용을 어떻게 다루는가?</li>
+<li>Compaction: 장기 실행에서 컨텍스트 정보 손실을 어떤 규칙으로 관리하는가?</li>
+</ul>
+<h3 id="s-18-4">18.3 반도체 환경에서 판단할 점<a class="anchor" href="#s-18-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Sandbox에서 Python을 실행할 수 있다는 사실만으로 생산망 안전성이 확보되는 것은 아니다. 읽기 전용 데이터 마운트, 외부 인터넷 egress 차단, 키 접근 분리, 로컬 파일 보존 정책, 결과물 승인 전 외부 반출 제한이 필요하다. 샌드박스 격리와 플랫폼의 정책은 <strong>설치 옵션·실행 방식·인프라 구성에 따라 달라질 수 있으므로 검증 없이 &#39;완전 격리&#39;라고 표현하지 않는다.</strong></p>
+<h3 id="s-18-5">18.4 범위 밖 또는 우선순위 낮은 기능<a class="anchor" href="#s-18-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>SDK에는 Realtime Voice Agent, Voice Pipeline, 기타 모델별 기능도 있지만 <strong>반도체 도메인에서 먼저 구축할 텍스트·표·코드 분석 데모</strong>의 핵심은 아니다. 존재 여부는 파악하되, 학습 우선순위는 Tool·상태·보안·평가·데이터 근거에 둔다. <a href="https://openai.github.io/openai-agents-python/" target="_blank" rel="noopener noreferrer">[S01]</a></p>
+<hr>
+<blockquote>
+<p><strong>분석 방식:</strong> 공개 저장소 <code>openai/openai-agents-python</code>의 <code>v0.24.0</code> 태그에 포함된 모듈을 기준으로 핵심 흐름을 연결한다. 정확한 코드는 해당 GitHub 링크에서 확인한다. 아래의 의사코드가 실제 함수 본문과 줄 단위로 일치한다는 뜻은 아니다. 모든 함수가 public API인 것은 아니며, 내부 구현을 직접 import하여 제품 코드를 작성하는 것은 권장하지 않는다.</p>
+</blockquote>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="state.html"><small>이전 단원</small>← Context·Session·승인</a><a class="next" href="code.html"><small>다음 단원</small>소스코드 상태 전이 →</a></nav><footer>OpenAI Agents SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-16-1">16. Tracing, Observability, Evaluation</a><a href="#s-17-1">17. Structured Output과 실패·재시도·비용 통제</a><a href="#s-18-1">18. Sandbox Agents, Skills, Memory, 장기 실행 확장</a></nav></aside></div></body></html>

@@ -1,0 +1,198 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK의 원리·구현·한계를 배우는 개인 학습 교재"><title>실행 환경을 재사용한다는 의미 — Claude Agent SDK</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">C.</span><span>Claude Agent SDK<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" class="current" aria-current="page"><span class="nav-number">01</span><span>SDK와 Claude Code</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Client·메시지·Loop</span></a><a href="instructions.html" ><span class="nav-number">03</span><span>지침과 설정 병합</span></a><a href="tools.html" ><span class="nav-number">04</span><span>Built-in Tools와 MCP</span></a><a href="permissions.html" ><span class="nav-number">05</span><span>Permission과 Hooks</span></a><p class="nav-group">확장과 운영</p><a href="memory.html" ><span class="nav-number">06</span><span>Session·Skills·위임</span></a><p class="nav-group">구현과 운영</p><a href="operations.html" ><span class="nav-number">07</span><span>출력·복구·격리·평가</span></a><a href="code.html" ><span class="nav-number">08</span><span>공개 Python 코드 추적</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">09</span><span>반도체 설계와 선정</span></a><p class="nav-group">참고 자료</p><a href="review.html" >복습·용어·Auto Memory</a><a href="sources.html" >출처와 공개 범위</a></nav><div class="book-meta"><span>원문 2026.10.29 · Python v0.2.174 / CLI v2.1.310</span><a href="../Claude_Agent_SDK.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Claude Agent SDK</a><span aria-hidden="true">/</span><span>SDK와 Claude Code</span></div><header class="chapter-header"><p class="eyebrow">큰 그림 / 단원 01</p><h1>실행 환경을 재사용한다는 의미</h1><p class="lead">모델 API·CLI·Agent SDK·Harness의 역할 나누기</p><div class="chapter-meta">원문 1–4장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>모델 응답만 받는 API 호출과, 이미 파일·도구·Context를 다루는 실행 환경을 앱에서 호출하는 것은 다릅니다. Claude Agent SDK는 Claude Code의 실행 기능을 제어하는 방식으로 이해하면 출발점이 명확해집니다.</p><p>작은 예제에서도 별도 CLI 프로세스와 작업 디렉터리, 권한과 세션의 운영 조건을 고려해야 합니다. 아래 설치·호출 코드는 원문의 미실행 예시이며, SDK와 함께 번들 CLI 버전도 확인해야 합니다.</p><p class="reading-question"><strong>읽는 관점</strong>Python 코드에서 직접 실행하는 부분과 CLI에 요청하는 부분을 구분하세요.</p></section><section class="source-section" data-source-chapter="1"><h2 id="s-1-1">1. 한눈에 보는 핵심 요약<a class="anchor" href="#s-1-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-1-2">1.1 한 문장 정의<a class="anchor" href="#s-1-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>Claude Agent SDK는 Claude Code의 Agent Loop·도구 실행·컨텍스트 관리 기능을 Python 또는 TypeScript 애플리케이션에서 프로그래밍 방식으로 이용하게 하는 SDK다.</strong> 공식: <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[D01]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<p><strong>쉽게 말해</strong> Claude API에 프롬프트만 전달해 답을 받아오는 라이브러리가 아니다. 이미 도구를 사용하며 반복 작업을 수행하는 <strong>Claude Code 실행 환경을 앱 안에서 제어</strong>하는 방식이다.</p>
+<h3 id="s-1-3">1.2 30초 예시<a class="anchor" href="#s-1-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>사용자: “이 디렉터리의 데이터 파일을 조사하고 이상 징후를 설명해.”</p>
+<ol>
+<li>SDK가 사용자의 요청과 설정을 Claude Code 런타임에 전달한다.</li>
+<li>Claude가 파일 목록 확인, 파일 읽기, 코드 실행 등 가능한 행동을 결정한다.</li>
+<li>런타임이 해당 도구 사용 권한을 확인하고 도구를 실행한다.</li>
+<li>도구 결과를 Claude에게 다시 제공한다.</li>
+<li>Claude가 추가 분석 여부를 판단하여 도구 호출을 반복한다.</li>
+<li>최종 결과·세션 ID·사용량/비용 등 실행 결과가 SDK 메시지로 전달된다.</li>
+</ol>
+<p><strong>구분할 것:</strong> 위의 2~5단계 Agent Loop는 Claude Code 런타임의 기능이다. Python SDK가 직접 모든 Tool 선택 로직을 구현하지는 않는다. 공식: <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a>; 소스: <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer">[C01]</a>–<a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py" target="_blank" rel="noopener noreferrer">[C05]</a></p>
+<h3 id="s-1-4">1.3 Claude Agent SDK의 핵심 특징<a class="anchor" href="#s-1-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>핵심</th>
+<th>의미</th>
+<th>왜 중요한가</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>완성형 실행 루프 활용</td>
+<td>모델 호출 → 도구 실행 → 결과 재입력 반복 구조 제공</td>
+<td>작은 규모의 사용자 코드로 자율형 작업 구축</td>
+</tr>
+<tr>
+<td>풍부한 기본 도구</td>
+<td>파일·코드·검색 등의 환경 조작 기능</td>
+<td>분석/개발형 작업에 즉시 활용 가능</td>
+</tr>
+<tr>
+<td>CLI 실행 기반</td>
+<td>Python SDK가 Claude Code 프로세스를 호출</td>
+<td>순수 Python 내장 Runner와 다른 운영·보안 특성</td>
+</tr>
+<tr>
+<td>설정·권한 정책</td>
+<td>permission mode, deny/ask/allow, 승인 콜백</td>
+<td>도구 실행과 사용자 승인 경계</td>
+</tr>
+<tr>
+<td>Hooks</td>
+<td>실행 이벤트 전후에 코드 삽입</td>
+<td>검증, 차단, 로깅, 감사</td>
+</tr>
+<tr>
+<td>Sessions</td>
+<td>기록·재개·분기</td>
+<td>연속 업무와 문제 추적</td>
+</tr>
+<tr>
+<td>Skills·Subagents</td>
+<td>절차 재사용, 역할 분담</td>
+<td>도메인 작업의 조직화</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>외부 도구와 데이터 소스 연결</td>
+<td>사내 API/DB를 통제된 인터페이스로 제공</td>
+</tr>
+<tr>
+<td>한계</td>
+<td>Claude Code/Claude 모델 생태계와 결합</td>
+<td>로컬 LLM·다른 벤더 교체의 자유도 확인 필요</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-1-5">1.4 처음부터 알아야 할 다섯 가지<a class="anchor" href="#s-1-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>SDK와 Agent Loop의 구현 위치는 다르다.</strong></li>
+<li><strong><code>allowed_tools</code>는 ‘허용한 도구만 사용 가능’이라는 뜻이 아니다.</strong> 자동 승인 규칙이므로 실제 도구 표면 제한은 <code>tools</code>, <code>disallowed_tools</code>, 정책과 함께 설계해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></li>
+<li><strong><code>can_use_tool</code>은 모든 Tool 호출을 검사하지 않는다.</strong> 앞 단계에서 자동 승인된 호출은 콜백에 오지 않으므로 전수 검사 용도로는 <code>PreToolUse</code> 및 실제 Tool 서버의 권한 통제가 중요하다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a></li>
+<li><strong>Session과 장기 도메인 Memory/RAG는 동일하지 않다.</strong> Session은 우선 대화·도구 실행 이력이다. <a href="https://code.claude.com/docs/en/agent-sdk/sessions" target="_blank" rel="noopener noreferrer">[D08]</a></li>
+<li><strong>Structured Output은 형식 통제이지 사실 검증이 아니다.</strong> <a href="https://code.claude.com/docs/en/agent-sdk/structured-outputs" target="_blank" rel="noopener noreferrer">[D16]</a></li>
+</ol>
+</section>
+<section class="source-section" data-source-chapter="2"><h2 id="s-2-1">2. LLM API·Claude Code·SDK·Harness의 관계<a class="anchor" href="#s-2-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-2-2">2.1 기본 용어<a class="anchor" href="#s-2-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>쉬운 설명</th>
+<th>Claude 생태계에서의 예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLM / Foundation Model</td>
+<td>텍스트·코드 등을 생성하는 모델</td>
+<td>Claude 모델</td>
+</tr>
+<tr>
+<td>Model API / Client SDK</td>
+<td>모델에 요청을 보내고 응답을 받는 통신 라이브러리</td>
+<td>Anthropic API 및 Python Client SDK</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>파일 읽기·명령 실행·검색·API 호출 같은 외부 행동</td>
+<td>Read, Bash, MCP Tool</td>
+</tr>
+<tr>
+<td>Agent Loop</td>
+<td>판단 → 도구 사용 → 재판단을 반복하는 실행 구조</td>
+<td>Claude Code의 Agent Loop</td>
+</tr>
+<tr>
+<td>Agent Harness</td>
+<td>모델을 둘러싼 도구·상태·권한·실행 환경</td>
+<td>Claude Code 기반 실행 구성</td>
+</tr>
+<tr>
+<td>Agent SDK</td>
+<td>이 실행 기능을 앱에서 호출·설정하는 인터페이스</td>
+<td>Claude Agent SDK</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-2-3">2.2 계층 관계<a class="anchor" href="#s-2-3" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="1"><figcaption><span>그림 1</span> SDK·Transport·CLI와 모델·도구의 관계</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-1.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="SDK·Transport·CLI와 모델·도구의 관계"><img src="assets/diagram-1.svg" alt="SDK·Transport·CLI와 모델·도구의 관계. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+    A[사용자 웹앱 / Python 서비스] --&gt; B[Claude Agent SDK Python]
+    B --&gt; C[Transport: subprocess / 커스텀]
+    C --&gt; D[Claude Code CLI 실행 환경]
+    D --&gt; E[Claude 모델 API]
+    D --&gt; F[Built-in Tools / Skills / MCP / Subagents]
+    F --&gt; G[파일 / 코드 / 사내 시스템 / 분석 서비스]
+    D --&gt; H[Session / Context / Permission / Hooks]
+    C --&gt; I[SDK 메시지 스트림]
+    I --&gt; A</code></pre></details></figure><ul>
+<li><strong>모델이 자율적으로 다음 행동을 판단하는 부분</strong>과 <strong>도구 실행 정책을 집행하는 부분</strong>은 Claude Code 런타임의 책임이다. <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a></li>
+<li><strong>Python SDK의 직접 책임</strong>은 입력 설정 직렬화, CLI 프로세스와의 통신, 출력 메시지 파싱, 콜백/제어 프로토콜, SDK MCP 및 세션 저장 어댑터 등이다. <a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py" target="_blank" rel="noopener noreferrer">[C01]</a>–<a href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py" target="_blank" rel="noopener noreferrer">[C07]</a></li>
+<li>전체를 “OpenAI Agents SDK와 완전히 동일한 Python Runner 구조”로 생각하면 오해가 생긴다.</li>
+</ul>
+<h3 id="s-2-4">2.3 다른 것들과 혼동하지 말 것<a class="anchor" href="#s-2-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Claude Chat:</strong> 일반 사용자에게 제공되는 채팅 서비스.</li>
+<li><strong>Claude Code CLI:</strong> 개발자용 실행 환경. 파일·명령·도구 사용 등의 Agent 행동을 담당.</li>
+<li><strong>Claude Agent SDK:</strong> Claude Code 실행 기능을 프로그램에 결합하기 위한 Python/TypeScript 인터페이스.</li>
+<li><strong>Anthropic Client SDK:</strong> Claude 모델 API 직접 호출용. Agent Loop나 Claude Code 도구 실행을 자동으로 모두 제공하는 것은 아님.</li>
+<li><strong>Hermes:</strong> 비교 가능한 자율형 Agent이지만 공개 구현·기본 도구·모델 연동 방식이 다름.</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="3"><h2 id="s-3-1">3. 등장 배경과 설계 철학<a class="anchor" href="#s-3-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-3-2">3.1 왜 별도 Agent SDK인가?<a class="anchor" href="#s-3-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>모델 API만 사용해 파일 분석 Agent를 만들면 개발자가 프롬프트 조립, Tool 호출 목록, 실행 정책, 반복 조건, 컨텍스트 초과, 오류, 스트리밍, 로그 등을 직접 연결해야 한다. Agent SDK는 Claude Code에서 축적된 실행 기능을 재사용한다. <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[D01]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<h3 id="s-3-3">3.2 핵심 설계 철학<a class="anchor" href="#s-3-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>실행 가능한 환경을 제공한다:</strong> 채팅 응답뿐 아니라 파일·코드·명령·연결된 API와 상호작용.</li>
+<li><strong>모델이 다음 행동을 선택한다:</strong> 고정 워크플로와 달리 다음 Tool 순서가 항상 미리 정해져 있지는 않다.</li>
+<li><strong>사람과 정책이 행동을 제한한다:</strong> permission mode, allow/deny, hook, sandbox 등의 계층 적용.</li>
+<li><strong>설정 파일과 코드 설정을 함께 활용한다:</strong> <code>.claude/</code>, <code>CLAUDE.md</code>, Skills, Plugins 및 SDK Options.</li>
+<li><strong>세션의 연속성을 제공한다:</strong> 이전 탐색과 도구 결과를 기억하며 이어서 작업.</li>
+</ol>
+<h3 id="s-3-4">3.3 특히 잘 맞는 업무와 덜 맞는 업무<a class="anchor" href="#s-3-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p><strong>상대적으로 잘 맞는 업무:</strong> 코드베이스 탐색·수정, 파일 기반 탐색/분석, 여러 도구를 오가며 조사, 로그 분석, 작업 계획 및 실행.</p>
+<p><strong>별도 검토가 필요한 업무:</strong> 마이크로초급 실시간 제어, 엄격한 결정적 실행, 복잡한 SQL 정책·조직별 RBAC, 완전한 모델 독립성, 온라인 모델 호출 불가 폐쇄망, 생산 설비 직접 제어. 이는 ‘불가능’ 단정이 아니라 <strong>기본 기능만으로 충분하다고 가정하면 안 되는 영역</strong>이다. [설계]</p>
+</section>
+<section class="source-section" data-source-chapter="4"><h2 id="s-4-1">4. 설치·인증·개발 환경과 최소 예제<a class="anchor" href="#s-4-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-4-2">4.1 기본 설치<a class="anchor" href="#s-4-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code>python -m venv .venv
+source .venv/bin/activate  # Linux/macOS; Windows PowerShell은 .\.venv\Scripts\Activate.ps1
+python -m pip install &#39;claude-agent-sdk==0.2.174&#39;</code></pre></div><ul>
+<li>공식 Python 패키지는 <strong>Python 3.10 이상</strong>을 요구한다. <a href="https://github.com/anthropics/claude-agent-sdk-python/releases/tag/v0.2.174" target="_blank" rel="noopener noreferrer">[C00]</a></li>
+<li>해당 Python 패키지는 Claude Code CLI 실행 파일을 번들하므로 보통 별도 CLI 설치가 필수는 아니다. <a href="https://github.com/anthropics/claude-agent-sdk-python/releases/tag/v0.2.174" target="_blank" rel="noopener noreferrer">[C00]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener noreferrer">[D02]</a></li>
+<li>설정한 실행 바이너리가 다르면 환경·동작 차이가 날 수 있다. 재현성을 위해 SDK 및 CLI 버전을 함께 기록한다.</li>
+<li>인증·과금은 공식 지원 방식과 조직의 정책을 따라야 한다. 제3자 제품에서 개인용 claude.ai 로그인을 재사용하는 방식은 공식 이용 조건 및 허용 범위를 확인해야 한다. <a href="https://code.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener noreferrer">[D01]</a></li>
+</ul>
+<h3 id="s-4-3">4.2 가장 간단한 사용 예제<a class="anchor" href="#s-4-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
+
+async def main():
+    options = ClaudeAgentOptions(
+        cwd=&quot;/path/to/safe_workspace&quot;,
+        max_turns=6,
+        max_budget_usd=1.0,
+        disallowed_tools=[&quot;Write&quot;, &quot;Edit&quot;],
+    )
+    async for message in query(prompt=&quot;이 디렉터리의 파일 종류를 요약해 줘&quot;, options=options):
+        if isinstance(message, ResultMessage):
+            print(&quot;subtype:&quot;, message.subtype)
+            print(&quot;result:&quot;, message.result)
+            print(&quot;session:&quot;, message.session_id)
+
+asyncio.run(main())</code></pre></div><p><strong>주의:</strong> 개념을 설명하기 위한 공식 API 형태 예제이며 <strong>실행하지 않았다</strong>. <code>disallowed_tools</code>에 Write/Edit를 넣는 것만으로 Bash 명령을 통한 쓰기까지 모두 차단된다고 가정하면 안 된다. 정확한 읽기 전용 환경에는 파일시스템·컨테이너·MCP 서버의 권한도 필요하다. <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener noreferrer">[D06]</a>, <a href="https://code.claude.com/docs/en/agent-sdk/secure-deployment" target="_blank" rel="noopener noreferrer">[D19]</a></p>
+<h3 id="s-4-4">4.3 개발 시 최소 준비물<a class="anchor" href="#s-4-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>Python 버전·패키지 버전·번들 CLI 버전 확인.</li>
+<li>적법한 API 인증/기업 계정 및 네트워크 경로 확인.</li>
+<li>작업 디렉터리(<code>cwd</code>)와 읽을 수 있는 데이터/파일 범위 명시.</li>
+<li>모델 사용 비용·실행 시간·도구별 위험 정의.</li>
+<li>로그·세션에 기밀 정보가 저장되는지 검토.</li>
+<li>시작은 공개·합성 데이터와 읽기 전용 환경으로 제한.</li>
+</ul>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="index.html"><small>이전 단원</small>← 학습 안내</a><a class="next" href="runtime.html"><small>다음 단원</small>Client·메시지·Loop →</a></nav><footer>Claude Agent SDK 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-1-1">1. 한눈에 보는 핵심 요약</a><a href="#s-2-1">2. LLM API·Claude Code·SDK·Harness의 관계</a><a href="#s-3-1">3. 등장 배경과 설계 철학</a><a href="#s-4-1">4. 설치·인증·개발 환경과 최소 예제</a></nav></aside></div></body></html>

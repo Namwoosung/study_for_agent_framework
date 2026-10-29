@@ -1,0 +1,94 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Hermes Agent의 개념, 실행 원리, 코드와 반도체 적용 판단을 배우는 개인 학습 교재"><title>학습 용어 사전 — Hermes Agent</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent</a><button id="menu-button" type="button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">H.</span><span>Hermes Agent<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro " href="index.html" >학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>기초와 구성요소</span></a><a href="execution.html" ><span class="nav-number">02</span><span>아키텍처와 Agent Loop</span></a><p class="nav-group">핵심 원리</p><a href="context.html" ><span class="nav-number">03</span><span>Prompt와 Context</span></a><a href="memory.html" ><span class="nav-number">04</span><span>Memory와 Session History</span></a><a href="skills.html" ><span class="nav-number">05</span><span>Skills와 자기 개선</span></a><a href="tools.html" ><span class="nav-number">06</span><span>Tool · MCP · Plugin</span></a><p class="nav-group">구현과 운영</p><a href="orchestration.html" ><span class="nav-number">07</span><span>Subagent와 Gateway</span></a><a href="code.html" ><span class="nav-number">08</span><span>코드 탐색과 핵심 로직</span></a><a href="operations.html" ><span class="nav-number">09</span><span>Guardrails와 관측·평가</span></a><p class="nav-group">적용과 판단</p><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 PoC와 기술 평가</span></a><p class="nav-group">참고 자료</p><a href="glossary.html" class="current" aria-current="page">용어 사전</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 기준 2026.10.29</span><a href="../Hermes_Agent.md">원본 Markdown ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="index.html">Hermes Agent</a><span aria-hidden="true">/</span><span>용어 사전</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / GLOSSARY</p><h1>학습 용어 사전</h1><p class="lead">본문의 개념을 짧은 정의로 다시 연결합니다.</p></header><p>원문 부록 A의 용어를 모았습니다. 정의를 읽은 뒤 관련 단원에서 실제 동작과 한계를 함께 확인하세요.</p><nav class="related-links" aria-label="개념별 단원"><a href="context.html">Context와 Prompt</a><a href="memory.html">Memory와 History</a><a href="tools.html">Tool과 MCP</a><a href="operations.html">Guardrails</a></nav><section class="source-section" data-source-chapter="glossary"><h2 id="s-glossary-부록-a-학습-용어-사전">부록 A. 학습 용어 사전<a class="anchor" href="#s-glossary-부록-a-학습-용어-사전" aria-label="부록 A. 학습 용어 사전 섹션 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>정확한 의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent</td>
+<td>목적 달성을 위해 모델/상태/도구를 반복적으로 활용하는 시스템</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>Agent의 실행·도구·상태·권한·컨텍스트 등을 둘러싼 공통 실행 구조</td>
+</tr>
+<tr>
+<td>Runtime</td>
+<td>코드를 실제로 실행시키고 동작을 관리하는 환경 및 로직</td>
+</tr>
+<tr>
+<td>LLM Gateway</td>
+<td>여러 LLM 모델/API의 인증·라우팅·로깅 등을 중개하는 계층</td>
+</tr>
+<tr>
+<td>Messaging Gateway</td>
+<td>Telegram/Discord/API 등의 사용자 메시지 라우팅 계층</td>
+</tr>
+<tr>
+<td>Tool Calling</td>
+<td>모델이 함수 실행을 요구하는 구조화된 요청을 생성하는 방식</td>
+</tr>
+<tr>
+<td>Tool Registry</td>
+<td>사용할 수 있는 Tool 이름/Schema/Handler를 관리하는 표</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>외부 도구·리소스 등을 Agent Client에 제공하는 통신 규약</td>
+</tr>
+<tr>
+<td>Plugin</td>
+<td>기존 시스템을 수정하지 않고 기능을 붙이는 확장 모듈</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>작업 절차·조건·검증 방법을 기술한 재사용 지식</td>
+</tr>
+<tr>
+<td>Prompt Cache</td>
+<td>반복되는 입력 Prefix를 재사용해 비용/지연을 줄이는 메커니즘</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>오래된 Context를 요약·압축하는 처리</td>
+</tr>
+<tr>
+<td>FTS5</td>
+<td>SQLite의 전문 검색(Full-Text Search) 모듈</td>
+</tr>
+<tr>
+<td>RAG</td>
+<td>외부 정보를 검색해 모델 답변 생성에 반영하는 기법</td>
+</tr>
+<tr>
+<td>Subagent</td>
+<td>부모가 하위 목표를 위임한 별도 Agent 인스턴스</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td>중요한 행동에 사람이 개입·승인하는 운영 구조</td>
+</tr>
+<tr>
+<td>Trace</td>
+<td>요청에서 모델/Tool/오류/결과에 이르는 실행 경로 기록</td>
+</tr>
+<tr>
+<td>Idempotency</td>
+<td>같은 작업을 재요청해도 의도치 않은 중복 부작용이 없는 성질</td>
+</tr>
+<tr>
+<td>Sandbox</td>
+<td>프로세스·파일·네트워크 접근을 격리하는 실행환경</td>
+</tr>
+<tr>
+<td>Session</td>
+<td>대화 및 실행 상태가 이어지는 논리적 단위</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>설정·기억·데이터를 별도로 관리하는 격리 단위</td>
+</tr>
+</tbody></table>
+</div></section><nav class="page-nav" aria-label="이전 다음 단원"><a href="semiconductor.html"><small>이전 단원</small>← 반도체 PoC와 기술 평가</a><a class="next" href="sources.html"><small>다음 단원</small>출처와 검증 범위 →</a></nav><footer>Hermes Agent 학습 교재<span>문헌·소스 검토 기반 / 실제 설치·벤치마크 미수행</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-glossary-부록-a-학습-용어-사전">부록 A. 학습 용어 사전</a></nav></aside></div></body></html>
