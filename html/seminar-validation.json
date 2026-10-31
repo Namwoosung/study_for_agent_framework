@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "topics": 7,
+  "comments": 17,
+  "existingMarkdownUnchanged": 33,
+  "existingHtmlPreserved": 228,
+  "method": "추가 블록을 제거하면 기존 모든 HTML의 SHA-256과 일치; 기존 Markdown은 원본 바이트 해시 일치"
+}

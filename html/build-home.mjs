@@ -24,3 +24,8 @@ const html=`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta nam
 fs.writeFileSync(path.join(root,'index.html'),html);
 fs.writeFileSync(path.join(root,'html/home-map.json'),JSON.stringify({page:'index.html',topics:catalog,totalPages:count},null,2)+'\n');
 console.log(`Built project home: ${catalog.length} topics, 14 courses, ${count} linked study pages.`);
+
+// 기존 본문을 유지하며 선택적 발표·실무 해설을 다시 연결한다.
+import {pathToFileURL} from 'node:url';
+const seminarComments=path.join(root,'html/apply-seminar-comments.mjs');
+if(fs.existsSync(seminarComments)){const {applySeminarComments}=await import(pathToFileURL(seminarComments).href);applySeminarComments();}

@@ -1,0 +1,1049 @@
+{
+  "purpose": "이번 코멘트 추가 전의 원문 Markdown과 HTML을 보존 검증하기 위한 해시",
+  "files": [
+    {
+      "path": "2차_세미나_발표_흐름.md",
+      "hash": "f4e4deefa6e570c7332efdd99cd026cfc4386192395812b938053749e2d44314"
+    },
+    {
+      "path": "AGENTS.md",
+      "hash": "f9e4504e70349d3623eff8cd6950bf67d68555f6d1f2b3550a574bf607cb6350"
+    },
+    {
+      "path": "Agent_Framework_7종_최종_종합_비교_분석.md",
+      "hash": "4c4888837c5b8ef9dd7ca39b9701d9615f1589bcd344476436e344fef9b476d5"
+    },
+    {
+      "path": "agent_framework_seminar_1_slide_blueprint.md",
+      "hash": "65e6375c4a634c55f900afcf08b302dba7e88649ae2a6cf83470f7ad5a9ef855"
+    },
+    {
+      "path": "Claude_Agent_SDK/Claude_Agent_SDK.md",
+      "hash": "4adeb792689b2ee23d6694e5a2e1224b73ea82cb8d55e9feeab503f117bb3ad2"
+    },
+    {
+      "path": "Claude_Agent_SDK/Claude_Agent_SDK_2차_심층_학습_분석.md",
+      "hash": "669d6c49a4ee0b0e0fac571cdc63230e622df1bb141eef29e0ecad022089dee3"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/code.html",
+      "hash": "6fcd795da6adcd14ed81c950192f2d36ef137b55ff5f0ca8876ac1d81b4e48ea"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/index.html",
+      "hash": "1e32f91e4c361b46288a19bcbecc32762f878fdd495cb2378b69b657c0ee61d2"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/README.md",
+      "hash": "68a412e4300743956bf3db0ceb9045798e8c9bed3b6617330ab75b11852a4f03"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-01.html",
+      "hash": "108683130be5583c96e728280608927e7d94af3afa6fd454d582d2c8d9074111"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-02.html",
+      "hash": "e3e12dfd7473c34cc45ef619172924fd961f39e0d996986aafd6e017457838bd"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-03.html",
+      "hash": "1c1b4c66b23fb5e383639775d482de4230325cb74542751dda4ef120586e12d3"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-04.html",
+      "hash": "16783eb3a4ad7c3e2507d14e43bacd45b589d27718e5c0879263bab4cecaa837"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-05.html",
+      "hash": "6917c24c261ee881bea2baa726b2cc7a70a474412c8971e4c43c1f8f7bf4cc38"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-06.html",
+      "hash": "ad8ae4c5549f1bc0688828fc0a359671a9ea221dfddcc6f0af8477977aba11fa"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-07.html",
+      "hash": "24e68b8af145dd66673c6544410d7ae6af78e2f0cf3a1d8e11581cf5f130a387"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-08.html",
+      "hash": "4fe6202f94cac431714bbc5561c1d3f256a9c647dd64fd8c95fc59a62765d38d"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-09.html",
+      "hash": "4230cc5f9dbb5bb84bf608fb9179c5e8846341cb5f506000d13fdc6695abd5bb"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-10.html",
+      "hash": "9a18bb6d3efe431effaadb831a6d6ccd7843483602c9dd4677dcb8464186270f"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-11.html",
+      "hash": "4ddae25c86cf93e7d0f133c3471f9eb299d11bcf023569640b495ee0afe67f76"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-12.html",
+      "hash": "080d34a342ce7c857eea5d89588f04aed42984f76d175a986ba3423cf715a263"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-13.html",
+      "hash": "69dd72d8f3b1ca27f45459309027303e8b126d2ac251dba150169d4eae5929c5"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-14.html",
+      "hash": "20185947a173bdb1fcceab28ded2c02098b6a59387d9a69740c84e9b90f97ac1"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-15.html",
+      "hash": "a765ef99f6e4fd96331fd88a79b99737f8d40e39b0d8f47bde1d2721b02ee2af"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-16.html",
+      "hash": "3418b281d6d407dfefb02df8edea412f372de25ab12d9d89a118e279d466db01"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-17.html",
+      "hash": "df3f0a640762ab610c1ec1e7fbb77d69197a14d0cd2ad87900ca984be16a224b"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/deep/unit-18.html",
+      "hash": "0e6660c8ddbf7df02a9fceb0df80f852fcbb3a143415df234d69d3b11f082b92"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/foundations.html",
+      "hash": "f11f5a7de7d252898b76fc810dd2a33abc7fda86fccbf012798b1a69fef9da26"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/index.html",
+      "hash": "e0ddbe718a7f7e4757101f4e27708a6ad0554aa996b526b982d3021a4691a37c"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/instructions.html",
+      "hash": "3752365380c4aa00c69c9d75bc1bb3d14329cbc648cdfa3757739c0c23d275f6"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/memory.html",
+      "hash": "18676ceb112a691b303cdd3923a131e7df3baae4d8d88fb74e0770da03446b78"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/operations.html",
+      "hash": "d600d7c44fe346e3a26f6419e9627651665eb57ed73c559ff83d92169bfad682"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/permissions.html",
+      "hash": "f91caae26b12ae402eabff7f2b672bd1050ee7bfda82d6b9ccdc8779949f20e8"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/README.md",
+      "hash": "9ae6e8b9d8a713d1e82495a59376fbfbf395c6de51bc40256841649eaf87defc"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/review.html",
+      "hash": "2fb4d5a65447f91f7793a3fde704ea303db901ebe38f75fece96dd1573903a95"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/runtime.html",
+      "hash": "90c27e4b8c8cf9431e8834470177f68643308737fdbbf27299c630f822d06e6e"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/semiconductor.html",
+      "hash": "4d48e11d1f9b559bf4b8162fa956de60393e15d04e5e5ce964b418d2f57fcf63"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/sources.html",
+      "hash": "f46135a34dfe61923dca22fbc91ec5f73f4b33150c68a5998be25246072c22b2"
+    },
+    {
+      "path": "Claude_Agent_SDK/html/tools.html",
+      "hash": "49850cba37833662b96d62eb7402431d67847f01b84c48b94748afb907a25509"
+    },
+    {
+      "path": "Claude_Code/Claude_Code.md",
+      "hash": "7074c2276f571e44c7bf93ee55834e460f5dd297ed1d971593208ebab193527c"
+    },
+    {
+      "path": "Claude_Code/Claude_Code_2차_심층_학습_분석.md",
+      "hash": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728"
+    },
+    {
+      "path": "Claude_Code/html/collaboration.html",
+      "hash": "7ec6140b3a195ee538bff43f511942292581486d79fe65a266a2a5a0a85153f5"
+    },
+    {
+      "path": "Claude_Code/html/deep/index.html",
+      "hash": "b09e38fbe87f8ab7659765021131414b05609139a61e59250e99e3591aa7f61d"
+    },
+    {
+      "path": "Claude_Code/html/deep/README.md",
+      "hash": "838fdd68ed02402bb6b9a29ff1d8fad1ffd792284499d5c3e7386e52fd7baad8"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-01.html",
+      "hash": "8ab6fb4b11c0dae91be334bff1194022031091a2c3f60d212abaeae321c89229"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-02.html",
+      "hash": "31ad86b0966b5c67083ebd716837b69c9dafc521d9c530361c56585190d41a46"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-03.html",
+      "hash": "2bae17496a1884d42c5df29f5c209525539ee05c0f907f627fb731b16dd2bbab"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-04.html",
+      "hash": "ebb9cf0b0b3cc4dd0a6e39e655ef58abd45794649c48475d5544c41018db3e8e"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-05.html",
+      "hash": "c5fffb1573429c8e079e3210438698760b8d0a4b49711d754b300984d401c34f"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-06.html",
+      "hash": "8dc87a8dc5cd72c7e859e1bab9bd9546f5f14ae3a7f18f03d5a2e3ceb658b933"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-07.html",
+      "hash": "a070f74a0a6a1dd55dfca67ef394e30afdf415c75a6ffb47c94da1a1361383bb"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-08.html",
+      "hash": "570b22f560f18ad972403425a4e03da5eb7f43f96b655cf4235284c4197b4570"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-09.html",
+      "hash": "2ebe4f004246e6d50e64c24e8042f5fa078a56766adc05c60297cc6a255e0c1c"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-10.html",
+      "hash": "afbad6e242338fbb9fa67a7ae62a80bff801a8f35e7565ff4d7db6970aa89624"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-11.html",
+      "hash": "e03996f64a60456e27ae45b8912e0e51acbadc10d5e801386bb96200898de016"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-12.html",
+      "hash": "443e2d3600e40f745c7a9a46e29e8fe27cba613791b0ff268043eea3f5aa8ac4"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-13.html",
+      "hash": "37c59fb63b3382d26a54c1848e255447c7abb454bc417cad4bc935c38ff2a831"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-14.html",
+      "hash": "58baaa20b681de3dcbf0ce1300d65cc3cfd09e42e9fa69dbd9378a98a536b49c"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-15.html",
+      "hash": "b8c6338165e12a586ec2e1515a72ff5808948011ef8e3fa4074afb4cc6f13afa"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-16.html",
+      "hash": "6414c960c623c9b4bdea624aaf7d3b82ad94f9bda0a412e92a7174cbc645ec94"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-17.html",
+      "hash": "dc473574b26aa506e6096ee232942ccd73d6e8b80b684baf5b317df3b14a256e"
+    },
+    {
+      "path": "Claude_Code/html/deep/unit-18.html",
+      "hash": "92c86230a27cf6bbc115f6575280084e5fe88d3c26df950964f66a07fd956891"
+    },
+    {
+      "path": "Claude_Code/html/evaluation.html",
+      "hash": "a0b95a1e35795a1cb44be20b4f10477390254d149380b257dc83b53a694b4a87"
+    },
+    {
+      "path": "Claude_Code/html/execution.html",
+      "hash": "9030cc184ae6d7cb54678f9b092544567329c8968c2d2654a2a48f750ce80d7d"
+    },
+    {
+      "path": "Claude_Code/html/foundations.html",
+      "hash": "5ecced644e751128979fe7da42ff46056177ebd5549e51786deffeeb10ccc748"
+    },
+    {
+      "path": "Claude_Code/html/index.html",
+      "hash": "54cd193c5ab09e198a25d4a4eb1c3675c32456ea1db6b5312deeb056694c48c5"
+    },
+    {
+      "path": "Claude_Code/html/instructions-memory.html",
+      "hash": "a0f6d0f084b439b2fa063a9d40371612eff256770353c0ca50cbc0921e5c45c3"
+    },
+    {
+      "path": "Claude_Code/html/public-analysis.html",
+      "hash": "f3c8960344f049584255c01d3d7f39f9466a5644932858850deaba84b371503c"
+    },
+    {
+      "path": "Claude_Code/html/README.md",
+      "hash": "e2212446748e4d6518c30851303faed469bd80b1d7b10b7e22992da6ecb32f48"
+    },
+    {
+      "path": "Claude_Code/html/review.html",
+      "hash": "6bb614c3e47666811350f02f752525ae4115f1adf28e98467558bc8b75f33b80"
+    },
+    {
+      "path": "Claude_Code/html/security-models.html",
+      "hash": "291540f10c5f369934ead9c7a9a451a538a61ed40e680f4ae40e48804984aff3"
+    },
+    {
+      "path": "Claude_Code/html/semiconductor.html",
+      "hash": "6b0e94c389c4facc7690cbf689df9cbfb266b8ecb62a517d6da709da167169f6"
+    },
+    {
+      "path": "Claude_Code/html/skills-mcp.html",
+      "hash": "0959ee62fdc7bf2ff030979698e05b96e4cf674936dc50f5296ca24aaefb784e"
+    },
+    {
+      "path": "Claude_Code/html/sources.html",
+      "hash": "b4176652c3ecfa6202b4ec3f46a29e14b8e1a23ef3cd02f752bf4e6efe1d8157"
+    },
+    {
+      "path": "Google_ADK/Google_ADK.md",
+      "hash": "12b402c03f3c896e9e52f5bcfd698044e4c1cd4528184d9667870cedadd89460"
+    },
+    {
+      "path": "Google_ADK/Google_ADK_2차_심층_학습_분석.md",
+      "hash": "1698e284a28d753ed0ef64b6e09dc4e8d6ef69260eb02615efb357c4613ffaf2"
+    },
+    {
+      "path": "Google_ADK/html/code.html",
+      "hash": "aa28c9c251f35030a01d5678641173bbb4e53aec64f6533c1878abfa361a22b7"
+    },
+    {
+      "path": "Google_ADK/html/comparison.html",
+      "hash": "849f84ea314d1b14d1e650dd54ddb3f2225de30d4206e45cf42f429044522897"
+    },
+    {
+      "path": "Google_ADK/html/deep/index.html",
+      "hash": "f118819084815d1c971ca61faea70ede1b7e17d03ec0800a7096fc9fed82266e"
+    },
+    {
+      "path": "Google_ADK/html/deep/README.md",
+      "hash": "c8ba7eb2a69c66d89743bae38e776ee620f782a5d57670f3471d5b8344f0fea7"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-01.html",
+      "hash": "41bef016dea49fb66e821b081be428f98cce97eb788553e2e27e276ace08e30e"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-02.html",
+      "hash": "c90095b253f9db0be35e6b252eec50cc1e984b998cea12684e6a808670ce3cd2"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-03.html",
+      "hash": "2156302b62869c80765a0f9f030708b16c8f6129ea95e5568446c286c65498c8"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-04.html",
+      "hash": "745864828e4b2bfaa0c6218c3d3c48f7aef9e581f51aff35fdba415af9b6b94c"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-05.html",
+      "hash": "c3aa4a93e9ca89e79c60dd762fe935644b307f476a4093cbebfc431cb82d8e52"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-06.html",
+      "hash": "09bf2e0b76634f42e7c9907a5764655832d2f7c2696b0db1f02f380ee430da3d"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-07.html",
+      "hash": "6d31328b67ef1c20a8c0fa66775a4b862772aa1a173de98f7746adb43cac169c"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-08.html",
+      "hash": "915ca2ead2b62a8c19011cfa923358cab4dcd30deffa8978b37fc67de794b978"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-09.html",
+      "hash": "db557a6b822d995c6326bd74b92d4c877eb003a0ce50ad5a1b28e9dd4b7665b6"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-10.html",
+      "hash": "73e279457ce06966a35423c5822e1cb4f765a56a8a50a285ed08038a6a38567f"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-11.html",
+      "hash": "09f0fbe1bda8a6e1cd3f6b54a70b0d61e11fbbf73bb0c4ee9dd2f42ad40aa3fb"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-12.html",
+      "hash": "65a5bb26b7ec3f2d463fee87df46724c7a5c925af998900ae177c4e06caf0413"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-13.html",
+      "hash": "9ca2c7a54235f54a9fe9315120750a3e713bb9d3f905d7556d0bad4bdb8b04c9"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-14.html",
+      "hash": "4266c93556d152277fd9ffb45be7b012b7a3e71548076ae6ea3593a327dff0fc"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-15.html",
+      "hash": "27d814b84aba2b70307689abb53bd637e4b153cd2ab455f118adc47f21038a92"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-16.html",
+      "hash": "fe113c6b292233c36e97fa35602a52eb092524d606df67eaf68583ffc4ce3425"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-17.html",
+      "hash": "0bc91b88d032c14ad4c5bf844374691de8027b74f918d9d2701eccae7164a68f"
+    },
+    {
+      "path": "Google_ADK/html/deep/unit-18.html",
+      "hash": "d876c66557c8ac4a053ffa589a0c114eb9888a1ebb7ec37cc4588805a36601e1"
+    },
+    {
+      "path": "Google_ADK/html/execution.html",
+      "hash": "0c43a8180081acc3acf767281241e687f88da89040ada413f04c2d95c01f682b"
+    },
+    {
+      "path": "Google_ADK/html/foundations.html",
+      "hash": "1f7b65d061ef9bc9304b4a705d93e74dc96d46622fd093d0ad04cf9ad014c28b"
+    },
+    {
+      "path": "Google_ADK/html/getting-started.html",
+      "hash": "c0e220604fae16ae311ecc566b1afe95b06a78bc3b2c98f9252cb3f57687dd4f"
+    },
+    {
+      "path": "Google_ADK/html/glossary.html",
+      "hash": "17f9756ef9832aeb526adb9fe309c607d9ad53e55b24575b7eb9be804211af34"
+    },
+    {
+      "path": "Google_ADK/html/index.html",
+      "hash": "320e2c877b9deb50eabc277f262842e20fd5365367bd4c0f857ae6ba089654c3"
+    },
+    {
+      "path": "Google_ADK/html/operations.html",
+      "hash": "369a27588e659c6ca0522c8285262a243967e6f623a35bff2d82e9045c324f6c"
+    },
+    {
+      "path": "Google_ADK/html/README.md",
+      "hash": "d68e6a82a7731aa16470995005099bb71903964db8a0c7ddc7215c664ef2842a"
+    },
+    {
+      "path": "Google_ADK/html/semiconductor.html",
+      "hash": "cc417134d903b863589d871f46eadd14f2172c334c58da1409e4a2f8ef35f08d"
+    },
+    {
+      "path": "Google_ADK/html/sources.html",
+      "hash": "d5e450bcaa523335649a6ae0712262b7f8c3bc6681012392c2568f7f5011c020"
+    },
+    {
+      "path": "Google_ADK/html/state.html",
+      "hash": "45b69d3f204a14ab95b193abb87585ec051db0baa0a40f10252ca362e089891a"
+    },
+    {
+      "path": "Google_ADK/html/workflow.html",
+      "hash": "e683b0d9db6df6e92caff9757aca4a77ecfda24e8dbd4b4a4814a76036ed5cef"
+    },
+    {
+      "path": "hermes/Hermes_Agent.md",
+      "hash": "d552b3008e3fc3542ebcb60f3a94129e07d47fe4de564734163e72a3071480d8"
+    },
+    {
+      "path": "hermes/Hermes_Agent_2차_심층_학습_분석.md",
+      "hash": "d45b9860784cb0aa9a98238f02bb4e1f864358d184d987aa4b451ce5ec8654f3"
+    },
+    {
+      "path": "hermes/html/code.html",
+      "hash": "79fd98fcb781273f8a37043a4098eb78ec078fa31125503fbf9906df79b3f11b"
+    },
+    {
+      "path": "hermes/html/context.html",
+      "hash": "c774bf130a0deb356e29f80a1851950dadad508d997e30ae114e2b0de439eeee"
+    },
+    {
+      "path": "hermes/html/deep/index.html",
+      "hash": "00dd076dce6f5c310e678041661a195527f79ff418e0071312b4b44ed364b7a3"
+    },
+    {
+      "path": "hermes/html/deep/README.md",
+      "hash": "f9e2c2785aa160404e80fd2af3567e1b2c3e8fa88b1f3e0a1a9d89ec21803d4e"
+    },
+    {
+      "path": "hermes/html/deep/unit-01.html",
+      "hash": "fb731993e9eba41060f401b467e97ada7b0f6821335395f937cc4edc7395cee5"
+    },
+    {
+      "path": "hermes/html/deep/unit-02.html",
+      "hash": "3074a298a63ed52bcb7964e9b109ed63399fc90ace40a27a1f3ac7886d7a32f0"
+    },
+    {
+      "path": "hermes/html/deep/unit-03.html",
+      "hash": "5abab0f71b50cfb8c2325bd3f86e920c60be84d3599f416934e24af824b16f08"
+    },
+    {
+      "path": "hermes/html/deep/unit-04.html",
+      "hash": "a16035aeacb208f31fd7033b26c9a7f5f315e5a82a6898c2a176295025ef6f33"
+    },
+    {
+      "path": "hermes/html/deep/unit-05.html",
+      "hash": "c9555f241559b7904f62363ff92888ce898fb6edd21f304fd621cac8e9d436f7"
+    },
+    {
+      "path": "hermes/html/deep/unit-06.html",
+      "hash": "222c965a31112c6a3013edd2d7d1821891b3ec7682924fc2c719cb41edd8ed32"
+    },
+    {
+      "path": "hermes/html/deep/unit-07.html",
+      "hash": "598f955a6256fa6a52233ef7f05edddafbd6385f36be695e1e3e379ca6f442ff"
+    },
+    {
+      "path": "hermes/html/deep/unit-08.html",
+      "hash": "5b1ff21b20c15ed069173e3b3020aa1b158c4fde7dab4b0a2ea9d401d2da23cf"
+    },
+    {
+      "path": "hermes/html/deep/unit-09.html",
+      "hash": "4f7a7160eea59b32df532081ce2f06c95d50a16e8bfc058da0cbc6a62cbddc22"
+    },
+    {
+      "path": "hermes/html/deep/unit-10.html",
+      "hash": "b2f7f88183d8d02994e33c5670d7140a5dac907f759a40f7e93ec93d88e2df51"
+    },
+    {
+      "path": "hermes/html/deep/unit-11.html",
+      "hash": "e5ff7f647c136576c90d36823d796e07b9f02ee1f3fd676019d72460141d809a"
+    },
+    {
+      "path": "hermes/html/deep/unit-12.html",
+      "hash": "152dfb54b641b071ed36b1af073f7a0c4759e51fb01a6d4fedc4e1db682cfca7"
+    },
+    {
+      "path": "hermes/html/deep/unit-13.html",
+      "hash": "5ce28c71b26494dc342b3a3538ac7df3ad1defc482ce8d945bea0ad01cba6dc4"
+    },
+    {
+      "path": "hermes/html/deep/unit-14.html",
+      "hash": "24b3f06f111b28e66e6f69196efa9b8b4c8075050c87ebc5a0e9f0260dbcbf4c"
+    },
+    {
+      "path": "hermes/html/deep/unit-15.html",
+      "hash": "3663e58a6aff2ee45d530e0f5a447bc07cf9c374c4daafb8e3716371937eded6"
+    },
+    {
+      "path": "hermes/html/deep/unit-16.html",
+      "hash": "83d6e29ad41b55a9ecadbaefb6d817c4cd512ad30aa415901b24b6fc8caa9221"
+    },
+    {
+      "path": "hermes/html/deep/unit-17.html",
+      "hash": "aa2b41b46dd018731976b8db3883adc8f84b7851ad48a6e7251b70127c06caa1"
+    },
+    {
+      "path": "hermes/html/deep/unit-18.html",
+      "hash": "593dfe695a8aa6c4b20a3eba32a5532a89c1ce4c726ebf856d4d4aa467b700ef"
+    },
+    {
+      "path": "hermes/html/deep/unit-19.html",
+      "hash": "1611b64267f26404dfdd3fa2422a1054e84873fd0f03b90878a92993d0af23bc"
+    },
+    {
+      "path": "hermes/html/deep/unit-20.html",
+      "hash": "0757ae4a64794e1e53d8fe79966c9c43a721ff6b5399998559d650cf75f18ca3"
+    },
+    {
+      "path": "hermes/html/deep/unit-21.html",
+      "hash": "eff2aae51ea635dc33252cd7a774b0ba3cfd3929307e69be913315b967c08a03"
+    },
+    {
+      "path": "hermes/html/execution.html",
+      "hash": "6e192db6d92017751d49dd4d1982047e460aa88089e73e86f2cec831aea8254a"
+    },
+    {
+      "path": "hermes/html/foundations.html",
+      "hash": "86514715fa830d06e08aed00d5d4caf92243401cde7cceccb99f3bd83ca3c78c"
+    },
+    {
+      "path": "hermes/html/glossary.html",
+      "hash": "75e110acb1563a7422b891216732b15ab602a527250bf7ee02dd2673892c3945"
+    },
+    {
+      "path": "hermes/html/index.html",
+      "hash": "094de07b76eb5508934b4b6899b7ebedcca37929038280c45549b48434fd1d01"
+    },
+    {
+      "path": "hermes/html/memory.html",
+      "hash": "76734e07bfeeaa5406ad6fc1c1fd0d7daa320cbac223f23440d52dfcc3a2892f"
+    },
+    {
+      "path": "hermes/html/operations.html",
+      "hash": "2e313a183a349cd7d24dcb80b7ec01aed98f5a08558a1fd7d9d53ac027f93b2f"
+    },
+    {
+      "path": "hermes/html/orchestration.html",
+      "hash": "dc283dcfe22a0391f5b40ec5283704e8193a329edf5873fe1254bb3aca17f3f2"
+    },
+    {
+      "path": "hermes/html/README.md",
+      "hash": "1b9b17a5357df76100fa7321d2def6a814e6ff8a0c5cb0812ddb276c727cdcba"
+    },
+    {
+      "path": "hermes/html/semiconductor.html",
+      "hash": "f3ab091b4c74f336d18d0fac5cbab083b464c72610481ce5ba203b8319ccdb8c"
+    },
+    {
+      "path": "hermes/html/skills.html",
+      "hash": "7bf059b48726d6d5125e4d4da63d19aa80a13cbb400776eac4694209e5c3d0d5"
+    },
+    {
+      "path": "hermes/html/sources.html",
+      "hash": "ed1414938e3c2ab4da1571300fac4eb78322c46846abfb9bf7a0ab5d9af21a12"
+    },
+    {
+      "path": "hermes/html/tools.html",
+      "hash": "093c3f3b14abe8da7b2dc4029abfbf32ac41635cdda41c5828b5c3eba539c941"
+    },
+    {
+      "path": "html/README.md",
+      "hash": "0f4170380f62c20ad4f6621dfcb6a50a5908656061fed95584091d738fe8f69a"
+    },
+    {
+      "path": "index.html",
+      "hash": "bb719f7477d6f738b9b551774f1cf87553067f79240a7568f52c20d26dd092f9"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/context.html",
+      "hash": "3b88ff32b1fa59fbbeeb5116d430a43a90340cfe4443200468fa59bdf787694c"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/index.html",
+      "hash": "b55e2d4577defea958c7142e8ebd549544dbb15189d960e2158d65008be69532"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/README.md",
+      "hash": "edda836e06b68d02818293aadc1ff927edfd33901892262805c60327aa9acbf5"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-01.html",
+      "hash": "cfbe6e8df179bc09aad965927e76b7ed928b89a2889b6d6bcf7ba4086abcc76f"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-02.html",
+      "hash": "761cf806abe63179fb6c0a111fdcfdc5f8621bbdede132a6c733ee571670acaf"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-03.html",
+      "hash": "b491e742697a69f140028266dbb3e2004ba1bfe1843d1954d5a015a6695deba7"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-04.html",
+      "hash": "d4bb34434bca2c49f72da50f4c8823997b244d954c29c4526cc40c0d62b3f86b"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-05.html",
+      "hash": "58f939e5fd2ec2ebd963d49485b77e13ff0366f9032cfa856bae841d06657fb9"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-06.html",
+      "hash": "5487971bbf69ee095d63acd04500a79acf42f304e54d305e9061528de9130812"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-07.html",
+      "hash": "321670d593af78f5d26ff62da76f6f583f45ef164cca1c45d9f9593014d16e32"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-08.html",
+      "hash": "1835151635320b118dffe5e8fc90d84689ef0cefac7c3f59685486ca99e7eedc"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-09.html",
+      "hash": "aa92340fdee60229b106e76979e6bdc527e4492dbdead2ac6b9d6fb3034699f9"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-10.html",
+      "hash": "85d59e5b5dadd3d15104af0e895c6380b2b5dc94dcdcf7dcfe8a462fec88ec56"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-11.html",
+      "hash": "a4dc5a072cec53c68602ab9747bec62e3afe4ed67a0b517d6f713040319a7fb4"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-12.html",
+      "hash": "7d8df5f65c2d09feb3ea379073a75fecd0092105c7e0e266726d4eb32959c612"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-13.html",
+      "hash": "d339b7ea74e42b8bfcd7196733da0569cd39a895585e88b113f88cef9ffdfe93"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-14.html",
+      "hash": "ec65b3b9ee83bbc1dcf70a8d4210ca4c06aa7c80db31df46230f8f7e5cd8cdfb"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-15.html",
+      "hash": "a5768c44b2157a3b50b4baffcd13f419ddfa7d089c2a775e241e65b3e9284d46"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-16.html",
+      "hash": "f2a7b8d2fee199c0f1412bb6975a4a749626747d0226b9d225fe77b91928c1e7"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-17.html",
+      "hash": "4d100c4f82f74faa7dbb873ebf294fbba9ec7f2ffd4379f29201cb394052cd9e"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-18.html",
+      "hash": "38a16721a325698dc26f13452989923888574c39f347e303c4cff0c945af52db"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/deep/unit-19.html",
+      "hash": "cf8f629ca50b6b865899b6ae60fe1fd2150fbf6246e6ed57b4284b6011ca10e5"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/foundations.html",
+      "hash": "33d4fe4dae7d2583ac838027b0bcb10cf0739537da262f5b856cc27b42db8148"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/harness.html",
+      "hash": "4a713e17abe8fa802be178dfbf703566b04620a0048b8a6bdb4b93fe3160b3bf"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/index.html",
+      "hash": "2ba6ed6aca08bf1826b43e7d568517a1c26180fb43b82a59d188adf418802e1d"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/operations.html",
+      "hash": "4b4cd776fdf700b9e8675b5f15178c51bcb8feea2ee68ec65786a90faba53c81"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/README.md",
+      "hash": "497568d2133781a49bdb019d239756c82888922e5f15232dd6de1703bb240743"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/recovery.html",
+      "hash": "612925cfda55cb096f45031a9c8748e4d84834c19623bebb91ba44ba44a1286c"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/review.html",
+      "hash": "aeca1ac5985309b765879c6233e0ce33d345138ece2c74f3905dbdb18f36084e"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/runtime.html",
+      "hash": "df1c0c857cce547585ba86ef8143f8fdea11db849447c8190d00159b2315fd53"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/selection.html",
+      "hash": "76f9ffea181902d6298790cb6d7be2491488d43a4da67e765c10cd85a49e4caf"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/semiconductor.html",
+      "hash": "6f3ecbac3bb41e86d715ac5494de03f0e3b5f3931e243f404a6b1210e05532c9"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/source-code.html",
+      "hash": "e566207c737f5d8ec3b27ac5a5c017301c081d616852010cde6bfc91d39e7c6f"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/sources.html",
+      "hash": "4f580272e59ede0ba6534d4ebe56875a4d69fb72c8767f43579a8eebe192fc50"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/tools.html",
+      "hash": "6996bf2ba8e67467524cb7358572cf8b5d5c23669be5a0b6d216bd700cd24e33"
+    },
+    {
+      "path": "Microsoft Agent_Framework/html/workflows.html",
+      "hash": "7992690c5e4a5846644940b5f78dafe83d91f1d3cf451398645ec195d41c6926"
+    },
+    {
+      "path": "Microsoft Agent_Framework/Microsoft_Agent_Framework.md",
+      "hash": "4dcf2431b5aeed18f86141c4ec4487b02354dc3e67d98a5e8a548b3c485e5b7a"
+    },
+    {
+      "path": "Microsoft Agent_Framework/Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+      "hash": "829f3efd3495c5d9b937b0b2dfefcd4b40aeddeb7316a7d0038a46f2d08bf572"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/code.html",
+      "hash": "b1f4c846f483c0782bd8a74243c4d9aa9c66f9e2609ac904a05f3ecb0087567c"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/comparison.html",
+      "hash": "a2d30fcc95f6f6654b56388524849b477bdd558299ca554bab79a71c7abb2ca4"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/index.html",
+      "hash": "b4ace9bbe12863cb54fdf51949a16e471b04445400131d8a3c56b64a6860e695"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/README.md",
+      "hash": "61b7cd8fce5f2d7f55e626b3472d481587c2512a737ea1c89871d9777dca7ecc"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-01.html",
+      "hash": "1fa96968dd79a69c045fcf24339a0234a5e7b5979fccb055b9ecc3a41dda5f77"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-02.html",
+      "hash": "d4add46346497f191b588849356501b4a9d9e3355e7fae277e7cefdc6e82e027"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-03.html",
+      "hash": "bcdf693d4b29571f3019e9d060c04aea971720101eb1a20a119a91b3745188c5"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-04.html",
+      "hash": "c255e936178226a88de9063f48571bc4a11ee823d9bc25789aa1f466210b09b6"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-05.html",
+      "hash": "547eb14f99e79908c57f9a6f02ef172bedeefe97265e247f78284fac39e4a847"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-06.html",
+      "hash": "1e7fc2d9d6845bb283e1c4bd9c536a890b38ecd73c7fe616aac56af8876764bc"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-07.html",
+      "hash": "e4012dc99fa863523c872c645101fe93acf037015a39d50fd7a3077960f4bd32"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-08.html",
+      "hash": "3ad89ccda57c510d87a6b27d72f11accaf07b4b2a5cebf6a3147490344a4e38c"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-09.html",
+      "hash": "0807153f9dd58d4a4a69e205c662c1958c8055be922e02eecfd22087bcbc1adf"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-10.html",
+      "hash": "593c1d14e2731906181358607c16bbbe11c338e4aa0f40968948a8129fc29ef1"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-11.html",
+      "hash": "ea571a41724fa8f61cbcabda1c36a27254ace65e1b6574dbfc71e73f0fd4490a"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-12.html",
+      "hash": "0deaa033d9fefed8dc1980b89741f7b071cee4ce6391534c0caa09150213ee5a"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-13.html",
+      "hash": "0151c8d04f00a97f212bf83ae73619bcc0a5bfca4bafaa64f5f61805c06546f3"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-14.html",
+      "hash": "7fce54133fffd8caee9f07a474bfca8cfe53c4793448ea93622705e1e0516113"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-15.html",
+      "hash": "6c9c9f1e309c0c46df3035922aedff13dd327313fee2d6c5c6fc2784a4f1b81d"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-16.html",
+      "hash": "1f87e7abf3ad398c1f7f16491c6edffe13f26ddc5f6c97e772d4fe1a14d6ffc3"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/deep/unit-17.html",
+      "hash": "24b138dfc5ae4e02e7aebdec0d9b09b5ba63d7b093ad7e4e852886176fd264fd"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/execution.html",
+      "hash": "d3e6ce6417fa81859ea6853a07e2d76219ef519a17119c8c3a9f1fa933132960"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/foundations.html",
+      "hash": "3fc55f486d92284689cd2b72594f96c9144f73566513ecb85922c8ed721e03d7"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/guardrails.html",
+      "hash": "9666f911a70402caf47dcc434203f693438073861d33300154264cb380016a85"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/index.html",
+      "hash": "0cf549b3e48d0009d67ce7a95990933b10e0b07362760b8ccfb4fd35bf69751d"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/operations.html",
+      "hash": "38f48e57a8d5e33c36e8dbbe3d6a54a00483141fbcbfdc93abd4e6436e799d47"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/orchestration.html",
+      "hash": "a747dbd45242bf130d799946e91a7f7aaaecf38d9179102db45f673647de2f2a"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/README.md",
+      "hash": "1bd078d7fb64760305bb97d2389f3ffd23dce9f5454e491a4f118ab4548ce737"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/review.html",
+      "hash": "a1af5ed19f5864964d72700a3693537ed65aca34cf8e05fa61fcd1d729d7575b"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/semiconductor.html",
+      "hash": "5e3627765ba2ce416b76ca031ab66fc6490ba68e44ae1464bd3cd93b4cfc05b3"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/sources.html",
+      "hash": "4ab4607231462b34eb6b6521eae8e40380e42bb1b85a1380c3aa00fd9162a67e"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/state.html",
+      "hash": "e1dce814c8ff7d853c2badb9723635ff2c930fc3c5c08016246495ba173cc6f2"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/html/tools.html",
+      "hash": "d4577eb7108965a922a39ee889c65ce9d32bc918b5f3ca64b4fe9e93dd3a0d88"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/OpenAI_Agents_SDK.md",
+      "hash": "a3da164340ff2daf411b7c23aa123a93ff722a30cd8b70d2e692430b63fc6e51"
+    },
+    {
+      "path": "OpenAI_Agents_SDK/OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+      "hash": "5bb69cf78c39a05edf1de72a08bbb2a5a0cd3aa5d214da4dbc110a220f9d643a"
+    },
+    {
+      "path": "PydanticAI/html/architecture.html",
+      "hash": "413daf804bd2eff44b5edb64891e48a9970305101ac9cb24b6f41c5ba4fe13b9"
+    },
+    {
+      "path": "PydanticAI/html/code.html",
+      "hash": "58cdac9872ef9f926565578707bbc21c3d41bcced36769845567206d8da104a8"
+    },
+    {
+      "path": "PydanticAI/html/core.html",
+      "hash": "d40ee8ed2404352daa102682cfc8ea9f2403cbda3efd49ecd1a57c690096020c"
+    },
+    {
+      "path": "PydanticAI/html/deep/index.html",
+      "hash": "107fc98d91b21c20fa357e63c5421924c16750bc485fc59e74aed8a82c67d5f7"
+    },
+    {
+      "path": "PydanticAI/html/deep/README.md",
+      "hash": "0fb909d66c1c94bb7ac31299e7db1f7b26aaa08c6daad65d85f6d13a3469d0bd"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-01.html",
+      "hash": "245608cbca1d999bb47913e71487905e604ed77fac40850f63d292e7501cf194"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-02.html",
+      "hash": "8882f10d5bf9881371de38d341bde45425b73390a6874afa599cbe3a044eaa03"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-03.html",
+      "hash": "fcc608c8e5b0eee42d2e3d52f0a6be1a96e442584fbe885c36b06bd14a700992"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-04.html",
+      "hash": "ef2ed48d35fb79ff4a2995c38baa67d30d85300f8825c81716bd923c2d137770"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-05.html",
+      "hash": "bd495572524b7e98247b98cbf97e3289e9ea779bd703e472fba68db957fdc49b"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-06.html",
+      "hash": "00c782efe11a3b87ab47af5b41d175106c17298ae6a5fe680efa362482338602"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-07.html",
+      "hash": "b84ce9d4bb776ef77933b256b3c42140bc9b719311ab203a3da286cfb25dbd53"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-08.html",
+      "hash": "574088fa611aa3c3204033b370140fa9d98c9affd0f027ce080497cd24bdd52e"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-09.html",
+      "hash": "f8b1ec16c79943973b60a4e37faa1e175cffd41e73e6053d0901273fb61d7a50"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-10.html",
+      "hash": "bef84289139429e99097297b35dfe0b0e583b1215950d7e87072868a903cd919"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-11.html",
+      "hash": "1ec67f6677911c38967d438fa11545e5a08697979fbcc8c9a431e8f4dda5f8b3"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-12.html",
+      "hash": "e261da950cc84244064dd038ab25b7ccfc1385d0ceba5eb10fc64bc2a3a94dfd"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-13.html",
+      "hash": "8349c8daba3cb60e0c171d8817bc488fd27a994c14c79914135737865b4c6de2"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-14.html",
+      "hash": "21d2f954e96a39ffdd2e5c6fa0bbc63569f245697dc1a58853bd1081be82e5fb"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-15.html",
+      "hash": "d95437aaec36326d4a8e99c711b20592a31ecaba6c094d968dc1086f33b03831"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-16.html",
+      "hash": "d4ea0362886405a0b4b44a78b9405364ef5651b2a7c077c3fe73bc18647c5795"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-17.html",
+      "hash": "89e0091a5c4f6d7731ab053a468737df2c707c15fec1544fb04180b38ed08525"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-18.html",
+      "hash": "5657bcc19111ef033452a7e6fce1f6a9f558d4eaf696c3f5701fb21a926cdc2e"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-19.html",
+      "hash": "3cd47ed3f3f555c0af1d28fde862b99adcacc5dc3a21846182ed38e8a37fcf13"
+    },
+    {
+      "path": "PydanticAI/html/deep/unit-20.html",
+      "hash": "1c941b8afcbb2a52f744c06b5f9898a86b47ddeb557cc842716bb00365be54e7"
+    },
+    {
+      "path": "PydanticAI/html/foundations.html",
+      "hash": "d61987a1f46c41d22962ba11ade9d6224b4c98146302c08d3402825ba02c454a"
+    },
+    {
+      "path": "PydanticAI/html/history.html",
+      "hash": "7463fbad4ab18d8ed0c5245b7032038a5629b7a13bf474636924541ad2e397a4"
+    },
+    {
+      "path": "PydanticAI/html/index.html",
+      "hash": "2b4be7441e83b6da7d3a60bda2d6493547bb2e3c4ad7f29f9750571ef00b58fb"
+    },
+    {
+      "path": "PydanticAI/html/memory.html",
+      "hash": "42b4b46b54b0de1c1eac2187744d2645a209ad57e93e7c7d996b902e58c5682f"
+    },
+    {
+      "path": "PydanticAI/html/operations.html",
+      "hash": "5206b2b7b94d591e7fb8d3ed9b9d1b063ced0c89d8cc3426d5f70c5fe9e8206c"
+    },
+    {
+      "path": "PydanticAI/html/orchestration.html",
+      "hash": "fd8d73f0ef6cc029a899d8e57bb19c7f258cbb41fe2e5edeaf9811352ecef8f6"
+    },
+    {
+      "path": "PydanticAI/html/README.md",
+      "hash": "43debe2f078d26b7e69acc4f9d5d725816e16071d37ff42023863f8a89502cea"
+    },
+    {
+      "path": "PydanticAI/html/review.html",
+      "hash": "07e34be119e6f365dccb39e868902f378a8be478d232530eaa9ec38b35a11ae5"
+    },
+    {
+      "path": "PydanticAI/html/semiconductor.html",
+      "hash": "cf83b44e28c3f25448ec0fedd9c9ea0e914f289492b8495734e8ab7ead8c227d"
+    },
+    {
+      "path": "PydanticAI/html/sources.html",
+      "hash": "5fbbb25403c5ea8007c18b2d160d5e1e0d39829c895b8ab606adb75ae91e7673"
+    },
+    {
+      "path": "PydanticAI/html/validation.html",
+      "hash": "4a59a19aec592bc36b8de05a0593f4ae046317046d4b56e1df09c020fbd8a9aa"
+    },
+    {
+      "path": "PydanticAI/PydanticAI.md",
+      "hash": "947a9d20cca2f28ca19bd0bf150f0e3b174620ed21877abf5bc82ef29cb97a78"
+    },
+    {
+      "path": "PydanticAI/PydanticAI_2차_심층_학습_분석.md",
+      "hash": "8d934c8675db2d18e66e239c33d4248a5fdfcfedd6c38d1539682cb1449045e7"
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "checks": [
+    {
+      "id": "seminar-hermes-memory-revision",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "Memory 스냅샷의 안정성을 업무 자료의 최신성과 분리하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-hermes-retrieval-evaluation",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "FTS의 적합성은 도메인 질의로 판단하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-hermes-runtime-resources",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "Agent 운영 자원을 모델 서버 자원과 별도로 보기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-node-demo",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "작은 데모의 관찰 대상을 답변에서 상태 전이로 넓히기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-barrier-data-contract",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "병렬 조회의 기준을 속도보다 데이터 의존성으로 정하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-endstrategy-effects",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "EndStrategy를 답변 형식이 아닌 실행 정책으로 설명하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-deferred-review",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "승인 대기를 처리 시간보다 결정 주체로 구분하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-openai-agents-sdk-tool-finalization",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "정형 조회 결과에 후속 모델 해석이 필요한지 판단하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-openai-agents-sdk-answer-ownership",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "전문가에게 묻는 것과 답변 책임을 넘기는 것을 나누기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-code-procedure-freshness",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "반복 분석의 캐시 효율과 근거 최신성을 별도 축으로 보기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-code-control-surface",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "업무 코드를 만드는 일과 실행기를 바꾸는 일을 구별하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-agent-sdk-domain-tool-boundary",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "도메인 함수를 어느 실행기에 연결하는지 비교하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-agent-sdk-analysis-portability",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "대화 이동성과 분석 파일의 재현성을 나눠 설계하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-google-adk-business-completion",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "분석가의 답변 완료와 업무 완료를 구분하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-google-adk-evidence-contract",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "대화 기록과 분석 근거를 연결하되 같은 저장물로 취급하지 않기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-microsoft-agent-framework-final-arguments",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "승인된 분석 범위와 최종 실행 범위를 같은 계약으로 묶기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-microsoft-agent-framework-join-business-key",
+      "size": "desktop",
+      "exists": true,
+      "font": "17px",
+      "heading": "병렬 분석 결과를 도착 순서보다 업무 키로 합치기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-hermes-memory-revision",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "Memory 스냅샷의 안정성을 업무 자료의 최신성과 분리하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-hermes-retrieval-evaluation",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "FTS의 적합성은 도메인 질의로 판단하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-hermes-runtime-resources",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "Agent 운영 자원을 모델 서버 자원과 별도로 보기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-node-demo",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "작은 데모의 관찰 대상을 답변에서 상태 전이로 넓히기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-barrier-data-contract",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "병렬 조회의 기준을 속도보다 데이터 의존성으로 정하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-endstrategy-effects",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "EndStrategy를 답변 형식이 아닌 실행 정책으로 설명하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-pydanticai-deferred-review",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "승인 대기를 처리 시간보다 결정 주체로 구분하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-openai-agents-sdk-tool-finalization",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "정형 조회 결과에 후속 모델 해석이 필요한지 판단하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-openai-agents-sdk-answer-ownership",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "전문가에게 묻는 것과 답변 책임을 넘기는 것을 나누기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-code-procedure-freshness",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "반복 분석의 캐시 효율과 근거 최신성을 별도 축으로 보기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-code-control-surface",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "업무 코드를 만드는 일과 실행기를 바꾸는 일을 구별하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-agent-sdk-domain-tool-boundary",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "도메인 함수를 어느 실행기에 연결하는지 비교하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-claude-agent-sdk-analysis-portability",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "대화 이동성과 분석 파일의 재현성을 나눠 설계하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-google-adk-business-completion",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "분석가의 답변 완료와 업무 완료를 구분하기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-google-adk-evidence-contract",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "대화 기록과 분석 근거를 연결하되 같은 저장물로 취급하지 않기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-microsoft-agent-framework-final-arguments",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "승인된 분석 범위와 최종 실행 범위를 같은 계약으로 묶기",
+      "insideOriginal": false,
+      "overflow": false
+    },
+    {
+      "id": "seminar-microsoft-agent-framework-join-business-key",
+      "size": "mobile",
+      "exists": true,
+      "font": "17px",
+      "heading": "병렬 분석 결과를 도착 순서보다 업무 키로 합치기",
+      "insideOriginal": false,
+      "overflow": false
+    }
+  ],
+  "homeDirectory": true,
+  "sourceReferenceNavigation": true,
+  "viewports": [
+    "1440x1000",
+    "375x812"
+  ]
+}

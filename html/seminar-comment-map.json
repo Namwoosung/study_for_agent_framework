@@ -1,0 +1,390 @@
+{
+  "flow": "2차_세미나_발표_흐름.md",
+  "blueprint": "agent_framework_seminar_1_slide_blueprint.md",
+  "basis": "기존 2차 원문에서 도출한 선택적 설계 해석. 반도체 사례와 후속 실험은 가정이며 실제 구현·실측·공식 제품 보장이 아니다.",
+  "commentCount": 17,
+  "comments": [
+    {
+      "topic": "Hermes Agent",
+      "folder": "hermes",
+      "id": "seminar-hermes-memory-revision",
+      "title": "Memory 스냅샷의 안정성을 업무 자료의 최신성과 분리하기",
+      "source": "Hermes_Agent_2차_심층_학습_분석.md",
+      "sourceLine": 497,
+      "sourceTitle": "8.2 핵심: 세션 중 기록해도 System Prompt는 즉시 바뀌지 않는다",
+      "section": "8-1",
+      "page": "hermes/html/deep/unit-07.html",
+      "companion": "hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S12",
+          "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/memory_tool.py"
+        },
+        {
+          "label": "D03",
+          "url": "https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly"
+        },
+        {
+          "label": "D10",
+          "url": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory"
+        }
+      ]
+    },
+    {
+      "topic": "Hermes Agent",
+      "folder": "hermes",
+      "id": "seminar-hermes-retrieval-evaluation",
+      "title": "FTS의 적합성은 도메인 질의로 판단하기",
+      "source": "Hermes_Agent_2차_심층_학습_분석.md",
+      "sourceLine": 595,
+      "sourceTitle": "9.2 FTS5는 어느 수준의 검색인가?",
+      "section": "9-1",
+      "page": "hermes/html/deep/unit-08.html",
+      "companion": "hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S14",
+          "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_state_fts.py"
+        },
+        {
+          "label": "D05",
+          "url": "https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage"
+        }
+      ]
+    },
+    {
+      "topic": "Hermes Agent",
+      "folder": "hermes",
+      "id": "seminar-hermes-runtime-resources",
+      "title": "Agent 운영 자원을 모델 서버 자원과 별도로 보기",
+      "source": "Hermes_Agent_2차_심층_학습_분석.md",
+      "sourceLine": 1191,
+      "sourceTitle": "15.3 Hermes의 세션 쓰기 소유권",
+      "section": "15-1",
+      "page": "hermes/html/deep/unit-14.html",
+      "companion": "hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "D05",
+          "url": "https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage"
+        },
+        {
+          "label": "D08",
+          "url": "https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration"
+        }
+      ]
+    },
+    {
+      "topic": "PydanticAI",
+      "folder": "PydanticAI",
+      "id": "seminar-pydanticai-node-demo",
+      "title": "작은 데모의 관찰 대상을 답변에서 상태 전이로 넓히기",
+      "source": "PydanticAI_2차_심층_학습_분석.md",
+      "sourceLine": 166,
+      "sourceTitle": "4.1 가장 중요한 내부 Node",
+      "section": "4-1",
+      "page": "PydanticAI/html/deep/unit-03.html",
+      "companion": "PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "원문 출처 1",
+          "url": "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py"
+        }
+      ]
+    },
+    {
+      "topic": "PydanticAI",
+      "folder": "PydanticAI",
+      "id": "seminar-pydanticai-barrier-data-contract",
+      "title": "병렬 조회의 기준을 속도보다 데이터 의존성으로 정하기",
+      "source": "PydanticAI_2차_심층_학습_분석.md",
+      "sourceLine": 539,
+      "sourceTitle": "11.2 실제 Barrier 분할 코드의 의미",
+      "section": "11-1",
+      "page": "PydanticAI/html/deep/unit-06.html",
+      "companion": "PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "원문 출처 1",
+          "url": "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py"
+        }
+      ]
+    },
+    {
+      "topic": "PydanticAI",
+      "folder": "PydanticAI",
+      "id": "seminar-pydanticai-endstrategy-effects",
+      "title": "EndStrategy를 답변 형식이 아닌 실행 정책으로 설명하기",
+      "source": "PydanticAI_2차_심층_학습_분석.md",
+      "sourceLine": 662,
+      "sourceTitle": "12.4 실제 판단 사고 실험",
+      "section": "12-1",
+      "page": "PydanticAI/html/deep/unit-07.html",
+      "companion": "PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "원문 출처 1",
+          "url": "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py"
+        },
+        {
+          "label": "원문 출처 2",
+          "url": "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py"
+        }
+      ]
+    },
+    {
+      "topic": "PydanticAI",
+      "folder": "PydanticAI",
+      "id": "seminar-pydanticai-deferred-review",
+      "title": "승인 대기를 처리 시간보다 결정 주체로 구분하기",
+      "source": "PydanticAI_2차_심층_학습_분석.md",
+      "sourceLine": 888,
+      "sourceTitle": "16.3 Inline 해결과 Stop-the-world를 구분",
+      "section": "16-1",
+      "page": "PydanticAI/html/deep/unit-09.html",
+      "companion": "PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "원문 출처 1",
+          "url": "https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/"
+        }
+      ]
+    },
+    {
+      "topic": "OpenAI Agents SDK",
+      "folder": "OpenAI_Agents_SDK",
+      "id": "seminar-openai-agents-sdk-tool-finalization",
+      "title": "정형 조회 결과에 후속 모델 해석이 필요한지 판단하기",
+      "source": "OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+      "sourceLine": 432,
+      "sourceTitle": "15. Tool 결과로 종료할 수도 있다: `tool_use_behavior`",
+      "section": "15-1",
+      "page": "OpenAI_Agents_SDK/html/deep/unit-05.html",
+      "companion": "OpenAI_Agents_SDK/OpenAI_Agents_SDK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "D09",
+          "url": "https://openai.github.io/openai-agents-python/tools/"
+        },
+        {
+          "label": "S15",
+          "url": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py"
+        }
+      ]
+    },
+    {
+      "topic": "OpenAI Agents SDK",
+      "folder": "OpenAI_Agents_SDK",
+      "id": "seminar-openai-agents-sdk-answer-ownership",
+      "title": "전문가에게 묻는 것과 답변 책임을 넘기는 것을 나누기",
+      "source": "OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+      "sourceLine": 575,
+      "sourceTitle": "22. Handoff와 Agent as Tool은 근본적으로 다르다",
+      "section": "22-1",
+      "page": "OpenAI_Agents_SDK/html/deep/unit-07.html",
+      "companion": "OpenAI_Agents_SDK/OpenAI_Agents_SDK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "D06",
+          "url": "https://openai.github.io/openai-agents-python/multi_agent/"
+        },
+        {
+          "label": "D07",
+          "url": "https://openai.github.io/openai-agents-python/handoffs/"
+        },
+        {
+          "label": "S14",
+          "url": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/handoffs.py"
+        },
+        {
+          "label": "S15",
+          "url": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py"
+        }
+      ]
+    },
+    {
+      "topic": "Claude Code",
+      "folder": "Claude_Code",
+      "id": "seminar-claude-code-procedure-freshness",
+      "title": "반복 분석의 캐시 효율과 근거 최신성을 별도 축으로 보기",
+      "source": "Claude_Code_2차_심층_학습_분석.md",
+      "sourceLine": 266,
+      "sourceTitle": "7.3 캐시 저장 위치도 설계 요소다",
+      "section": "7-1",
+      "page": "Claude_Code/html/deep/unit-04.html",
+      "companion": "Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "R03",
+          "url": "https://code.claude.com/docs/en/prompt-caching"
+        }
+      ]
+    },
+    {
+      "topic": "Claude Code",
+      "folder": "Claude_Code",
+      "id": "seminar-claude-code-control-surface",
+      "title": "업무 코드를 만드는 일과 실행기를 바꾸는 일을 구별하기",
+      "source": "Claude_Code_2차_심층_학습_분석.md",
+      "sourceLine": 1253,
+      "sourceTitle": "45. Claude Code vs Hermes — 두 완성형 Harness",
+      "section": "45-1",
+      "page": "Claude_Code/html/deep/unit-14.html",
+      "companion": "Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "R02",
+          "url": "https://code.claude.com/docs/en/how-claude-code-works"
+        },
+        {
+          "label": "R24",
+          "url": "https://github.com/anthropics/claude-code/blob/v2.1.314/README.md"
+        },
+        {
+          "label": "R25",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py"
+        },
+        {
+          "label": "R27",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py"
+        },
+        {
+          "label": "R28",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py"
+        }
+      ]
+    },
+    {
+      "topic": "Claude Agent SDK",
+      "folder": "Claude_Agent_SDK",
+      "id": "seminar-claude-agent-sdk-domain-tool-boundary",
+      "title": "도메인 함수를 어느 실행기에 연결하는지 비교하기",
+      "source": "Claude_Agent_SDK_2차_심층_학습_분석.md",
+      "sourceLine": 332,
+      "sourceTitle": "14.1 외부 MCP와 SDK-hosted MCP",
+      "section": "14-1",
+      "page": "Claude_Agent_SDK/html/deep/unit-05.html",
+      "companion": "Claude_Agent_SDK/Claude_Agent_SDK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "C05",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/query.py"
+        },
+        {
+          "label": "D07",
+          "url": "https://code.claude.com/docs/en/agent-sdk/custom-tools"
+        }
+      ]
+    },
+    {
+      "topic": "Claude Agent SDK",
+      "folder": "Claude_Agent_SDK",
+      "id": "seminar-claude-agent-sdk-analysis-portability",
+      "title": "대화 이동성과 분석 파일의 재현성을 나눠 설계하기",
+      "source": "Claude_Agent_SDK_2차_심층_학습_분석.md",
+      "sourceLine": 584,
+      "sourceTitle": "21.3 File Checkpointing과 외부 SessionStore의 충돌",
+      "section": "21-1",
+      "page": "Claude_Agent_SDK/html/deep/unit-07.html",
+      "companion": "Claude_Agent_SDK/Claude_Agent_SDK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "D06",
+          "url": "https://code.claude.com/docs/en/agent-sdk/session-storage"
+        },
+        {
+          "label": "C09",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/session_resume.py"
+        },
+        {
+          "label": "C10",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/session_store_validation.py"
+        }
+      ]
+    },
+    {
+      "topic": "Google ADK",
+      "folder": "Google_ADK",
+      "id": "seminar-google-adk-business-completion",
+      "title": "분석가의 답변 완료와 업무 완료를 구분하기",
+      "source": "Google_ADK_2차_심층_학습_분석.md",
+      "sourceLine": 489,
+      "sourceTitle": "15. `Event.is_final_response()`의 정밀한 정의",
+      "section": "15-1",
+      "page": "Google_ADK/html/deep/unit-07.html",
+      "companion": "Google_ADK/Google_ADK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S07",
+          "url": "https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/events/event.py"
+        }
+      ]
+    },
+    {
+      "topic": "Google ADK",
+      "folder": "Google_ADK",
+      "id": "seminar-google-adk-evidence-contract",
+      "title": "대화 기록과 분석 근거를 연결하되 같은 저장물로 취급하지 않기",
+      "source": "Google_ADK_2차_심층_학습_분석.md",
+      "sourceLine": 544,
+      "sourceTitle": "17. State / Memory / Artifact / Context의 정확한 차이",
+      "section": "17-1",
+      "page": "Google_ADK/html/deep/unit-07.html",
+      "companion": "Google_ADK/Google_ADK_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S08",
+          "url": "https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/sessions/base_session_service.py"
+        },
+        {
+          "label": "D03",
+          "url": "https://adk.dev/sessions/state/"
+        },
+        {
+          "label": "D04",
+          "url": "https://adk.dev/sessions/memory/"
+        }
+      ]
+    },
+    {
+      "topic": "Microsoft Agent Framework",
+      "folder": "Microsoft Agent_Framework",
+      "id": "seminar-microsoft-agent-framework-final-arguments",
+      "title": "승인된 분석 범위와 최종 실행 범위를 같은 계약으로 묶기",
+      "source": "Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+      "sourceLine": 409,
+      "sourceTitle": "11.2 인자 변경과 Guardrail 우회",
+      "section": "11-1",
+      "page": "Microsoft Agent_Framework/html/deep/unit-05.html",
+      "companion": "Microsoft Agent_Framework/Microsoft_Agent_Framework_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S03",
+          "url": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py"
+        },
+        {
+          "label": "S04",
+          "url": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py"
+        }
+      ]
+    },
+    {
+      "topic": "Microsoft Agent Framework",
+      "folder": "Microsoft Agent_Framework",
+      "id": "seminar-microsoft-agent-framework-join-business-key",
+      "title": "병렬 분석 결과를 도착 순서보다 업무 키로 합치기",
+      "source": "Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+      "sourceLine": 692,
+      "sourceTitle": "18.3 Superstep 병렬성의 정확한 계약",
+      "section": "18-1",
+      "page": "Microsoft Agent_Framework/html/deep/unit-08.html",
+      "companion": "Microsoft Agent_Framework/Microsoft_Agent_Framework_발표_실무_시사점_코멘트.md",
+      "references": [
+        {
+          "label": "S09",
+          "url": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_runner.py"
+        }
+      ]
+    }
+  ]
+}
