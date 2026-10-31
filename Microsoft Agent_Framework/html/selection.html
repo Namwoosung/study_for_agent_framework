@@ -1,0 +1,223 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework의 원리·구현·한계를 배우는 개인 학습 교재"><title>기능 목록을 선정 기준과 실험으로 바꾸기 — Microsoft Agent Framework</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script><link rel="stylesheet" href="course-links.css"></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">M.</span><span>Microsoft Agent Framework<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>큰 그림과 첫 Agent</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Python 실행 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Tool과 Middleware</span></a><a href="context.html" ><span class="nav-number">04</span><span>Session·Memory·RAG</span></a><p class="nav-group">흐름과 복구</p><a href="workflows.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><a href="recovery.html" ><span class="nav-number">06</span><span>승인과 Checkpoint</span></a><p class="nav-group">확장과 운영</p><a href="harness.html" ><span class="nav-number">07</span><span>Harness와 확장</span></a><a href="operations.html" ><span class="nav-number">08</span><span>보안·관측·평가</span></a><p class="nav-group">코드와 적용</p><a href="source-code.html" ><span class="nav-number">09</span><span>공개 코드 추적</span></a><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용 설계</span></a><a href="selection.html" class="current" aria-current="page"><span class="nav-number">11</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="review.html" >핵심 복습과 문답</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c</span><a href="../Microsoft_Agent_Framework.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><!-- deep-course-link --><nav class="course-switch" aria-label="학습 과정"><span>학습 과정</span><a href="index.html" aria-current="true">1차 기본 교재</a><a href="deep/index.html">2차 심층 교재 →</a></nav><!-- /deep-course-link --><div class="breadcrumb"><a href="index.html">Microsoft Agent Framework</a><span aria-hidden="true">/</span><span>비교와 후속 실험</span></div><header class="chapter-header"><p class="eyebrow">코드와 적용 / 단원 11</p><h1>기능 목록을 선정 기준과 실험으로 바꾸기</h1><p class="lead">장단점·설계 철학 비교·20개 질문과 단계별 실험</p><div class="chapter-meta">원문 32–35장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>비교표는 설계 강조점과 트레이드오프를 정리하며 성능 순위를 뜻하지 않습니다. 모델·인프라·상태·권한·평가 요구를 먼저 적고 후보의 실행 모형과 대조하세요.</p><p>후속 실험은 작은 단일 Agent에서 시작해 Tool, Session, RAG, Workflow, 승인, 복구, 협업 순으로 확장합니다. 원문의 합성 데이터 수량과 통과 기준은 제안이며 실제 측정 결과가 아닙니다.</p><p class="reading-question"><strong>읽는 관점</strong>한 단계의 실험마다 입력·기대 결과·측정 지표·실패 조건을 연결하세요.</p></section><section class="source-section" data-source-chapter="32"><h2 id="s-32-1">32. 기술적 장점과 단점<a class="anchor" href="#s-32-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>평가 항목</th>
+<th>장점</th>
+<th>한계/트레이드오프</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>아키텍처</td>
+<td>Agent, Workflow, Harness를 한 체계에서 다룸</td>
+<td>다뤄야 할 개념과 계층이 많음</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>공급자 추상화 및 다양한 통합</td>
+<td>기능/옵션은 공급자별로 다름</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>Function, MCP, Hosted Tool 등 폭넓음</td>
+<td>승인·권한·실행 책임이 달라짐</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Session, History, Context Provider 분리</td>
+<td>영구 메모리 내용 관리·검색 품질은 별도 설계</td>
+</tr>
+<tr>
+<td>Multi-Agent</td>
+<td>다양한 오케스트레이션 패턴</td>
+<td>디버깅·비용·상태 관리 복잡화</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>타입·명시적 흐름·재개</td>
+<td>작은 앱에는 설계 오버헤드</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>Todo/승인/파일 메모리 등 조합</td>
+<td>기본값·실험 기능·저장 위치 검토 필요</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td>Middleware, Approval, FIDES 등 층별 통제</td>
+<td>모든 보안이 자동 보장되지는 않음</td>
+</tr>
+<tr>
+<td>운영</td>
+<td>OTel, 평가, 호스팅 등 확장성</td>
+<td>실서비스용 인증/저장/모니터링은 직접 연결</td>
+</tr>
+<tr>
+<td>유지보수</td>
+<td>오픈소스, 공식 문서/샘플 풍부</td>
+<td>빠른 릴리스에 따른 API·포맷 변경 확인 필요</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-chapter="33"><h2 id="s-33-1">33. 다른 학습 대상과의 비교 — 설계 철학 중심<a class="anchor" href="#s-33-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p>아래 비교는 각 프레임워크의 <strong>상대적 설계 강조점</strong>을 요약한 것으로, 성능 순위나 동일 환경 벤치마크 결과가 아니다. 기능 세부 지원은 버전·추가 패키지·모델별로 달라진다.</p>
+</blockquote>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>비교 대상</th>
+<th>주된 관점</th>
+<th>MAF와 비교해 살펴볼 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenAI Agents SDK</td>
+<td>경량 Agent·Runner·Handoff</td>
+<td>Tool Loop를 어느 객체가 소유하는가? 명시적 Workflow/Checkpoint의 역할은?</td>
+</tr>
+<tr>
+<td>PydanticAI</td>
+<td>타입·의존성·검증 중심</td>
+<td>출력 검증·에러 경로와 Workflow 계층의 차이는?</td>
+</tr>
+<tr>
+<td>Google ADK</td>
+<td>Agent/Runner/Event/State와 Workflow</td>
+<td>Event 처리 및 Workflow 상태 저장 구조가 어떻게 다른가?</td>
+</tr>
+<tr>
+<td>Claude Agent SDK</td>
+<td>Claude Code 기반 자율 실행 환경 접근</td>
+<td>MAF에서 개발자가 구성하는 런타임과 번들 Harness의 자유도는?</td>
+</tr>
+<tr>
+<td>Hermes</td>
+<td>완성형 자율 Agent/Harness</td>
+<td>기본 메모리·Tool·Skills·Gateway 정책을 얼마나 변경할 수 있는가?</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>코딩 Agent 제품/환경</td>
+<td>개발 도구로 사용하기와 프레임워크로 앱을 개발하기의 차이는?</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-33-2">핵심 차이를 기억하기 좋은 문장<a class="anchor" href="#s-33-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>MAF:</strong> 여러 &#39;일의 단계&#39;와 &#39;Agent의 판단&#39;을 하나의 명시적 실행 체계로 조합하는 데 강점.</li>
+<li><strong>PydanticAI:</strong> Python 타입·검증·의존성 제어 관점의 강점.</li>
+<li><strong>Google ADK:</strong> Runner·Event·Session 중심의 Agent 실행과 오케스트레이션.</li>
+<li><strong>OpenAI Agents SDK:</strong> 비교적 간결한 Agent 실행·도구·인계 추상화.</li>
+<li><strong>Hermes/Claude Code:</strong> 이미 준비된 자율 실행형 Agent/Harness를 연구할 때 강점.</li>
+</ul>
+<p>이 비교는 동일한 벤치마크로 확인한 결론이 아니므로 <strong>정량적 우열로 사용하지 않는다</strong>.</p>
+</section>
+<section class="source-section" data-source-chapter="34"><h2 id="s-34-1">34. 프레임워크 선정 질문 20개<a class="anchor" href="#s-34-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-34-2">A. 모델/인프라<a class="anchor" href="#s-34-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> 기존 사내 LLM Gateway가 OpenAI 호환 API를 제공하는가?</li>
+<li><input disabled="" type="checkbox"> 대상 모델이 Function Calling·Structured Output·Streaming을 지원하는가?</li>
+<li><input disabled="" type="checkbox"> 모델 전송 데이터 범위와 저장·로깅 정책을 통제할 수 있는가?</li>
+<li><input disabled="" type="checkbox"> 폐쇄망 환경에서 패키지·모델·Tool 서버를 구성할 수 있는가?</li>
+</ul>
+<h3 id="s-34-3">B. 실행·구조<a class="anchor" href="#s-34-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> 단일 Agent가 충분한가, 명시적 Workflow가 필요한가?</li>
+<li><input disabled="" type="checkbox"> Tool Loop 호출 횟수와 실행 시간 상한을 설정했는가?</li>
+<li><input disabled="" type="checkbox"> 데이터 조회·계산은 결정적인 코드로 구현했는가?</li>
+<li><input disabled="" type="checkbox"> 멀티에이전트가 실제로 단일 Agent보다 나은지 검증할 계획이 있는가?</li>
+</ul>
+<h3 id="s-34-4">C. 메모리/상태<a class="anchor" href="#s-34-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> Session, 장기 메모리, 원본 데이터, Checkpoint를 분리했는가?</li>
+<li><input disabled="" type="checkbox"> 대화·문서·근거의 사용자/tenant 권한을 적용하는가?</li>
+<li><input disabled="" type="checkbox"> 저장 데이터의 만료·삭제·암호화·백업 정책이 있는가?</li>
+<li><input disabled="" type="checkbox"> SDK 버전 변경 시 복구/직렬화 호환성을 테스트하는가?</li>
+</ul>
+<h3 id="s-34-5">D. 보안/운영<a class="anchor" href="#s-34-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> Tool별 접근 권한과 기본 차단 정책을 구현했는가?</li>
+<li><input disabled="" type="checkbox"> 승인 요청을 정당한 세션/사용자/Tool ID에 결합했는가?</li>
+<li><input disabled="" type="checkbox"> 재시도/재개 시 외부 작업의 멱등성을 확보했는가?</li>
+<li><input disabled="" type="checkbox"> 코드 실행과 파일/네트워크 권한을 샌드박스로 제한하는가?</li>
+</ul>
+<h3 id="s-34-6">E. 검증/품질<a class="anchor" href="#s-34-6" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"> 수치 계산의 Ground Truth가 있는가?</li>
+<li><input disabled="" type="checkbox"> RAG 결과의 문서 리비전과 인용을 검증하는가?</li>
+<li><input disabled="" type="checkbox"> Tool 호출/실패/비용/지연 메트릭을 측정하는가?</li>
+<li><input disabled="" type="checkbox"> 사람이 검토할 수 있는 작업 이력과 원인 분석 근거를 남기는가?</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="35"><h2 id="s-35-1">35. 단계별 후속 실험 설계<a class="anchor" href="#s-35-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>현재는 실제 개발이 아니라 학습 단계이므로, 추후 실험할 때 아래 순서로 제안한다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>간단한 실험</th>
+<th>비교할 지표</th>
+<th>통과 기준 예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0</td>
+<td>최소 단일 Agent Q&amp;A</td>
+<td>응답 정확도·지연</td>
+<td>기준 답안과 주요 사실 일치</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>단일 읽기 전용 Tool</td>
+<td>Tool 호출 정확성</td>
+<td>금지 쿼리 100% 차단</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Session 다중 턴</td>
+<td>상태·권한 격리</td>
+<td>다른 계정 정보 유출 0건</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Context Provider RAG</td>
+<td>근거·문서 버전</td>
+<td>모든 중요 주장에 근거 연결</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Workflow 3단계</td>
+<td>순서·타입·분기</td>
+<td>잘못된 입력 반드시 차단</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>HITL 승인/거절</td>
+<td>재개·중복 실행</td>
+<td>미승인 Tool 실행 0건</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Checkpoint 복구</td>
+<td>재실행 일관성</td>
+<td>중복 부작용 0건</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>Multi-Agent 비교</td>
+<td>비용·지연·정확도</td>
+<td>기준선 대비 개선 여부 검증</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-35-2">35.1 최소 데이터셋 구성 제안<a class="anchor" href="#s-35-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>반도체 생산 데이터 대신 <strong>합성 데이터</strong>로 시작한다.</p>
+<ul>
+<li>3개 라인, 5개 공정 단계, 30일 분량의 가상 시계열</li>
+<li>정상 구간과 명시적으로 삽입한 이상 구간</li>
+<li>원인 변수·누락·이상치·시간 정렬 오류를 의도적으로 포함</li>
+<li>문서 RAG용 샘플 SOP 10개와 버전 충돌 시나리오</li>
+<li>Tool 접근 권한 케이스: 허용 20개, 차단 20개</li>
+<li>승인·재개·장애 복구 케이스 10개</li>
+</ul>
+<p>이 수량은 <strong>설계 제안</strong>이지, Microsoft가 제공하는 공식 벤치마크 요구사항이 아니다.</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="semiconductor.html"><small>이전 단원</small>← 반도체 적용 설계</a><a class="next" href="review.html"><small>다음 단원</small>핵심 복습과 문답 →</a></nav><footer>Microsoft Agent Framework 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-32-1">32. 기술적 장점과 단점</a><a href="#s-33-1">33. 다른 학습 대상과의 비교 — 설계 철학 중심</a><a href="#s-34-1">34. 프레임워크 선정 질문 20개</a><a href="#s-35-1">35. 단계별 후속 실험 설계</a></nav></aside></div></body></html>

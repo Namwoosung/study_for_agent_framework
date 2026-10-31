@@ -1,0 +1,120 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나? — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" aria-current="page" class="current"><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" ><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" ><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Gateway와 예약 실행</p><h1>Gateway와 예약 실행</h1><div class="chapter-meta">단원 14 · 원문 2026.10.31 · Hermes v0.22.5 · 약 7분 · 원문 1158–1262행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>세션 정본의 쓰기 소유권과 요청·Run·Stream의 수명을 읽습니다. Cron은 예약 시각에 새 Agent Session을 시작합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>스케줄 슬롯 Claim, 실행 성공, 결과 Delivery와 외부 효과 exactly-once를 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1158">15. Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</a><a href="#line-1160">15.1 &#39;서버에서 Agent를 다 처리한 다음 응답 반환&#39;이란?</a><a href="#line-1166">15.2 계층적 Serving 구성</a><a href="#line-1191">15.3 Hermes의 세션 쓰기 소유권</a><a href="#line-1199">15.4 인터페이스 별 차이</a><a href="#line-1214">15.5 동기 응답과 비동기 Run의 차이</a><a href="#line-1238">15.6 Busy Session과 사용자 개입</a><a href="#line-1254">15.7 Hermes Server와 vLLM/SGLang Server는 다르다</a></nav></details><section class="source-section" data-source-section="15-1"><h2 id="line-1158">15. Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?<a class="anchor" href="#line-1158" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1160">15.1 &#39;서버에서 Agent를 다 처리한 다음 응답 반환&#39;이란?<a class="anchor" href="#line-1160" aria-label="이 절의 고유 링크">#</a></h3><p>Agent가 API Server 안에서 실행되는 경우 일반적인 웹 API와 다르게 <strong>한 번의 요청 안에서 모델을 여러 번 호출하고 Tool을 실행</strong>할 수 있다. 그래서 즉시 응답하는 <code>POST /chat</code> 하나로 모든 흐름을 다루면 오래 걸리는 작업, 승인 대기, 중단, 클라이언트 재연결을 처리하기 어렵다.</p>
+<p>Hermes는 Gateway를 장시간 살아 있는 Session Authority로 사용하고, 다양한 Adapter가 요청을 해당 세션으로 전달하는 구조를 제공한다. [DOC]</p>
+<h3 id="line-1166">15.2 계층적 Serving 구성<a class="anchor" href="#line-1166" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="11"><figcaption><span>도식 11</span> 15.2 계층적 Serving 구성</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-11.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="15.2 계층적 Serving 구성"><img src="assets/diagram-11.svg" alt="15.2 계층적 Serving 구성의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+ C[External Client] --&gt; API[API / ACP / WS / Messaging]
+ API --&gt; AUTH[Auth + Session Routing]
+ AUTH --&gt; Q[Turn Admission / Busy Guard]
+ Q --&gt; A[AIAgent Turn Runner]
+ A --&gt; M[Model Provider / Tool Runtime]
+ A --&gt; DB[(Session DB)]
+ A --&gt; EVENTS[Progress/Result Events]
+ EVENTS --&gt; API
+ API --&gt; C</code></pre></details></figure><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>구성</th>
+<th>책임</th>
+<th>설계상 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>API Front Door</td>
+<td>HTTP/WS/stdio 프로토콜</td>
+<td>인증·Rate Limit·Connection Lifecycle</td>
+</tr>
+<tr>
+<td>Session Authority</td>
+<td>세션 정본 관리</td>
+<td>여러 Client가 동일 Session에 접근할 때 충돌 방지</td>
+</tr>
+<tr>
+<td>Turn Admission</td>
+<td>현재 실행 중인 요청 처리</td>
+<td>Queue/Interrupt/Reject 중 무엇인가?</td>
+</tr>
+<tr>
+<td>Agent Runtime</td>
+<td>실제 LLM·Tool Loop</td>
+<td>Iteration·Budget·Cancel</td>
+</tr>
+<tr>
+<td>Progress Channel</td>
+<td>토큰/Tool 상태 전달</td>
+<td>SSE/WS Stream·Reconnect</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>메시지·결과·기록</td>
+<td>원자성·복구·감사</td>
+</tr>
+<tr>
+<td>Delivery</td>
+<td>사용자에게 결과 반송</td>
+<td>단일 플랫폼/교차 플랫폼·재시도</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1191">15.3 Hermes의 세션 쓰기 소유권<a class="anchor" href="#line-1191" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[DOC]</strong> v0.22 계열의 공식 Session Storage 문서는 프로필 Gateway가 정식 세션의 <strong>유일한 쓰기 주체</strong>이고, CLI/TUI/Desktop/API/ACP/Cron 등의 Client가 Gateway의 <code>/api/ws</code>를 통해 세션 요청을 인정받는 구조를 기술한다. 이 원칙은 SQLite DB를 여러 실행기가 직접 열어 쓰게 만들었을 때 발생할 수 있는 경쟁·불일치를 완화하기 위한 것이다.</p>
+<p>단, SQLite WAL이 항상 1개의 DB Writer만을 허용한다는 일반론과 <strong>애플리케이션이 Gateway를 단일 논리적 Writer로 설계하는 것</strong>은 다르다. WAL은 DB Transaction과 Reader 동시성을 관리하지만, 같은 Session에 대한 애플리케이션 수준 Turn 순서·승인·Interrupt는 별도 정책이 필요하다.</p>
+<p>문서: <a target="_blank" rel="noopener noreferrer" href="https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage">https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage</a></p>
+<h3 id="line-1199">15.4 인터페이스 별 차이<a class="anchor" href="#line-1199" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[DOC]</strong> 공식 Programmatic Integration 문서는 Hermes Agent Core에 접근하는 여러 프로토콜을 구분한다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>표면</th>
+<th>주요 전송</th>
+<th>적합한 용도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ACP</td>
+<td>stdio JSON-RPC</td>
+<td>IDE와 Agent 협업</td>
+</tr>
+<tr>
+<td>TUI Gateway</td>
+<td>JSON-RPC stdio 또는 WS</td>
+<td>세션·승인·Stream 세밀 제어</td>
+</tr>
+<tr>
+<td>API Server</td>
+<td>HTTP + SSE</td>
+<td>웹 클라이언트·다른 언어 연동</td>
+</tr>
+<tr>
+<td>Messaging Gateway</td>
+<td>플랫폼 Adapter</td>
+<td>Telegram/Discord/Slack 등 채널별 대화</td>
+</tr>
+</tbody></table>
+</div><p>HTTP API에는 동기/Streaming Chat 형태 외에도 비동기적 Run 추적을 위한 <code>POST /v1/runs</code>, <code>GET /v1/runs/{id}</code>, <code>GET /v1/runs/{id}/events</code>, 승인/중단/Steer 기능이 문서화돼 있다. <strong>API 스펙은 릴리스별로 변경될 수 있으므로 실제 사용 시 태그와 문서의 일치를 별도 확인한다.</strong></p>
+<p>문서: <a target="_blank" rel="noopener noreferrer" href="https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration">https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration</a></p>
+<h3 id="line-1214">15.5 동기 응답과 비동기 Run의 차이<a class="anchor" href="#line-1214" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>패턴 A: 동기 요청
+POST /chat -&gt; 서버가 모델/도구 Loop 수행 -&gt; 최종 결과 반환
+장점: 클라이언트 단순
+약점: 긴 요청·프록시 Timeout·승인 대기·재연결 어려움
+
+패턴 B: Stream
+POST /chat (stream=true) -&gt; 진행 Event -&gt; 최종 Event
+장점: 사용자가 진행상황 관찰
+약점: 연결 유실 때 실행과 이벤트 복구를 따로 설계
+
+패턴 C: 비동기 Run Resource
+POST /runs -&gt; run_id 반환
+GET /runs/{id} -&gt; 상태 조회
+GET /runs/{id}/events -&gt; 이어받을 Event Stream
+POST /runs/{id}/stop -&gt; 취소 요청
+장점: 요청과 실행 수명주기를 분리
+약점: Run Store / Event Store / 소유권·GC 관리 복잡</code></pre></div><p>이 세 방식은 &#39;Codex 같은 Agent 서비스&#39;를 구현할 때 고려할 기본 패턴이다. <strong>컨테이너/VM별 Worker 할당, 장기 작업 분산 실행, 세션 복구</strong> 등은 API Endpoint만 구현한다고 완성되지 않는다.</p>
+<h3 id="line-1238">15.6 Busy Session과 사용자 개입<a class="anchor" href="#line-1238" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[DOC]</strong> Gateway는 Agent가 현재 실행 중인 세션에 새 메시지가 들어오면 적절하게 Queue하거나 Interrupt 신호를 보내고, <code>/approve</code>, <code>/deny</code>, <code>/stop</code> 같은 제어 메시지는 우회 통로에서 처리할 수 있다. Gateway의 Adapter Guard와 Runner Guard가 별도로 존재한다.</p>
+<p>코드 안내:<br><a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/run_inbound.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/run_inbound.py</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/platforms/base.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/platforms/base.py</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/session.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/session.py</a></p>
+<p><strong>실행 흐름 설계 질문</strong>:</p>
+<ol>
+<li>사용자 새 메시지는 기존 Turn을 취소하는가, 대기열에 넣는가, 다음 Tool Boundary에서 반영하는가?</li>
+<li>승인 대기 중 Stream이 끊겨도 승인 요청을 복구할 수 있는가?</li>
+<li>사용자에게 &#39;완료&#39;를 보냈으나 DB 기록 실패 시 무엇을 정본으로 볼 것인가?</li>
+<li>Gateway가 재시작되었을 때 외부 Tool 부작용이 완료됐는지 알 수 있는가?</li>
+<li>여러 Client가 같은 Session을 열어도 순서와 인증을 보존하는가?</li>
+</ol>
+<h3 id="line-1254">15.7 Hermes Server와 vLLM/SGLang Server는 다르다<a class="anchor" href="#line-1254" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Hermes API Server : 사용자 요청 → Agent 판단/Tool 실행/세션 저장
+vLLM/SGLang      : 모델 Prompt → Token 생성에 최적화된 Inference Server</code></pre></div><p>Hermes가 로컬 모델 Provider를 사용하더라도 Hermes 자체가 곧 Inference Engine이 되는 것은 아니다. 이 경계는 추후 프레임워크 비교에서 특히 중요하다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-13.html"><small>이전 단원</small>← Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</a><a class="next" href="unit-15.html"><small>다음 단원</small>Cron: 언제 실행되고 무엇을 재실행하는가? →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-1158">15. Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</a><a class="toc-depth-2" href="#line-1160">15.1 &#39;서버에서 Agent를 다 처리한 다음 응답 반환&#39;이란?</a><a class="toc-depth-2" href="#line-1166">15.2 계층적 Serving 구성</a><a class="toc-depth-2" href="#line-1191">15.3 Hermes의 세션 쓰기 소유권</a><a class="toc-depth-2" href="#line-1199">15.4 인터페이스 별 차이</a><a class="toc-depth-2" href="#line-1214">15.5 동기 응답과 비동기 Run의 차이</a><a class="toc-depth-2" href="#line-1238">15.6 Busy Session과 사용자 개입</a><a class="toc-depth-2" href="#line-1254">15.7 Hermes Server와 vLLM/SGLang Server는 다르다</a></nav></aside></div></body></html>

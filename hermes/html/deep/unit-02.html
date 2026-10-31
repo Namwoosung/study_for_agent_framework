@@ -1,0 +1,154 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>학습 목표와 증거 등급 외 1개 주제 — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" aria-current="page" class="current"><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" ><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" ><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" ><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 실행 계층과 요청 경로</p><h1>실행 계층과 요청 경로</h1><div class="chapter-meta">단원 02 · 원문 2026.10.31 · Hermes v0.22.5 · 약 6분 · 원문 38–114행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Gateway에서 AIAgent와 Turn Phase로 이어지는 경로를 따라갑니다. 모델 응답뿐 아니라 예산·중단·기록 실패가 실행에 미치는 영향을 읽습니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>사용자 요청·API 호출·Tool 호출 수를 나누고 persist-before-execute의 범위를 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-38">1. 학습 목표와 증거 등급</a><a href="#line-40">1.1 이 문서를 읽은 후 설명할 수 있어야 하는 것</a><a href="#line-51">1.2 증거 등급: 이후 모든 코드 설명의 읽기 규칙</a><a href="#line-62">1.3 가장 먼저 비교해야 하는 개념</a><a href="#line-76">2. Hermes의 소프트웨어 경계와 계층 구조</a><a href="#line-78">2.1 층별 아키텍처</a><a href="#line-101">2.2 상태의 &#39;소유자&#39;를 구분하자</a></nav></details><section class="source-section" data-source-section="1-1"><h2 id="line-38">1. 학습 목표와 증거 등급<a class="anchor" href="#line-38" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-40">1.1 이 문서를 읽은 후 설명할 수 있어야 하는 것<a class="anchor" href="#line-40" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><code>run_conversation()</code>이 들어간 후 <strong>어느 조건</strong>에서 한 번 더 모델을 호출하거나 현재 Turn을 종료하는가?</li>
+<li>모델이 <code>tool_calls</code> 여러 개를 돌려줬을 때 <strong>어디서</strong> 병렬/순차를 결정하고, 실제 어떤 실행기가 작동하는가?</li>
+<li><code>MEMORY.md</code> 쓰기가 <strong>어느 시점</strong>에 시스템 프롬프트에 반영되는가? 왜 바로 갱신하지 않는가?</li>
+<li>오래된 Tool 결과를 잘라 내는 것, 전체 대화 요약, Cache 재사용은 <strong>서로 어떤 다른 문제를 해결</strong>하는가?</li>
+<li>보안 통제가 Prompt 지시인지, Tool 호출 시 가로채는 코드인지, OS/컨테이너 경계인지 구분할 수 있는가?</li>
+<li><code>skill_manage</code>가 Skill을 저장하는 동작과 <strong>그 Skill이 유효함을 보증</strong>하는 것은 왜 다른가?</li>
+<li><code>cronjob_manage</code>로 예약한 일이 시스템 cron의 쉘 명령이 아니라 <strong>새 Agent Session의 실행</strong>이라는 것이 무슨 뜻인가?</li>
+<li>Hermes를 서비스처럼 제공할 때 CLI 프로세스와 Gateway Session Authority, API/WS 표면의 역할은 무엇인가?</li>
+</ul>
+<h3 id="line-51">1.2 증거 등급: 이후 모든 코드 설명의 읽기 규칙<a class="anchor" href="#line-51" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>기호</th>
+<th>의미</th>
+<th>사용 기준</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>[SRC]</strong></td>
+<td>v0.22.5 공개 소스 확인</td>
+<td>태그 고정 코드 위치·함수 또는 주석을 직접 확인함</td>
+</tr>
+<tr>
+<td><strong>[DOC]</strong></td>
+<td>공식 문서 명시</td>
+<td>공식 제품/개발자 문서에 명시되어 있음; 문서와 태그 사이 차이는 가능</td>
+</tr>
+<tr>
+<td><strong>[INF]</strong></td>
+<td>정적 분석·설계 해석</td>
+<td>공개 구현과 컴퓨터과학 원리로부터 추론, 사실과 분리</td>
+</tr>
+<tr>
+<td><strong>[UNV]</strong></td>
+<td>미확인·실험 필요</td>
+<td>현재 열람한 코드만으로 결론 불가, 또는 실행 검증하지 않음</td>
+</tr>
+</tbody></table>
+</div><p><strong>코드 제시 원칙</strong>: 아래 <code>학습용 의사코드</code>는 구조적 이해를 위한 <strong>재구성</strong>이며 실제 소스를 그대로 복사한 코드가 아니다. 소스 자체의 검토는 각 장의 태그 고정 링크에서 한다. 코드의 행 위치는 릴리스가 바뀌면 달라진다.</p>
+<h3 id="line-62">1.3 가장 먼저 비교해야 하는 개념<a class="anchor" href="#line-62" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>무엇을 제공하는가?</th>
+<th>Hermes에서 어디에 있는가?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLM</td>
+<td>다음 Token/Tool Call 결정</td>
+<td>선택한 외부/로컬 모델 Provider</td>
+</tr>
+<tr>
+<td>Agent Loop</td>
+<td>모델 재호출과 실행 반복·종료 제어</td>
+<td><code>agent/conversation_loop.py</code>, <code>turn_*.py</code></td>
+</tr>
+<tr>
+<td>Agent Harness</td>
+<td>도구·상태·메모리·보안·런타임 통합</td>
+<td>Hermes 전체 실행 환경</td>
+</tr>
+<tr>
+<td>SDK</td>
+<td>개발자가 호출하는 프로그래밍 인터페이스</td>
+<td>다른 시스템이 Hermes를 제어하는 API·통합 표면과 구별</td>
+</tr>
+<tr>
+<td>Framework</td>
+<td>애플리케이션의 실행·확장 틀</td>
+<td>Hermes의 Registry/Plugins/ContextEngine 등 일부 프레임워크적 성격</td>
+</tr>
+<tr>
+<td>Serving</td>
+<td>여러 요청/세션에 실행을 노출</td>
+<td>Gateway, API, WebSocket 및 각 Adapter</td>
+</tr>
+<tr>
+<td>LLM Inference Serving</td>
+<td>모델 자체의 Token 추론 서버</td>
+<td>Hermes 본체와 별개 (예: 로컬 모델 Provider)</td>
+</tr>
+</tbody></table>
+</div><p><strong>SDK vs 라이브러리 vs 프레임워크</strong>: SDK는 &#39;소프트웨어 개발을 위한 인터페이스와 도구를 묶은 배포 단위&#39;라는 뜻이고, 라이브러리/프레임워크는 코드 구조·제어 흐름의 성격을 나타내므로 완전한 양자택일이 아니다. Hermes를 &#39;SDK냐 Framework냐&#39; 중 하나로만 분류하면 제품의 핵심인 <strong>완성형 Agent Runtime</strong>을 놓친다. [INF]</p>
+</section>
+<section class="source-section" data-source-section="2-1"><h2 id="line-76">2. Hermes의 소프트웨어 경계와 계층 구조<a class="anchor" href="#line-76" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-78">2.1 층별 아키텍처<a class="anchor" href="#line-78" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="1"><figcaption><span>도식 1</span> 2.1 층별 아키텍처</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-1.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="2.1 층별 아키텍처"><img src="assets/diagram-1.svg" alt="2.1 층별 아키텍처의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+    IN[CLI / TUI / Desktop / API / ACP / Messaging] --&gt; G[Gateway / Session Authority]
+    G --&gt; A[AIAgent facade]
+    A --&gt; L[Conversation Loop / Turn Phases]
+    L --&gt; P[Prompt Builder + Context Engine]
+    L --&gt; M[Provider Adapter / API]
+    M --&gt; LL[LLM API 또는 자체 모델 서버]
+    L --&gt; X[Tool Round / Tool Executor]
+    X --&gt; R[Tool Registry / Inline Tools]
+    R --&gt; T[Terminal / Files / Web / MCP / Plugin]
+    L --&gt; DB[(SQLite state.db)]
+    P --&gt; F[(MEMORY.md / USER.md / Skills / Context Files)]
+    G --&gt; C[Cron / Delivery / Authorization]</code></pre></details></figure><p><code>AIAgent</code>는 외부에 보이는 진입 Facade이고, 실제 Turn 단계는 분리된 <code>agent/turn_*.py</code>와 <code>agent/conversation_loop.py</code>가 담당한다. Tool은 기본적으로 <code>tools/registry.py</code>에서 관리하지만 일부 Agent 특수 Tool은 Inline 경로로 처리한다. 세션 DB와 Prompt용 Memory 파일은 서로 다른 저장소다. [DOC][SRC]</p>
+<p>공식 문서: <a target="_blank" rel="noopener noreferrer" href="https://hermes-agent.nousresearch.com/docs/developer-guide/architecture">https://hermes-agent.nousresearch.com/docs/developer-guide/architecture</a><br>코드: <a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/conversation_loop.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/conversation_loop.py</a></p>
+<h3 id="line-101">2.2 상태의 &#39;소유자&#39;를 구분하자<a class="anchor" href="#line-101" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>상태 종류</th>
+<th>예시</th>
+<th>소유·수명</th>
+<th>주의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Turn-local</td>
+<td>이번 응답, 재시도 횟수, 중단 신호</td>
+<td>개별 요청/Turn</td>
+<td>다음 Turn으로 새면 안 됨</td>
+</tr>
+<tr>
+<td>Session transcript</td>
+<td>user/assistant/tool 메시지</td>
+<td>Session Authority / SQLite</td>
+<td>여러 프로세스가 임의 쓰기하면 일관성 문제</td>
+</tr>
+<tr>
+<td>Built-in memory</td>
+<td><code>MEMORY.md</code>, <code>USER.md</code></td>
+<td>프로필 단위 파일</td>
+<td>프롬프트에는 세션 시작 시 스냅샷</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td><code>SKILL.md</code> 및 reference 파일</td>
+<td>프로필/외부 Skill 디렉터리</td>
+<td>필요할 때 본문을 로딩</td>
+</tr>
+<tr>
+<td>Tool registry</td>
+<td>이름·Schema·Handler·가용성</td>
+<td>실행/프로필 및 Session Scope</td>
+<td>모델 노출과 실제 호출 권한을 함께 확인</td>
+</tr>
+<tr>
+<td>Provider cache</td>
+<td>Prefix 결과·비용 계산</td>
+<td>모델 제공자 서버</td>
+<td>Hermes의 로컬 히스토리와 다름</td>
+</tr>
+<tr>
+<td>Cron jobs</td>
+<td><code>jobs.json</code> 및 실행 기록</td>
+<td>프로필의 Scheduler</td>
+<td>기존 대화와 독립적인 실행</td>
+</tr>
+</tbody></table>
+</div><p><strong>아키텍처 학습의 첫 원칙</strong>: 어떤 기능이 있는지만 보지 말고, &#39;누가 소유하는 상태인가 / 누가 수정하는가 / 언제 반영되는가 / 오류 시 어디까지 복구되는가&#39;를 질문한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-01.html"><small>이전 단원</small>← 원문 읽기 안내와 증거 기준</a><a class="next" href="unit-03.html"><small>다음 단원</small>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제 →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-38">1. 학습 목표와 증거 등급</a><a class="toc-depth-2" href="#line-40">1.1 이 문서를 읽은 후 설명할 수 있어야 하는 것</a><a class="toc-depth-2" href="#line-51">1.2 증거 등급: 이후 모든 코드 설명의 읽기 규칙</a><a class="toc-depth-2" href="#line-62">1.3 가장 먼저 비교해야 하는 개념</a><a class="toc-depth-1" href="#line-76">2. Hermes의 소프트웨어 경계와 계층 구조</a><a class="toc-depth-2" href="#line-78">2.1 층별 아키텍처</a><a class="toc-depth-2" href="#line-101">2.2 상태의 &#39;소유자&#39;를 구분하자</a></nav></aside></div></body></html>

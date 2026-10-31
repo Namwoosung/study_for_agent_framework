@@ -1,0 +1,105 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" aria-current="page" class="current"><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 동시성·Subagent·Teams</p><h1>동시성·Subagent·Teams</h1><div class="chapter-meta">단원 10 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 7분 · 원문 755–864행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Tool·Background·Child Context·협업 메시지와 완료 장벽을 구분합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Context 격리·Worktree·Credential·외부 DB 자원은 각기 다른 경계입니다.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-757">27. 병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다</a><a href="#line-769">28. Subagent 하나의 라이프사이클</a><a href="#line-792">28.1 Subagent Context 격리의 실익</a><a href="#line-799">28.2 격리의 위험</a><a href="#line-807">29. Foreground vs Background Subagent</a><a href="#line-814">29.1 부모가 병렬 Subagent를 써야 하는 기준</a><a href="#line-818">30. Agent Teams와 Subagent의 구조적 차이</a><a href="#line-834">30.1 Agent Team에서 제어해야 할 네 계약</a><a href="#line-843">30.2 실제 병렬성의 층위</a><a href="#line-852">31. Worktree는 Context 격리와 별개</a><a href="#line-858">32. Subagent 결과의 검증과 권한</a></nav></details><section class="source-section" data-source-section="27-1"><p class="part-divider" id="line-755">Part VI. Multi-Agent, Parallelism, Task Delegation</p><h2 id="line-757">27. 병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다<a class="anchor" href="#line-757" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>유형</th>
+<th>병렬로 무엇이 실행되나?</th>
+<th>독립적인 LLM 대화?</th>
+<th>전형적인 제어 지점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>여러 Tool Call</td>
+<td>같은 모델 응답에서 여러 Tool</td>
+<td>보통 아님</td>
+<td>Tool Executor/Backend</td>
+</tr>
+<tr>
+<td>Background Bash</td>
+<td>오래 걸리는 외부 OS 작업</td>
+<td>아님</td>
+<td>Process Handle/Notification</td>
+</tr>
+<tr>
+<td>Subagent</td>
+<td>맡긴 작업을 수행하는 별도 Agent Loop</td>
+<td>예</td>
+<td>Agent Tool/Delegation</td>
+</tr>
+<tr>
+<td>Agent Team</td>
+<td>여러 Claude Code Session의 협업</td>
+<td>예</td>
+<td>Team task list, inter-agent messaging</td>
+</tr>
+<tr>
+<td>Fork</td>
+<td>기존 대화로부터 분기된 Session</td>
+<td>예, 일부 컨텍스트 계승</td>
+<td>Fork/Session lifecycle</td>
+</tr>
+</tbody></table>
+</div><p><strong>성능 주의:</strong> 여러 Tool Call이 한 모델 응답에 등장해도 실제 실행이 항상 병렬이라는 보장은 없다. 모델이 여러 호출을 내보냈다는 사실은 <strong>병렬 실행 의도</strong>이고, 실제 동시성은 Harness 스케줄러·Tool·Permission·OS 리소스 제약의 합성이다. Claude Code 코어의 정확한 스케줄링 소스가 공개되어 있지 않다면 <strong>특정 Thread Pool/<code>asyncio.gather</code>를 실제 구현으로 단정하지 않는다.</strong> <code>[UNV]</code></p>
+</section>
+<section class="source-section" data-source-section="28-1"><h2 id="line-769">28. Subagent 하나의 라이프사이클<a class="anchor" href="#line-769" aria-label="이 절의 고유 링크">#</a></h2><p>공식 문서에 따르면 Subagent는 특정 역할·모델·도구·권한·Skills·독립 Context를 가진 실행 단위로 구성할 수 있으며, 작업 완료 후 결과를 부모에게 반환한다. Foreground/Background 모드, 완료 알림, 권한 Prompt 처리 방식 등이 지원된다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">DOC</a></p>
+<figure class="diagram" data-diagram="7"><figcaption><span>도식 7</span> 28. Subagent 하나의 라이프사이클</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Parent Agent → Delegation/Agent Tool</td><td>task + role + limits + selected context</td></tr><tr><td>2</td><td>Delegation/Agent Tool → Subagent</td><td>start isolated conversation</td></tr><tr class="sequence-control"><td colspan="3"><b>loop</b> own agent loop</td></tr><tr><td>3</td><td>Subagent → Subagent</td><td>reason, tool call, observe</td></tr><tr class="sequence-control"><td colspan="3"><b>end</b> </td></tr><tr><td>4</td><td>Subagent ⇢ Delegation/Agent Tool</td><td>compact report / status</td></tr><tr><td>5</td><td>Delegation/Agent Tool ⇢ Results</td><td>completion event</td></tr><tr><td>6</td><td>Results ⇢ Parent Agent</td><td>report available</td></tr><tr><td>7</td><td>Parent Agent → Parent Agent</td><td>judge and integrate result</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+  participant P as Parent Agent
+  participant D as Delegation/Agent Tool
+  participant S as Subagent
+  participant R as Results
+  P-&gt;&gt;D: task + role + limits + selected context
+  D-&gt;&gt;S: start isolated conversation
+  loop own agent loop
+    S-&gt;&gt;S: reason, tool call, observe
+  end
+  S--&gt;&gt;D: compact report / status
+  D--&gt;&gt;R: completion event
+  R--&gt;&gt;P: report available
+  P-&gt;&gt;P: judge and integrate result</code></pre></details></figure><p>Subagent는 기본적으로 부모의 전체 대화 기록을 그대로 복사하는 단순 함수 호출이 아니다. 부모에게 어떤 입력을 전달할지 결정해야 하며, 반환하는 Report의 장황함과 Context 비용도 관리해야 한다.</p>
+<h3 id="line-792">28.1 Subagent Context 격리의 실익<a class="anchor" href="#line-792" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li>복잡한 탐색·실패 로그를 부모 Context 밖에서 처리한다.</li>
+<li>전문 역할별로 Tool 권한과 모델을 조정한다.</li>
+<li>독립적인 가설 검증을 동시에 실행할 수 있다.</li>
+<li>부모는 요약 결과를 모아 최종 판단한다.</li>
+</ol>
+<h3 id="line-799">28.2 격리의 위험<a class="anchor" href="#line-799" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>서로 다른 Agent가 같은 파일을 수정하면 Lost Update·Merge Conflict 발생.</li>
+<li>하나의 원본 사실을 Agent마다 다르게 해석하며 불일치가 생김.</li>
+<li>같은 모델을 여러 번 호출하므로 Token 사용이 증가.</li>
+<li>부모가 결과를 재검증하지 않으면 잘못된 결론이 합쳐짐.</li>
+<li>Background Subagent의 권한 승인이 전체 세션에 재사용될 수 있는지 정책을 확인해야 함.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="29-1"><h2 id="line-807">29. Foreground vs Background Subagent<a class="anchor" href="#line-807" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li><strong>Foreground:</strong> 부모가 기다리고 Permission Prompt가 필요한 시점에 사용자를 통해 승인 가능.</li>
+<li><strong>Background:</strong> 부모와 별도로 진행할 수 있으며, 완료 사실이 나중에 통지된다. 백그라운드 Agent의 Tool·Permission 계약이 일반 Foreground와 다를 수 있다.</li>
+<li><strong>취소:</strong> 부모가 중단을 요청했어도 외부 Shell이나 API Job이 즉시 사라지는지 보장하지 않는다.</li>
+<li><strong>결과 확인:</strong> 작업 시작의 성공, 모델의 답변 완료, 외부 Tool의 종료, 결과 파일의 Persist는 다른 이벤트다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">DOC</a></li>
+</ul>
+<h3 id="line-814">29.1 부모가 병렬 Subagent를 써야 하는 기준<a class="anchor" href="#line-814" aria-label="이 절의 고유 링크">#</a></h3><p>독립적인 하위 질문(예: 서로 다른 코드 모듈 분석), 큰 출력의 격리, 역할별 Tool 제한이 있을 때 이점이 크다. 단순한 순차 작업, 높은 공유 State 의존성, 쓰기 충돌 위험이 큰 작업에서는 병렬화가 불리할 수 있다.</p>
+</section>
+<section class="source-section" data-source-section="30-1"><h2 id="line-818">30. Agent Teams와 Subagent의 구조적 차이<a class="anchor" href="#line-818" aria-label="이 절의 고유 링크">#</a></h2><p>Agent Teams는 여러 Claude Code 인스턴스/세션 사이에 작업 목록과 메시징을 두는 협업 구조다. 단순히 Subagent 여러 개가 결과를 부모에게 돌려주는 모델보다 <strong>Agent 사이의 통신과 Task 상태 공유</strong>가 강조된다. 기능 및 UI는 실험적/변경 가능성을 문서 기준으로 판단한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-teams">DOC</a></p>
+<figure class="diagram" data-diagram="8"><figcaption><span>도식 8</span> 30. Agent Teams와 Subagent의 구조적 차이</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-8.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="30. Agent Teams와 Subagent의 구조적 차이"><img src="assets/diagram-8.svg" alt="30. Agent Teams와 Subagent의 구조적 차이의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+  L[Team Lead] &lt;--&gt; Q[Shared Task List / Messages]
+  Q &lt;--&gt; A[Teammate A: own session]
+  Q &lt;--&gt; B[Teammate B: own session]
+  Q &lt;--&gt; C[Teammate C: own session]
+  A -.-&gt; FS[Workspace / Files]
+  B -.-&gt; FS
+  C -.-&gt; FS
+  L --&gt; OUT[Final synthesis]</code></pre></details></figure><h3 id="line-834">30.1 Agent Team에서 제어해야 할 네 계약<a class="anchor" href="#line-834" aria-label="이 절의 고유 링크">#</a></h3><p><strong>Task ownership:</strong> 어떤 Agent가 어떤 Task를 수행하고 있는가?<br><strong>Message ordering:</strong> Agent들의 보고가 서로 다른 시점에 도착하면 최신 사실이 무엇인가?<br><strong>Resource isolation:</strong> 공유 파일을 여러 Agent가 동시에 수정해도 되는가?<br><strong>Completion barrier:</strong> 일부 Agent가 실패·대기 중일 때 최종 결과를 반환해도 되는가?</p>
+<p>이 네 계약을 결정하지 않은 채 <code>여러 Agent를 부르면 더 정확하다</code>고 설명하면 안 된다.</p>
+<h3 id="line-843">30.2 실제 병렬성의 층위<a class="anchor" href="#line-843" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>여러 Session/Agent의 논리적 동시성.</li>
+<li>모델 API 요청 여러 개의 네트워크 동시성.</li>
+<li>Tool의 OS Process 동시성.</li>
+<li>공유 파일 시스템·DB 변경의 동시성.</li>
+</ul>
+<p>위 네 가지가 모두 동시에 병렬이라는 보장은 없고 각 계층에서 제한, 큐, 세마포어, 락, 별도 작업 공간 등이 필요할 수 있다. <strong>공개 코드에 없는 특정 병렬 스케줄러 구현을 Claude Code 사실로 단정하지 않는다.</strong></p>
+</section>
+<section class="source-section" data-source-section="31-1"><h2 id="line-852">31. Worktree는 Context 격리와 별개<a class="anchor" href="#line-852" aria-label="이 절의 고유 링크">#</a></h2><p>Git Worktree는 파일과 브랜치 작업 공간을 분리하는 방법이다. Subagent의 독립 모델 Context는 인지적·토큰적 격리이고, Worktree는 저장소/파일 충돌을 낮추는 공간적 격리다. <strong>Subagent를 만들었다고 자동으로 모든 외부 공유 리소스가 격리되는 것은 아니다.</strong> <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-teams">R17</a>]</p>
+<p>유의해야 할 외부 공유 리소스 예시는 환경 변수, 네트워크 API, DB, 공용 임시 디렉터리, 동일 GPU, 원격 버킷, 가상환경 캐시이다.</p>
+</section>
+<section class="source-section" data-source-section="32-1"><h2 id="line-858">32. Subagent 결과의 검증과 권한<a class="anchor" href="#line-858" aria-label="이 절의 고유 링크">#</a></h2><p>부모는 Subagent 결과를 <strong>신뢰할 수 없는 관찰 자료</strong>로 받아 검토해야 한다. 공식 문서는 Report가 역할·관리자 지시처럼 보이는 문구를 포함할 때 표시를 덧붙이는 보호를 설명하지만, 악성을 완벽 분류하지 않는다고 명시한다. Tool 호출은 Parent Session의 정책을 따라 검사된다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">DOC</a></p>
+<p><strong>자체 Agent Framework 설계 제안 <code>[INF]</code>:</strong> <code>ChildTaskResult</code>에 <code>task_id</code>, <code>status</code>, <code>summary</code>, <code>evidence_refs</code>, <code>artifacts</code>, <code>error</code>, <code>tool_invocations</code>, <code>model_usage</code>, <code>elapsed_ms</code>를 넣으면 단순 자연어 보고보다 감사·검증·재시도 관리가 쉬워진다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-09.html"><small>이전 단원</small>← Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</a><a class="next" href="unit-11.html"><small>다음 단원</small>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-757">27. 병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다</a><a class="toc-depth-2" href="#line-769">28. Subagent 하나의 라이프사이클</a><a class="toc-depth-3" href="#line-792">28.1 Subagent Context 격리의 실익</a><a class="toc-depth-3" href="#line-799">28.2 격리의 위험</a><a class="toc-depth-2" href="#line-807">29. Foreground vs Background Subagent</a><a class="toc-depth-3" href="#line-814">29.1 부모가 병렬 Subagent를 써야 하는 기준</a><a class="toc-depth-2" href="#line-818">30. Agent Teams와 Subagent의 구조적 차이</a><a class="toc-depth-3" href="#line-834">30.1 Agent Team에서 제어해야 할 네 계약</a><a class="toc-depth-3" href="#line-843">30.2 실제 병렬성의 층위</a><a class="toc-depth-2" href="#line-852">31. Worktree는 Context 격리와 별개</a><a class="toc-depth-2" href="#line-858">32. Subagent 결과의 검증과 권한</a></nav></aside></div></body></html>

@@ -1,0 +1,13 @@
+{
+  "name": "Claude Code",
+  "pages": 19,
+  "chapters": 54,
+  "sourceLines": 1525,
+  "textBlocks": 528,
+  "tableRows": 254,
+  "fencedBlocks": 25,
+  "diagrams": 10,
+  "localLinks": 1157,
+  "sourceHash": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728",
+  "passed": true
+}

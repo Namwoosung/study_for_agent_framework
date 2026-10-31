@@ -1,0 +1,76 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" aria-current="page" class="current"><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 코드 추적 워크북</p><h1>코드 추적 워크북</h1><div class="chapter-meta">단원 13 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 6분 · 원문 1090–1204행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Final·Tool·Handoff·승인·연결 종료의 소스 경로를 입력→분기→상태→출력 순으로 기록합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>실제 파일·함수에 근거한 설명과 실행하지 않은 후속 실험을 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1092">45. 코드 트레이스 A: 한 번에 답하는 Run</a><a href="#line-1113">46. 코드 트레이스 B: Tool 호출 후 다시 모델이 답하는 Run</a><a href="#line-1132">47. 코드 트레이스 C: Handoff</a><a href="#line-1150">48. 코드 트레이스 D: 승인 대기·재개</a><a href="#line-1168">49. 코드 트레이스 E: 스트리밍 출력 중 사용자가 연결 종료</a><a href="#line-1185">50. 소스코드 읽는 연습: 대조 질문 15개</a></nav></details><section class="source-section" data-source-section="45-1"><p class="part-divider" id="line-1090">Part IX. 코드 추적 실습형 해설 — 실행하지 않고 소스를 읽는 방법</p><h2 id="line-1092">45. 코드 트레이스 A: 한 번에 답하는 Run<a class="anchor" href="#line-1092" aria-label="이 절의 고유 링크">#</a></h2><p><strong>연구 질문:</strong> Tool Call이 없는 정상 모델 응답을 어떻게 종료로 판정하는가?</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>① Runner.run(agent, input)
+② AgentRunner._run_impl(...)
+③ 현재 Agent의 모델·도구·출력 스키마 준비
+④ Model.get_response(...)
+⑤ process_model_response(...)
+⑥ 도구 또는 Handoff가 필요한지 확인
+⑦ 최종 응답 검증 및 Output Guardrail
+⑧ NextStepFinalOutput
+⑨ RunResult(final_output, new_items, last_agent, ...)
+⑩ Session/Trace 정리 후 반환</code></pre></div><p>이는 코드에 실제로 존재하는 함수·객체를 연결한 <strong>흐름 요약</strong>이며, <code>⑦~⑩</code> 세부 호출 순서는 분기와 저장 Backend에 따라 달라질 수 있다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run.py">S01</a>~<a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_steps.py">S04</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/guardrails.py">S07</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/session_persistence.py">S08</a>]</p>
+<p><strong>읽을 때 확인:</strong> <code>Agent.output_type</code>이 None/문자열/Pydantic 타입일 때 최종 판정이 어떻게 달라지는가? 왜 모델이 Tool Call을 동시에 요청했다면 최종 텍스트의 존재만으로 종료하기 어려운가?</p>
+</section>
+<section class="source-section" data-source-section="46-1"><h2 id="line-1113">46. 코드 트레이스 B: Tool 호출 후 다시 모델이 답하는 Run<a class="anchor" href="#line-1113" aria-label="이 절의 고유 링크">#</a></h2><p><strong>연구 질문:</strong> Tool Result는 어떤 경로로 다시 LLM 입력이 되는가?</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>① ModelResponse: function_call(name, arguments, call_id)
+② process_model_response → ToolRunFunction 기록
+③ _build_plan_for_fresh_turn / _execute_tool_plan
+④ function_needs_approval + Guardrail/인자 검증
+⑤ execute_function_tool_calls → 실제 Python Callable
+⑥ 호출 ID와 Tool Result를 연결하여 RunItem 생성
+⑦ NextStepRunAgain
+⑧ RunItem → model input item 변환
+⑨ 모델 재호출
+⑩ 다음 응답에서 Final/Handoff/Tool 결정</code></pre></div><p><strong>확인할 핵심:</strong> 같은 모델 응답에 Tool A/B 두 개가 있으면 실행을 어떻게 스케줄링하는지, A 실패와 B 성공 시 순서·예외가 어떻게 처리되는지, Tool Output Guardrail이 B 결과를 수정하면 다음 모델 입력에는 무엇이 남는지.</p>
+</section>
+<section class="source-section" data-source-section="47-1"><h2 id="line-1132">47. 코드 트레이스 C: Handoff<a class="anchor" href="#line-1132" aria-label="이 절의 고유 링크">#</a></h2><p><strong>연구 질문:</strong> 모델의 Handoff Call이 어떻게 Agent 교체가 되는가?</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>① Agent A의 handoffs 목록을 Tool 형태로 노출
+② 모델이 handoff 이름으로 Tool Call 출력
+③ is_handoff_tool_call(...)
+④ execute_handoffs(...)
+⑤ input_filter / history 설정 적용
+⑥ NextStepHandoff(target_agent=B)
+⑦ Runner가 current agent를 B로 변경
+⑧ B의 instructions/model/tools 기준으로 다음 모델 호출
+⑨ 최종 결과의 last_agent는 B가 될 수 있음</code></pre></div><p><strong>설계 분석:</strong> Handoff는 Tool 결과 한 개를 받는 것보다 강한 제어권 전환이다. 따라서 &#39;이전 Agent의 Tool Output이 반드시 다음 Agent에 보인다&#39; 같은 가정을 금지한다. History Mapper/Filter의 로딩 규칙이 중요한 이유다.</p>
+</section>
+<section class="source-section" data-source-section="48-1"><h2 id="line-1150">48. 코드 트레이스 D: 승인 대기·재개<a class="anchor" href="#line-1150" aria-label="이 절의 고유 링크">#</a></h2><p><strong>연구 질문:</strong> 승인 대기 중 동일 Tool이 두 번 호출되는 위험을 어떻게 줄이는가?</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>① Model이 승인 대상 Tool Call 출력
+② SDK가 호출 식별자 및 Rule 확인
+③ 미승인 Tool Call을 실행하지 않고 interruption 생성
+④ result.to_state()를 저장하고 외부 승인 대기
+⑤ 사용자/정책이 특정 Tool Call에 approve/reject
+⑥ Runner.run(original_starting_agent, resumed_run_state)
+⑦ _build_plan_for_resume_turn로 완료/대기 호출 구분
+⑧ 필요한 미완료 작업만 진행
+⑨ 상태/결과 기록, 새 승인 필요 시 재중단</code></pre></div><p><strong>주의:</strong> Resume 알고리즘이 중복 실행을 줄이는 구조를 가진다는 점과 외부 부작용의 exactly-once가 보장된다는 점은 다르다. SDK 저장과 외부 Tool 트랜잭션은 원자적으로 묶이지 않을 수 있다.</p>
+</section>
+<section class="source-section" data-source-section="49-1"><h2 id="line-1168">49. 코드 트레이스 E: 스트리밍 출력 중 사용자가 연결 종료<a class="anchor" href="#line-1168" aria-label="이 절의 고유 링크">#</a></h2><p><strong>연구 질문:</strong> SSE 연결이 끊기면 실행도 자동 중단되는가?</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>① Runner.run_streamed → RunResultStreaming
+② 별도 Task에서 Agent Loop 수행
+③ UI Consumer가 stream_events()를 구독
+④ 사용자 탭 닫기 / network disconnect
+⑤ Consumer만 종료되면 Loop가 계속될 수 있음
+⑥ 애플리케이션이 명시적 cancel() 요청
+⑦ 이벤트/최종 오류/Session cleanup 경로를 끝까지 처리
+⑧ 완전히 취소되지 않은 외부 Tool 작업은 별도 추적</code></pre></div><p>Streaming은 비스트리밍보다 <strong>실행자·소비자·사용자 네트워크 연결</strong>이 분리되기 때문에 동일한 정책이라도 더 복잡하다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/streaming/">D12</a>]</p>
+</section>
+<section class="source-section" data-source-section="50-1"><h2 id="line-1185">50. 소스코드 읽는 연습: 대조 질문 15개<a class="anchor" href="#line-1185" aria-label="이 절의 고유 링크">#</a></h2><ol>
+<li><code>run.py</code>에서 RunState를 처음 확인하는 곳은 어디인가?</li>
+<li>Resume에서 기존 Current Agent를 어떻게 보존하는가?</li>
+<li><code>turn_preparation.get_all_tools</code>에서 Tool 동적 활성화는 어떤 영향을 받는가?</li>
+<li><code>run_steps.py</code>의 <code>ProcessedResponse</code>와 <code>SingleStepResult</code>는 어떤 시점의 데이터인가?</li>
+<li><code>process_model_response</code>는 Handoff와 Function Tool을 구별할 때 무엇을 사용하는가?</li>
+<li><code>tool_planning.py</code>에서 Fresh와 Resume 계획은 어떤 자료구조를 공유하는가?</li>
+<li><code>tool_execution.py</code>의 Function Tool 실패 처리에서 우선하는 예외는 무엇인가?</li>
+<li>하나의 배치 실행에서 Task 취소 이후 남은 예외는 어떻게 처리되는가?</li>
+<li><code>run_internal/guardrails.py</code>의 Input Guardrail 병렬 여부는 어디서 전달받는가?</li>
+<li>Tool Output Guardrail이 거부했을 때 모델이 보게 되는 메시지는 무엇인가?</li>
+<li>Handoff 뒤 Session에는 어떤 RunItem이 남고 다음 모델에게는 어떤 메시지가 전달되는가?</li>
+<li>Session Save 실패가 발생하면 RunResult는 이미 사용자에게 노출되었을 수 있는가?</li>
+<li>Stream Queue의 종료 신호는 언제 기록되는가?</li>
+<li><code>RunResultStreaming.cancel(mode=&quot;after_turn&quot;)</code>는 현재 Tool의 결과 저장을 어떻게 처리하는가?</li>
+<li>Tracing이 민감데이터를 캡처하지 않게 설정했을 때 어떤 Metadata는 여전히 남는가?</li>
+</ol>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-12.html"><small>이전 단원</small>← 다른 6개 기술과 비교할 때의 기준값</a><a class="next" href="unit-14.html"><small>다음 단원</small>16개 실패 사례와 Runtime 책임 외 3개 주제 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1092">45. 코드 트레이스 A: 한 번에 답하는 Run</a><a class="toc-depth-2" href="#line-1113">46. 코드 트레이스 B: Tool 호출 후 다시 모델이 답하는 Run</a><a class="toc-depth-2" href="#line-1132">47. 코드 트레이스 C: Handoff</a><a class="toc-depth-2" href="#line-1150">48. 코드 트레이스 D: 승인 대기·재개</a><a class="toc-depth-2" href="#line-1168">49. 코드 트레이스 E: 스트리밍 출력 중 사용자가 연결 종료</a><a class="toc-depth-2" href="#line-1185">50. 소스코드 읽는 연습: 대조 질문 15개</a></nav></aside></div></body></html>

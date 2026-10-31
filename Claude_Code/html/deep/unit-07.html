@@ -1,0 +1,147 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" aria-current="page" class="current"><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Skills·MCP·Plugin·Tool</p><h1>Skills·MCP·Plugin·Tool</h1><div class="chapter-meta">단원 07 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 9분 · 원문 445–577행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>절차 선택과 외부 기능 실행·배포, Tool 전후 Hook 효력을 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>모든 파일 입력이 Read Tool을 거치는 것은 아니라는 조건을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-447">16. Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다</a><a href="#line-451">16.1 수명주기 다이어그램</a><a href="#line-470">16.2 Skill 문서와 Tool 허용을 구분</a><a href="#line-488">16.3 Skill 생성과 자체 개선을 과대해석하지 않기</a><a href="#line-501">17. Skill의 점진적 로딩과 실제 Context 비용</a><a href="#line-509">18. MCP를 사용하면 무엇이 실제로 실행되나?</a><a href="#line-529">18.1 Tool 정의와 실행은 다른 보안 경계</a><a href="#line-535">18.2 Dynamic Tool Update와 캐시</a><a href="#line-541">19. Plugin은 MCP의 다른 이름이 아니다</a><a href="#line-553">20. Tool 호출의 논리적 생명주기</a><a href="#line-569">20.1 Hook 전후의 바인딩 문제</a></nav></details><section class="source-section" data-source-section="16-1"><p class="part-divider" id="line-445">Part IV. Skills·Tools·MCP·Plugin의 실제 확장 경계</p><h2 id="line-447">16. Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다<a class="anchor" href="#line-447" aria-label="이 절의 고유 링크">#</a></h2><p>Claude Code의 Skill은 <strong>재사용 가능한 지침과 관련 자산의 패키지</strong>다. 대표적으로 <code>.claude/skills/&lt;name&gt;/SKILL.md</code>, 추가 참조 파일, 스크립트를 구성한다. 그러나 Tool과 달리 Skill 문서 자체가 코드 실행 능력을 제공하지는 않는다. 해당 Skill을 읽고 허용된 Tool을 통해 작업하도록 모델에 맥락을 제공한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">DOC</a></p>
+<h3 id="line-451">16.1 수명주기 다이어그램<a class="anchor" href="#line-451" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="4"><figcaption><span>도식 4</span> 16.1 수명주기 다이어그램</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="16.1 수명주기 다이어그램"><img src="assets/diagram-4.svg" alt="16.1 수명주기 다이어그램의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+    A[Discover skill directories / account sync] --&gt; B[Read metadata/frontmatter]
+    B --&gt; C{Invocation?}
+    C --&gt;|User slash command| D[Load skill body]
+    C --&gt;|Model selection| D
+    C --&gt;|Not selected| X[Do not load body]
+    D --&gt; E[Inject instructions, arguments, supporting resources]
+    E --&gt; F[Tool calls under applicable policies]
+    F --&gt; G[Results, possible long-term context]
+    G --&gt; H{Compaction?}
+    H --&gt;|Yes| I[Reinjection with budgets/truncation]
+    H --&gt;|No| J[Continue conversation]</code></pre></details></figure><p><strong>주의:</strong> 이 그림은 공개 동작을 합친 <strong>개념 모델</strong>이다. Skill 선택을 위한 내부 scoring function이나 embedding ranking 코드를 공개 소스에서 확인한 것은 아니다. <code>[UNV]</code></p>
+<h3 id="line-470">16.2 Skill 문서와 Tool 허용을 구분<a class="anchor" href="#line-470" aria-label="이 절의 고유 링크">#</a></h3><p><code>SKILL.md</code> frontmatter에는 설명, 호출 방식, 추가 파일, 인자 사용 방식, Tool 관련 설정 등이 들어갈 수 있다. Skill 본문에는 따라야 할 작업 절차가 담기지만, <strong><code>allowed-tools</code>는 그 Skill이 호출되는 턴의 승인 행동에 영향을 주는 설정이지, Tool 집합을 한정하는 보안 샌드박스가 아니다.</strong> 나열되지 않은 도구도 여전히 호출을 시도할 수 있으며 별도 권한 정책이 적용된다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">DOC</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>yaml</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>---
+name: data-audit
+description: Validate provenance and units before reporting numerical results
+---
+# Data audit (교육용 절차 설명)
+1. Identify input schema and units.
+2. Record data provenance.
+3. Separate calculations from interpretation.
+4. Flag missing data; never fill silently.</code></pre></div><p>위 YAML은 절차가 어디에 들어가는지 보여주는 <strong>교육용 예시</strong>다. 문서의 해당 기능 스키마와 버전에서 정확한 지원 필드·값은 별도 확인해야 한다. 실행 가능한 Skill 데모가 아니다.</p>
+<h3 id="line-488">16.3 Skill 생성과 자체 개선을 과대해석하지 않기<a class="anchor" href="#line-488" aria-label="이 절의 고유 링크">#</a></h3><p><code>Skill을 만들 수 있다</code>는 기능은 보통 파일을 만들고 지침을 저장할 수 있다는 뜻이다. <strong>스킬의 효용을 보장하는 자동 평가 알고리즘</strong>이나 <strong>검증된 지식을 스스로 획득하는 메커니즘</strong>과는 별개다. 자동 생성 Skill이 오래된 코드 예제를 반복하거나 강한 권한을 유도하면 오히려 오류를 확대한다.</p>
+<p>자체 Framework를 설계한다면 Skill 관리자를 다음 네 책임으로 나누는 것이 타당하다. <code>[INF]</code></p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>컴포넌트</th>
+<th>책임</th>
+<th>실패할 때 발생하는 일</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Discovery</td>
+<td>관련 Skill 탐색 및 명칭 충돌 정리</td>
+<td>필요한 Skill을 못 찾거나 다른 Skill 선택</td>
+</tr>
+<tr>
+<td>Loader</td>
+<td>메타데이터·본문·참조자료 주입</td>
+<td>지나친 Token 사용, 잘린 규칙</td>
+</tr>
+<tr>
+<td>Validator</td>
+<td>파일 구조, 코드 실행 권한, 신뢰성 검토</td>
+<td>악성/부정확 Skill 통과</td>
+</tr>
+<tr>
+<td>Registry/Versioner</td>
+<td>변경 이력, 잠금, 롤백</td>
+<td>테스트된 Skill과 실제 사용하는 Skill 불일치</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="17-1"><h2 id="line-501">17. Skill의 점진적 로딩과 실제 Context 비용<a class="anchor" href="#line-501" aria-label="이 절의 고유 링크">#</a></h2><p>Skill을 모두 System Prompt에 미리 넣는 방식은 긴 목록일수록 낭비가 커진다. Claude Code는 Skill을 발견한 뒤 선택 시점에 상세 내용과 관련 자료를 로딩하고, 큰 Skill은 컨텍스트 제한에 따라 잘라낼 수 있다. 공식 문서는 오래 사용한 Skill의 내용이 압축 뒤 Budget 한도에 의해 제외될 가능성도 명시한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/context-window">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">R10</a>]</p>
+<p><strong>핵심 설계 질문:</strong> Skill의 이름·설명이 정확히 어떤 식으로 모델에 제시되는가? 파일을 처음부터 모두 노출하는가? 필요한 하위 자료는 누가 결정하여 읽는가? 의존 실행 스크립트를 모델이 자동으로 신뢰할 수 있는가? </p>
+<p>이에 대한 답은 <strong>사용 가능한 기능 계약</strong>과 <strong>비공개 모델 선택 정책</strong>으로 나눠야 한다. Tool 등록 방식이 공개되지 않은 부분을 자체 점수식으로 상상해서 채워서는 안 된다.</p>
+</section>
+<section class="source-section" data-source-section="18-1"><h2 id="line-509">18. MCP를 사용하면 무엇이 실제로 실행되나?<a class="anchor" href="#line-509" aria-label="이 절의 고유 링크">#</a></h2><p>MCP는 Claude Code 외부의 서버가 Tool·Resource·Prompt 같은 능력을 표준 프로토콜을 통해 제공하는 인터페이스다. Claude Code는 Client가 되어 서버의 Tool을 발견·호출하고 응답을 받아 대화에 전달한다. <strong>MCP 서버의 프로세스·권한·데이터 액세스는 Claude Code 실행 엔진과 분리될 수 있다.</strong> <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/mcp">DOC</a></p>
+<figure class="diagram" data-diagram="5"><figcaption><span>도식 5</span> 18. MCP를 사용하면 무엇이 실제로 실행되나?</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Claude Code → MCP Server</td><td>connect/initialize</td></tr><tr><td>2</td><td>MCP Server ⇢ Claude Code</td><td>available tools/resources</td></tr><tr><td>3</td><td>Claude Code → MCP Server</td><td>call_tool(name, arguments)</td></tr><tr><td>4</td><td>MCP Server → Backend API / DB</td><td>backend request under server credentials</td></tr><tr><td>5</td><td>Backend API / DB ⇢ MCP Server</td><td>result/error</td></tr><tr><td>6</td><td>MCP Server ⇢ Claude Code</td><td>MCP tool result</td></tr><tr><td>7</td><td>Claude Code → Claude Code</td><td>include observation in conversation</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+  participant C as Claude Code
+  participant S as MCP Server
+  participant B as Backend API / DB
+  C-&gt;&gt;S: connect/initialize
+  S--&gt;&gt;C: available tools/resources
+  C-&gt;&gt;S: call_tool(name, arguments)
+  S-&gt;&gt;B: backend request under server credentials
+  B--&gt;&gt;S: result/error
+  S--&gt;&gt;C: MCP tool result
+  C-&gt;&gt;C: include observation in conversation</code></pre></details></figure><p><code>stdio</code>·원격 HTTP·WebSocket 등의 지원·제한은 버전·서버 형식에 따라 달라진다. <strong>MCP = 항상 별도의 로컬 프로세스</strong>라는 설명은 틀리다. 원격 서버도 사용할 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/mcp">DOC</a></p>
+<h3 id="line-529">18.1 Tool 정의와 실행은 다른 보안 경계<a class="anchor" href="#line-529" aria-label="이 절의 고유 링크">#</a></h3><p>모델이 보는 Tool Schema는 호출 인자를 생성하는 데 도움을 줄 뿐, 실제 DB의 <code>DELETE</code> 권한을 차단하지 않는다. MCP 서버 내부의 인증·인가·Rate Limit·SQL 검증·Network ACL이 별도로 필요하다.</p>
+<p><code>Tool not available</code>과 <code>Permission denied</code>도 구분해야 한다. 전자는 서버 연결·발견·도구 정의의 문제일 수 있고, 후자는 노출된 호출을 정책적으로 거부한 상황이다.</p>
+<h3 id="line-535">18.2 Dynamic Tool Update와 캐시<a class="anchor" href="#line-535" aria-label="이 절의 고유 링크">#</a></h3><p>MCP 서버가 새 Tool을 발표하거나 재연결한 경우, 해당 Tool 정의가 전부 선행 Prefix에 포함되는지, Tool Search를 통해 지연 로드되는지에 따라 캐시 영향이 달라진다. 공식 문서는 <strong>의도적으로 Tool을 제거하는 상황, 단순 원격 연결 유실, 백그라운드 재연결</strong>을 별도로 설명한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/prompt-caching">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/mcp">R11</a>]</p>
+<p>따라서 <code>MCP 서버를 하나 더 연결하면 매번 전체 캐시가 깨진다</code>도, <code>Tool Search를 쓰면 변화와 무관하게 절대 캐시가 깨지지 않는다</code>도 과장이다.</p>
+</section>
+<section class="source-section" data-source-section="19-1"><h2 id="line-541">19. Plugin은 MCP의 다른 이름이 아니다<a class="anchor" href="#line-541" aria-label="이 절의 고유 링크">#</a></h2><p><strong>Plugin은 설치·배포·조합 단위</strong>, <strong>MCP는 외부 시스템과의 통신 프로토콜/인터페이스</strong>, <strong>Skill은 작업 절차</strong>, <strong>Hook은 정해진 이벤트에 대한 실행 정책/자동화</strong>, <strong>Subagent는 별도 Agent 작업 컨텍스트</strong>이다. Plugin 하나 안에 Skill·Hook·MCP 설정·Subagent 정의 등이 함께 들어갈 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/mcp">R11</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/plugins">R12</a>]</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>비교 축</th>
+<th>Skill</th>
+<th>MCP Server</th>
+<th>Plugin</th>
+<th>Hook</th>
+<th>Subagent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>주 역할</td>
+<td>절차 지식</td>
+<td>외부 기능 호출</td>
+<td>기능 패키징</td>
+<td>이벤트 자동 처리</td>
+<td>별도 Agent 작업</td>
+</tr>
+<tr>
+<td>실행 주체</td>
+<td>모델+Tool</td>
+<td>서버/백엔드</td>
+<td>포함 요소에 따름</td>
+<td>Handler 실행기</td>
+<td>독립 Model Loop</td>
+</tr>
+<tr>
+<td>상태 소유</td>
+<td>파일/대화</td>
+<td>외부 서비스</td>
+<td>배포·설정</td>
+<td>입력·출력 및 설정</td>
+<td>별도 Session/Context</td>
+</tr>
+<tr>
+<td>보안 위험</td>
+<td>Prompt Injection·부정확 절차</td>
+<td>API 권한·데이터 유출</td>
+<td>공급망·플러그인 권한</td>
+<td>정책 우회·실패 모드</td>
+<td>위임 범위·작업 충돌</td>
+</tr>
+<tr>
+<td>성능 비용</td>
+<td>Context/선택 비용</td>
+<td>통신·Tool 처리</td>
+<td>구성요소별</td>
+<td>Handler 지연</td>
+<td>추가 모델 호출·컨텍스트</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="20-1"><h2 id="line-553">20. Tool 호출의 논리적 생명주기<a class="anchor" href="#line-553" aria-label="이 절의 고유 링크">#</a></h2><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Model: tool_use(name, arguments)
+  -&gt; Tool name/definition available?
+  -&gt; Schema/argument processing
+  -&gt; Permission/mode/deny/allow/sandbox/hook checks
+  -&gt; (when necessary) user approval / host callback
+  -&gt; Tool backend execution
+  -&gt; Tool result/error formatting
+  -&gt; Append observation and optionally trace
+  -&gt; Next model invocation</code></pre></div><p>위 순서는 <strong>논리적으로 반드시 존재할 기능들</strong>을 표현한 것이지, 각 검사의 실제 내부 절대 호출 순서를 제공하는 공개 코드가 있는 것은 아니다. 특히 Hook이 인자를 갱신하는 경우 <code>updatedInput</code>의 검증·권한 재평가가 어떤 정책을 거치는지 공식 문서의 권한 우선순위 설명으로 확인해야 한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">R08</a>]</p>
+<h3 id="line-569">20.1 Hook 전후의 바인딩 문제<a class="anchor" href="#line-569" aria-label="이 절의 고유 링크">#</a></h3><p>만약 먼저 승인한 인자와 실제 실행하는 인자가 달라진다면, 공격자는 승인 뒤 경로 또는 명령을 바꿔 보안 의도를 우회할 수 있다. 따라서 개발자는 다음 계약을 명시해야 한다. <code>[INF]</code></p>
+<ul>
+<li>승인 요청에 사용한 Tool name/arguments를 영속 ID 또는 Hash로 묶는다.</li>
+<li>인자가 변경되면 필요한 권한 판단을 다시 한다.</li>
+<li>Shell의 합성 명령·간접 파일 접근·symlink 해석을 자체 문자열 필터로만 판단하지 않는다.</li>
+<li>비동기 Tool 실행 후 Permission을 회수해도 이미 시작된 작업의 부작용은 남을 수 있다.</li>
+</ul>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-06.html"><small>이전 단원</small>← Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</a><a class="next" href="unit-08.html"><small>다음 단원</small>Hook을 정확히 분석하려면 어디를 봐야 하나? →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-447">16. Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다</a><a class="toc-depth-3" href="#line-451">16.1 수명주기 다이어그램</a><a class="toc-depth-3" href="#line-470">16.2 Skill 문서와 Tool 허용을 구분</a><a class="toc-depth-3" href="#line-488">16.3 Skill 생성과 자체 개선을 과대해석하지 않기</a><a class="toc-depth-2" href="#line-501">17. Skill의 점진적 로딩과 실제 Context 비용</a><a class="toc-depth-2" href="#line-509">18. MCP를 사용하면 무엇이 실제로 실행되나?</a><a class="toc-depth-3" href="#line-529">18.1 Tool 정의와 실행은 다른 보안 경계</a><a class="toc-depth-3" href="#line-535">18.2 Dynamic Tool Update와 캐시</a><a class="toc-depth-2" href="#line-541">19. Plugin은 MCP의 다른 이름이 아니다</a><a class="toc-depth-2" href="#line-553">20. Tool 호출의 논리적 생명주기</a><a class="toc-depth-3" href="#line-569">20.1 Hook 전후의 바인딩 문제</a></nav></aside></div></body></html>

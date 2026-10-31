@@ -1,0 +1,173 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>설계자가 반드시 이해해야 할 실패 모드 — Microsoft Agent Framework 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">M.</span><span>Microsoft Agent Framework<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">계층과 호출 지도</p><a href="unit-02.html" ><span class="nav-number">02</span><span>분석 목표와 증거 수준 외 3개 주제</span></a><p class="nav-group">Agent·Context·Tool Loop</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 클래스의 다층 합성 외 2개 주제</span></a><p class="nav-group">Tool·정책·승인</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제</span></a><p class="nav-group">상태와 모델 입력</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Session, History, Memory, Checkpoint가 어떻게 다른가? 외 1개 주제</span></a><p class="nav-group">Harness와 명시적 Workflow</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나? 외 2개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Superstep: 실제 상태 commit와 메시지 전달</span></a><p class="nav-group">복구와 협업 모델</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Checkpoint와 Resume: 직렬화보다 중요한 것은 경계 외 2개 주제</span></a><p class="nav-group">외부 연결·보안·실패</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</span></a><a href="unit-11.html" aria-current="page" class="current"><span class="nav-number">11</span><span>설계자가 반드시 이해해야 할 실패 모드</span></a><p class="nav-group">소스코드 추적 워크북</p><a href="unit-12.html" ><span class="nav-number">12</span><span>코드 추적 워크북 15개</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적 워크북 15개 / W05. Function Middleware 인자 수정과 Policy Gate</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적 워크북 15개 / W09. Compaction 적용과 메모리 보존</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>학습 완료 점검 문제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>공식 참고자료·소스코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-19.html" ><span class="nav-number">19</span><span>최종 요약 — 반드시 기억해야 할 12개 문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK python-1.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 외부 연결·보안·실패</p><h1>외부 연결·보안·실패</h1><div class="chapter-meta">단원 11 · 원문 2026.10.31 · Python SDK python-1.24.0 · 약 5분 · 원문 912–971행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>모델·MCP·Serving·Cron과 FIDES의 적용 범위를 나누고 실패 사례로 일관성을 점검합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Nested/Hosted Tool의 내부 실행과 실제 인프라 권한은 별도로 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-914">24. 설계자가 반드시 이해해야 할 실패 모드</a><a href="#line-943">24.1 실패를 평가할 5가지 질문</a><a href="#line-951">24.2 Exactly-once와 At-least-once</a><a href="#line-963">24.3 동시성 검증 관점</a></nav></details><section class="source-section" data-source-section="24-1"><p class="part-divider" id="line-912">Part V. 실패·복구·상태 일관성 분석</p><h2 id="line-914">24. 설계자가 반드시 이해해야 할 실패 모드<a class="anchor" href="#line-914" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>실패/경계 사례</th>
+<th>어떤 계층이 관련?</th>
+<th>핵심 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F01</td>
+<td>모델이 호출한 Tool 이름이 Registry에 없음</td>
+<td>Function Invocation</td>
+<td>Model에 오류를 줄지 실행을 중지할지?</td>
+</tr>
+<tr>
+<td>F02</td>
+<td>JSON 인자가 형식 오류</td>
+<td>Schema/Tool</td>
+<td>정규화 후 재검증 여부는?</td>
+</tr>
+<tr>
+<td>F03</td>
+<td>Tool 인자는 타입 적합, 정책 위반</td>
+<td>Function Middleware</td>
+<td>fail-closed가 가능한가?</td>
+</tr>
+<tr>
+<td>F04</td>
+<td>보안 정책 서버 타임아웃</td>
+<td>MiddlewareFailure</td>
+<td>일반 Tool 오류로 흡수되는가?</td>
+</tr>
+<tr>
+<td>F05</td>
+<td>인자가 정책 검사 이후 바뀜</td>
+<td>Function Middleware</td>
+<td>실행 직전 승인 대상과 일치하는가?</td>
+</tr>
+<tr>
+<td>F06</td>
+<td>두 Tool이 같은 Session State를 수정</td>
+<td>Tool Concurrency</td>
+<td>Lost Update가 발생하는가?</td>
+</tr>
+<tr>
+<td>F07</td>
+<td>Tool 외부 쓰기 성공 후 모델 호출 실패</td>
+<td>Tool Loop</td>
+<td>복구 시 Tool을 다시 실행하는가?</td>
+</tr>
+<tr>
+<td>F08</td>
+<td>Harness 평가자가 계속 ‘미완료’ 반환</td>
+<td>Outer Loop</td>
+<td>max_iterations로 종료하는가?</td>
+</tr>
+<tr>
+<td>F09</td>
+<td>Agent final 저장 실패</td>
+<td>History Provider</td>
+<td>사용자 결과와 저장 상태가 어긋나는가?</td>
+</tr>
+<tr>
+<td>F10</td>
+<td>승인 응답이 다른 Session에서 도착</td>
+<td>Tool Approval</td>
+<td>Pending Call 바인딩 실패시 어떻게 처리?</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>옛 Standing Approval이 새로운 Tool에 적용</td>
+<td>Harness Approval</td>
+<td>Tool 목록 변경에 대한 정책 갱신 여부?</td>
+</tr>
+<tr>
+<td>F12</td>
+<td>Stream 중 클라이언트 연결 끊김</td>
+<td>Serving</td>
+<td>실행 중 Task/Tool이 계속 남는가?</td>
+</tr>
+<tr>
+<td>F13</td>
+<td>Workflow A/B 병렬 중 B 실패</td>
+<td>Workflow Runner</td>
+<td>Pending State discard와 외부 부작용?</td>
+</tr>
+<tr>
+<td>F14</td>
+<td>두 Source가 Join 노드에 동시에 보냄</td>
+<td>Edge Runner</td>
+<td>메시지 순서와 집계 결정성?</td>
+</tr>
+<tr>
+<td>F15</td>
+<td>Checkpoint 기록 직전 프로세스 다운</td>
+<td>Workflow</td>
+<td>마지막 외부 쓰기만 남고 State 유실?</td>
+</tr>
+<tr>
+<td>F16</td>
+<td>승인 대기 이후 체크포인트 재개</td>
+<td>Workflow HITL</td>
+<td>같은 요청이 다시 표시되는가?</td>
+</tr>
+<tr>
+<td>F17</td>
+<td>Graph 코드가 바뀐 뒤 옛 checkpoint 복원</td>
+<td>Checkpoint</td>
+<td>signature 검증과 마이그레이션?</td>
+</tr>
+<tr>
+<td>F18</td>
+<td>Provider API가 function call 옵션 미지원</td>
+<td>ChatClient</td>
+<td>fallback 또는 오류?</td>
+</tr>
+<tr>
+<td>F19</td>
+<td>메모리 Scope가 다른 사용자에게 공유</td>
+<td>FileMemoryProvider</td>
+<td>정보 누출 경계?</td>
+</tr>
+<tr>
+<td>F20</td>
+<td>Context 압축에 중요 제약이 빠짐</td>
+<td>Compaction</td>
+<td>품질 검증·요약 재주입?</td>
+</tr>
+<tr>
+<td>F21</td>
+<td>Nested CodeAct Tool 내부에서 파일/네트워크 접근</td>
+<td>FIDES/CodeAct</td>
+<td>정책 Enforcement 우회 여부?</td>
+</tr>
+<tr>
+<td>F22</td>
+<td>Cron 재실행에서 이전 Job 여전히 활성</td>
+<td>Scheduler</td>
+<td>Queue/Skip/Lock 정책?</td>
+</tr>
+<tr>
+<td>F23</td>
+<td>Function Result 객체가 문자열화됨</td>
+<td>Result Normalization</td>
+<td>특별한 Content 신호가 훼손됐는가?</td>
+</tr>
+<tr>
+<td>F24</td>
+<td>둘 이상의 Agent가 같은 승인 상태를 공유</td>
+<td>Subagent</td>
+<td>Parent/Child 권한 전파 차단?</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-943">24.1 실패를 평가할 5가지 질문<a class="anchor" href="#line-943" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li><strong>감지:</strong> 어떤 예외/이벤트가 실패를 나타내는가?</li>
+<li><strong>가시성:</strong> 사용자/호스트/추적 시스템에 오류가 도달하는가?</li>
+<li><strong>상태:</strong> Session, Workflow State, 외부 시스템 중 무엇이 변경됐는가?</li>
+<li><strong>재시도:</strong> 실패 후 똑같은 호출을 실행해도 안전한가?</li>
+<li><strong>복원:</strong> Checkpoint와 외부 부작용을 어떻게 합의시키는가?</li>
+</ol>
+<h3 id="line-951">24.2 Exactly-once와 At-least-once<a class="anchor" href="#line-951" aria-label="이 절의 고유 링크">#</a></h3><p><strong>Exactly-once execution</strong>은 프레임워크 프로세스만 제어한다고 쉽게 달성되지 않는다. 예를 들어 Tool이 메시지 큐에 성공적으로 작업을 보냈지만 호출자가 응답을 받기 전 죽었다면, 복구 후 같은 작업을 다시 전송할 수 있다.</p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>text</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code>[Host] -- send(create_report, id=xyz) --&gt; [Tool server]
+     X (response lost)                   [report created]
+[Host restarts] -- retry(id=xyz) -------&gt; [Tool server]</code></pre></div><p><strong>권장 방식 [INF]:</strong> Tool 서버가 <code>(tenant_id, request_id, operation)</code>으로 멱등성 키를 만들고 이미 처리된 요청의 결과를 재활용한다. Checkpoint는 <strong>Framework 실행 복원</strong>, idempotency는 <strong>외부 부작용 중복 억제</strong>라는 서로 다른 문제를 푼다.</p>
+<h3 id="line-963">24.3 동시성 검증 관점<a class="anchor" href="#line-963" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>Graph Workflow에서 동일 Executor로 향하는 이벤트 순서가 보장되는 범위를 명시한다.</li>
+<li>State의 <code>commit()</code> 이전 pending update는 장애 시 사라질 수 있다고 가정한다.</li>
+<li>외부 API의 취소가 프레임워크의 <code>Task.cancel()</code>과 같지 않다고 가정한다.</li>
+<li>서버가 동일 세션 요청을 동시에 처리하는 경우 낙관적 버전 또는 세션별 락 전략을 검토한다.</li>
+<li>임시 Token/Message는 컨텍스트 기록에 남고 민감한 데이터가 포함될 수 있으므로 Logging 정책을 별도로 정한다.</li>
+</ul>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-10.html"><small>이전 단원</small>← Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</a><a class="next" href="unit-12.html"><small>다음 단원</small>코드 추적 워크북 15개 →</a></nav><footer>Microsoft Agent Framework · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-914">24. 설계자가 반드시 이해해야 할 실패 모드</a><a class="toc-depth-3" href="#line-943">24.1 실패를 평가할 5가지 질문</a><a class="toc-depth-3" href="#line-951">24.2 Exactly-once와 At-least-once</a><a class="toc-depth-3" href="#line-963">24.3 동시성 검증 관점</a></nav></aside></div></body></html>

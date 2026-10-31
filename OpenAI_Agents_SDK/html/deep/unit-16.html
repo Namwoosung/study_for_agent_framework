@@ -1,0 +1,159 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" aria-current="page" class="current"><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 출처·검증 한계</p><h1>출처·검증 한계</h1><div class="chapter-meta">단원 16 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 10분 · 원문 1371–1438행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>공식 문서와 v0.24.0 고정 소스, 실제로 검증하지 않은 범위를 확인합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Python 조사 결과를 다른 언어·최신 버전과 동일시하지 마세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1371">56. 소스코드 인덱스 — v0.24.0 고정 링크</a><a href="#line-1400">56.1 대표 함수 역추적 순서</a><a href="#line-1417">57. 조사 범위와 검증 한계</a></nav></details><section class="source-section" data-source-section="56-1"><h2 id="line-1371">56. 소스코드 인덱스 — v0.24.0 고정 링크<a class="anchor" href="#line-1371" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>파일</th>
+<th>집중 탐색할 객체·함수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run.py">S01</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run.py">src/agents/run.py</a></td>
+<td><code>Runner</code>, <code>AgentRunner</code>, <code>_run_impl</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_loop.py">S02</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_loop.py">src/agents/run_internal/run_loop.py</a></td>
+<td>단일 Turn 실행, <code>start_streaming</code>, Stream 종료·Session 저장</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py">S03</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py">src/agents/run_internal/turn_resolution.py</a></td>
+<td><code>process_model_response</code>, <code>execute_tools_and_side_effects</code>, <code>execute_handoffs</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_steps.py">S04</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_steps.py">src/agents/run_internal/run_steps.py</a></td>
+<td><code>NextStep*</code>, <code>ProcessedResponse</code>, <code>SingleStepResult</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_planning.py">S05</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_planning.py">src/agents/run_internal/tool_planning.py</a></td>
+<td><code>_build_plan_for_fresh_turn</code>, <code>_build_plan_for_resume_turn</code>, <code>_execute_tool_plan</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py">S06</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py">src/agents/run_internal/tool_execution.py</a></td>
+<td><code>execute_function_tool_calls</code>, <code>_FunctionToolTaskState</code>, <code>_FunctionToolFailure</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/guardrails.py">S07</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/guardrails.py">src/agents/run_internal/guardrails.py</a></td>
+<td><code>run_input_guardrails</code>, <code>run_output_guardrails</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/session_persistence.py">S08</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/session_persistence.py">src/agents/run_internal/session_persistence.py</a></td>
+<td><code>prepare_input_with_session</code>, <code>save_result_to_session</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_state.py">S09</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_state.py">src/agents/run_state.py</a></td>
+<td>RunState 직렬화, 승인 결정, 재개</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_preparation.py">S10</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_preparation.py">src/agents/run_internal/turn_preparation.py</a></td>
+<td><code>get_all_tools</code>, <code>get_handoffs</code>, <code>get_output_schema</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/items.py">S11</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/items.py">src/agents/run_internal/items.py</a></td>
+<td>모델 입력 아이템 변환·정규화</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/prompt_cache_key.py">S12</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/prompt_cache_key.py">src/agents/run_internal/prompt_cache_key.py</a></td>
+<td>PromptCacheKeyResolver 및 ModelSettings 관련</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/tool.py">S13</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/tool.py">src/agents/tool.py</a></td>
+<td>Tool 정의, Function Tool 계약</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/handoffs.py">S14</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/handoffs.py">src/agents/handoffs.py</a></td>
+<td>Handoff 클래스 및 구성</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py">S15</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py">src/agents/agent.py</a></td>
+<td>Agent 정의, as_tool, 출력 정책</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/model_retry.py">S16</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/model_retry.py">src/agents/run_internal/model_retry.py</a></td>
+<td>Model Retry 제어</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/streaming.py">S17</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/streaming.py">src/agents/run_internal/streaming.py</a></td>
+<td>Stream Queue로 이벤트 전달</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/error_handlers.py">S18</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/error_handlers.py">src/agents/run_internal/error_handlers.py</a></td>
+<td>에러를 최종 결과로 처리하는 확장 지점</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/blocked_output.py">S19</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/blocked_output.py">src/agents/run_internal/blocked_output.py</a></td>
+<td>Output Guardrail 차단 후 결과/저장 정리</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_use_tracker.py">S20</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_use_tracker.py">src/agents/run_internal/tool_use_tracker.py</a></td>
+<td>Tool 사용 및 모델 자원 추적</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner.py">S21</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner.py">tests/test_agent_runner.py</a></td>
+<td>기본 Runner 실행 테스트</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner_streamed.py">S22</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner_streamed.py">tests/test_agent_runner_streamed.py</a></td>
+<td>Streaming 차이 테스트</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_run_state.py">S23</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_run_state.py">tests/test_run_state.py</a></td>
+<td>RunState 중단·재개 테스트</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_guardrails.py">S24</a></td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_guardrails.py">tests/test_guardrails.py</a></td>
+<td>Guardrail 동작 테스트</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1400">56.1 대표 함수 역추적 순서<a class="anchor" href="#line-1400" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>run.py : AgentRunner._run_impl
+  ├─ turn_preparation.py : get_all_tools/get_handoffs/get_model
+  ├─ run_internal/run_loop.py : Model I/O 및 Loop 지원
+  ├─ turn_resolution.py : process_model_response
+  │     ├─ run_steps.py : ProcessedResponse / NextStep*
+  │     └─ tool_planning.py : _build_plan_for_fresh_turn
+  │            └─ tool_execution.py : execute_function_tool_calls
+  ├─ guardrails.py : run_input_guardrails/run_output_guardrails
+  ├─ session_persistence.py : prepare_input_with_session/save_result_to_session
+  └─ run_state.py : paused/resumed state</code></pre></div><p>이 그림은 개념상 호출 주체를 표현한 <strong>탐색용 다이어그램</strong>이며 Python의 정확한 전체 Stack Trace를 복제한 것이 아니다. 스택을 확인할 때는 <code>run.py</code>와 <code>run_internal/run_loop.py</code>의 양방향 호출을 실제 소스에서 이어서 따라가야 한다.</p>
+</section>
+<section class="source-section" data-source-section="57-1"><h2 id="line-1417">57. 조사 범위와 검증 한계<a class="anchor" href="#line-1417" aria-label="이 절의 고유 링크">#</a></h2><p><strong>완료한 범위</strong></p>
+<ul>
+<li>공식 v0.24.0 릴리스와 출처/고정 커밋 확인.</li>
+<li>GitHub v0.24.0의 주요 Runner, Turn Resolution, Tool Execution, Guardrail, State/Session 코드 파일 구조 확인.</li>
+<li>공식 Guardrail, HITL, Streaming, Handoff, Sessions, MCP, Sandbox, Testing 문서 확인.</li>
+<li>확인 가능한 실행 분기·함수명·객체를 기반으로 기술 설계 차이 분석.</li>
+<li>데모 실행 없이 자체 Framework 설계 시 필요한 책임 분리와 오류 조건을 정리.</li>
+</ul>
+<p><strong>수행하지 않은 범위</strong></p>
+<ul>
+<li>Git 저장소를 로컬에 내려받아 테스트를 직접 실행하거나 전체 함수·조건을 정적 분석하는 작업.</li>
+<li>실시간 Provider API, 로컬 LLM, MCP 서버에 대한 네트워크 실행 검증.</li>
+<li>Guardrail Race Condition, 스트리밍 취소, Provider Cache Hit의 실측.</li>
+<li>변경 가능한 웹 문서와 고정 태그 사이의 모든 차이를 전수검사.</li>
+<li>특정 Enterprise Gateway/폐쇄망/모델에 대한 정상 동작 보증.</li>
+</ul>
+<p>따라서 <strong>실제 소스에서 확인된 함수 존재 및 제어 흐름</strong>과 <strong>소스 일부·공식 문서에 근거한 일반화된 실행 설명</strong>, <strong>분산 시스템 설계 제안</strong>을 구분해서 읽어야 한다. 구조도 및 의사코드는 이해를 위한 표현이지 실행 로그를 캡처한 것이 아니다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-15.html"><small>이전 단원</small>← 공식 출처 인덱스</a><a class="next" href="unit-17.html"><small>다음 단원</small>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1371">56. 소스코드 인덱스 — v0.24.0 고정 링크</a><a class="toc-depth-3" href="#line-1400">56.1 대표 함수 역추적 순서</a><a class="toc-depth-2" href="#line-1417">57. 조사 범위와 검증 한계</a></nav></aside></div></body></html>

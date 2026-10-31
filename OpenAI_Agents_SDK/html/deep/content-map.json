@@ -1,0 +1,2822 @@
+{
+  "name": "OpenAI Agents SDK",
+  "source": "../../OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+  "sourceHash": "5bb69cf78c39a05edf1de72a08bbb2a5a0cd3aa5d214da4dbc110a220f9d643a",
+  "normalizedHash": "5bb69cf78c39a05edf1de72a08bbb2a5a0cd3aa5d214da4dbc110a220f9d643a",
+  "lineCount": 1455,
+  "chapterCount": 57,
+  "headings": [
+    {
+      "line": 1,
+      "depth": 1,
+      "text": "OpenAI Agents SDK — 2차 심층 학습: Agent Runtime의 코드·상태·실행 정책 분석",
+      "id": "line-1"
+    },
+    {
+      "line": 9,
+      "depth": 2,
+      "text": "전체 목차",
+      "id": "line-9"
+    },
+    {
+      "line": 28,
+      "depth": 2,
+      "text": "문서를 읽는 법: 증거 등급",
+      "id": "line-28"
+    },
+    {
+      "line": 36,
+      "depth": 3,
+      "text": "학습 후 도달해야 할 수준",
+      "id": "line-36"
+    },
+    {
+      "line": 48,
+      "depth": 1,
+      "text": "Part I. Agent SDK를 실행 엔진으로 읽는 방법",
+      "id": "line-48"
+    },
+    {
+      "line": 50,
+      "depth": 2,
+      "text": "1. 1분 요약: SDK가 실제로 책임지는 일",
+      "id": "line-50"
+    },
+    {
+      "line": 69,
+      "depth": 2,
+      "text": "2. 한 번의 사용자 요청과 한 번의 모델 호출은 다르다",
+      "id": "line-69"
+    },
+    {
+      "line": 102,
+      "depth": 2,
+      "text": "3. `Agent`는 상태를 가진 실행 프로세스인가?",
+      "id": "line-102"
+    },
+    {
+      "line": 110,
+      "depth": 2,
+      "text": "4. v0.24.0 고정과 버전 차이",
+      "id": "line-110"
+    },
+    {
+      "line": 121,
+      "depth": 1,
+      "text": "Part II. 실행 구조와 실제 호출 경로",
+      "id": "line-121"
+    },
+    {
+      "line": 123,
+      "depth": 2,
+      "text": "5. 실제 패키지 아키텍처",
+      "id": "line-123"
+    },
+    {
+      "line": 157,
+      "depth": 2,
+      "text": "6. `Runner.run` → `_run_impl`: 상위 호출 분석",
+      "id": "line-157"
+    },
+    {
+      "line": 186,
+      "depth": 3,
+      "text": "6.1 Resume가 새 Run과 달라지는 지점",
+      "id": "line-186"
+    },
+    {
+      "line": 190,
+      "depth": 3,
+      "text": "6.2 상태에 따라 다른 모델 입력",
+      "id": "line-190"
+    },
+    {
+      "line": 194,
+      "depth": 2,
+      "text": "7. 단일 모델 Turn은 무엇을 수행하는가?",
+      "id": "line-194"
+    },
+    {
+      "line": 208,
+      "depth": 2,
+      "text": "8. `ProcessedResponse`와 `NextStep` 상태 기계",
+      "id": "line-208"
+    },
+    {
+      "line": 233,
+      "depth": 3,
+      "text": "8.1 종료 조건을 정확히 분리",
+      "id": "line-233"
+    },
+    {
+      "line": 246,
+      "depth": 3,
+      "text": "8.2 `max_turns`의 의미와 안전 한계",
+      "id": "line-246"
+    },
+    {
+      "line": 252,
+      "depth": 2,
+      "text": "9. `turn_resolution.py`를 읽는 순서",
+      "id": "line-252"
+    },
+    {
+      "line": 266,
+      "depth": 3,
+      "text": "9.1 새 Turn과 Resume의 Tool 계획이 다른 이유",
+      "id": "line-266"
+    },
+    {
+      "line": 272,
+      "depth": 2,
+      "text": "10. 최종 모델 입력은 어떻게 구성되는가?",
+      "id": "line-272"
+    },
+    {
+      "line": 288,
+      "depth": 3,
+      "text": "10.1 실제 최종 요청을 역추적하는 법",
+      "id": "line-288"
+    },
+    {
+      "line": 297,
+      "depth": 3,
+      "text": "10.2 Prompt caching의 원리와 SDK에서의 위치",
+      "id": "line-297"
+    },
+    {
+      "line": 312,
+      "depth": 3,
+      "text": "10.3 Context Compression은 자동 장기 기억과 다르다",
+      "id": "line-312"
+    },
+    {
+      "line": 320,
+      "depth": 1,
+      "text": "Part III. Tool Calling: 스키마에서 실제 실행까지",
+      "id": "line-320"
+    },
+    {
+      "line": 322,
+      "depth": 2,
+      "text": "11. Tool 종류부터 실행 경계를 나눈다",
+      "id": "line-322"
+    },
+    {
+      "line": 339,
+      "depth": 2,
+      "text": "12. Python 함수가 Tool이 되는 세 단계",
+      "id": "line-339"
+    },
+    {
+      "line": 341,
+      "depth": 3,
+      "text": "12.1 스키마 변환",
+      "id": "line-341"
+    },
+    {
+      "line": 345,
+      "depth": 3,
+      "text": "12.2 모델에게 도구를 노출",
+      "id": "line-345"
+    },
+    {
+      "line": 349,
+      "depth": 3,
+      "text": "12.3 실행 요청을 SDK가 처리",
+      "id": "line-349"
+    },
+    {
+      "line": 368,
+      "depth": 3,
+      "text": "12.4 Argument validation ≠ 업무 데이터 검증",
+      "id": "line-368"
+    },
+    {
+      "line": 372,
+      "depth": 2,
+      "text": "13. `tool_execution.py`의 내부 구조와 실패 처리",
+      "id": "line-372"
+    },
+    {
+      "line": 386,
+      "depth": 3,
+      "text": "13.1 실패 전파 설계에서 알아야 할 질문",
+      "id": "line-386"
+    },
+    {
+      "line": 396,
+      "depth": 2,
+      "text": "14. 병렬 Tool Call: 무엇이 병렬인가?",
+      "id": "line-396"
+    },
+    {
+      "line": 420,
+      "depth": 3,
+      "text": "14.1 병렬 실행에서 데이터 경합이 발생하는 이유",
+      "id": "line-420"
+    },
+    {
+      "line": 424,
+      "depth": 3,
+      "text": "14.2 병렬 Tool vs 병렬 Agent",
+      "id": "line-424"
+    },
+    {
+      "line": 432,
+      "depth": 2,
+      "text": "15. Tool 결과로 종료할 수도 있다: `tool_use_behavior`",
+      "id": "line-432"
+    },
+    {
+      "line": 438,
+      "depth": 3,
+      "text": "15.1 결과 문자열과 구조화 출력의 혼동",
+      "id": "line-438"
+    },
+    {
+      "line": 442,
+      "depth": 2,
+      "text": "16. Function Tool 실패는 어떻게 보이는가?",
+      "id": "line-442"
+    },
+    {
+      "line": 459,
+      "depth": 1,
+      "text": "Part IV. Guardrails와 승인: 정말 어디서 막히는가?",
+      "id": "line-459"
+    },
+    {
+      "line": 461,
+      "depth": 2,
+      "text": "17. Guardrail은 한 번의 전역 검사 함수가 아니다",
+      "id": "line-461"
+    },
+    {
+      "line": 474,
+      "depth": 2,
+      "text": "18. Input Guardrail의 병렬 모드가 만드는 위험",
+      "id": "line-474"
+    },
+    {
+      "line": 491,
+      "depth": 3,
+      "text": "18.1 차단이 목적이면 Blocking 모드",
+      "id": "line-491"
+    },
+    {
+      "line": 497,
+      "depth": 2,
+      "text": "19. `run_internal/guardrails.py` 추적",
+      "id": "line-497"
+    },
+    {
+      "line": 512,
+      "depth": 2,
+      "text": "20. `needs_approval`과 RunState 중단",
+      "id": "line-512"
+    },
+    {
+      "line": 532,
+      "depth": 3,
+      "text": "20.1 중요한 개념: 승인 보존 범위",
+      "id": "line-532"
+    },
+    {
+      "line": 543,
+      "depth": 3,
+      "text": "20.2 승인 없이 실행되는 기본값을 혼동하지 말 것",
+      "id": "line-543"
+    },
+    {
+      "line": 547,
+      "depth": 3,
+      "text": "20.3 Fail-closed와 잘못된 도구 인자",
+      "id": "line-547"
+    },
+    {
+      "line": 551,
+      "depth": 2,
+      "text": "21. 승인·중단·재개가 정확히 한 번 실행을 보장하는가?",
+      "id": "line-551"
+    },
+    {
+      "line": 573,
+      "depth": 1,
+      "text": "Part V. Multi-Agent 및 오케스트레이션",
+      "id": "line-573"
+    },
+    {
+      "line": 575,
+      "depth": 2,
+      "text": "22. Handoff와 Agent as Tool은 근본적으로 다르다",
+      "id": "line-575"
+    },
+    {
+      "line": 588,
+      "depth": 2,
+      "text": "23. Handoff 내부 코드와 역사(History) 관리",
+      "id": "line-588"
+    },
+    {
+      "line": 605,
+      "depth": 3,
+      "text": "23.1 `input_filter`를 왜 따로 제공할까?",
+      "id": "line-605"
+    },
+    {
+      "line": 609,
+      "depth": 3,
+      "text": "23.2 모델 생성 Handoff Metadata vs 앱 Context",
+      "id": "line-609"
+    },
+    {
+      "line": 613,
+      "depth": 3,
+      "text": "23.3 Handoff와 Guardrail의 적용 범위",
+      "id": "line-613"
+    },
+    {
+      "line": 617,
+      "depth": 2,
+      "text": "24. 중첩 `Agent.as_tool()` 실행과 승인 전파",
+      "id": "line-617"
+    },
+    {
+      "line": 637,
+      "depth": 2,
+      "text": "25. Agent 협업을 위한 세 가지 방식과 선택 기준",
+      "id": "line-637"
+    },
+    {
+      "line": 645,
+      "depth": 3,
+      "text": "25.1 모델이 위임할지 결정하는 것과 프로그램이 결정하는 것",
+      "id": "line-645"
+    },
+    {
+      "line": 655,
+      "depth": 1,
+      "text": "Part VI. Session, RunState, Memory, 캐싱, 영속성",
+      "id": "line-655"
+    },
+    {
+      "line": 657,
+      "depth": 2,
+      "text": "26. 상태를 최소 다섯 종류로 나누자",
+      "id": "line-657"
+    },
+    {
+      "line": 672,
+      "depth": 2,
+      "text": "27. `Session`은 '학습된 장기 메모리'가 아니다",
+      "id": "line-672"
+    },
+    {
+      "line": 676,
+      "depth": 3,
+      "text": "27.1 Session 인터페이스의 핵심 연산",
+      "id": "line-676"
+    },
+    {
+      "line": 685,
+      "depth": 3,
+      "text": "27.2 대표 저장 구현을 왜 여러 개 제공할까?",
+      "id": "line-685"
+    },
+    {
+      "line": 699,
+      "depth": 3,
+      "text": "27.3 저장된 Session과 모델 요청 입력은 동일하지 않다",
+      "id": "line-699"
+    },
+    {
+      "line": 713,
+      "depth": 2,
+      "text": "28. `RunState`와 Session의 본질적 차이",
+      "id": "line-713"
+    },
+    {
+      "line": 720,
+      "depth": 3,
+      "text": "28.1 'RunState를 저장하면 그 즉시 모든 외부 상태도 복원되나?'",
+      "id": "line-720"
+    },
+    {
+      "line": 724,
+      "depth": 3,
+      "text": "28.2 승인 대기 시 상태를 어떻게 보존할까?",
+      "id": "line-724"
+    },
+    {
+      "line": 728,
+      "depth": 3,
+      "text": "28.3 Resume 보안",
+      "id": "line-728"
+    },
+    {
+      "line": 732,
+      "depth": 2,
+      "text": "29. Context History의 길이가 무한히 늘어나면?",
+      "id": "line-732"
+    },
+    {
+      "line": 744,
+      "depth": 3,
+      "text": "29.1 'RAG'의 의미를 정확히",
+      "id": "line-744"
+    },
+    {
+      "line": 748,
+      "depth": 3,
+      "text": "29.2 Compaction의 Trade-off",
+      "id": "line-748"
+    },
+    {
+      "line": 755,
+      "depth": 2,
+      "text": "30. Prompt Prefix Caching: 같은 내용도 매번 보내야 하는데?",
+      "id": "line-755"
+    },
+    {
+      "line": 772,
+      "depth": 1,
+      "text": "Part VII. Streaming, 취소, Serving, 장애 복구",
+      "id": "line-772"
+    },
+    {
+      "line": 774,
+      "depth": 2,
+      "text": "31. Streaming은 토큰 단위 출력만이 아니다",
+      "id": "line-774"
+    },
+    {
+      "line": 778,
+      "depth": 3,
+      "text": "31.1 가장 중요한 최신 주의사항",
+      "id": "line-778"
+    },
+    {
+      "line": 784,
+      "depth": 2,
+      "text": "32. 스트리밍 취소: Immediate vs After Turn",
+      "id": "line-784"
+    },
+    {
+      "line": 795,
+      "depth": 3,
+      "text": "32.1 HTTP 연결이 끊겼다면?",
+      "id": "line-795"
+    },
+    {
+      "line": 799,
+      "depth": 2,
+      "text": "33. Streaming 코드 경로와 Non-Streaming 비교",
+      "id": "line-799"
+    },
+    {
+      "line": 805,
+      "depth": 2,
+      "text": "34. HTTP 서버에서 Agent를 서빙하는 구조",
+      "id": "line-805"
+    },
+    {
+      "line": 822,
+      "depth": 3,
+      "text": "34.1 동기 처리형 요청",
+      "id": "line-822"
+    },
+    {
+      "line": 828,
+      "depth": 3,
+      "text": "34.2 SSE 스트리밍",
+      "id": "line-828"
+    },
+    {
+      "line": 834,
+      "depth": 3,
+      "text": "34.3 작업 큐 기반 비동기 실행",
+      "id": "line-834"
+    },
+    {
+      "line": 843,
+      "depth": 2,
+      "text": "35. 여러 사용자가 동시에 요청하면?",
+      "id": "line-843"
+    },
+    {
+      "line": 852,
+      "depth": 2,
+      "text": "36. 장기 실행 워크플로·Cron은 내장됐는가?",
+      "id": "line-852"
+    },
+    {
+      "line": 860,
+      "depth": 2,
+      "text": "37. Model Adapter 및 LLM Gateway: OpenAI API가 필수인가?",
+      "id": "line-860"
+    },
+    {
+      "line": 875,
+      "depth": 3,
+      "text": "37.1 vLLM/SGLang 연결 가능성과 검증 포인트",
+      "id": "line-875"
+    },
+    {
+      "line": 889,
+      "depth": 2,
+      "text": "38. MCP와 Plugin, Skills의 차이",
+      "id": "line-889"
+    },
+    {
+      "line": 902,
+      "depth": 3,
+      "text": "38.1 MCP 통신 종류",
+      "id": "line-902"
+    },
+    {
+      "line": 906,
+      "depth": 3,
+      "text": "38.2 MCP 사용 시 공개할 Tool 목록도 보안이다",
+      "id": "line-906"
+    },
+    {
+      "line": 910,
+      "depth": 2,
+      "text": "39. Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해",
+      "id": "line-910"
+    },
+    {
+      "line": 926,
+      "depth": 1,
+      "text": "Part VIII. 평가, 운영 보안과 자체 Framework 설계",
+      "id": "line-926"
+    },
+    {
+      "line": 928,
+      "depth": 2,
+      "text": "40. Observability: 무엇을 남겨야 하는가?",
+      "id": "line-928"
+    },
+    {
+      "line": 945,
+      "depth": 3,
+      "text": "40.1 Tracing은 곧 Evaluation이 아니다",
+      "id": "line-945"
+    },
+    {
+      "line": 954,
+      "depth": 2,
+      "text": "41. 코드 기반 테스트 전략: 모델 호출 없이도 Loop를 검증할 수 있다",
+      "id": "line-954"
+    },
+    {
+      "line": 971,
+      "depth": 3,
+      "text": "41.1 코드 단위에서 반드시 재현할 테스트(후속 연구 계획, 현재 미실행)",
+      "id": "line-971"
+    },
+    {
+      "line": 988,
+      "depth": 2,
+      "text": "42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트",
+      "id": "line-988"
+    },
+    {
+      "line": 1008,
+      "depth": 3,
+      "text": "42.1 인터페이스 경계를 선택하는 기준",
+      "id": "line-1008"
+    },
+    {
+      "line": 1022,
+      "depth": 2,
+      "text": "43. 설계 Trade-off를 도출하는 프레임",
+      "id": "line-1022"
+    },
+    {
+      "line": 1026,
+      "depth": 3,
+      "text": "43.1 경량 Runner vs 명시적 Graph Runtime",
+      "id": "line-1026"
+    },
+    {
+      "line": 1032,
+      "depth": 3,
+      "text": "43.2 모델에게 위임 vs 코드가 위임 결정",
+      "id": "line-1032"
+    },
+    {
+      "line": 1037,
+      "depth": 3,
+      "text": "43.3 요청 중 모든 작업 완료 vs Job Queue",
+      "id": "line-1037"
+    },
+    {
+      "line": 1042,
+      "depth": 3,
+      "text": "43.4 메모리 자동 요약 vs 명시적 도메인 데이터 저장",
+      "id": "line-1042"
+    },
+    {
+      "line": 1047,
+      "depth": 3,
+      "text": "43.5 병렬 Tool vs 순차 Tool",
+      "id": "line-1047"
+    },
+    {
+      "line": 1052,
+      "depth": 2,
+      "text": "44. 다른 6개 기술과 비교할 때의 기준값",
+      "id": "line-1052"
+    },
+    {
+      "line": 1068,
+      "depth": 3,
+      "text": "44.1 Hermes와 비교 시 중요 질문",
+      "id": "line-1068"
+    },
+    {
+      "line": 1072,
+      "depth": 3,
+      "text": "44.2 PydanticAI와 비교 시 중요 질문",
+      "id": "line-1072"
+    },
+    {
+      "line": 1076,
+      "depth": 3,
+      "text": "44.3 Google ADK와 비교 시 중요 질문",
+      "id": "line-1076"
+    },
+    {
+      "line": 1080,
+      "depth": 3,
+      "text": "44.4 Microsoft Agent Framework와 비교 시 중요 질문",
+      "id": "line-1080"
+    },
+    {
+      "line": 1084,
+      "depth": 3,
+      "text": "44.5 Claude Code / Claude Agent SDK와 비교 시 중요 질문",
+      "id": "line-1084"
+    },
+    {
+      "line": 1090,
+      "depth": 1,
+      "text": "Part IX. 코드 추적 실습형 해설 — 실행하지 않고 소스를 읽는 방법",
+      "id": "line-1090"
+    },
+    {
+      "line": 1092,
+      "depth": 2,
+      "text": "45. 코드 트레이스 A: 한 번에 답하는 Run",
+      "id": "line-1092"
+    },
+    {
+      "line": 1113,
+      "depth": 2,
+      "text": "46. 코드 트레이스 B: Tool 호출 후 다시 모델이 답하는 Run",
+      "id": "line-1113"
+    },
+    {
+      "line": 1132,
+      "depth": 2,
+      "text": "47. 코드 트레이스 C: Handoff",
+      "id": "line-1132"
+    },
+    {
+      "line": 1150,
+      "depth": 2,
+      "text": "48. 코드 트레이스 D: 승인 대기·재개",
+      "id": "line-1150"
+    },
+    {
+      "line": 1168,
+      "depth": 2,
+      "text": "49. 코드 트레이스 E: 스트리밍 출력 중 사용자가 연결 종료",
+      "id": "line-1168"
+    },
+    {
+      "line": 1185,
+      "depth": 2,
+      "text": "50. 소스코드 읽는 연습: 대조 질문 15개",
+      "id": "line-1185"
+    },
+    {
+      "line": 1205,
+      "depth": 1,
+      "text": "Part X. 실패 모드와 품질 분석을 위한 연구 질문",
+      "id": "line-1205"
+    },
+    {
+      "line": 1207,
+      "depth": 2,
+      "text": "51. 16개 실패 사례와 Runtime 책임",
+      "id": "line-1207"
+    },
+    {
+      "line": 1228,
+      "depth": 3,
+      "text": "51.1 Guardrail의 Fail-open / Fail-closed를 구분",
+      "id": "line-1228"
+    },
+    {
+      "line": 1234,
+      "depth": 3,
+      "text": "51.2 Retry는 하나의 의미가 아니다",
+      "id": "line-1234"
+    },
+    {
+      "line": 1243,
+      "depth": 2,
+      "text": "52. 기능 지원 여부가 아니라 제어 가능성을 평가",
+      "id": "line-1243"
+    },
+    {
+      "line": 1257,
+      "depth": 1,
+      "text": "Part XI. 발표 구성 및 복습",
+      "id": "line-1257"
+    },
+    {
+      "line": 1259,
+      "depth": 2,
+      "text": "53. 기술 발표 권장 구성: 본문 13장 + 부록",
+      "id": "line-1259"
+    },
+    {
+      "line": 1279,
+      "depth": 3,
+      "text": "53.1 슬라이드 4 발표자 대본 예시",
+      "id": "line-1279"
+    },
+    {
+      "line": 1283,
+      "depth": 3,
+      "text": "53.2 슬라이드 8 발표자 대본 예시",
+      "id": "line-1283"
+    },
+    {
+      "line": 1287,
+      "depth": 3,
+      "text": "53.3 슬라이드 12 발표자 대본 예시",
+      "id": "line-1287"
+    },
+    {
+      "line": 1291,
+      "depth": 2,
+      "text": "54. 학습 확인을 위한 24문항",
+      "id": "line-1291"
+    },
+    {
+      "line": 1293,
+      "depth": 3,
+      "text": "A. 원리",
+      "id": "line-1293"
+    },
+    {
+      "line": 1302,
+      "depth": 3,
+      "text": "B. Context와 상태",
+      "id": "line-1302"
+    },
+    {
+      "line": 1311,
+      "depth": 3,
+      "text": "C. 안전·오류·병렬",
+      "id": "line-1311"
+    },
+    {
+      "line": 1320,
+      "depth": 3,
+      "text": "D. Multi-Agent·Serving·비교",
+      "id": "line-1320"
+    },
+    {
+      "line": 1329,
+      "depth": 3,
+      "text": "54.1 스스로 설명할 수 있으면 학습 완료로 볼 8문장",
+      "id": "line-1329"
+    },
+    {
+      "line": 1342,
+      "depth": 1,
+      "text": "Part XII. 출처·고정 코드 인덱스·검증 한계",
+      "id": "line-1342"
+    },
+    {
+      "line": 1344,
+      "depth": 2,
+      "text": "55. 공식 출처 인덱스",
+      "id": "line-1344"
+    },
+    {
+      "line": 1371,
+      "depth": 2,
+      "text": "56. 소스코드 인덱스 — v0.24.0 고정 링크",
+      "id": "line-1371"
+    },
+    {
+      "line": 1400,
+      "depth": 3,
+      "text": "56.1 대표 함수 역추적 순서",
+      "id": "line-1400"
+    },
+    {
+      "line": 1417,
+      "depth": 2,
+      "text": "57. 조사 범위와 검증 한계",
+      "id": "line-1417"
+    },
+    {
+      "line": 1439,
+      "depth": 1,
+      "text": "최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장",
+      "id": "line-1439"
+    }
+  ],
+  "pages": [
+    "index.html",
+    "unit-01.html",
+    "unit-02.html",
+    "unit-03.html",
+    "unit-04.html",
+    "unit-05.html",
+    "unit-06.html",
+    "unit-07.html",
+    "unit-08.html",
+    "unit-09.html",
+    "unit-10.html",
+    "unit-11.html",
+    "unit-12.html",
+    "unit-13.html",
+    "unit-14.html",
+    "unit-15.html",
+    "unit-16.html",
+    "unit-17.html"
+  ],
+  "sections": [
+    {
+      "key": "intro-1",
+      "chapter": "intro",
+      "startLine": 1,
+      "endLine": 47,
+      "rawHash": "812e6906160f2aa50982784f03c8d71c8360230d3474f983095743d9aee3a2f8",
+      "htmlHash": "c37b100322c104c7e114fb605ac78aecc1434158f7ab9be562f4cc0ee456ac5b"
+    },
+    {
+      "key": "1-1",
+      "chapter": "1",
+      "startLine": 48,
+      "endLine": 68,
+      "rawHash": "692bd8fa81c6e389730d957eb178154e38671248a1cc8ea536afefb81dba354d",
+      "htmlHash": "096c36eca3c270b226c305d7ab6a0ac3f49d69c16bb4ce2017a131e7033321c9"
+    },
+    {
+      "key": "2-1",
+      "chapter": "2",
+      "startLine": 69,
+      "endLine": 101,
+      "rawHash": "e72a7c33fea38bd0164df996b0ea6515e48c6d3847caadb77f138f0752ee0565",
+      "htmlHash": "e8a7e47ddf7aa4a5a0eb0bd3cadee710ed422baf4069d065ed5a88965bc88c27"
+    },
+    {
+      "key": "3-1",
+      "chapter": "3",
+      "startLine": 102,
+      "endLine": 109,
+      "rawHash": "918340c93b34546483e88ffe6f7df3ed2f909107395ee4ee0fa1107a44d08856",
+      "htmlHash": "b1f46fe51111aca5c6d4d5a82cc4be5b5d951efeee6b943bbe84bb429e57c118"
+    },
+    {
+      "key": "4-1",
+      "chapter": "4",
+      "startLine": 110,
+      "endLine": 120,
+      "rawHash": "40fe52f0caa86a0e2ffcec86162031ba61c0c0acf7bf1bde073213b78c8aff39",
+      "htmlHash": "e4bc15d0c21d1c693df4695f57c43af69473d353b732357aec291ab57b71acf0"
+    },
+    {
+      "key": "5-1",
+      "chapter": "5",
+      "startLine": 121,
+      "endLine": 156,
+      "rawHash": "aef2bee40dbc5d424726a2e922ace8fa18304fb8374d5f40996a5aee748b5379",
+      "htmlHash": "70a82b3f6aaf5cd3570a62e926013109c9c66a14386e18386083e988d8dc953f"
+    },
+    {
+      "key": "6-1",
+      "chapter": "6",
+      "startLine": 157,
+      "endLine": 193,
+      "rawHash": "4db86b1c48d57048acf951cdcb760cf0ba10c1715d2661f6123461e989247015",
+      "htmlHash": "5f88b3488b14fd97145c63472f4456cc1c53a1e5fd272d88af8d937fcc74532b"
+    },
+    {
+      "key": "7-1",
+      "chapter": "7",
+      "startLine": 194,
+      "endLine": 207,
+      "rawHash": "bcab4efb69122cc782d0e378c4977aedf08ab23177ae1fce48e9fc23eedb85e8",
+      "htmlHash": "67d4395bcb11f648cac85bca1dfc819d26a46708a619e679931c9344fefebf72"
+    },
+    {
+      "key": "8-1",
+      "chapter": "8",
+      "startLine": 208,
+      "endLine": 251,
+      "rawHash": "fec33d8fc2e6228198734b5b7c93ccfdbfbbf678fba4799b2b8e3cc05124a055",
+      "htmlHash": "f91c2c56c1cb6770e4990712c737341672da1bcd679c31dc9b7461362eb4eb27"
+    },
+    {
+      "key": "9-1",
+      "chapter": "9",
+      "startLine": 252,
+      "endLine": 271,
+      "rawHash": "5531dac196543ab601b040e5e52befad0ee564838ceb85860c94237e54c104ba",
+      "htmlHash": "95aa037d757b1aa2d11dc41404ee0f907b3a2b21a2c74b960451424939df336e"
+    },
+    {
+      "key": "10-1",
+      "chapter": "10",
+      "startLine": 272,
+      "endLine": 319,
+      "rawHash": "c4954c75fc985519f459e4c259cf4a713a8f92914dcf16b5364dc205f890ec5a",
+      "htmlHash": "1cd2d7ce481f0436e8c87256d39d72ef98b449aee0983bf44d4305aebdd173a7"
+    },
+    {
+      "key": "11-1",
+      "chapter": "11",
+      "startLine": 320,
+      "endLine": 338,
+      "rawHash": "bb4b449a818def06891198e75ee9a2ef41d9c494893d9651a7ea0e2683566e46",
+      "htmlHash": "02594ab1ab6a34c9f2443fe05e54e3308e52ae462b26ac8e508614678915ff6b"
+    },
+    {
+      "key": "12-1",
+      "chapter": "12",
+      "startLine": 339,
+      "endLine": 371,
+      "rawHash": "ac7a8bb4e3d7df6d13740a7e49220675050deca468dc453b74b94db2385d8c61",
+      "htmlHash": "efae24823f89521387550f47fe9cfe31faae1f0e388e8bd44438803541a5b6d7"
+    },
+    {
+      "key": "13-1",
+      "chapter": "13",
+      "startLine": 372,
+      "endLine": 395,
+      "rawHash": "9a60e0de184b1dbfa1f3caf5d014b39925f283b24adf8a7899d34b1f7ccd5597",
+      "htmlHash": "440be224f2ce01555e8ffd2f8a38133446a36dab48bc31dd3340e2fb2c187fbb"
+    },
+    {
+      "key": "14-1",
+      "chapter": "14",
+      "startLine": 396,
+      "endLine": 431,
+      "rawHash": "744aa75aa4b2a6d98b5c19a4a96f4a89e66e874dfb0eb5e5a76097ae91c5556b",
+      "htmlHash": "dfdeaa71ba7d7453c7d3135e4130836cdfc589353902537789b72ec0c2b56957"
+    },
+    {
+      "key": "15-1",
+      "chapter": "15",
+      "startLine": 432,
+      "endLine": 441,
+      "rawHash": "a57fe714a0da4e343c0dfc13321410c6e768fcbc31632f15c83c762f6f8b0723",
+      "htmlHash": "66c616c577aee7170ed74d90c685e596184322fb751bfeb210fd72542fa5d5c3"
+    },
+    {
+      "key": "16-1",
+      "chapter": "16",
+      "startLine": 442,
+      "endLine": 458,
+      "rawHash": "9a5162c32bf1f31dc2ef5858b4434c33da8e722e8c5f905a748d330e908a1037",
+      "htmlHash": "d34fe357047add6d1f2e2e61c5e704bf2d4b4fa2be23c5fb682dc825a8976011"
+    },
+    {
+      "key": "17-1",
+      "chapter": "17",
+      "startLine": 459,
+      "endLine": 473,
+      "rawHash": "429baa59aa6a4328a553412291656026b5aafda9c191eca27a2e9937418b5b6b",
+      "htmlHash": "70a2fa0e327c1e2b5b7cb2d58f1b79df923810ee74dff7165aaa0a497c4f812f"
+    },
+    {
+      "key": "18-1",
+      "chapter": "18",
+      "startLine": 474,
+      "endLine": 496,
+      "rawHash": "bb1d2dbd536fa7cc3884a1e38d93e92be8c71d4809dba6f8d7729a657075963e",
+      "htmlHash": "91bf1aa1a1bc87778b6a15afd39f001076c6791bffb54294ae7be94f00f1df25"
+    },
+    {
+      "key": "19-1",
+      "chapter": "19",
+      "startLine": 497,
+      "endLine": 511,
+      "rawHash": "6fd4d56575f81d2fdbca4394312e79921519743e766323213f0edb1a1332dbb4",
+      "htmlHash": "6f6711b7fe262127e91da1f3182baad25251e82f76df90fc9303e8774c53b51b"
+    },
+    {
+      "key": "20-1",
+      "chapter": "20",
+      "startLine": 512,
+      "endLine": 550,
+      "rawHash": "9da95a28cdac87f871a8aaf60ddc9621829da33f039a48072cb618a14db2e176",
+      "htmlHash": "3eeb06f9a6dcde2dbe1345e77d44e5f73b0bd97f8676e43d9df12cb1bce7230c"
+    },
+    {
+      "key": "21-1",
+      "chapter": "21",
+      "startLine": 551,
+      "endLine": 572,
+      "rawHash": "5323ec0c685a8979e2fd685f3dcdede4b6796d2def33e40fc3f3a147adc8119b",
+      "htmlHash": "c3672bfe4146ad07587dada2ffa07293a62c5f78c231ff7d1b9d3c72422b5582"
+    },
+    {
+      "key": "22-1",
+      "chapter": "22",
+      "startLine": 573,
+      "endLine": 587,
+      "rawHash": "bde9b1733df86c951775df1d3ef9f5f01470d254047ab6c67de652191bfa207c",
+      "htmlHash": "bf6cdc25919038c7dd2d4683d4fa771abe4b94f4ac77b2030791a503d99be9de"
+    },
+    {
+      "key": "23-1",
+      "chapter": "23",
+      "startLine": 588,
+      "endLine": 616,
+      "rawHash": "f34033d914d35dcd3daddf0bc2b8e3cd027a90ed128971b623806ce7f8104be5",
+      "htmlHash": "10a8d373aceb4202cdefdf5157fcb2fe75da2826c51c3fabfd6fe61e887985dd"
+    },
+    {
+      "key": "24-1",
+      "chapter": "24",
+      "startLine": 617,
+      "endLine": 636,
+      "rawHash": "03ee43d6b78d07cf332959dc666c135827f584bdb26942302942205b238c9276",
+      "htmlHash": "cdc6193066632566f51419576d2ff23e75b76e764f6e9cd4fabe8654b8ea3b55"
+    },
+    {
+      "key": "25-1",
+      "chapter": "25",
+      "startLine": 637,
+      "endLine": 654,
+      "rawHash": "9f5b9da03ed49f449c30ea517f90c410c5b837db8a7da26cdef9468e26489113",
+      "htmlHash": "2d39885ba804a27f3bbf73097fe7f3e3de284360ec829b73bdbeacbe46e4e14b"
+    },
+    {
+      "key": "26-1",
+      "chapter": "26",
+      "startLine": 655,
+      "endLine": 671,
+      "rawHash": "787f85c4fc09a92f8e58cbdb476f4fd342ab049454fe6ddc0cf529e172e0d456",
+      "htmlHash": "eb0dd1b2f528302d4c1912ebfde716b208f715e6be19edeaf4848e38a7a0cc1f"
+    },
+    {
+      "key": "27-1",
+      "chapter": "27",
+      "startLine": 672,
+      "endLine": 712,
+      "rawHash": "93bdb3898cd1eb00db3d3d1ba4cc3390df6f0df4e47a2a3e2c407684865bdd60",
+      "htmlHash": "4854ff6be1f5854c4a52f5613d3cc2550ae32984206c978f728a015c74d49ae6"
+    },
+    {
+      "key": "28-1",
+      "chapter": "28",
+      "startLine": 713,
+      "endLine": 731,
+      "rawHash": "618c58144dd3ed796c544aac831c7866704a1270425e10dc83a1ffa155526ed6",
+      "htmlHash": "400d1bf312ac6c9fd43b8e5bc0532e81b51c11cbfa4211838305f9d60322a8fe"
+    },
+    {
+      "key": "29-1",
+      "chapter": "29",
+      "startLine": 732,
+      "endLine": 754,
+      "rawHash": "9b26b37c590628b7675a9f07d569db602a68615b2fa89159e79e5f39dba7d536",
+      "htmlHash": "85da8d9f7f4ba0bbaf5bceb241d8500c296e6f7afe4285336b9125580750f395"
+    },
+    {
+      "key": "30-1",
+      "chapter": "30",
+      "startLine": 755,
+      "endLine": 771,
+      "rawHash": "fac3fb1ea621b8b134eab0089d48359621bca50a7cece18c4355b3d9b323f9fa",
+      "htmlHash": "1d40975bf81f319dce5a63bbd0700a35aa5b43626b5d7f85cbd467c9b5d65020"
+    },
+    {
+      "key": "31-1",
+      "chapter": "31",
+      "startLine": 772,
+      "endLine": 783,
+      "rawHash": "fd34caf89d5e8a10989e2cc52f4a9808b252d0ca190ac91dfefd201d59db5c42",
+      "htmlHash": "ff8506c2397898ed9ecb2655f1e44b87e3538df139b72ed4f84a5d4f1c63a233"
+    },
+    {
+      "key": "32-1",
+      "chapter": "32",
+      "startLine": 784,
+      "endLine": 798,
+      "rawHash": "4fb54369b14f45698745a21375558f084585946f4cfa48f145542cdfd1b2df53",
+      "htmlHash": "0cf004910aa31a9f3c240b64bd010378c586baa0435fb97b523e0eb5c48bc968"
+    },
+    {
+      "key": "33-1",
+      "chapter": "33",
+      "startLine": 799,
+      "endLine": 804,
+      "rawHash": "9b52bf0e9f82f46b31d24c444ec9797efda995741efef39a2092f33b7a6226db",
+      "htmlHash": "2d7bc164ef3ac955b7ca59d86f312009cce9b5e0df71e8dc763596924be9557c"
+    },
+    {
+      "key": "34-1",
+      "chapter": "34",
+      "startLine": 805,
+      "endLine": 842,
+      "rawHash": "031feb9d4d363e7a36190cd1d78fd0db996757a408bfe285720eee20d0afc7e2",
+      "htmlHash": "98d0669b94fc5f0d9dfdb165829467be2c66d902300fff88bd8580489fb32398"
+    },
+    {
+      "key": "35-1",
+      "chapter": "35",
+      "startLine": 843,
+      "endLine": 851,
+      "rawHash": "7879cc8fe01d6bf6ff64f3cd0d84e08b96dbb656eb6bb2c1170b5c08c6b7303d",
+      "htmlHash": "fa156c6acd76c4c0bce7d6df48305cc3a8c9b9edb716c83aac24031231d73462"
+    },
+    {
+      "key": "36-1",
+      "chapter": "36",
+      "startLine": 852,
+      "endLine": 859,
+      "rawHash": "fa0510bc78be0096335d31ea2cec06ce91bcf470652a063ed7e23d3787bab4f2",
+      "htmlHash": "e957abe8e6d14cfc21495fa65fb0c6c0b41521eee92ffc97575b0dc6e78c9776"
+    },
+    {
+      "key": "37-1",
+      "chapter": "37",
+      "startLine": 860,
+      "endLine": 888,
+      "rawHash": "a69415663dc1dc3effc4b410f8bd28c7ca4cbac28028f6dca21c2559e2d0c6bf",
+      "htmlHash": "3609382fd1212a0a16a124aaeb1f1f1a866e4cb982d55f056775a42a27659545"
+    },
+    {
+      "key": "38-1",
+      "chapter": "38",
+      "startLine": 889,
+      "endLine": 909,
+      "rawHash": "fde72f8cb1d3a8e439cfac17f3785d70383ee4214b5044b594a93ba7ddcb8e2c",
+      "htmlHash": "3c43db318e005a4908847c459d07754977761af0538ca70986906da5e700abb5"
+    },
+    {
+      "key": "39-1",
+      "chapter": "39",
+      "startLine": 910,
+      "endLine": 925,
+      "rawHash": "f5a2c28ec9edb9a719b8d82ffbe3a7e3d85d68ef50be517dc359d7004e6d8f92",
+      "htmlHash": "87e023a51334144e1fcc672cb90d1a4fb50d109f07feebd3abb8b9e2c11e2216"
+    },
+    {
+      "key": "40-1",
+      "chapter": "40",
+      "startLine": 926,
+      "endLine": 953,
+      "rawHash": "327d6d9a9a858f24225718b4a40686164442bf539fad860d2353c1f9eb326c2c",
+      "htmlHash": "3913bb3f13b4c798b5585013c77b785bc173d3aa59d7db02a8efe963314dd0ec"
+    },
+    {
+      "key": "41-1",
+      "chapter": "41",
+      "startLine": 954,
+      "endLine": 987,
+      "rawHash": "9d441ddb64fe8d95623070c724ce15dbe90966a793985278282790967fd5ce83",
+      "htmlHash": "441debc4f80b04085312fc0b55a06c974ea5e24463f11ab4c9184ece6f613c13"
+    },
+    {
+      "key": "42-1",
+      "chapter": "42",
+      "startLine": 988,
+      "endLine": 1021,
+      "rawHash": "b16ae39a994f84ddab20425757303f5518eb7c5e9c4b76be6862e5bc8b829ac6",
+      "htmlHash": "e7678f7b928b43eba4460ce098e18c83ef8a9e3569fa3d11cadbe7c7d12143a5"
+    },
+    {
+      "key": "43-1",
+      "chapter": "43",
+      "startLine": 1022,
+      "endLine": 1051,
+      "rawHash": "f53a45fbb64a2f0f2b24be2ca3e2184cc59c25929e2495e168803befeb7b553a",
+      "htmlHash": "248159d59467b976f8f9a673ff3dd4c03b34ac4e94ac790a6cacfed08f0f9125"
+    },
+    {
+      "key": "44-1",
+      "chapter": "44",
+      "startLine": 1052,
+      "endLine": 1089,
+      "rawHash": "280552b8c7c1f5f645e2d0813f261439b5b00bca9e88b38b838159a09eb3697d",
+      "htmlHash": "e6726fe29de95fc51235c16ea6c89f365971d79e2213ccdd237f29750fd18b7e"
+    },
+    {
+      "key": "45-1",
+      "chapter": "45",
+      "startLine": 1090,
+      "endLine": 1112,
+      "rawHash": "b0d9da308ac309aec612186b7427316a20d52dcf1e0ab3033e4b93fb17b9ee0a",
+      "htmlHash": "9eeb241d070bd6dca268e24481013bbf39ac34f568274e59dc798b392ba3be69"
+    },
+    {
+      "key": "46-1",
+      "chapter": "46",
+      "startLine": 1113,
+      "endLine": 1131,
+      "rawHash": "9fd7d867801b4dfeb54253591e4cd99566be1babf35e230c9229c8479979b39b",
+      "htmlHash": "7e773033940af9b6ff7fcb92b02544a3c19c24169c8477fc349b3613c0e7f012"
+    },
+    {
+      "key": "47-1",
+      "chapter": "47",
+      "startLine": 1132,
+      "endLine": 1149,
+      "rawHash": "001fb8afd5a3b70ec2095d244aa2005327737c79c4229220693ee9df7c8ca4f2",
+      "htmlHash": "73e4cdadcf99b9f0df4c4c33dda9d9607e42db1e5d36d501b4d77305e8b7bd0f"
+    },
+    {
+      "key": "48-1",
+      "chapter": "48",
+      "startLine": 1150,
+      "endLine": 1167,
+      "rawHash": "71d2054e5e117936e9ecdc5aedc201112c0edd7503bd124e2a66959825199a28",
+      "htmlHash": "949460153185ecc26ca521b487bf92bdabf1e8c896f701ba2b66bf4268130acf"
+    },
+    {
+      "key": "49-1",
+      "chapter": "49",
+      "startLine": 1168,
+      "endLine": 1184,
+      "rawHash": "e89e0c5a92901240db799099c95bc35a45ef5ccb8a7e46f800bc4ac060d47b05",
+      "htmlHash": "eae8f5f8af518495f3ba8c2961617daeffbed76e54de545d2f5cf51aae3252fd"
+    },
+    {
+      "key": "50-1",
+      "chapter": "50",
+      "startLine": 1185,
+      "endLine": 1204,
+      "rawHash": "82ddfe24cb8fef4bc5b96d8633d358eea2fd524815924bc7943b886df5b3c9b7",
+      "htmlHash": "d5910db8e25dcbcc6dfbc09dc2884fa47869090c80798fa69d28e62708c3bd83"
+    },
+    {
+      "key": "51-1",
+      "chapter": "51",
+      "startLine": 1205,
+      "endLine": 1242,
+      "rawHash": "1f960bf9a0c436cb96f333a136915ad360e26e17fb35c3afcd4e7c9ce81f74b2",
+      "htmlHash": "94b297e5b94c0ae83074f1f4b504ef1f7ce444a5423bc9d7ec5c3a50f2a5e37e"
+    },
+    {
+      "key": "52-1",
+      "chapter": "52",
+      "startLine": 1243,
+      "endLine": 1256,
+      "rawHash": "1dd1472997552ae7ab720bcf24888442b4ad766cd07990b3bf13177b0791c665",
+      "htmlHash": "8a0eb5caf4618c20fa5c0908fa8ebd41cefb41fcb9eaee972eb5b066617e4762"
+    },
+    {
+      "key": "53-1",
+      "chapter": "53",
+      "startLine": 1257,
+      "endLine": 1290,
+      "rawHash": "a11c8f32bf623512b0df1e2fb014f84aae0e57dd91109f234a1b338735f8bfa6",
+      "htmlHash": "ea022ecc714b0964286434b8de888a086631c686375765f65fb61d39558c26dc"
+    },
+    {
+      "key": "54-1",
+      "chapter": "54",
+      "startLine": 1291,
+      "endLine": 1341,
+      "rawHash": "55a07522fbb4fb76ed3873ce6981242034417eab5fc3f94aac5c71cd8964abe0",
+      "htmlHash": "c5bb52dda9beaeb80ee3889127a8fef421e3b5bc940206189c8712e07e7cc556"
+    },
+    {
+      "key": "55-1",
+      "chapter": "55",
+      "startLine": 1342,
+      "endLine": 1370,
+      "rawHash": "1776c69c06ac75f07ae9029a814a45ae374689370db9346501907b86f846a2b0",
+      "htmlHash": "d243f903aeb9fb478dcc75cc7b2669470c12401075f6f83b5c83071e4e9d026d"
+    },
+    {
+      "key": "56-1",
+      "chapter": "56",
+      "startLine": 1371,
+      "endLine": 1416,
+      "rawHash": "11ba8eb9e00f22eddcf2c0137a5a7504b8d1c5cf1f9e48cb90e236330b43aec3",
+      "htmlHash": "adcd6c9b95759dc5665a1fc8601701ee3d72c5fcb97b4eddb3e0ba7c61230d23"
+    },
+    {
+      "key": "57-1",
+      "chapter": "57",
+      "startLine": 1417,
+      "endLine": 1438,
+      "rawHash": "bc276cc591ba124da1a13f810bfb27395880c19490d6e11ec3d0af315bd7ee42",
+      "htmlHash": "2d264712a1a0b7d6ea9cb8a17cb846727e6f57a5389a91744be7ecab95e21b0c"
+    },
+    {
+      "key": "final-1",
+      "chapter": "final",
+      "startLine": 1439,
+      "endLine": 1455,
+      "rawHash": "1c7087ae27e551892ae324fb7ebf5689030adb1c2de4b4fa51cf5034091fbd0f",
+      "htmlHash": "deed20b0bcad5031093fde6c7dbfe1b72c2dcfd1607714ffdfade737723b86ac"
+    }
+  ],
+  "mapping": [
+    {
+      "page": "unit-01.html",
+      "sections": [
+        "intro-1"
+      ]
+    },
+    {
+      "page": "unit-02.html",
+      "sections": [
+        "1-1",
+        "2-1",
+        "3-1",
+        "4-1",
+        "5-1"
+      ]
+    },
+    {
+      "page": "unit-03.html",
+      "sections": [
+        "6-1",
+        "7-1"
+      ]
+    },
+    {
+      "page": "unit-04.html",
+      "sections": [
+        "8-1",
+        "9-1",
+        "10-1"
+      ]
+    },
+    {
+      "page": "unit-05.html",
+      "sections": [
+        "11-1",
+        "12-1",
+        "13-1",
+        "14-1",
+        "15-1",
+        "16-1"
+      ]
+    },
+    {
+      "page": "unit-06.html",
+      "sections": [
+        "17-1",
+        "18-1",
+        "19-1",
+        "20-1",
+        "21-1"
+      ]
+    },
+    {
+      "page": "unit-07.html",
+      "sections": [
+        "22-1",
+        "23-1",
+        "24-1",
+        "25-1"
+      ]
+    },
+    {
+      "page": "unit-08.html",
+      "sections": [
+        "26-1",
+        "27-1",
+        "28-1",
+        "29-1",
+        "30-1"
+      ]
+    },
+    {
+      "page": "unit-09.html",
+      "sections": [
+        "31-1",
+        "32-1",
+        "33-1",
+        "34-1",
+        "35-1",
+        "36-1",
+        "37-1",
+        "38-1"
+      ]
+    },
+    {
+      "page": "unit-10.html",
+      "sections": [
+        "39-1"
+      ]
+    },
+    {
+      "page": "unit-11.html",
+      "sections": [
+        "40-1",
+        "41-1",
+        "42-1",
+        "43-1"
+      ]
+    },
+    {
+      "page": "unit-12.html",
+      "sections": [
+        "44-1"
+      ]
+    },
+    {
+      "page": "unit-13.html",
+      "sections": [
+        "45-1",
+        "46-1",
+        "47-1",
+        "48-1",
+        "49-1",
+        "50-1"
+      ]
+    },
+    {
+      "page": "unit-14.html",
+      "sections": [
+        "51-1",
+        "52-1",
+        "53-1",
+        "54-1"
+      ]
+    },
+    {
+      "page": "unit-15.html",
+      "sections": [
+        "55-1"
+      ]
+    },
+    {
+      "page": "unit-16.html",
+      "sections": [
+        "56-1",
+        "57-1"
+      ]
+    },
+    {
+      "page": "unit-17.html",
+      "sections": [
+        "final-1"
+      ]
+    }
+  ],
+  "references": {
+    "D00": "https://github.com/openai/openai-agents-python/releases/tag/v0.24.0",
+    "D01": "https://developers.openai.com/api/docs/guides/agents/sdk",
+    "D02": "https://openai.github.io/openai-agents-python/running_agents/",
+    "D03": "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+    "D04": "https://openai.github.io/openai-agents-python/guardrails/",
+    "D05": "https://openai.github.io/openai-agents-python/sessions/",
+    "D06": "https://openai.github.io/openai-agents-python/multi_agent/",
+    "D07": "https://openai.github.io/openai-agents-python/handoffs/",
+    "D08": "https://openai.github.io/openai-agents-python/context/",
+    "D09": "https://openai.github.io/openai-agents-python/tools/",
+    "D10": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals",
+    "D11": "https://openai.github.io/openai-agents-python/ref/run_state/",
+    "D12": "https://openai.github.io/openai-agents-python/streaming/",
+    "D13": "https://openai.github.io/openai-agents-python/models/",
+    "D14": "https://openai.github.io/openai-agents-python/mcp/",
+    "D15": "https://openai.github.io/openai-agents-python/sandbox/guide/",
+    "D16": "https://openai.github.io/openai-agents-python/tracing/",
+    "D17": "https://openai.github.io/openai-agents-python/testing/",
+    "D18": "https://openai.github.io/openai-agents-python/ref/result/",
+    "D19": "https://pypi.org/project/openai-agents/0.24.0/",
+    "S01": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run.py",
+    "S02": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_loop.py",
+    "S03": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py",
+    "S04": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_steps.py",
+    "S05": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_planning.py",
+    "S06": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py",
+    "S07": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/guardrails.py",
+    "S08": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/session_persistence.py",
+    "S09": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_state.py",
+    "S10": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_preparation.py",
+    "S11": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/items.py",
+    "S12": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/prompt_cache_key.py",
+    "S13": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/tool.py",
+    "S14": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/handoffs.py",
+    "S15": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/agent.py",
+    "S16": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/model_retry.py",
+    "S17": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/streaming.py",
+    "S18": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/error_handlers.py",
+    "S19": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/blocked_output.py",
+    "S20": "https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_use_tracker.py",
+    "S21": "https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner.py",
+    "S22": "https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_agent_runner_streamed.py",
+    "S23": "https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_run_state.py",
+    "S24": "https://github.com/openai/openai-agents-python/blob/v0.24.0/tests/test_guardrails.py"
+  },
+  "codeBlocks": [
+    {
+      "section": "2-1",
+      "language": "mermaid",
+      "hash": "a03b9bcd0c2af5c47db0a9704a61846379010e1ac72b9e82e0500d913255f7b6"
+    },
+    {
+      "section": "5-1",
+      "language": "mermaid",
+      "hash": "dec74b452cb5f52bd1f8db8ba0c5ee841e480a73c413147c5227b2a24c3224c9"
+    },
+    {
+      "section": "6-1",
+      "language": "python",
+      "hash": "11259af792389bbb4b03a2afb886a1305bf21c2bcc0cb56d4f2a858591f90669"
+    },
+    {
+      "section": "8-1",
+      "language": "mermaid",
+      "hash": "70aaa865b8530261192bfe8069b73e0cf9da06d90499cd2eb6891b4093b61e3f"
+    },
+    {
+      "section": "10-1",
+      "language": "text",
+      "hash": "1bb6404d6ba3b29f4cff3b9c1732c85c16a3ad2909391233fc9952594f88ed60"
+    },
+    {
+      "section": "10-1",
+      "language": "text",
+      "hash": "3e3ff88c877979e7cd3f42dfa7079df00074e2d016d1710ddae7c1d4d43bda34"
+    },
+    {
+      "section": "12-1",
+      "language": "python",
+      "hash": "86d852fb74b827ab24ee659c67cfb8620a937b12c436b1a67969b27a8528f234"
+    },
+    {
+      "section": "14-1",
+      "language": "mermaid",
+      "hash": "0f9706b9f902c15d4886afc2dfb695b0d293e371ff3bea6926191f85531b3915"
+    },
+    {
+      "section": "18-1",
+      "language": "mermaid",
+      "hash": "1e7cc00dba42de08cf1e01c5e78bb54db8037c3d8c733e5f72274559969bd814"
+    },
+    {
+      "section": "20-1",
+      "language": "mermaid",
+      "hash": "63756aad58d16e66eee2b19c84c131a9885c2e1fb24927daba4468ab1efe9468"
+    },
+    {
+      "section": "21-1",
+      "language": "text",
+      "hash": "f6a5847aaf277a9763f5f04db97450d23188266a5b70ca5f698aa2bf7809515e"
+    },
+    {
+      "section": "23-1",
+      "language": "text",
+      "hash": "5b01433ee042d0bc8ada5940422c9bea58a586c246788e5a54ae9f98cece4be6"
+    },
+    {
+      "section": "24-1",
+      "language": "mermaid",
+      "hash": "49fbe436b872c0d56ed0b1d4d9a882af037f27c1091461c5ae2708d37e0b63e5"
+    },
+    {
+      "section": "27-1",
+      "language": "mermaid",
+      "hash": "a820768f4bef76613fe4887f6ce8743f3e9922e52a5b85f4fd73489e75100ede"
+    },
+    {
+      "section": "34-1",
+      "language": "mermaid",
+      "hash": "b10b00cbaf1fe9833aa51ae9f032706e9e7c70c8c84fadd04cce1ff91a59219b"
+    },
+    {
+      "section": "37-1",
+      "language": "mermaid",
+      "hash": "fcac09cb31953d94860a373feaba1de6f0ac7c9eb49671810c7347b7e1973713"
+    },
+    {
+      "section": "41-1",
+      "language": "python",
+      "hash": "7c7b9c2f6b32816c1523d3549d79617906ff49060715f78023149bedd16bd416"
+    },
+    {
+      "section": "42-1",
+      "language": "mermaid",
+      "hash": "e2c122f23808591a6486a6d45d6d1867135249e2a7362fdd0107c4aa8e118ecc"
+    },
+    {
+      "section": "45-1",
+      "language": "text",
+      "hash": "e98193a15c8507526fa830ac0708f2df677c5a602d1d07519c6207270ab9a48d"
+    },
+    {
+      "section": "46-1",
+      "language": "text",
+      "hash": "26f82d54ea0537a9022feb9a6b931c1f435a8bd394d8809b200c784f6975f8fc"
+    },
+    {
+      "section": "47-1",
+      "language": "text",
+      "hash": "6cec9e8722d45eadd0bba0baad626d4ba22035d8be479ecea95a524f71d18252"
+    },
+    {
+      "section": "48-1",
+      "language": "text",
+      "hash": "08d794cd74911d213dec73928880bbf9c8838398fe2d2b97ae312f76cd6d4bad"
+    },
+    {
+      "section": "49-1",
+      "language": "text",
+      "hash": "895be2b51cf78a80febb90dec6c1d1eadda1d5c4cfa2ff1e20506480a3823d28"
+    },
+    {
+      "section": "56-1",
+      "language": "text",
+      "hash": "58fe3c1bd348951bb532521492d64da438260011f9da8925a7b4c6285b1b1dfa"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "title": "2. 한 번의 사용자 요청과 한 번의 모델 호출은 다르다",
+      "section": "2-1",
+      "rawHash": "a03b9bcd0c2af5c47db0a9704a61846379010e1ac72b9e82e0500d913255f7b6",
+      "type": "sequence",
+      "actors": {
+        "U": "Application",
+        "R": "Runner",
+        "M": "Model",
+        "T": "Tool"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "U",
+          "to": "R",
+          "arrow": "->>",
+          "text": "run(agent, user_input)"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "M",
+          "arrow": "->>",
+          "text": "요청 #1"
+        },
+        {
+          "type": "message",
+          "from": "M",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "Tool Call A, Tool Call B"
+        },
+        {
+          "type": "control",
+          "text": "par 도구 실행 (정책·구현에 따라)"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "T",
+          "arrow": "->>",
+          "text": "A"
+        },
+        {
+          "type": "message",
+          "from": "T",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "A result"
+        },
+        {
+          "type": "control",
+          "text": "and"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "T",
+          "arrow": "->>",
+          "text": "B"
+        },
+        {
+          "type": "message",
+          "from": "T",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "B result"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "M",
+          "arrow": "->>",
+          "text": "요청 #2 (Tool 결과 포함)"
+        },
+        {
+          "type": "message",
+          "from": "M",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "Final output"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "U",
+          "arrow": "-->>",
+          "text": "RunResult"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "5. 실제 패키지 아키텍처",
+      "section": "5-1",
+      "rawHash": "dec74b452cb5f52bd1f8db8ba0c5ee841e480a73c413147c5227b2a24c3224c9",
+      "type": "flow",
+      "file": "assets/diagram-2.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Application / API Handler",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Runner.run / run_streamed",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "AgentRunner._run_impl / streaming driver",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "turn_preparation.py",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Model adapter / Provider",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "LLM API",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "ModelResponse",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "turn_resolution.py: process_model_response",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "turn_resolution.py: execute_tools_and_side_effects",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "tool_planning.py",
+          "shape": "box"
+        },
+        {
+          "id": "K",
+          "label": "tool_execution.py",
+          "shape": "box"
+        },
+        {
+          "id": "L",
+          "label": "NextStep*",
+          "shape": "box"
+        },
+        {
+          "id": "N",
+          "label": "Guardrails / Session / Tracing / RunState",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "I",
+          "to": "L",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "N",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "8. ProcessedResponse와 NextStep 상태 기계",
+      "section": "8-1",
+      "rawHash": "70aaa865b8530261192bfe8069b73e0cf9da06d90499cd2eb6891b4093b61e3f",
+      "type": "state",
+      "file": "assets/diagram-3.svg",
+      "nodes": [
+        {
+          "id": "START",
+          "label": "시작",
+          "shape": "ellipse"
+        },
+        {
+          "id": "Prepare",
+          "label": "Prepare",
+          "shape": "box"
+        },
+        {
+          "id": "ModelCall",
+          "label": "ModelCall",
+          "shape": "box"
+        },
+        {
+          "id": "ProcessResponse",
+          "label": "ProcessResponse",
+          "shape": "box"
+        },
+        {
+          "id": "ExecuteTool",
+          "label": "ExecuteTool",
+          "shape": "box"
+        },
+        {
+          "id": "Paused",
+          "label": "Paused",
+          "shape": "box"
+        },
+        {
+          "id": "Final",
+          "label": "Final",
+          "shape": "box"
+        },
+        {
+          "id": "STOP",
+          "label": "종료",
+          "shape": "ellipse"
+        }
+      ],
+      "edges": [
+        {
+          "from": "START",
+          "to": "Prepare",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Prepare",
+          "to": "ModelCall",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ModelCall",
+          "to": "ProcessResponse",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ProcessResponse",
+          "to": "ExecuteTool",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ExecuteTool",
+          "to": "Prepare",
+          "label": "RunAgain",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ExecuteTool",
+          "to": "Prepare",
+          "label": "Handoff / switch agent",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ExecuteTool",
+          "to": "Paused",
+          "label": "Interruption",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ProcessResponse",
+          "to": "Final",
+          "label": "no pending work + valid output",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ExecuteTool",
+          "to": "Final",
+          "label": "Tool output policy ends run",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Final",
+          "to": "STOP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "14. 병렬 Tool Call: 무엇이 병렬인가?",
+      "section": "14-1",
+      "rawHash": "0f9706b9f902c15d4886afc2dfb695b0d293e371ff3bea6926191f85531b3915",
+      "type": "flow",
+      "file": "assets/diagram-4.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "한 모델 응답: Tool A+B+C",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "SDK Tool plan",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Task A",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Task B",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Task C",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Result / Failure",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Tool 결과를 next model input에 반영",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "18. Input Guardrail의 병렬 모드가 만드는 위험",
+      "section": "18-1",
+      "rawHash": "1e7cc00dba42de08cf1e01c5e78bb54db8037c3d8c733e5f72274559969bd814",
+      "type": "sequence",
+      "actors": {
+        "R": "Runner",
+        "G": "Input Guardrail",
+        "M": "Agent/Model/Tool"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "R",
+          "to": "G",
+          "arrow": "->>",
+          "text": "검사 시작 (parallel)"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "M",
+          "arrow": "->>",
+          "text": "Agent 실행 시작"
+        },
+        {
+          "type": "message",
+          "from": "M",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "모델 토큰/도구 실행 가능"
+        },
+        {
+          "type": "message",
+          "from": "G",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "Tripwire 발생"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "M",
+          "arrow": "-->>",
+          "text": "취소 요청"
+        },
+        {
+          "type": "note",
+          "text": "Note over M: 취소 이전 부작용은 남을 수 있음"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "20. needsapproval과 RunState 중단",
+      "section": "20-1",
+      "rawHash": "63756aad58d16e66eee2b19c84c131a9885c2e1fb24927daba4468ab1efe9468",
+      "type": "sequence",
+      "actors": {
+        "A": "Application",
+        "R": "Runner",
+        "M": "Model",
+        "P": "Approval System"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "R",
+          "to": "M",
+          "arrow": "->>",
+          "text": "Tool이 포함된 모델 요청"
+        },
+        {
+          "type": "message",
+          "from": "M",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "위험 Tool 호출"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "A",
+          "arrow": "-->>",
+          "text": "interruptions + resumable RunState"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "P",
+          "arrow": "->>",
+          "text": "정책/사용자 승인 요청"
+        },
+        {
+          "type": "message",
+          "from": "P",
+          "to": "A",
+          "arrow": "-->>",
+          "text": "approve / reject"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "R",
+          "arrow": "->>",
+          "text": "resume(state with decision)"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "R",
+          "arrow": "->>",
+          "text": "승인 정책 확인 후 미처리 작업 계속"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "A",
+          "arrow": "-->>",
+          "text": "Final/Next interruption"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "24. 중첩 Agent.astool() 실행과 승인 전파",
+      "section": "24-1",
+      "rawHash": "49fbe436b872c0d56ed0b1d4d9a882af037f27c1091461c5ae2708d37e0b63e5",
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": [
+        {
+          "id": "P",
+          "label": "Parent Agent Loop",
+          "shape": "box"
+        },
+        {
+          "id": "C1",
+          "label": "Child Agent as Tool 1",
+          "shape": "box"
+        },
+        {
+          "id": "C2",
+          "label": "Child Agent as Tool 2",
+          "shape": "box"
+        },
+        {
+          "id": "T1",
+          "label": "Child Tool",
+          "shape": "box"
+        },
+        {
+          "id": "T2",
+          "label": "Child Tool",
+          "shape": "box"
+        },
+        {
+          "id": "PA",
+          "label": "Pending approval",
+          "shape": "box"
+        },
+        {
+          "id": "R2",
+          "label": "Tool result",
+          "shape": "box"
+        },
+        {
+          "id": "PS",
+          "label": "Outer Run interruption",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "P",
+          "to": "C1",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "P",
+          "to": "C2",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C1",
+          "to": "T1",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C2",
+          "to": "T2",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "T1",
+          "to": "PA",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "T2",
+          "to": "R2",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PA",
+          "to": "PS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R2",
+          "to": "P",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "27.3 저장된 Session과 모델 요청 입력은 동일하지 않다",
+      "section": "27-1",
+      "rawHash": "a820768f4bef76613fe4887f6ce8743f3e9922e52a5b85f4fd73489e75100ede",
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "ModelResponse / RunItems",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Session persistence view",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Public RunResult view",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Next model input view",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Input filter / normalization / compaction",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "34. HTTP 서버에서 Agent를 서빙하는 구조",
+      "section": "34-1",
+      "rawHash": "b10b00cbaf1fe9833aa51ae9f032706e9e7c70c8c84fadd04cce1ff91a59219b",
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": [
+        {
+          "id": "U",
+          "label": "Client",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "API Gateway: Auth / Rate limit",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Application Handler",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Session / RunState Store",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Runner.run or run_streamed",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Model Provider / LLM Gateway",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Function Tools",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "DB / External Services",
+          "shape": "cylinder"
+        },
+        {
+          "id": "H",
+          "label": "Tracing/Logs",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "Result / SSE / Job ID",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "U",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "I",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "title": "37. Model Adapter 및 LLM Gateway: OpenAI API가 필수인가?",
+      "section": "37-1",
+      "rawHash": "fcac09cb31953d94860a373feaba1de6f0ac7c9eb49671810c7347b7e1973713",
+      "type": "flow",
+      "file": "assets/diagram-10.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Runner",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Model interface",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "OpenAIResponsesModel",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "OpenAIChatCompletionsModel",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Custom/LiteLLM adapter",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Responses endpoint",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Chat Completions compatible endpoint",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "Other backend",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "title": "42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트",
+      "section": "42-1",
+      "rawHash": "e2c122f23808591a6486a6d45d6d1867135249e2a7362fdd0107c4aa8e118ecc",
+      "type": "flow",
+      "file": "assets/diagram-11.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "AgentSpec",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "RunController",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "ModelAdapter",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "ToolResolver",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "ToolExecutor",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Approval/Guardrail",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "StateStore",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "SessionHistory",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "ResumableRunState",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "TraceCollector",
+          "shape": "box"
+        },
+        {
+          "id": "K",
+          "label": "BudgetManager",
+          "shape": "box"
+        },
+        {
+          "id": "L",
+          "label": "Handoff/Delegation Router",
+          "shape": "box"
+        },
+        {
+          "id": "M",
+          "label": "Execution Sandbox",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "I",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "J",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "K",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "L",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "M",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    }
+  ]
+}

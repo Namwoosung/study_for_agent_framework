@@ -1,0 +1,173 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>분석 목표와 증거 수준 외 3개 주제 — Microsoft Agent Framework 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">M.</span><span>Microsoft Agent Framework<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">계층과 호출 지도</p><a href="unit-02.html" aria-current="page" class="current"><span class="nav-number">02</span><span>분석 목표와 증거 수준 외 3개 주제</span></a><p class="nav-group">Agent·Context·Tool Loop</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 클래스의 다층 합성 외 2개 주제</span></a><p class="nav-group">Tool·정책·승인</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제</span></a><p class="nav-group">상태와 모델 입력</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Session, History, Memory, Checkpoint가 어떻게 다른가? 외 1개 주제</span></a><p class="nav-group">Harness와 명시적 Workflow</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나? 외 2개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Superstep: 실제 상태 commit와 메시지 전달</span></a><p class="nav-group">복구와 협업 모델</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Checkpoint와 Resume: 직렬화보다 중요한 것은 경계 외 2개 주제</span></a><p class="nav-group">외부 연결·보안·실패</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>설계자가 반드시 이해해야 할 실패 모드</span></a><p class="nav-group">소스코드 추적 워크북</p><a href="unit-12.html" ><span class="nav-number">12</span><span>코드 추적 워크북 15개</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적 워크북 15개 / W05. Function Middleware 인자 수정과 Policy Gate</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적 워크북 15개 / W09. Compaction 적용과 메모리 보존</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>학습 완료 점검 문제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>공식 참고자료·소스코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-19.html" ><span class="nav-number">19</span><span>최종 요약 — 반드시 기억해야 할 12개 문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK python-1.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 계층과 호출 지도</p><h1>계층과 호출 지도</h1><div class="chapter-meta">단원 02 · 원문 2026.10.31 · Python SDK python-1.24.0 · 약 7분 · 원문 61–156행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>SDK 배포와 Framework 제어 구조, Harness 합성을 나누고 요청 한 건의 경로를 읽습니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>어떤 계층이 실제 반복을 소유하는지 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-63">1. 분석 목표와 증거 수준</a><a href="#line-65">1.1 학습 후 할 수 있어야 하는 설명</a><a href="#line-74">1.2 증거 등급</a><a href="#line-86">2. SDK인가, Framework인가, Harness인가?</a><a href="#line-97">3. 코드 지도: ‘어디에 무엇이 있는가?’</a><a href="#line-117">4. 요청 하나의 전체 실행 시퀀스</a><a href="#line-147">4.1 ‘Loop’가 최소 세 개 있는 이유</a></nav></details><section class="source-section" data-source-section="1-1"><p class="part-divider" id="line-61">Part I. 구조를 정확히 나누기</p><h2 id="line-63">1. 분석 목표와 증거 수준<a class="anchor" href="#line-63" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-65">1.1 학습 후 할 수 있어야 하는 설명<a class="anchor" href="#line-65" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>“MAF의 Agent Loop는 어디 있나요?”라는 질문에 <strong>Function Invocation, Harness Loop, Workflow Loop를 따로</strong> 보여줄 수 있다.</li>
+<li><code>Agent.run()</code>을 호출해 모델이 Tool 2개를 요청할 때 <strong>모델↔도구 재호출이 어느 계층에서 발생</strong>하는지 추적할 수 있다.</li>
+<li>동일한 ‘상태 저장’이라는 말로 Session / History Provider / Checkpoint / 외부 DB를 묶지 않는다.</li>
+<li><code>MiddlewareFailure</code>가 왜 Tool에 일반 Exception을 던지는 것과 다른지 <strong>보안 정책의 관점</strong>에서 설명한다.</li>
+<li>Checkpoint가 성공해도 원격 파일 생성이나 DB 쓰기가 중복될 수 있는 <strong>실패 지점</strong>을 지적할 수 있다.</li>
+<li>프레임워크를 새로 설계한다면 어떤 구성요소를 플러그인으로 분리하고 무엇을 핵심 실행기에 남길지 제시할 수 있다.</li>
+</ul>
+<h3 id="line-74">1.2 증거 등급<a class="anchor" href="#line-74" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>기호</th>
+<th>정의</th>
+<th>사용 원칙</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>[SRC]</code></td>
+<td>태그 고정 소스의 특정 클래스·조건·상태 필드</td>
+<td>함수/파일 링크를 붙여 사실을 확인</td>
+</tr>
+<tr>
+<td><code>[DOC]</code></td>
+<td>공식 사용자 문서·릴리스에 명시</td>
+<td>공개 API 계약·제약을 설명</td>
+</tr>
+<tr>
+<td><code>[INF]</code></td>
+<td>아키텍처에 근거한 기술적 해석</td>
+<td>원인과 장단점은 단정하지 않음</td>
+</tr>
+<tr>
+<td><code>[PSEUDO]</code></td>
+<td>교육용으로 간소화한 코드</td>
+<td>원문 복사가 아님을 앞에 표시</td>
+</tr>
+<tr>
+<td><code>[UNV]</code></td>
+<td>직접 실행·부하·지속 저장 실측 불가</td>
+<td>성능이나 안정성을 보장하지 않음</td>
+</tr>
+</tbody></table>
+</div><p>이 문서의 코드 블록은 특별히 <strong>“실제 짧은 코드 단편”</strong>이라고 표시되지 않으면 학습용 의사코드다. 공개 소스코드의 전체 함수 본문을 복사하지 않는다. 공식 문서가 빠르게 변경되므로 일부 문서에서 나타난 기능이 <strong>릴리스 태그에 동일하게 존재하는지</strong> 함께 확인해야 한다.</p>
+</section>
+<section class="source-section" data-source-section="2-1"><h2 id="line-86">2. SDK인가, Framework인가, Harness인가?<a class="anchor" href="#line-86" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li><strong>SDK:</strong> Python 패키지 형태로 API/인터페이스를 제공한다는 의미. 배포·사용 형태에 대한 표현.</li>
+<li><strong>Framework:</strong> <code>Agent</code>, <code>ChatClient</code>, <code>Tool</code>, <code>Session</code>, <code>Workflow</code> 등의 규약과 제어 흐름을 제공한다는 의미. 설계 책임과 실행 구조에 대한 표현.</li>
+<li><strong>Harness:</strong> 기존 프레임워크 부품을 조합해 planning, todo, memory, 승인, 실행 제한, background worker를 갖춘 운영형 Agent 구성. MAF의 Harness는 별도 새 모델이 아니라 같은 실행 기반 위에 구축된다. [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness">D02</a>]</li>
+<li><strong>Runtime:</strong> 실제 프로세스 안에서 Tool을 디스패치하고, 모델 응답을 순환하고, 이벤트·세션을 갱신하는 실행 코드.</li>
+</ul>
+<p>따라서 <strong>MAF는 Python SDK로 설치되는 Agent Framework이고, 선택적으로 Harness도 제공한다.</strong> 네 표현은 배타적 개념이 아니다. [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">D01</a>][<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness">D02</a>]</p>
+<p><strong>개발자 관점 질문:</strong> 새 프레임워크에서 “모델에 Tool 목록을 넘기는 코드”만 있으면 충분할까? 아니다. 모델 호출 이후 인자 검증·승인·실제 실행·결과 변환·재호출·종료·취소·기록까지 실행 루프가 필요하다.</p>
+</section>
+<section class="source-section" data-source-section="3-1"><h2 id="line-97">3. 코드 지도: ‘어디에 무엇이 있는가?’<a class="anchor" href="#line-97" aria-label="이 절의 고유 링크">#</a></h2><p>버전 고정 저장소 루트: <code>python/packages/core/agent_framework/</code>.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>계층</th>
+<th>파일</th>
+<th>중요한 객체/관심사</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent</td>
+<td><code>_agents.py</code></td>
+<td><code>BaseAgent</code>, <code>RawAgent</code>, <code>Agent</code>, <code>SupportsAgentRun</code>, Context Provider 실행</td>
+</tr>
+<tr>
+<td>Chat</td>
+<td><code>_clients.py</code></td>
+<td><code>BaseChatClient</code>, 요청/응답, 모델 Provider와의 계약</td>
+</tr>
+<tr>
+<td>Function Tool</td>
+<td><code>_tools.py</code></td>
+<td><code>FunctionTool</code>, JSON Schema/인자 검증, Tool 호출 관련 유틸리티</td>
+</tr>
+<tr>
+<td>Middleware</td>
+<td><code>_middleware.py</code></td>
+<td><code>AgentContext</code>, <code>ChatContext</code>, <code>FunctionInvocationContext</code>, <code>MiddlewareFailure</code></td>
+</tr>
+<tr>
+<td>Session</td>
+<td><code>_sessions.py</code></td>
+<td><code>AgentSession</code>, <code>ContextProvider</code>, <code>HistoryProvider</code> 및 Run Persistence</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td><code>_compaction.py</code></td>
+<td>전략과 메시지·토큰 관리</td>
+</tr>
+<tr>
+<td>Harness Loop</td>
+<td><code>_harness/_loop.py</code></td>
+<td><code>AgentLoopMiddleware</code>, <code>should_continue</code>, max 반복 수</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td><code>_workflows/_workflow.py</code></td>
+<td><code>Workflow</code>, run/resume, 이벤트 전달</td>
+</tr>
+<tr>
+<td>Workflow Runner</td>
+<td><code>_workflows/_runner.py</code></td>
+<td>Graph 실행, 노드 구동 메커니즘</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td><code>_workflows/_checkpoint.py</code></td>
+<td>저장 구조·메시지·State·리니지</td>
+</tr>
+<tr>
+<td>FIDES</td>
+<td><code>security.py</code> 및 관련 보안 모듈</td>
+<td>실험적 정보 흐름 제어</td>
+</tr>
+</tbody></table>
+</div><p>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py">S01</a>]–[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/security.py">S11</a>]에서 개별 파일의 고정 버전 원문으로 이동할 수 있다. <strong>주의:</strong> ChatClient의 함수 자동 호출에 필요한 실제 구현의 일부는 <code>_clients.py</code> 하나가 아니라 Tool·Middleware/모델별 어댑터와 조합된다. “메서드가 모두 <code>_clients.py</code> 하나에 있다”라고 가정하지 않는다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py">S02</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>][<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">D01</a>]</p>
+</section>
+<section class="source-section" data-source-section="4-1"><h2 id="line-117">4. 요청 하나의 전체 실행 시퀀스<a class="anchor" href="#line-117" aria-label="이 절의 고유 링크">#</a></h2><figure class="diagram" data-diagram="1"><figcaption><span>도식 1</span> 4. 요청 하나의 전체 실행 시퀀스</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Caller / HTTP → Agent + Agent Middleware</td><td>run(messages, session)</td></tr><tr><td>2</td><td>Agent + Agent Middleware → Context/History Providers</td><td>before_run / history load / inject context</td></tr><tr><td>3</td><td>Agent + Agent Middleware → ChatClient + Chat Middleware</td><td>get_response(prepared messages, tools)</td></tr><tr><td>4</td><td>ChatClient + Chat Middleware → Model Provider</td><td>model request</td></tr><tr><td>5</td><td>Model Provider ⇢ ChatClient + Chat Middleware</td><td>function call(s)</td></tr><tr><td>6</td><td>ChatClient + Chat Middleware → Function Invocation + Function Middleware</td><td>dispatch and normalize calls</td></tr><tr><td>7</td><td>Function Invocation + Function Middleware → FunctionTool / External API</td><td>validated invocation</td></tr><tr><td>8</td><td>FunctionTool / External API ⇢ Function Invocation + Function Middleware</td><td>tool result / error</td></tr><tr><td>9</td><td>Function Invocation + Function Middleware ⇢ ChatClient + Chat Middleware</td><td>function response content</td></tr><tr><td>10</td><td>ChatClient + Chat Middleware → Model Provider</td><td>follow-up with results</td></tr><tr><td>11</td><td>Model Provider ⇢ ChatClient + Chat Middleware</td><td>final response or more calls</td></tr><tr><td>12</td><td>ChatClient + Chat Middleware ⇢ Agent + Agent Middleware</td><td>ChatResponse</td></tr><tr><td>13</td><td>Agent + Agent Middleware → Context/History Providers</td><td>after_run / persist history</td></tr><tr><td>14</td><td>Agent + Agent Middleware ⇢ Caller / HTTP</td><td>AgentResponse</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+    autonumber
+    participant User as Caller / HTTP
+    participant Agent as Agent + Agent Middleware
+    participant CP as Context/History Providers
+    participant Chat as ChatClient + Chat Middleware
+    participant Model as Model Provider
+    participant Inv as Function Invocation + Function Middleware
+    participant Tool as FunctionTool / External API
+    User-&gt;&gt;Agent: run(messages, session)
+    Agent-&gt;&gt;CP: before_run / history load / inject context
+    Agent-&gt;&gt;Chat: get_response(prepared messages, tools)
+    Chat-&gt;&gt;Model: model request
+    Model--&gt;&gt;Chat: function call(s)
+    Chat-&gt;&gt;Inv: dispatch and normalize calls
+    Inv-&gt;&gt;Tool: validated invocation
+    Tool--&gt;&gt;Inv: tool result / error
+    Inv--&gt;&gt;Chat: function response content
+    Chat-&gt;&gt;Model: follow-up with results
+    Model--&gt;&gt;Chat: final response or more calls
+    Chat--&gt;&gt;Agent: ChatResponse
+    Agent-&gt;&gt;CP: after_run / persist history
+    Agent--&gt;&gt;User: AgentResponse</code></pre></details></figure><p><strong>이 시퀀스는 합성한 개념도</strong>다. Tool 자동 호출이 활성화된 경우의 대표 경로이며, Provider가 원격에서 처리하는 hosted tool이나 streaming/HITL의 세부 변형은 다르게 동작할 수 있다. [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">D01</a>][<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/">D03</a>]</p>
+<h3 id="line-147">4.1 ‘Loop’가 최소 세 개 있는 이유<a class="anchor" href="#line-147" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>실행 단위</th>
+<th>반복하는 대상</th>
+<th>종료를 결정하는 주체</th>
+<th>주요 코드</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tool Loop</strong></td>
+<td><code>모델 → 도구 → 모델</code></td>
+<td>Function Invocation 계층의 결과·반복 예산·예외</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py">S02</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>]</td>
+</tr>
+<tr>
+<td><strong>Harness Agent Loop</strong></td>
+<td>Agent 실행 전체(<code>call_next</code>)</td>
+<td><code>should_continue</code>, <code>max_iterations</code>, 모드·작업 상태</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py">S07</a>]</td>
+</tr>
+<tr>
+<td><strong>Workflow Run Loop</strong></td>
+<td>준비된 Executor와 다음 Superstep</td>
+<td>큐·Graph 상태·미처리 요청·완료 조건</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py">S08</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_runner.py">S09</a>]</td>
+</tr>
+</tbody></table>
+</div><p><strong>발표 핵심:</strong> 셋 모두 ‘반복’이지만 동일하지 않다. Tool Loop는 한 번의 Agent run <em>안쪽</em>, Harness Loop는 <strong>Agent 실행 바깥쪽</strong>, Workflow Loop는 <strong>명시적으로 만든 그래프 실행 엔진</strong>이다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-01.html"><small>이전 단원</small>← 원문 읽기 안내와 증거 기준</a><a class="next" href="unit-03.html"><small>다음 단원</small>Agent 클래스의 다층 합성 외 2개 주제 →</a></nav><footer>Microsoft Agent Framework · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-63">1. 분석 목표와 증거 수준</a><a class="toc-depth-3" href="#line-65">1.1 학습 후 할 수 있어야 하는 설명</a><a class="toc-depth-3" href="#line-74">1.2 증거 등급</a><a class="toc-depth-2" href="#line-86">2. SDK인가, Framework인가, Harness인가?</a><a class="toc-depth-2" href="#line-97">3. 코드 지도: ‘어디에 무엇이 있는가?’</a><a class="toc-depth-2" href="#line-117">4. 요청 하나의 전체 실행 시퀀스</a><a class="toc-depth-3" href="#line-147">4.1 ‘Loop’가 최소 세 개 있는 이유</a></nav></aside></div></body></html>

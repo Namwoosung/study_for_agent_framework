@@ -1,0 +1,22 @@
+:root{--reading-width:76ch}
+.mobile-header button{flex-shrink:0;white-space:nowrap}
+.mobile-header small{display:block;font-size:10px;font-weight:400;letter-spacing:.05em}
+.part-divider{border-bottom:1px solid var(--line);padding:0 0 16px;margin:55px 0 30px;font-size:13px;font-weight:650;color:var(--accent)}
+.source-section{margin-top:42px}
+.source-section h2{scroll-margin-top:24px}
+.inline-toc{margin:28px 0 42px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;color:var(--accent)}
+.inline-toc summary{cursor:pointer;font-size:14px}
+.inline-toc nav{padding:10px 0;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.6}
+.local-toc .toc-depth-3{padding-left:9px;font-size:10px}
+.continuation{color:var(--muted);font-size:18px}
+.chapter-meta{overflow-wrap:anywhere}
+.other-books{margin-top:24px;border-top:1px solid var(--line);padding-top:3px}
+.sidebar .other-books a{font-size:11px;padding:5px 10px}
+.diagram img{width:auto;max-width:none;min-width:0}
+.diagram-scroll{max-height:900px;overflow:auto}
+pre{tab-size:4}
+.sequence th:first-child,.sequence td:first-child{min-width:48px;width:48px}
+.sequence td:nth-child(2){min-width:190px}
+.sequence-control td{font-size:13px;line-height:1.7}
+@media(max-width:850px){.source-section h2{scroll-margin-top:18px}.chapter-header .lead{font-size:17px}.other-books{margin-bottom:10px}}
+@media print{.inline-toc,.other-books{display:none}.diagram img{max-width:100%;width:auto}.diagram-scroll{max-height:none}}

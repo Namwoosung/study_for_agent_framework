@@ -1,0 +1,149 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제 — Microsoft Agent Framework 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">M.</span><span>Microsoft Agent Framework<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">계층과 호출 지도</p><a href="unit-02.html" ><span class="nav-number">02</span><span>분석 목표와 증거 수준 외 3개 주제</span></a><p class="nav-group">Agent·Context·Tool Loop</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 클래스의 다층 합성 외 2개 주제</span></a><p class="nav-group">Tool·정책·승인</p><a href="unit-04.html" aria-current="page" class="current"><span class="nav-number">04</span><span>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제</span></a><p class="nav-group">상태와 모델 입력</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Session, History, Memory, Checkpoint가 어떻게 다른가? 외 1개 주제</span></a><p class="nav-group">Harness와 명시적 Workflow</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나? 외 2개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Superstep: 실제 상태 commit와 메시지 전달</span></a><p class="nav-group">복구와 협업 모델</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Checkpoint와 Resume: 직렬화보다 중요한 것은 경계 외 2개 주제</span></a><p class="nav-group">외부 연결·보안·실패</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>설계자가 반드시 이해해야 할 실패 모드</span></a><p class="nav-group">소스코드 추적 워크북</p><a href="unit-12.html" ><span class="nav-number">12</span><span>코드 추적 워크북 15개</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적 워크북 15개 / W05. Function Middleware 인자 수정과 Policy Gate</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적 워크북 15개 / W09. Compaction 적용과 메모리 보존</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>학습 완료 점검 문제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>공식 참고자료·소스코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-19.html" ><span class="nav-number">19</span><span>최종 요약 — 반드시 기억해야 할 12개 문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK python-1.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Tool·정책·승인</p><h1>Tool·정책·승인</h1><div class="chapter-meta">단원 04 · 원문 2026.10.31 · Python SDK python-1.24.0 · 약 8분 · 원문 253–376행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>스키마·최종 인자·실행·결과와 Middleware 적용·실패·승인 상태를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>정책 뒤 인자 변경, MiddlewareFailure·Termination, 특정 Session 요청에 바인딩된 승인을 보세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-253">8. Tool Schema, Validation, Execution, Result Conversion</a><a href="#line-255">8.1 FunctionTool의 책임</a><a href="#line-272">8.2 타입 검증과 보안 검증은 다르다</a><a href="#line-285">8.3 Middleware가 Arguments를 수정할 수 있다는 점</a><a href="#line-291">8.4 반환값의 정규화</a><a href="#line-297">9. Tool 병렬 처리: ‘여러 호출’과 ‘동시 실행’은 다르다</a><a href="#line-299">9.1 동시성의 네 층</a><a href="#line-310">9.2 병렬 처리에서 필요한 계약</a><a href="#line-337">9.3 리소스 소유권 원칙</a><a href="#line-341">10. Middleware: Agent / Chat / Function이 실제로 언제 도나?</a><a href="#line-351">10.1 callnext()의 의미</a><a href="#line-368">10.2 정책을 어디에 놓아야 하는가?</a></nav></details><section class="source-section" data-source-section="8-1"><h2 id="line-253">8. Tool Schema, Validation, Execution, Result Conversion<a class="anchor" href="#line-253" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-255">8.1 <code>FunctionTool</code>의 책임<a class="anchor" href="#line-255" aria-label="이 절의 고유 링크">#</a></h3><p>고정 소스 <code>_tools.py</code>의 <code>FunctionTool</code>은 Python 함수를 LLM이 호출 가능한 도구로 바꾸는 래퍼다. 타입 애너테이션과 Pydantic 모델을 활용해 입력 스키마를 생성하고, 호출 시 변환·검증한다. 결과 파싱 정책에 따라 일반 값이 Content 목록으로 바뀌거나 원시 값이 전달될 수 있다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>]</p>
+<figure class="diagram" data-diagram="3"><figcaption><span>도식 3</span> 8.1 FunctionTool의 책임</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-3.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="8.1 FunctionTool의 책임"><img src="assets/diagram-3.svg" alt="8.1 FunctionTool의 책임의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  P[Python function + signature] --&gt; SC[Schema generation]
+  SC --&gt; API[Tool specification to LLM]
+  API --&gt; CALL[Model function-call JSON]
+  CALL --&gt; N[Argument normalization]
+  N --&gt; PM[Function Middleware / policy]
+  PM --&gt; V[Final schema validation]
+  V --&gt; EX[FunctionTool.invoke]
+  EX --&gt; RES[Result parse or error]
+  RES --&gt; MSG[Model-facing function-result message]</code></pre></details></figure><h3 id="line-272">8.2 타입 검증과 보안 검증은 다르다<a class="anchor" href="#line-272" aria-label="이 절의 고유 링크">#</a></h3><p><code>query: str</code>가 유효하더라도 <code>&#39;DELETE FROM manufacturing_table&#39;</code>처럼 위험한 SQL일 수 있다. 반대로 사용자 권한이 없다면, 완벽하게 정형화된 <code>lot_id: str</code>도 허가할 수 없다. 함수 파라미터가 JSON Schema를 만족한다는 사실은 <strong>인가·민감 정보·명령 허용 범위</strong>를 보장하지 않는다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>검증 계층</th>
+<th>검사 대상</th>
+<th>주된 책임자</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JSON/Pydantic</td>
+<td>값의 타입, 필수 필드, 길이/범위</td>
+<td>Tool/스키마</td>
+</tr>
+<tr>
+<td>Function Middleware</td>
+<td>실행 정책·예외·사전 승인</td>
+<td>Framework 구성</td>
+</tr>
+<tr>
+<td>Tool 내부</td>
+<td>사용자/조직 권한·파라미터 의미·부작용</td>
+<td>서비스 도메인 코드</td>
+</tr>
+<tr>
+<td>인프라</td>
+<td>DB 계정, 네트워크, 컨테이너 격리</td>
+<td>운영 환경</td>
+</tr>
+</tbody></table>
+</div><p>이 분리가 [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/safety">D06</a>]의 권고와도 일치한다. <strong>모델에게 “읽기 전용”이라고 명령하는 것만으로 읽기 전용이 구현되지 않는다.</strong></p>
+<h3 id="line-285">8.3 Middleware가 Arguments를 수정할 수 있다는 점<a class="anchor" href="#line-285" aria-label="이 절의 고유 링크">#</a></h3><p>고정 버전의 <code>FunctionInvocationContext</code> 문서는 Middleware가 <code>context.arguments</code>를 읽거나 고칠 수 있고, 최종 Handler는 변경된 인자를 실행 직전에 다시 검증한다고 설명한다. 정책 검사 <strong>이후</strong>에 인자가 다시 바뀌면, 승인된 호출과 실제 실행된 호출이 달라지는 TOCTOU 문제가 생긴다. 이를 막기 위해 보안 검증 이후의 인자 변경은 <code>MiddlewareFailure</code>를 발생시키는 경로가 있다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py">S04</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>]</p>
+<p><strong>왜 중요한가?</strong> 외부 모델이 <code>file_path=/safe/a.csv</code>를 요청해 정책을 통과했더라도, 하위 Middleware가 이를 <code>/secret/key</code>로 바꾸면 정책 검사는 무의미해진다. 따라서 <strong>실행 직전 최종 인자에 대한 정책 검증</strong>이 강제돼야 한다.</p>
+<h3 id="line-291">8.4 반환값의 정규화<a class="anchor" href="#line-291" aria-label="이 절의 고유 링크">#</a></h3><p>Function Middleware는 <code>context.result</code>를 가로채 치환할 수 있다. 하지만 값의 형태에 따라 <code>list[Content]</code>, 문자열, 기타 객체가 서로 다른 형태로 정규화될 수 있다. 특히 승인 요청을 나타내는 특별한 Content는 일반 문자열과 다른 제어 신호다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py">S04</a>]</p>
+<p><strong>설계상 교훈 [INF]:</strong> Tool 실행 결과와 <strong>제어 신호</strong>를 모두 임의의 문자열로 변환하면 승인·재개 로직이 망가질 수 있다. 자체 Framework라면 <code>ToolSuccess</code>, <code>ToolError</code>, <code>ApprovalRequired</code> 같은 타입을 구분하고 직렬화 규약을 명시하는 편이 좋다.</p>
+</section>
+<section class="source-section" data-source-section="9-1"><h2 id="line-297">9. Tool 병렬 처리: ‘여러 호출’과 ‘동시 실행’은 다르다<a class="anchor" href="#line-297" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-299">9.1 동시성의 네 층<a class="anchor" href="#line-299" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>상황</th>
+<th>의미</th>
+<th>실행 주체</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델 응답의 복수 Tool Call</td>
+<td>한 번의 모델 출력에 여러 호출 요청</td>
+<td>모델/Provider</td>
+</tr>
+<tr>
+<td>병렬 Tool Execution</td>
+<td>요청된 여러 Tool을 동시 I/O로 실행</td>
+<td>Function Invocation 실행기</td>
+</tr>
+<tr>
+<td>병렬 Agent Delegation</td>
+<td>서로 다른 Agent가 각각 모델/도구를 호출</td>
+<td>위임자·오케스트레이터</td>
+</tr>
+<tr>
+<td>Workflow Fan-out</td>
+<td>Graph의 여러 Executor를 같은 Superstep에 스케줄</td>
+<td>Workflow Runner</td>
+</tr>
+</tbody></table>
+</div><p><code>Tool</code> 호출이 복수라고 해서 항상 <code>asyncio.gather</code>로 동시 실행된다고 주장해서는 안 된다. 공급자 옵션·Tool 실행 정책·구현 방식·병렬 호출 허용 여부에 따라 달라질 수 있다. 구체적인 동시성 Primitive와 예외 전파는 [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>]의 Function Invocation 관련 구현과 해당 테스트를 읽어 확인해야 한다. <code>[UNV]</code> 이 문서는 Tool 간 동시 실행을 실제 계측하지 않았다.</p>
+<h3 id="line-310">9.2 병렬 처리에서 필요한 계약<a class="anchor" href="#line-310" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>입력 격리:</strong> Tool A와 B가 Session·메시지·전역 상태를 공유하는가?</li>
+<li><strong>결과 정렬:</strong> Tool 결과를 완료순으로 모델에 주는가, 원래 호출순으로 주는가?</li>
+<li><strong>취소:</strong> A가 실패하면 B를 취소하는가? 이미 실행된 외부 HTTP 요청은 취소되는가?</li>
+<li><strong>동시 쓰기:</strong> A/B가 같은 파일·테이블을 수정하면 누가 잠금을 소유하는가?</li>
+<li><strong>부분 성공:</strong> 결과 하나만 성공해도 다음 모델 호출을 진행하는가?</li>
+<li><strong>반복 예산:</strong> 모델 호출 수뿐 아니라 Tool 호출 수·Tool 비용도 제한하는가?</li>
+</ul>
+<p><strong>[PSEUDO] 경쟁 조건 사례:</strong></p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># 같은 세션의 counter가 0일 때 아래 두 작업을 동시 실행했다고 가정
+async def increment_A(state):
+    current = state[&#39;counter&#39;]  # 0
+    await asyncio.sleep(0)
+    state[&#39;counter&#39;] = current + 1
+
+async def increment_B(state):
+    current = state[&#39;counter&#39;]  # 0
+    await asyncio.sleep(0)
+    state[&#39;counter&#39;] = current + 1
+
+# 최종값이 2가 아니라 1이 될 수 있다.
+# MAF의 실제 구현 코드를 발췌한 것이 아닌 동시성 교육용 사례다.</code></pre></div><h3 id="line-337">9.3 리소스 소유권 원칙<a class="anchor" href="#line-337" aria-label="이 절의 고유 링크">#</a></h3><p>Tool을 병렬로 실행할 때 가장 취약한 지점은 모델의 ‘판단’이 아니라 <strong>도구의 외부 부작용</strong>이다. DB 트랜잭션, 파일 덮어쓰기, 웹훅 알림 등은 Function Invocation 계층이 원자성·멱등성을 모두 책임져 주지 않는다. 키 기반 락·DB 트랜잭션·읽기 전용 역할과 같은 외부 정책이 필요하다. [INF]</p>
+</section>
+<section class="source-section" data-source-section="10-1"><h2 id="line-341">10. Middleware: Agent / Chat / Function이 실제로 언제 도나?<a class="anchor" href="#line-341" aria-label="이 절의 고유 링크">#</a></h2><p>MAF의 Middleware는 3가지 별도 인터셉션 지점을 제공한다. [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">D01</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py">S04</a>]</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>종류</th>
+<th>호출 시점</th>
+<th>변경 가능 대상</th>
+<th>대표 목적</th>
+<th>주의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AgentMiddleware</code></td>
+<td>Agent <code>run()</code> 전후</td>
+<td>Agent 입력, 컨텍스트, 결과</td>
+<td>정책, 상위 반복, 감시</td>
+<td>Tool마다 실행되는 것은 아님</td>
+</tr>
+<tr>
+<td><code>ChatMiddleware</code></td>
+<td>ChatClient의 모델 호출 전후</td>
+<td>메시지, 모델 옵션, 응답</td>
+<td>프롬프트 수정, 비용 관리</td>
+<td>여러 Tool Loop 동안 <strong>매번</strong> 실행될 수 있음</td>
+</tr>
+<tr>
+<td><code>FunctionMiddleware</code></td>
+<td>개별 Function Tool 호출 전후</td>
+<td>인자, 실행 여부, 결과</td>
+<td>Tool 승인, 인가, 로깅</td>
+<td>일반 예외가 Tool 오류로 변환될 수 있음</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-351">10.1 <code>call_next()</code>의 의미<a class="anchor" href="#line-351" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[PSEUDO] Middleware 체인:</strong></p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code>async def middleware_A(ctx, next_call):
+    assert_policy(ctx)              # 이전
+    await next_call()               # 다음 Middleware 혹은 실제 Handler
+    audit(ctx.result)               # 이후
+
+async def middleware_B(ctx, next_call):
+    ctx.metadata[&#39;trace&#39;] = True
+    await next_call()</code></pre></div><p>실행 구조를 ‘양파 구조’라고 부를 수 있다. A가 B를 감싸고 B가 실제 Tool을 감싸면 <code>A.pre → B.pre → Tool → B.post → A.post</code>가 된다. 다만 <strong>예외·취소·스트리밍 미소비</strong>에서는 post 부분이 기대대로 실행되지 않을 수 있으므로 <code>try/finally</code> 또는 제공되는 Cleanup Hook이 필요하다.</p>
+<h3 id="line-368">10.2 정책을 어디에 놓아야 하는가?<a class="anchor" href="#line-368" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>Agent Middleware:</strong> 사용자 요청 자체의 허용 여부, 전체 요청 상한.</li>
+<li><strong>Chat Middleware:</strong> 프롬프트·컨텍스트 검증, 모델 옵션 제한.</li>
+<li><strong>Function Middleware:</strong> 실제 실행될 특정 Tool 이름·인자 검사.</li>
+<li><strong>Tool 서버/DB:</strong> 최종 인가, 네트워크·파일 접근 통제.</li>
+</ul>
+<p><strong>중요:</strong> 외부 MCP Tool이나 원격 Hosted Tool에 대해 Framework의 Function Middleware가 항상 해당 원격 실행 안쪽까지 적용된다고 가정하면 안 된다. <strong>실제 Tool이 어디에서 실행되는지</strong>가 보안 강제 경계를 결정한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-03.html"><small>이전 단원</small>← Agent 클래스의 다층 합성 외 2개 주제</a><a class="next" href="unit-05.html"><small>다음 단원</small>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제 →</a></nav><footer>Microsoft Agent Framework · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-253">8. Tool Schema, Validation, Execution, Result Conversion</a><a class="toc-depth-3" href="#line-255">8.1 FunctionTool의 책임</a><a class="toc-depth-3" href="#line-272">8.2 타입 검증과 보안 검증은 다르다</a><a class="toc-depth-3" href="#line-285">8.3 Middleware가 Arguments를 수정할 수 있다는 점</a><a class="toc-depth-3" href="#line-291">8.4 반환값의 정규화</a><a class="toc-depth-2" href="#line-297">9. Tool 병렬 처리: ‘여러 호출’과 ‘동시 실행’은 다르다</a><a class="toc-depth-3" href="#line-299">9.1 동시성의 네 층</a><a class="toc-depth-3" href="#line-310">9.2 병렬 처리에서 필요한 계약</a><a class="toc-depth-3" href="#line-337">9.3 리소스 소유권 원칙</a><a class="toc-depth-2" href="#line-341">10. Middleware: Agent / Chat / Function이 실제로 언제 도나?</a><a class="toc-depth-3" href="#line-351">10.1 callnext()의 의미</a><a class="toc-depth-3" href="#line-368">10.2 정책을 어디에 놓아야 하는가?</a></nav></aside></div></body></html>

@@ -1,0 +1,157 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Structured Output 및 EndStrategy 상세 외 1개 주제 — PydanticAI 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">P.</span><span>PydanticAI<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Core·Graph·Harness 경계</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 설계 질문 외 2개 주제</span></a><p class="nav-group">Node와 Run 수명</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 실행을 하나의 상태기계로 이해하기 외 2개 주제</span></a><p class="nav-group">모델 입력과 Provider</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt Assembly 및 최종 모델 요청 외 1개 주제</span></a><p class="nav-group">Tool 정의·검증·동시성</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 정의와 JSON Schema 변환 외 1개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Tool 병렬 실행, 장벽, 순서와 취소</span></a><p class="nav-group">Output와 Retry</p><a href="unit-07.html" aria-current="page" class="current"><span class="nav-number">07</span><span>Structured Output 및 EndStrategy 상세 외 1개 주제</span></a><p class="nav-group">Dependencies·Capabilities·승인</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Dependencies와 RunContext의 데이터 흐름 외 1개 주제</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Human-in-the-loop·Deferred Tool·복원</span></a><p class="nav-group">History·Context·외부 확장</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Message History·State·Persistence·Memory 외 2개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Multi-Agent·Graph·오케스트레이션</span></a><p class="nav-group">Serving·보안·장애</p><a href="unit-12.html" ><span class="nav-number">12</span><span>Streaming·Serving·동시 요청·취소 외 2개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>핵심 코드 추적 워크북</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>핵심 코드 추적 워크북 / W3. ToolDefinition → ToolManager → 검증</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>핵심 코드 추적 워크북 / W5. 병렬 Tool의 실행·기록·중복 방지</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>핵심 코드 추적 워크북 / W8. Capability Lifecycle + Tool 노출 정책</span></a><p class="nav-group">비교·발표·복습</p><a href="unit-17.html" ><span class="nav-number">17</span><span>다른 Agent Framework와 설계 비교</span></a><a href="unit-18.html" ><span class="nav-number">18</span><span>발표용 정리와 학습 점검 질문</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-20.html" ><span class="nav-number">20</span><span>최종 요약: PydanticAI의 진짜 설계적 특징</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python Core v2.61.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Output와 Retry</p><h1>Output와 Retry</h1><div class="chapter-meta">단원 07 · 원문 2026.10.31 · Python Core v2.61.0 · 약 8분 · 원문 619–750행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Output 확정 정책이 실제 부작용에 미치는 영향을 비교하고 Retry 계층의 요청 증폭을 분석합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>early·graceful·exhaustive의 조건과 Streaming으로 이미 확정된 출력의 차이를 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-619">12. Structured Output 및 EndStrategy 상세</a><a href="#line-621">12.1 PydanticAI가 특히 강한 이유</a><a href="#line-627">12.2 Output을 만드는 여러 경로</a><a href="#line-643">12.3 제일 중요한 EndStrategy — v2.61.0 정확한 의미</a><a href="#line-662">12.4 실제 판단 사고 실험</a><a href="#line-678">12.5 Output Validator의 정확성과 한계</a><a href="#line-700">13. Retry의 계층과 실제 네트워크 호출 증폭</a><a href="#line-702">13.1 Retry를 하나로 묶으면 위험하다</a><a href="#line-715">13.2 요청 증폭의 이해</a><a href="#line-725">13.3 모델 요청 횟수와 비용 계상</a><a href="#line-738">13.4 재시도와 멱등성</a></nav></details><section class="source-section" data-source-section="12-1"><h2 id="line-619">12. Structured Output 및 EndStrategy 상세<a class="anchor" href="#line-619" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-621">12.1 PydanticAI가 특히 강한 이유<a class="anchor" href="#line-621" aria-label="이 절의 고유 링크">#</a></h3><p>자유 텍스트 결과뿐 아니라 Python 타입/Pydantic Model로 Output을 선언하고 실행 중 검증할 수 있다. 그러나 이것은 기본적으로 <strong>출력 형식과 선언된 제약을 검증</strong>하는 능력이다.</p>
+<p><code>[DOC]</code> <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/core-concepts/output/">Output</a>, <code>[SRC]</code> <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_output.py"><code>_output.py</code></a>.</p>
+<h3 id="line-627">12.2 Output을 만드는 여러 경로<a class="anchor" href="#line-627" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><code>ToolOutput</code>: 모델이 최종 값 전달용 출력 Tool을 호출하는 방식.</li>
+<li><code>NativeOutput</code>: 지원 제공자의 구조화 출력 기능으로 Schema를 전달.</li>
+<li><code>PromptedOutput</code>: 프롬프트에 Schema/형식을 안내한 뒤 텍스트를 파싱.</li>
+<li><code>TextOutput</code>: 자유 텍스트 또는 가공된 텍스트를 반환하는 방식.</li>
+</ul>
+<p>기술적 의미:</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>방식</th>
+<th>장점</th>
+<th>주의점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Output Tool</td>
+<td>Function Tool 호출 메커니즘 활용</td>
+<td>모델·Provider가 Tool Call을 잘 지원해야 함</td>
+</tr>
+<tr>
+<td>Native</td>
+<td>Provider가 구조화 출력 형식을 지원</td>
+<td>특정 Provider/Model 기능에 의존</td>
+</tr>
+<tr>
+<td>Prompted</td>
+<td>모델 API 기능이 제한돼도 시도 가능</td>
+<td>JSON 파싱·형식 실패 대응 필요</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>가장 범용적</td>
+<td>구조화 스키마 검증 범위 제한</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-643">12.3 제일 중요한 <code>EndStrategy</code> — v2.61.0 정확한 의미<a class="anchor" href="#line-643" aria-label="이 절의 고유 링크">#</a></h3><p><code>[SRC]</code> <code>_agent_graph.py</code>에 <code>EndStrategy = Literal[&#39;early&#39;, &#39;graceful&#39;, &#39;exhaustive&#39;]</code>가 정의되어 있으며 **기본값은 <code>graceful</code>**이라고 설명한다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>전략</th>
+<th>최종 Output과 Function Tool이 함께 나올 때</th>
+<th>핵심 설계 목적</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>early</code></td>
+<td>유효한 최종 구조화 Output 우선. Function Tool을 건너뛸 수 있음</td>
+<td>불필요한 부작용과 추가 Tool 실행 방지</td>
+</tr>
+<tr>
+<td><code>graceful</code> (기본)</td>
+<td>모델이 낸 순서를 존중. Output Tool 전에 나온 Function Tool은 실행; 첫 유효 Output 우선</td>
+<td>출력 이전 작업의 순서·부작용 존중</td>
+</tr>
+<tr>
+<td><code>exhaustive</code></td>
+<td>가능한 Tool들을 전부 실행(기본 병렬; barrier 사용 가능), 출력은 모델 방출 순서의 유효한 것을 선택</td>
+<td>요청된 Tool들을 최대한 빠짐없이 실행</td>
+</tr>
+</tbody></table>
+</div><p><strong>세부 주의:</strong></p>
+<ul>
+<li><code>early</code>에서도 <strong>일반 자유 텍스트</strong>는 무조건 Function Tool을 건너뛰고 바로 종료하는 신호가 아니다. 구조화 Output과 구별된다.</li>
+<li><code>graceful</code>에서 앞선 Tool이 <code>ModelRetry</code>를 발생시키면 이미 나온 Output을 채택하지 않고 모델 수정 요청이 우선할 수 있다.</li>
+<li><code>exhaustive</code>에서는 Output이 유효해도 다른 Tool을 계속 실행하므로 Side Effect 위험을 검토해야 한다.</li>
+<li>일부 Streaming 경로에서는 이미 소비자에게 Commit된 Final Output을 이후의 Retry 신호가 되돌릴 수 없는 상황을 별도 코드로 다룬다.</li>
+</ul>
+<p><code>[SRC]</code> <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py">EndStrategy source</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py"><code>process_tool_calls</code> and related executor</a>.</p>
+<h3 id="line-662">12.4 실제 판단 사고 실험<a class="anchor" href="#line-662" aria-label="이 절의 고유 링크">#</a></h3><p>모델 응답이 다음 순서로 왔다고 가정한다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>1. write_log(&quot;analysis started&quot;)      # function tool
+2. submit_final_report({...})         # output tool
+3. publish_result(&quot;external&quot;)        # function tool</code></pre></div><ul>
+<li><code>early</code>: 유효한 Output을 바로 선택하면 Function Tool이 실행되지 않을 수 있다.</li>
+<li><code>graceful</code>: Output 전에 있는 <code>write_log</code>는 실행되지만, 이후 <code>publish_result</code>는 실행되지 않을 수 있다.</li>
+<li><code>exhaustive</code>: <code>write_log</code>와 <code>publish_result</code> 모두 실행될 수 있다.</li>
+</ul>
+<p><strong>주의:</strong> 이는 정책 비교를 위한 예제다. 실제 실행 세부 분기는 Validator 성공/실패, Retry, Deferred Tool, Sequential Barrier와 Streaming 조건에 따라 달라진다.</p>
+<h3 id="line-678">12.5 Output Validator의 정확성과 한계<a class="anchor" href="#line-678" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>from pydantic import BaseModel, Field
+
+class AnalysisResult(BaseModel):
+    count: int = Field(ge=0)
+    mean: float
+    unit: str</code></pre></div><p>Pydantic 검증으로 가능한 것은 <code>count</code>가 음수가 아닌지, <code>mean</code>이 숫자인지, 필수 필드가 있는지 같은 조건이다. 다음 사실은 단순 타입 선언으로 검증할 수 없다.</p>
+<ul>
+<li>데이터베이스의 행 개수를 실제로 세었는가?</li>
+<li><code>mean</code>이 올바른 열에서 계산되었는가?</li>
+<li>단위가 원본 데이터와 일치하는가?</li>
+<li>통계적으로 의미 있는 분석인가?</li>
+</ul>
+<p>이러한 내용은 데이터 출처 증명, 외부 계산값 재검산, 업무 규칙, 테스트, 평가가 필요하다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-section="13-1"><h2 id="line-700">13. Retry의 계층과 실제 네트워크 호출 증폭<a class="anchor" href="#line-700" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-702">13.1 Retry를 하나로 묶으면 위험하다<a class="anchor" href="#line-702" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>Retry 계층</th>
+<th>무엇을 해결?</th>
+<th>누가 제어?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Schema/Output Retry</td>
+<td>최종 결과 형식 또는 Validator 오류</td>
+<td>Agent Graph/Output</td>
+</tr>
+<tr>
+<td>Tool Retry</td>
+<td>잘못된 Tool 인자·Tool 재시도 신호</td>
+<td>ToolManager/Agent Loop</td>
+</tr>
+<tr>
+<td>Provider Model Fallback</td>
+<td>모델별 가용성/오류</td>
+<td>Model abstraction/config</td>
+</tr>
+<tr>
+<td>Provider SDK Retry</td>
+<td>HTTP 429/5xx 등의 요청 실패</td>
+<td>SDK 설정</td>
+</tr>
+<tr>
+<td>Transport Retry</td>
+<td>연결 재시도/하위 HTTP 동작</td>
+<td>네트워크 클라이언트</td>
+</tr>
+<tr>
+<td>App Retry</td>
+<td>전체 Agent Run을 다시 실행</td>
+<td>호출자/API/Worker</td>
+</tr>
+</tbody></table>
+</div><p><code>[DOC]</code> 공식 <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/core-concepts/retries/">Retries</a>는 위 계층이 중첩될 수 있으며, 한 레이어의 요청 한도가 전체 Wire-level 요청 상한과 같지 않음을 설명한다.</p>
+<h3 id="line-715">13.2 요청 증폭의 이해<a class="anchor" href="#line-715" aria-label="이 절의 고유 링크">#</a></h3><p>예를 들어 Agent Output 수정을 위해 최대 3회 모델 요청하고, 제공자 SDK에서 같은 요청을 최대 3회, HTTP Transport에서 최대 2회 전송한다고 가정하자.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>최대 wire request (개념 예시) = 3 × 3 × 2 = 18</code></pre></div><p>Fallback 모델을 추가한다면 더 커질 수 있다. 단, 실제 요청 수는 어느 단계에서 실패했는지, 스트리밍, 중단 시점, 재시도 가능한 오류인지에 따라 달라진다.</p>
+<h3 id="line-725">13.3 모델 요청 횟수와 비용 계상<a class="anchor" href="#line-725" aria-label="이 절의 고유 링크">#</a></h3><p>UsageLimits의 <code>request_limit</code>와 Provider 하위 Retry 횟수는 같은 지표가 아니다. 토큰이 실제로 생성되고 Provider가 보고한 사용량은 비용에 반영될 수 있지만, 네트워크 차원에서 실패한 모든 호출을 Core가 완전히 계상한다는 보장은 없다.</p>
+<p>분석·운영 시 별도 추적:</p>
+<ul>
+<li>Agent 논리 Step 수</li>
+<li>모델 최종 응답 수</li>
+<li>실제 HTTP 전송 수</li>
+<li>Token Input/Output, Cache Read/Write</li>
+<li>Tool 호출 횟수 및 외부 부작용 발생 수</li>
+<li>전체 Run 재시도 횟수</li>
+</ul>
+<h3 id="line-738">13.4 재시도와 멱등성<a class="anchor" href="#line-738" aria-label="이 절의 고유 링크">#</a></h3><p>중요한 비즈니스 작업은 &#39;AI가 두 번 실행해도 문제가 없다&#39;고 가정하지 말아야 한다.</p>
+<ul>
+<li>동일 작업 ID를 재사용해 중복을 감지.</li>
+<li>DB Insert는 Unique Constraint, UPSERT/Transaction으로 보호.</li>
+<li>외부 API는 Idempotency Key 사용 가능성 확인.</li>
+<li>승인 재개 시 같은 ToolCall ID의 중복 실행 여부 확인.</li>
+<li>재실행 전 원격 상태 조회 또는 보상 로직 준비.</li>
+</ul>
+<p>PydanticAI가 Tool을 다시 시도하는 기능을 제공해도 DB의 정확히 한 번 처리(Exactly Once)를 자동 제공하는 것은 아니다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-06.html"><small>이전 단원</small>← Tool 병렬 실행, 장벽, 순서와 취소</a><a class="next" href="unit-08.html"><small>다음 단원</small>Dependencies와 RunContext의 데이터 흐름 외 1개 주제 →</a></nav><footer>PydanticAI · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-619">12. Structured Output 및 EndStrategy 상세</a><a class="toc-depth-2" href="#line-621">12.1 PydanticAI가 특히 강한 이유</a><a class="toc-depth-2" href="#line-627">12.2 Output을 만드는 여러 경로</a><a class="toc-depth-2" href="#line-643">12.3 제일 중요한 EndStrategy — v2.61.0 정확한 의미</a><a class="toc-depth-2" href="#line-662">12.4 실제 판단 사고 실험</a><a class="toc-depth-2" href="#line-678">12.5 Output Validator의 정확성과 한계</a><a class="toc-depth-1" href="#line-700">13. Retry의 계층과 실제 네트워크 호출 증폭</a><a class="toc-depth-2" href="#line-702">13.1 Retry를 하나로 묶으면 위험하다</a><a class="toc-depth-2" href="#line-715">13.2 요청 증폭의 이해</a><a class="toc-depth-2" href="#line-725">13.3 모델 요청 횟수와 비용 계상</a><a class="toc-depth-2" href="#line-738">13.4 재시도와 멱등성</a></nav></aside></div></body></html>

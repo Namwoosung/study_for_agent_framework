@@ -1,0 +1,103 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Prompt 조립: &#39;최종 모델 입력&#39;의 정체 — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" aria-current="page" class="current"><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" ><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" ><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" ><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 모델 입력·캐시·압축</p><h1>모델 입력·캐시·압축</h1><div class="chapter-meta">단원 04 · 원문 2026.10.31 · Hermes v0.22.5 · 약 5분 · 원문 259–338행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>시스템 스냅샷과 대화·도구 스키마가 요청으로 조립되는 과정을 읽습니다. Prefix 계산 재사용과 메시지 압축은 서로 다른 문제를 풉니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>캐시가 유지되는 구간, 압축 후 잃는 정보와 Tool Call/Result 짝을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-259">5. Prompt 조립: &#39;최종 모델 입력&#39;의 정체</a><a href="#line-261">5.1 왜 Prompt를 하나의 거대한 문자열로 이해하면 안 될까?</a><a href="#line-276">5.2 프로젝트 Instruction 파일의 우선순위</a><a href="#line-289">5.3 모델 입력을 역추적하는 방법</a><a href="#line-313">5.4 학습용 최종 입력 예시 (실제 캡처 아님)</a><a href="#line-330">5.5 설계 Trade-off</a></nav></details><section class="source-section" data-source-section="5-1"><h2 id="line-259">5. Prompt 조립: &#39;최종 모델 입력&#39;의 정체<a class="anchor" href="#line-259" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-261">5.1 왜 Prompt를 하나의 거대한 문자열로 이해하면 안 될까?<a class="anchor" href="#line-261" aria-label="이 절의 고유 링크">#</a></h3><p>실제 모델 요청은 일반적으로 <strong>시스템 지침·대화 메시지·Tool Schema·Provider 옵션</strong>의 조합이다. <code>MEMORY.md</code>와 Skill 목록도 역할에 따라 시스템 블록 또는 대화 메시지로 들어가며, 일부 동적 부가 정보는 API 호출 직전에 덧붙는다. &#39;모델이 어떤 정보를 받는가&#39;를 알고 싶다면 파일별 존재 여부만이 아니라 <strong>최종 API Payload의 어느 필드에 넣는가</strong>를 따라가야 한다.</p>
+<p><strong>[DOC]</strong> 공식 Prompt Assembly 문서는 캐시 가능한 시스템 프롬프트를 세 층으로 나눈다.</p>
+<ol>
+<li><strong>Stable</strong> — 기본 정체성, Tool/모델 가이드, 코딩 원칙 등의 장기 고정 정보.</li>
+<li><strong>Context</strong> — 호출자 입력 시스템 메시지, 프로젝트 규칙 파일, 작업 공간 힌트 등.</li>
+<li><strong>Volatile</strong> — Skill 인덱스, 기본 메모리/사용자 프로필 스냅샷, 외부 Memory 블록, 타임스탬프 및 환경 힌트 등.</li>
+</ol>
+<p>여기서 <strong>volatile은 &#39;각 API 호출마다 무조건 다시 계산한다&#39;라는 의미가 아니다.</strong> 실제로는 <strong>세션의 시스템 프롬프트를 안정화</strong>해 놓고, 자주 변하는 정보와 요청별 일시적 정보를 구분하여 Prefix Cache를 유지하려는 전략이다.</p>
+<p>관련 문서: <a target="_blank" rel="noopener noreferrer" href="https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly">https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly</a><br>코드: <a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/prompt_builder.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/prompt_builder.py</a></p>
+<h3 id="line-276">5.2 프로젝트 Instruction 파일의 우선순위<a class="anchor" href="#line-276" aria-label="이 절의 고유 링크">#</a></h3><p>공식 문서 기준, 프로젝트 Context는 모든 파일을 무작정 합치는 것이 아니라 <strong>형식별 우선순위</strong>를 적용한다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>우선순위</th>
+<th>대상</th>
+<th>탐색 범위</th>
+<th>학습 포인트</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>.hermes.md</code> / <code>HERMES.md</code></td>
+<td>현재 경로에서 Git 루트 방향</td>
+<td>Hermes 고유 규칙 우선</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>AGENTS.md</code></td>
+<td>시작 CWD 기준</td>
+<td>범용 Agent 규칙 호환</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>CLAUDE.md</code></td>
+<td>시작 CWD 기준</td>
+<td>Claude Code 규칙 호환</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>.cursorrules</code> / <code>.cursor/rules/*.mdc</code></td>
+<td>시작 CWD</td>
+<td>다른 도구 규칙 호환</td>
+</tr>
+</tbody></table>
+</div><p><code>SOUL.md</code>는 별도의 정체성 슬롯에서 읽으며 중복 주입을 방지한다. 보안 검사와 길이 제한을 적용하는 로직도 있다. 하위 디렉터리 규칙은 별도의 점진적 발견 경로로 처리한다. <strong>&#39;AGENTS.md가 있으면 CLAUDE.md도 모두 동일한 레벨로 더해진다&#39;고 가정하지 말 것.</strong> [DOC]</p>
+<h3 id="line-289">5.3 모델 입력을 역추적하는 방법<a class="anchor" href="#line-289" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>사용자 질문
+  + 현재 세션의 이전 messages
+  + system-prompt tiers (stable/context/volatile snapshot)
+  + 동적으로 노출된 tools JSON Schema
+  + Provider별 API 옵션·모델 ID
+  + (있는 경우) 호출 시점의 일시적 메시지/압축 summary/Tool 결과
+       |
+       v
+  Request Assembly + Provider Adapter + Cache Marker
+       |
+       v
+   실제 API Payload</code></pre></div><p>여기서 중요한 연구 질문은 다음과 같다.</p>
+<ul>
+<li><strong>Prompt Builder의 문자열이 생성되는 시점</strong>과 <strong>마지막 API 요청 직전</strong>의 구성은 같은가?</li>
+<li>Tool Schema는 모델이 볼 수 있어도 Tool 결과가 자동으로 보이는 것은 아니다. <strong>실제 Tool Call이 실행되어야 결과가 메시지에 추가</strong>된다.</li>
+<li>Skill 인덱스와 Skill 본문은 다른 것이다. 본문은 <code>skill_view</code>, 명시적 실행 또는 auto-load 등에 따라 제공된다.</li>
+<li><code>session_search</code> 결과는 호출해 검색할 때에만 현재 모델 문맥에 들어온다. DB에 저장돼 있다는 사실 자체가 모델의 가시성을 보장하지 않는다.</li>
+</ul>
+<h3 id="line-313">5.4 학습용 최종 입력 예시 (실제 캡처 아님)<a class="anchor" href="#line-313" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>{
+  &quot;model&quot;: &quot;some-provider-model&quot;,
+  &quot;messages&quot;: [
+    {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;&lt;identity / project context / memory snapshot / skills index&gt;&quot;},
+    {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;이전에 작업한 내용을 찾아 설명해줘&quot;},
+    {&quot;role&quot;: &quot;assistant&quot;, &quot;tool_calls&quot;: [{&quot;id&quot;: &quot;t1&quot;, &quot;function&quot;: {&quot;name&quot;: &quot;session_search&quot;, &quot;arguments&quot;: &quot;{...}&quot;}}]},
+    {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: &quot;t1&quot;, &quot;content&quot;: &quot;&lt;검색된 과거 세션 일부&gt;&quot;}
+  ],
+  &quot;tools&quot;: [{&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: {&quot;name&quot;: &quot;session_search&quot;, &quot;parameters&quot;: {&quot;type&quot;: &quot;object&quot;}}}]
+}</code></pre></div><p>위 JSON은 <strong>이해를 돕는 추상 예시</strong>다. 실제 API 형태는 OpenAI Chat Completions, Anthropic Native, Responses 등 Provider 모드에 따라 달라진다. <code>cache_control</code> 표시 역시 지원 Provider/Adapter에서만 적용된다.</p>
+<h3 id="line-330">5.5 설계 Trade-off<a class="anchor" href="#line-330" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>선택</th>
+<th>이점</th>
+<th>비용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모든 정보를 System에 항상 넣기</td>
+<td>LLM이 놓칠 가능성 감소</td>
+<td>Token 낭비·Cache 불안정·권한 정보 노출 위험</td>
+</tr>
+<tr>
+<td>고정 System + 선택적 Tool 검색</td>
+<td>긴 세션·큰 지식베이스에 유리</td>
+<td>검색 실패·지식 누락 가능성</td>
+</tr>
+<tr>
+<td>Skill 설명만 초기 주입</td>
+<td>많은 Skill의 검색 가능성, Token 절약</td>
+<td>적절한 Skill을 LLM이 선택할 필요</td>
+</tr>
+<tr>
+<td>자주 변하는 정보를 매 호출 삽입</td>
+<td>최신성 개선</td>
+<td>Cached Prefix와 충돌 가능</td>
+</tr>
+</tbody></table>
+</div></section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-03.html"><small>이전 단원</small>← 사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</a><a class="next" href="unit-05.html"><small>다음 단원</small>Prefix Caching: 매번 보내는데 왜 절약되는가? →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-259">5. Prompt 조립: &#39;최종 모델 입력&#39;의 정체</a><a class="toc-depth-2" href="#line-261">5.1 왜 Prompt를 하나의 거대한 문자열로 이해하면 안 될까?</a><a class="toc-depth-2" href="#line-276">5.2 프로젝트 Instruction 파일의 우선순위</a><a class="toc-depth-2" href="#line-289">5.3 모델 입력을 역추적하는 방법</a><a class="toc-depth-2" href="#line-313">5.4 학습용 최종 입력 예시 (실제 캡처 아님)</a><a class="toc-depth-2" href="#line-330">5.5 설계 Trade-off</a></nav></aside></div></body></html>

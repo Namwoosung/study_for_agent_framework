@@ -1,0 +1,241 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>실행 실패 시나리오 24개 외 1개 주제 — Google ADK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">G.</span><span>Google ADK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 진입</p><a href="unit-02.html" ><span class="nav-number">02</span><span>ADK는 SDK인가, Framework인가, Harness인가? 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>InvocationContext·Session·Event를 분리해서 생각하기</span></a><p class="nav-group">Loop와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다 외 4개 주제</span></a><p class="nav-group">Tool 준비·병렬·실패</p><a href="unit-05.html" ><span class="nav-number">05</span><span>FunctionTool: Python 함수가 모델 Tool이 되는 과정 외 2개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>병렬 Tool과 병렬 Agent는 같은 것이 아니다</span></a><p class="nav-group">Event와 상태 저장</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Event.isfinalresponse()의 정밀한 정의 외 3개 주제</span></a><p class="nav-group">Cache·압축·검색</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가? 외 2개 주제</span></a><p class="nav-group">협업·Graph·복구</p><a href="unit-09.html" ><span class="nav-number">09</span><span>기존 Template Workflow는 어떤 구조였나? 외 3개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Workflow의 Checkpoint는 ‘완전한 프로세스 스냅샷’인가? 외 1개 주제</span></a><p class="nav-group">확장·운영·실패</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Callback·Plugin은 Guardrail인가, Hook인가? 외 2개 주제</span></a><a href="unit-12.html" aria-current="page" class="current"><span class="nav-number">12</span><span>실행 실패 시나리오 24개 외 1개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적의 원칙</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적의 원칙 / WB-05. 병렬 Tool에서 한 호출만 실패한다면?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적의 원칙 / WB-10. Workflow Checkpoint에 무엇이 남는가?</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>7개 기술과 ADK의 실제 설계 차이 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>자가 점검 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>버전 고정 공개 소스코드 외 2개 주제</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python ADK v2.13.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 확장·운영·실패</p><h1>확장·운영·실패</h1><div class="chapter-meta">단원 12 · 원문 2026.10.31 · Python ADK v2.13.0 · 약 7분 · 원문 863–940행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Callback·Plugin·MCP·Skills·Serving의 경계를 나누고 실패 사례를 관측 지표와 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Cron Trigger와 실행 지속성, Trace와 평가를 같은 기능으로 보지 마세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-865">31. 실행 실패 시나리오 24개</a><a href="#line-896">대표 사례 A: 부분 성공을 보존하지만 외부 부작용은 남는다</a><a href="#line-907">대표 사례 B: Prompt Caching과 Compaction을 동시에 켜면?</a><a href="#line-917">대표 사례 C: HITL이 있다고 자동으로 안전한가?</a><a href="#line-921">32. 재현성·관찰성 측정 항목</a></nav></details><section class="source-section" data-source-section="31-1"><p class="part-divider" id="line-863">Part VII. 실패를 통해 구조를 이해하기</p><h2 id="line-865">31. 실행 실패 시나리오 24개<a class="anchor" href="#line-865" aria-label="이 절의 고유 링크">#</a></h2><p>다음은 <strong>문서·소스에 드러난 제약에서 유도한 검토 과제</strong>다. 소스 확인 없이 실제 발생 빈도나 피해 확률을 단정하지 않는다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>번호</th>
+<th>장애/경계 상황</th>
+<th>원인이 발생하는 계층</th>
+<th>확인할 구현·대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F01</td>
+<td>모델이 존재하지 않는 Tool 이름 생성</td>
+<td>FunctionCall Lookup</td>
+<td><code>_prepare_single</code>, before-tool fallback 가능 여부</td>
+</tr>
+<tr>
+<td>F02</td>
+<td>Tool 인자 누락 또는 타입 불일치</td>
+<td>FunctionTool</td>
+<td><code>run_async</code> validation error 반환, 모델 수정 여부</td>
+</tr>
+<tr>
+<td>F03</td>
+<td>첫 번째 Tool 성공, 두 번째 실패</td>
+<td>Batch Executor</td>
+<td>완료된 결과 보존, 형제 Task 취소</td>
+</tr>
+<tr>
+<td>F04</td>
+<td>Python Task 취소 후 외부 API는 진행</td>
+<td>Tool/Network</td>
+<td>외부 idempotency key, 상태 조회</td>
+</tr>
+<tr>
+<td>F05</td>
+<td>두 병렬 Tool이 같은 외부 행을 변경</td>
+<td>External DB</td>
+<td>동시성 제어/트랜잭션/Lock</td>
+</tr>
+<tr>
+<td>F06</td>
+<td>두 병렬 Tool이 동일 State Key를 갱신</td>
+<td>ToolContext/State Delta</td>
+<td>병합 순서·충돌 정책</td>
+</tr>
+<tr>
+<td>F07</td>
+<td>Streaming Client가 중간에 연결 종료</td>
+<td>Runner/Event Stream</td>
+<td><code>abort_signal</code>, generator cleanup</td>
+</tr>
+<tr>
+<td>F08</td>
+<td>Partial Event를 Session 기록으로 오해</td>
+<td>SessionService</td>
+<td><code>append_event</code>의 partial 분기</td>
+</tr>
+<tr>
+<td>F09</td>
+<td>오래된 Session 객체로 새 Event append</td>
+<td>Persistent SessionService</td>
+<td><code>StaleSessionError</code>, 동시 쓰기 감지</td>
+</tr>
+<tr>
+<td>F10</td>
+<td><code>temp:</code> State를 영구 복원된다고 가정</td>
+<td>State Scope</td>
+<td>임시 delta 제거 여부</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>한 Agent의 final을 전체 완료로 표시</td>
+<td>Multi-Agent Event</td>
+<td><code>is_final_response</code>의 Agent 범위</td>
+</tr>
+<tr>
+<td>F12</td>
+<td>Compaction이 근거 수치·Tool 결과를 생략</td>
+<td>Context Management</td>
+<td>원본 Event/Artifact 유지와 요약 검증</td>
+</tr>
+<tr>
+<td>F13</td>
+<td>Dynamic Prompt 변화로 Cache miss</td>
+<td>Model/Cache</td>
+<td>Cache token/TTL/Prefix 안정성 추적</td>
+</tr>
+<tr>
+<td>F14</td>
+<td>MCP Tool 서버가 악성 텍스트를 반환</td>
+<td>Tool trust boundary</td>
+<td>도구 출력 검증 및 Instruction 격리</td>
+</tr>
+<tr>
+<td>F15</td>
+<td>Callback을 달았지만 우회 Tool 실행 경로 존재</td>
+<td>Guardrail Policy</td>
+<td>모든 Tool 래핑·권한 검사 위치</td>
+</tr>
+<tr>
+<td>F16</td>
+<td>승인된 Tool을 다른 인자로 재실행</td>
+<td>HITL/Resume</td>
+<td>승인 Scope 바인딩, Tool call ID</td>
+</tr>
+<tr>
+<td>F17</td>
+<td>Workflow Node가 부작용 후 실패</td>
+<td>Workflow Retry</td>
+<td>Resume 시 중복 수행 방지</td>
+</tr>
+<tr>
+<td>F18</td>
+<td>Workflow Node 완료 Event 기록 전 서버 다운</td>
+<td>Checkpoint/Replay</td>
+<td>완료 기록의 원자성 경계</td>
+</tr>
+<tr>
+<td>F19</td>
+<td>ParallelAgent 하위 하나 오류</td>
+<td>Agent TaskGroup</td>
+<td>Queue 오류 전달 및 형제 취소</td>
+</tr>
+<tr>
+<td>F20</td>
+<td>Graph Join에 한 Branch 출력 누락</td>
+<td>Trigger/Scheduler</td>
+<td>Wait/Route/Barrier 정의</td>
+</tr>
+<tr>
+<td>F21</td>
+<td>긴 Session을 매 요청 전체 로딩</td>
+<td>SessionService</td>
+<td>GetSessionConfig, Compaction, 지연</td>
+</tr>
+<tr>
+<td>F22</td>
+<td>Callback이 예외를 삼켜 Tool 실패가 성공처럼 보임</td>
+<td>Plugin/Error handling</td>
+<td>로그/예외 전파/재시도 정책</td>
+</tr>
+<tr>
+<td>F23</td>
+<td>Model Provider 교체 후 FunctionCall 형식 다름</td>
+<td>Model Adapter</td>
+<td>모델별 Schema·Streaming·Tool compatibility</td>
+</tr>
+<tr>
+<td>F24</td>
+<td>Cron 중복 트리거로 같은 Invocation 여러 번 시작</td>
+<td>External Scheduler</td>
+<td>Lease/중복 검사/멱등 키</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-896">대표 사례 A: 부분 성공을 보존하지만 외부 부작용은 남는다<a class="anchor" href="#line-896" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li>모델은 한 번에 조회 Tool 2개와 수정 Tool 1개를 호출한다.</li>
+<li>Batch Executor가 병렬 실행한다.</li>
+<li>수정 Tool이 먼저 서버에서 커밋되지만 FunctionResponse Event는 아직 Session에 저장되지 않는다.</li>
+<li>다른 Tool의 Exception으로 Batch가 실패하며 나머지 Task가 Cancel된다.</li>
+<li>SDK가 이미 완료한 일부 결과를 <code>kept_event</code>로 보존할 수 있다.</li>
+<li>다시 실행할 때 수정 Tool이 또 실행되면 외부 데이터가 중복 변경될 수 있다.</li>
+</ol>
+<p><strong>교훈:</strong> Event 로그는 <strong>관찰/복원</strong>에 도움을 줄 수 있지만 외부 시스템의 분산 트랜잭션 관리나 Exactly-once를 자동 대체하지 않는다.</p>
+<h3 id="line-907">대표 사례 B: Prompt Caching과 Compaction을 동시에 켜면?<a class="anchor" href="#line-907" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li>모델 호출 A와 B는 큰 공통 Instruction을 공유하여 동일 Prefix 캐시 재사용 가능성이 있다.</li>
+<li>대화가 길어져 Context Compaction이 트리거된다.</li>
+<li>오래된 Raw Events가 요약된 형태로 요청에 재구성된다.</li>
+<li>모델 입력이 과거와 달라져 Cache Hit 구간이 달라질 수 있다.</li>
+<li>비용/지연 절감은 Cache/Compaction 각각의 Token Usage와 호출 타이밍을 계측해야 판단된다.</li>
+</ol>
+<p><strong>교훈:</strong> 둘은 모두 비용 최적화 계열이지만 <strong>동일한 기능이 아니며 상호 간섭할 수 있다</strong>.</p>
+<h3 id="line-917">대표 사례 C: HITL이 있다고 자동으로 안전한가?<a class="anchor" href="#line-917" aria-label="이 절의 고유 링크">#</a></h3><p>승인 대기가 있더라도 이전 Tool에서 이미 민감 데이터를 조회했을 수 있고, 승인 대기 이전에 호출된 비동기 Tool이 실행 중일 수 있다. 따라서 보안 설계에서는 <strong>모든 위험 Tool의 실행 직전에 강제되는 인증·권한 검사</strong>가 우선이다. 승인 Hook/Callback은 보조 기제다.</p>
+</section>
+<section class="source-section" data-source-section="32-1"><h2 id="line-921">32. 재현성·관찰성 측정 항목<a class="anchor" href="#line-921" aria-label="이 절의 고유 링크">#</a></h2><p>실행 실험은 이번 범위에서 제외하지만, 코드 구조의 이해와 발표 설득력을 위해 어떤 값이 필요한지는 정리한다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>관찰 값</th>
+<th>왜 필요한가?</th>
+<th>정보 원천</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Invocation / Session ID</td>
+<td>여러 요청과 상태 연결</td>
+<td>Runner / Event</td>
+</tr>
+<tr>
+<td>Agent/Node 경로</td>
+<td>어디서 판단했는지</td>
+<td>Event <code>NodeInfo</code>, branch</td>
+</tr>
+<tr>
+<td>모델명·버전</td>
+<td>재현성과 품질 편차</td>
+<td>Model Adapter config</td>
+</tr>
+<tr>
+<td>ToolCall ID·인자</td>
+<td>실제 부작용과 연결</td>
+<td>FunctionCall Event</td>
+</tr>
+<tr>
+<td>Tool 반환·오류</td>
+<td>실패/부분 성공 분석</td>
+<td>FunctionResponse Event</td>
+</tr>
+<tr>
+<td>Pre/Post Callback 결과</td>
+<td>정책 우회·차단 확인</td>
+<td>Plugin/Tracing</td>
+</tr>
+<tr>
+<td>Prompt Tokens / Cached Tokens</td>
+<td>비용과 캐싱 분석</td>
+<td>Provider Usage</td>
+</tr>
+<tr>
+<td>Compaction 발생·요약 범위</td>
+<td>Context 변화 설명</td>
+<td>Session/Event/Telemetry</td>
+</tr>
+<tr>
+<td>Node 상태 전이</td>
+<td>Workflow 복원 분석</td>
+<td>NodeStatus, checkpoint events</td>
+</tr>
+<tr>
+<td>취소·재시도 시각</td>
+<td>중복 호출 판단</td>
+<td>Task logs/Worker logs</td>
+</tr>
+<tr>
+<td>외부 멱등 키</td>
+<td>실제 부작용 중복 방지</td>
+<td>Business Tool/외부 API</td>
+</tr>
+</tbody></table>
+</div><p><strong>질문:</strong> 같은 User Prompt, 같은 Tool 출력, 같은 모델이더라도 Event Ordering과 대화 Compaction이 다르면 실제 다음 모델 요청이 달라질 수 있다. &#39;LLM Temperature=0&#39;만으로 전체 Agent 실행 재현성이 보장되지 않는다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-11.html"><small>이전 단원</small>← Callback·Plugin은 Guardrail인가, Hook인가? 외 2개 주제</a><a class="next" href="unit-13.html"><small>다음 단원</small>코드 추적의 원칙 →</a></nav><footer>Google ADK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-865">31. 실행 실패 시나리오 24개</a><a class="toc-depth-3" href="#line-896">대표 사례 A: 부분 성공을 보존하지만 외부 부작용은 남는다</a><a class="toc-depth-3" href="#line-907">대표 사례 B: Prompt Caching과 Compaction을 동시에 켜면?</a><a class="toc-depth-3" href="#line-917">대표 사례 C: HITL이 있다고 자동으로 안전한가?</a><a class="toc-depth-2" href="#line-921">32. 재현성·관찰성 측정 항목</a></nav></aside></div></body></html>

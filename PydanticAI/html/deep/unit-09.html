@@ -1,0 +1,69 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Human-in-the-loop·Deferred Tool·복원 — PydanticAI 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">P.</span><span>PydanticAI<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Core·Graph·Harness 경계</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 설계 질문 외 2개 주제</span></a><p class="nav-group">Node와 Run 수명</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 실행을 하나의 상태기계로 이해하기 외 2개 주제</span></a><p class="nav-group">모델 입력과 Provider</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt Assembly 및 최종 모델 요청 외 1개 주제</span></a><p class="nav-group">Tool 정의·검증·동시성</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 정의와 JSON Schema 변환 외 1개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Tool 병렬 실행, 장벽, 순서와 취소</span></a><p class="nav-group">Output와 Retry</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Structured Output 및 EndStrategy 상세 외 1개 주제</span></a><p class="nav-group">Dependencies·Capabilities·승인</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Dependencies와 RunContext의 데이터 흐름 외 1개 주제</span></a><a href="unit-09.html" aria-current="page" class="current"><span class="nav-number">09</span><span>Human-in-the-loop·Deferred Tool·복원</span></a><p class="nav-group">History·Context·외부 확장</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Message History·State·Persistence·Memory 외 2개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Multi-Agent·Graph·오케스트레이션</span></a><p class="nav-group">Serving·보안·장애</p><a href="unit-12.html" ><span class="nav-number">12</span><span>Streaming·Serving·동시 요청·취소 외 2개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>핵심 코드 추적 워크북</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>핵심 코드 추적 워크북 / W3. ToolDefinition → ToolManager → 검증</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>핵심 코드 추적 워크북 / W5. 병렬 Tool의 실행·기록·중복 방지</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>핵심 코드 추적 워크북 / W8. Capability Lifecycle + Tool 노출 정책</span></a><p class="nav-group">비교·발표·복습</p><a href="unit-17.html" ><span class="nav-number">17</span><span>다른 Agent Framework와 설계 비교</span></a><a href="unit-18.html" ><span class="nav-number">18</span><span>발표용 정리와 학습 점검 질문</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-20.html" ><span class="nav-number">20</span><span>최종 요약: PydanticAI의 진짜 설계적 특징</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python Core v2.61.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Dependencies·Capabilities·승인</p><h1>Dependencies·Capabilities·승인</h1><div class="chapter-meta">단원 09 · 원문 2026.10.31 · Python Core v2.61.0 · 약 4분 · 원문 857–936행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Run별 자원과 실행 Hook, Deferred 요청을 후속 Run에서 해결하는 프로토콜을 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>승인 원본·History·메타데이터·Call ID와 결과 대응을 서버에서 보존해야 합니다.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-857">16. Human-in-the-loop·Deferred Tool·복원</a><a href="#line-859">16.1 Deferred를 정확히 이해하자</a><a href="#line-868">16.2 Core에서 제공하는 흐름</a><a href="#line-888">16.3 Inline 해결과 Stop-the-world를 구분</a><a href="#line-897">16.4 재개 시 무엇을 보존해야 하는가?</a><a href="#line-911">16.5 중요한 보안 문서 경고</a><a href="#line-925">16.6 Python 프로세스가 죽으면 알아서 복구되나?</a></nav></details><section class="source-section" data-source-section="16-1"><h2 id="line-857">16. Human-in-the-loop·Deferred Tool·복원<a class="anchor" href="#line-857" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-859">16.1 <code>Deferred</code>를 정확히 이해하자<a class="anchor" href="#line-859" aria-label="이 절의 고유 링크">#</a></h3><p>PydanticAI의 Deferred Tool은 다음 두 경우를 처리한다.</p>
+<ul>
+<li><strong>승인 필요:</strong> 특정 모델 ToolCall을 사람이 검토해야 한다.</li>
+<li><strong>외부 실행:</strong> 결과가 나중에 도착하거나 별도 Worker/Frontend가 실행한다.</li>
+</ul>
+<p>이는 단순히 <code>await</code>로 오래 기다리는 것이 아니라, 필요하면 <strong>현재 Run을 끝내고 외부 결과를 수집한 후 후속 Run으로 이어가는 프로토콜</strong>이다.</p>
+<h3 id="line-868">16.2 Core에서 제공하는 흐름<a class="anchor" href="#line-868" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="6"><figcaption><span>도식 6</span> 16.2 Core에서 제공하는 흐름</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Model → Tool executor</td><td>tool call</td></tr><tr><td>2</td><td>Tool executor ⇢ Application</td><td>DeferredToolRequests</td></tr><tr><td>3</td><td>Application → Human/worker</td><td>request approval / external work</td></tr><tr><td>4</td><td>Human/worker ⇢ Application</td><td>approval or result</td></tr><tr><td>5</td><td>Application → Tool executor</td><td>new run + history/conversation + DeferredToolResults</td></tr><tr><td>6</td><td>Tool executor → Tool executor</td><td>validate pending call ID/results</td></tr><tr><td>7</td><td>Tool executor → Model</td><td>continue with tool outcomes</td></tr><tr><td>8</td><td>Model ⇢ Application</td><td>final output</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+    participant M as Model
+    participant E as Tool executor
+    participant A as Application
+    participant H as Human/worker
+    M-&gt;&gt;E: tool call
+    E--&gt;&gt;A: DeferredToolRequests
+    A-&gt;&gt;H: request approval / external work
+    H--&gt;&gt;A: approval or result
+    A-&gt;&gt;E: new run + history/conversation + DeferredToolResults
+    E-&gt;&gt;E: validate pending call ID/results
+    E-&gt;&gt;M: continue with tool outcomes
+    M--&gt;&gt;A: final output</code></pre></details></figure><p><code>[DOC]</code> <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/">Deferred Tools</a>.</p>
+<h3 id="line-888">16.3 Inline 해결과 Stop-the-world를 구분<a class="anchor" href="#line-888" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>방식</th>
+<th>실행 방식</th>
+<th>적합한 상황</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Inline <code>HandleDeferredToolCalls</code></td>
+<td>같은 Run 안에서 Handler가 승인/외부 결과를 즉시 제공</td>
+<td>프로그램 내 정책 판정, 빠른 외부 결과</td>
+</tr>
+<tr>
+<td>Return <code>DeferredToolRequests</code></td>
+<td>Run 종료 후 Caller가 보관·승인·재시작</td>
+<td>사람의 응답을 몇 분/며칠 기다림, 다른 Worker 실행</td>
+</tr>
+</tbody></table>
+</div><p>두 방식은 조합 가능하다. 일부 요청은 Inline으로 처리하고, 나머지만 외부로 넘길 수 있다. 이는 복잡한 업무 환경에서 유용한 구조다.</p>
+<h3 id="line-897">16.4 재개 시 무엇을 보존해야 하는가?<a class="anchor" href="#line-897" aria-label="이 절의 고유 링크">#</a></h3><p>단순하게 Prompt만 재전송하면 승인 대기 상태가 복원되지 않는다. 공식 문서는 <strong>Conversation에 Deferred Request의 상태·메타데이터를 함께 보존</strong>하도록 설명한다.</p>
+<ul>
+<li>기존 메시지 히스토리</li>
+<li>미해결 ToolCall ID</li>
+<li>승인 요청인지 외부 호출인지 구분</li>
+<li>Deferred Tool 요청과 Metadata</li>
+<li>후속 결과 매핑</li>
+<li><code>conversation_id</code> (연속되는 대화를 식별)</li>
+<li>새로운 <code>run_id</code> (후속 실행은 별개의 Run)</li>
+</ul>
+<p>이 구분이 없는 시스템은 재시작 시 원래 Tool의 인자·승인 내역을 잘못 엮을 위험이 있다.</p>
+<h3 id="line-911">16.5 중요한 보안 문서 경고<a class="anchor" href="#line-911" aria-label="이 절의 고유 링크">#</a></h3><p><code>[DOC]</code> 공식 Deferred Tools 문서는 <strong>클라이언트 제출 승인 정보만으로 Authorization을 보장하지 않는다</strong>고 명시한다. 예컨대 클라이언트가 이미 승인한 것처럼 조작한 Message History를 보낼 수 있다면 Approval 기능만으로 민감 작업을 지키지 못한다.</p>
+<p>따라서 서버가 다음을 소유해야 한다.</p>
+<ol>
+<li>인증된 사용자/테넌트 식별.</li>
+<li>승인 요청 원본 및 Call ID의 서버 저장.</li>
+<li>승인된 주체·범위·시간·대상 검증.</li>
+<li>Tool 내부 재검증.</li>
+<li>감사 로그와 재시도·중복 방지.</li>
+</ol>
+<p>이 경계는 PydanticAI의 한계인 동시에, <strong>모든 Agent Framework에 공통으로 필요한 애플리케이션 보안 원칙</strong>이다.</p>
+<h3 id="line-925">16.6 Python 프로세스가 죽으면 알아서 복구되나?<a class="anchor" href="#line-925" aria-label="이 절의 고유 링크">#</a></h3><p>Deferred Tool/Conversation 구조와 내구성 있는 Workflow 엔진은 다른 층위다.</p>
+<ul>
+<li>Conversation을 외부 DB에 저장하지 않았다면 재시작 후 복원할 데이터가 사라질 수 있다.</li>
+<li>Task Queue나 Durable Execution Backend가 없으면 진행 중 Background Job을 추적할 수 없다.</li>
+<li>PydanticAI 생태계는 Temporal, DBOS 등 Durable Execution 연동을 제공하지만, 설치 자체가 자동적인 영속 복구를 의미하지 않는다.</li>
+</ul>
+<p>공식 참고: <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/production/persistence/">Persistence</a>, <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/durable-execution/">Durable Execution</a>.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-08.html"><small>이전 단원</small>← Dependencies와 RunContext의 데이터 흐름 외 1개 주제</a><a class="next" href="unit-10.html"><small>다음 단원</small>Message History·State·Persistence·Memory 외 2개 주제 →</a></nav><footer>PydanticAI · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-857">16. Human-in-the-loop·Deferred Tool·복원</a><a class="toc-depth-2" href="#line-859">16.1 Deferred를 정확히 이해하자</a><a class="toc-depth-2" href="#line-868">16.2 Core에서 제공하는 흐름</a><a class="toc-depth-2" href="#line-888">16.3 Inline 해결과 Stop-the-world를 구분</a><a class="toc-depth-2" href="#line-897">16.4 재개 시 무엇을 보존해야 하는가?</a><a class="toc-depth-2" href="#line-911">16.5 중요한 보안 문서 경고</a><a class="toc-depth-2" href="#line-925">16.6 Python 프로세스가 죽으면 알아서 복구되나?</a></nav></aside></div></body></html>

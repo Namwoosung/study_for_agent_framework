@@ -1,0 +1,275 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>학습자가 반드시 생각해 봐야 할 24개 장애 사례 외 2개 주제 — Claude Agent SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Agent SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 CLI 실행 책임</p><a href="unit-02.html" ><span class="nav-number">02</span><span>Claude Agent SDK를 정확히 정의하기 외 3개 주제</span></a><p class="nav-group">호출·프로세스·제어 프로토콜</p><a href="unit-03.html" ><span class="nav-number">03</span><span>query()와 ClaudeSDKClient는 프로토콜 관점에서 다르다 외 5개 주제</span></a><a href="unit-04.html" ><span class="nav-number">04</span><span>메시지 파싱과 ResultMessage의 의미 외 1개 주제</span></a><p class="nav-group">Tool·MCP·권한·Hook</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 호출은 모델 결정과 실행 결정을 분리해야 한다 외 2개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다 외 1개 주제</span></a><p class="nav-group">Context·Session·이중 쓰기</p><a href="unit-07.html" ><span class="nav-number">07</span><span>최종 LLM Context에는 무엇이 들어가는가? 외 3개 주제</span></a><p class="nav-group">Skills·위임·중단·복구</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Skills는 도구인가, Prompt인가, Agent인가? 외 3개 주제</span></a><p class="nav-group">워크북: 진입과 CLI 구성</p><a href="unit-09.html" ><span class="nav-number">09</span><span>[WB-01] query()의 진입점과 리소스 책임 외 2개 주제</span></a><p class="nav-group">워크북: 제어 요청과 콜백</p><a href="unit-10.html" ><span class="nav-number">10</span><span>[WB-04] Query.initialize()의 Callback-ID 생성 외 3개 주제</span></a><p class="nav-group">워크북: MCP·메시지·수명</p><a href="unit-11.html" ><span class="nav-number">11</span><span>[WB-08] handlesdkmcprequest()의 JSON-RPC 처리 외 2개 주제</span></a><p class="nav-group">워크북: 저장·위임·취소</p><a href="unit-12.html" ><span class="nav-number">12</span><span>[WB-11] sessionstore materialize와 mirror 외 4개 주제</span></a><p class="nav-group">서비스 설계와 기술 비교</p><a href="unit-13.html" ><span class="nav-number">13</span><span>직접 Agent Framework를 만든다면 필요한 컴포넌트 외 4개 주제</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>Claude Code와 Claude Agent SDK의 심화 학습을 분리하는 이유</span></a><p class="nav-group">장애·발표·복습</p><a href="unit-15.html" aria-current="page" class="current"><span class="nav-number">15</span><span>학습자가 반드시 생각해 봐야 할 24개 장애 사례 외 2개 주제</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>개념 확인 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-17.html" ><span class="nav-number">17</span><span>공식 문서(동작 계약 근거) 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 반드시 기억할 다섯 가지</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 장애·발표·복습</p><h1>장애·발표·복습</h1><div class="chapter-meta">단원 15 · 원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316 · 약 8분 · 원문 1004–1093행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>24개 실패 사례와 운영 점검, 발표와 35문항으로 경계를 복습합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>설계 분석과 실행·보안·성능 실측을 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1006">47. 학습자가 반드시 생각해 봐야 할 24개 장애 사례</a><a href="#line-1035">47.1 발표용 실패 사례 1 — 허용 목록의 함정</a><a href="#line-1042">47.2 발표용 실패 사례 2 — 저장했다고 실행이 한 번만 되는가?</a><a href="#line-1048">47.3 발표용 실패 사례 3 — Hook이 실행을 차단했다고 확신할 수 있나?</a><a href="#line-1054">48. 보안·운영을 위한 설계 체크리스트</a><a href="#line-1072">49. 15장 발표 권장 구성</a></nav></details><section class="source-section" data-source-section="47-1"><p class="part-divider" id="line-1004">Part VIII. 실패·경계 조건 분석</p><h2 id="line-1006">47. 학습자가 반드시 생각해 봐야 할 24개 장애 사례<a class="anchor" href="#line-1006" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>상황</th>
+<th>실제 문제</th>
+<th>조사/설계 포인트</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>cli_path</code>가 잘못됨</td>
+<td>subprocess 미시작</td>
+<td><code>connect</code> 예외, 재시도 상한</td>
+</tr>
+<tr>
+<td>2</td>
+<td>번들 CLI와 SDK 호환성 불일치</td>
+<td>initialize 실패</td>
+<td>버전 검사, 롤백</td>
+</tr>
+<tr>
+<td>3</td>
+<td>모델 인증 토큰 만료</td>
+<td>초기화 또는 모델 호출 오류</td>
+<td>자격증명 수명·경계</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Transport stdout이 잘못된 JSON 출력</td>
+<td>메시지 파싱 실패</td>
+<td>프로토콜 무결성</td>
+</tr>
+<tr>
+<td>5</td>
+<td>CLI 종료 중 control request 송신</td>
+<td>대기/Timeout</td>
+<td>pending request 정리</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Hook callback가 무한 대기</td>
+<td>Tool 실행 중단</td>
+<td>Hook Timeout, fail policy</td>
+</tr>
+<tr>
+<td>7</td>
+<td>PreToolUse가 allow, Deny Rule도 있음</td>
+<td>허용 오판</td>
+<td>Deny 우선 조건</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>allowed_tools</code>만 설정</td>
+<td>미등록 Tool도 승인 경로 존재</td>
+<td>권한과 노출 구별</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>can_use_tool</code>로 모든 동작 감사 시도</td>
+<td>일부 호출 누락</td>
+<td>Hook 또는 backend logging</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Python SDK MCP handler의 blocking I/O</td>
+<td>CLI 응답 지연</td>
+<td>Async cancellation / worker isolation</td>
+</tr>
+<tr>
+<td>11</td>
+<td>MCP 응답 직전 Python 앱 종료</td>
+<td>CLI가 결과를 못 받음</td>
+<td>Tool 중복 호출 위험</td>
+</tr>
+<tr>
+<td>12</td>
+<td>MCP Tool에 잘못된 <code>readOnlyHint</code></td>
+<td>상태 경합</td>
+<td>실제 idempotence 확인</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2개 Subagent가 같은 파일 수정</td>
+<td>수정 충돌</td>
+<td>파일 영역·작업 분리</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Background Agent가 Main Run 종료 뒤 진행</td>
+<td>잔여 프로세스/비용</td>
+<td>Task lifetime, cleanup</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Prompt Cache가 갑자기 줄어듦</td>
+<td>지연·비용 증가</td>
+<td>프롬프트 안정성/모델 전환</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Context Compaction이 핵심 값을 누락</td>
+<td>다음 Turn 판단 오류</td>
+<td>영구 Instructions/구조화 상태</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>max_turns</code>가 너무 작음</td>
+<td>마지막 답변 전에 error result</td>
+<td>Turn 예산</td>
+</tr>
+<tr>
+<td>18</td>
+<td>비용 제한 직전에 긴 모델 응답</td>
+<td>비용 제한 초과</td>
+<td>예산 헤드룸</td>
+</tr>
+<tr>
+<td>19</td>
+<td>외부 SessionStore append 실패</td>
+<td>원격/로컬 불일치</td>
+<td>Mirror retry·복구</td>
+</tr>
+<tr>
+<td>20</td>
+<td>동일 Session 동시 Resume</td>
+<td>기록 경합</td>
+<td>Single writer/lock</td>
+</tr>
+<tr>
+<td>21</td>
+<td>File Checkpoint를 DB rollback으로 오해</td>
+<td>외부 부작용 잔존</td>
+<td>보상 트랜잭션</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>disconnect()</code> 뒤 도구의 스레드 계속 실행</td>
+<td>실제 작업 잔존</td>
+<td>Tool execution cooperative cancel</td>
+</tr>
+<tr>
+<td>23</td>
+<td>사용자 A 자격증명이 B 세션에 재사용</td>
+<td>데이터 노출</td>
+<td>Tenant isolation</td>
+</tr>
+<tr>
+<td>24</td>
+<td>Result만 저장하고 중간 Tool 이벤트를 버림</td>
+<td>감사·재현성 상실</td>
+<td>Event journal/trace</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1035">47.1 발표용 실패 사례 1 — 허용 목록의 함정<a class="anchor" href="#line-1035" aria-label="이 절의 고유 링크">#</a></h3><p><strong>상황:</strong> <code>allowed_tools=[&#39;Read&#39;]</code>로 운영자를 &#39;읽기 전용 Agent&#39;라고 설명했다.<br><strong>실제 위험:</strong> <code>allowed_tools</code>는 자동 승인 규칙이므로 다른 Tool이 여전히 모델에 보이고 다른 경로에서 승인될 가능성이 있다.<br><strong>올바른 분석:</strong> Tool catalog, Deny Rule, Sandbox, Backend IAM을 독립적으로 설명해야 한다.<br><strong>설계 결론:</strong> <em>선택적 자동 승인과 강제적 권한 제거는 다르다.</em></p>
+<h3 id="line-1042">47.2 발표용 실패 사례 2 — 저장했다고 실행이 한 번만 되는가?<a class="anchor" href="#line-1042" aria-label="이 절의 고유 링크">#</a></h3><p><strong>상황:</strong> DB 쓰기 Tool 실행 직후 CLI가 강제 종료되었고 세션을 Resume했다.<br><strong>위험:</strong> 대화 기록이 살아 있어도 외부 DB Commit이 발생했는지는 별도 사실이다.<br><strong>설계 결론:</strong> <em>Session/Checkpoint는 비즈니스 트랜잭션의 exactly-once 실행이 아니다.</em></p>
+<h3 id="line-1048">47.3 발표용 실패 사례 3 — Hook이 실행을 차단했다고 확신할 수 있나?<a class="anchor" href="#line-1048" aria-label="이 절의 고유 링크">#</a></h3><p><strong>상황:</strong> 감사 목적으로 <code>can_use_tool</code>만 등록.<br><strong>실제 문제:</strong> Allow Rules나 모드에서 먼저 처리한 호출은 이 콜백으로 전달되지 않을 수 있다.<br><strong>설계 결론:</strong> 필수 보안 검증은 CLI/Tool 서버의 실제 실행 경계에서 중복 방어해야 한다.</p>
+</section>
+<section class="source-section" data-source-section="48-1"><h2 id="line-1054">48. 보안·운영을 위한 설계 체크리스트<a class="anchor" href="#line-1054" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li><input disabled="" type="checkbox"> Tool 호출별 principal과 tenant ID를 실제 MCP 서버까지 전달·검증한다.</li>
+<li><input disabled="" type="checkbox"> 민감한 Tool은 default deny 또는 승인 정책을 명시한다.</li>
+<li><input disabled="" type="checkbox"> SDK의 Tool 자동 승인과 OS 실제 파일/네트워크 권한을 구분한다.</li>
+<li><input disabled="" type="checkbox"> <code>bypassPermissions</code>의 사용 범위가 격리된 실행 환경으로 제한된다.</li>
+<li><input disabled="" type="checkbox"> <code>can_use_tool</code> 외에 강제 정책 위치가 정해져 있다.</li>
+<li><input disabled="" type="checkbox"> Subagent의 Tool scope와 예산·중단 경계를 정의한다.</li>
+<li><input disabled="" type="checkbox"> 외부 API 호출은 재시도 가능한 idempotency 키를 사용한다.</li>
+<li><input disabled="" type="checkbox"> SessionStore·File Checkpoint·외부 DB 트랜잭션을 구분한다.</li>
+<li><input disabled="" type="checkbox"> Local/Remote Transcript 보관 및 삭제 정책을 정의한다.</li>
+<li><input disabled="" type="checkbox"> 로그에 API 키, 토큰, 민감 Tool 출력이 그대로 남지 않는다.</li>
+<li><input disabled="" type="checkbox"> CLI 프로세스 시작·종료·취소·타임아웃이 관측 가능하다.</li>
+<li><input disabled="" type="checkbox"> Runtime/SDK 버전이 함께 기록되고 호환성 정책이 있다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="49-1"><p class="part-divider" id="line-1070">Part IX. 학습 정리와 발표 구성</p><h2 id="line-1072">49. 15장 발표 권장 구성<a class="anchor" href="#line-1072" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>슬라이드</th>
+<th>핵심 주장</th>
+<th>보여 줄 구조/코드</th>
+<th>발표자가 답해야 할 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 문제 정의</td>
+<td>SDK 기능 목록만으로 실제 Framework를 이해할 수 없다</td>
+<td>7개 기술 분류</td>
+<td>무엇을 비교하는가?</td>
+</tr>
+<tr>
+<td>2. 제품 경계</td>
+<td>Agent SDK는 Claude Code CLI를 실행·제어한다</td>
+<td>4계층 다이어그램</td>
+<td>모델·SDK·CLI·Tool의 책임은?</td>
+</tr>
+<tr>
+<td>3. 한 요청의 수명</td>
+<td>Python → CLI → Model/Tool → Python</td>
+<td>Sequence Diagram</td>
+<td>실제 Loop는 어디에 있나?</td>
+</tr>
+<tr>
+<td>4. <code>query</code> vs Client</td>
+<td>단방향·양방향 API는 연결 수명이 다르다</td>
+<td>진입 함수 두 개</td>
+<td>무엇이 stateful인가?</td>
+</tr>
+<tr>
+<td>5. Subprocess</td>
+<td>별도 프로세스를 운영하는 SDK</td>
+<td><code>_build_command</code>, <code>connect</code></td>
+<td>이를 서버에서 운영하면?</td>
+</tr>
+<tr>
+<td>6. Control Protocol</td>
+<td>Python 콜백은 CLI의 메시지 요청으로 호출된다</td>
+<td><code>Query.initialize</code>·callback ID</td>
+<td>Python 함수를 어떻게 CLI에서 호출하나?</td>
+</tr>
+<tr>
+<td>7. Tool/MCP</td>
+<td>내장 Tool과 SDK MCP의 실행 경계가 다르다</td>
+<td>MCP JSON-RPC flow</td>
+<td>Python에서 누가 Tool을 실행하나?</td>
+</tr>
+<tr>
+<td>8. Permissions</td>
+<td><code>allowed_tools</code>는 곧 whitelist가 아니다</td>
+<td>6단계 평가도</td>
+<td>Guardrail은 어디에 강제되나?</td>
+</tr>
+<tr>
+<td>9. Hooks</td>
+<td>확장 지점이 모든 행동의 절대적 차단 계층은 아니다</td>
+<td>Callback ID, PreToolUse</td>
+<td>Fail mode는?</td>
+</tr>
+<tr>
+<td>10. Context</td>
+<td>Stable Prefix와 Tool 결과는 다른 Context 특성을 갖는다</td>
+<td>Context 구성도</td>
+<td>Prefix caching이 왜 중요한가?</td>
+</tr>
+<tr>
+<td>11. SessionStore</td>
+<td>로컬 기록이 먼저, 원격은 mirror</td>
+<td>Dual-write sequence</td>
+<td>store가 source of truth인가?</td>
+</tr>
+<tr>
+<td>12. Multi-Agent</td>
+<td>Subagent와 병렬 Tool은 다른 동시성</td>
+<td>비교 표</td>
+<td>컨텍스트·종료·비용은 어떻게 다르나?</td>
+</tr>
+<tr>
+<td>13. Recovery</td>
+<td>Resume/Checkpoint/exactly-once는 다르다</td>
+<td>장애 시나리오</td>
+<td>외부 부작용은 누가 관리하나?</td>
+</tr>
+<tr>
+<td>14. 7개 설계 비교</td>
+<td>Loop 소유권과 확장·변경 자유도 차이</td>
+<td>비교 Matrix</td>
+<td>언제 CLI runtime-backed SDK가 적합한가?</td>
+</tr>
+<tr>
+<td>15. 결론</td>
+<td>구조·강제 권한·복구가 Agent Framework 설계의 핵심</td>
+<td>최종 5가지 교훈</td>
+<td>직접 설계한다면 어떤 경계를 선택하나?</td>
+</tr>
+</tbody></table>
+</div><p><strong>코드 발표 원칙:</strong> 슬라이드당 공개 소스에서 5–15줄 내외의 <em>함수 시그니처·분기</em>만 보여주고, 복잡한 세부 코드는 부록에서 설명한다. <code>Query.initialize()</code>와 <code>_handle_control_request()</code> 두 곳을 대표 코드로 선정하면 Python과 CLI의 책임 분리가 명확해진다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-14.html"><small>이전 단원</small>← Claude Code와 Claude Agent SDK의 심화 학습을 분리하는 이유</a><a class="next" href="unit-16.html"><small>다음 단원</small>개념 확인 35문항 외 1개 주제 →</a></nav><footer>Claude Agent SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1006">47. 학습자가 반드시 생각해 봐야 할 24개 장애 사례</a><a class="toc-depth-3" href="#line-1035">47.1 발표용 실패 사례 1 — 허용 목록의 함정</a><a class="toc-depth-3" href="#line-1042">47.2 발표용 실패 사례 2 — 저장했다고 실행이 한 번만 되는가?</a><a class="toc-depth-3" href="#line-1048">47.3 발표용 실패 사례 3 — Hook이 실행을 차단했다고 확신할 수 있나?</a><a class="toc-depth-2" href="#line-1054">48. 보안·운영을 위한 설계 체크리스트</a><a class="toc-depth-2" href="#line-1072">49. 15장 발표 권장 구성</a></nav></aside></div></body></html>

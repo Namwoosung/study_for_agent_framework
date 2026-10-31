@@ -1,0 +1,112 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" aria-current="page" class="current"><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Guardrail과 승인</p><h1>Guardrail과 승인</h1><div class="chapter-meta">단원 06 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 7분 · 원문 459–572행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Input·Output·Tool 검사의 적용 시점과 중단·승인·재개 상태를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>병렬 Input Guardrail의 부작용 가능성과 서버가 소유하는 원본 RunState를 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-461">17. Guardrail은 한 번의 전역 검사 함수가 아니다</a><a href="#line-474">18. Input Guardrail의 병렬 모드가 만드는 위험</a><a href="#line-491">18.1 차단이 목적이면 Blocking 모드</a><a href="#line-497">19. runinternal/guardrails.py 추적</a><a href="#line-512">20. needsapproval과 RunState 중단</a><a href="#line-532">20.1 중요한 개념: 승인 보존 범위</a><a href="#line-543">20.2 승인 없이 실행되는 기본값을 혼동하지 말 것</a><a href="#line-547">20.3 Fail-closed와 잘못된 도구 인자</a><a href="#line-551">21. 승인·중단·재개가 정확히 한 번 실행을 보장하는가?</a></nav></details><section class="source-section" data-source-section="17-1"><p class="part-divider" id="line-459">Part IV. Guardrails와 승인: 정말 어디서 막히는가?</p><h2 id="line-461">17. Guardrail은 한 번의 전역 검사 함수가 아니다<a class="anchor" href="#line-461" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>검사</th>
+<th>적용 단계</th>
+<th>대상</th>
+<th>핵심 한계</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Input Guardrail</td>
+<td>시작 Agent가 받는 사용자 입력</td>
+<td>첫 번째 Agent의 초기 요청</td>
+<td>기본 병렬 모드에선 모델/Tool이 먼저 시작할 수 있음</td>
+</tr>
+<tr>
+<td>Output Guardrail</td>
+<td>최종 출력 도출</td>
+<td>최종 답변의 Agent</td>
+<td>중간 Tool의 부작용을 소급 취소하지 않음</td>
+</tr>
+<tr>
+<td>Tool Input Guardrail</td>
+<td>Function Tool 호출 전</td>
+<td>해당 Function Tool 인자</td>
+<td>Handoff/Hosted Tool 전체를 자동 보호하지 않음</td>
+</tr>
+<tr>
+<td>Tool Output Guardrail</td>
+<td>Function Tool 반환 후</td>
+<td>해당 Function Tool 반환값</td>
+<td>이미 Tool에서 일어난 부작용은 되돌리지 못함</td>
+</tr>
+<tr>
+<td>Approval/HITL</td>
+<td>승인 대상 Tool 실행 전</td>
+<td>해당 Tool call</td>
+<td>정책·상태·사람의 결정 및 실행 환경에 의존</td>
+</tr>
+<tr>
+<td>OS/DB/Sandbox 권한</td>
+<td>실제 작업 수행 위치</td>
+<td>프로세스/자원</td>
+<td>SDK Guardrail과 별도의 강제 보안 경계</td>
+</tr>
+</tbody></table>
+</div><p>[DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/guardrails/">D04</a>, <a target="_blank" rel="noopener noreferrer" href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals">D10</a>] <strong>입력 Guardrail과 Tool Approval은 서로 대체재가 아니다.</strong></p>
+</section>
+<section class="source-section" data-source-section="18-1"><h2 id="line-474">18. Input Guardrail의 병렬 모드가 만드는 위험<a class="anchor" href="#line-474" aria-label="이 절의 고유 링크">#</a></h2><p>공식 문서에 따르면 Input Guardrail의 기본 실행 방식은 <strong>병렬(<code>run_in_parallel=True</code>)</strong> 이다. Guardrail이 입력을 검사하는 동안 Agent의 실행도 시작할 수 있다. 따라서 Guardrail Tripwire가 뒤늦게 감지되어 실행을 취소하더라도 그 전에 토큰 소비 또는 Tool 부작용이 발생했을 수 있다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/guardrails/">D04</a>]</p>
+<figure class="diagram" data-diagram="5"><figcaption><span>도식 5</span> 18. Input Guardrail의 병렬 모드가 만드는 위험</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Runner → Input Guardrail</td><td>검사 시작 (parallel)</td></tr><tr><td>2</td><td>Runner → Agent/Model/Tool</td><td>Agent 실행 시작</td></tr><tr><td>3</td><td>Agent/Model/Tool ⇢ Runner</td><td>모델 토큰/도구 실행 가능</td></tr><tr><td>4</td><td>Input Guardrail ⇢ Runner</td><td>Tripwire 발생</td></tr><tr><td>5</td><td>Runner ⇢ Agent/Model/Tool</td><td>취소 요청</td></tr><tr class="sequence-control"><td colspan="3">참고 · over M：취소 이전 부작용은 남을 수 있음</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+  participant R as Runner
+  participant G as Input Guardrail
+  participant M as Agent/Model/Tool
+  R-&gt;&gt;G: 검사 시작 (parallel)
+  R-&gt;&gt;M: Agent 실행 시작
+  M--&gt;&gt;R: 모델 토큰/도구 실행 가능
+  G--&gt;&gt;R: Tripwire 발생
+  R--&gt;&gt;M: 취소 요청
+  Note over M: 취소 이전 부작용은 남을 수 있음</code></pre></details></figure><h3 id="line-491">18.1 차단이 목적이면 Blocking 모드<a class="anchor" href="#line-491" aria-label="이 절의 고유 링크">#</a></h3><p><code>run_in_parallel=False</code> 설정은 첫 모델 실행 전에 Input Guardrail을 끝낸다. 단점은 Guardrail 실행을 기다리므로 Latency가 증가할 수 있다는 점이다. 반면 위험한 요청이 확인되면 모델·도구가 시작되지 않는다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/guardrails/">D04</a>]</p>
+<p><strong>Guardrail 단계가 중요하다:</strong> 출력 Guardrail이 통과해야 최종 답변을 보여주더라도, 중간 Tool이 이미 데이터베이스를 수정한 후라면 그 수정이 자동 롤백되는 것은 아니다.</p>
+</section>
+<section class="source-section" data-source-section="19-1"><h2 id="line-497">19. <code>run_internal/guardrails.py</code> 추적<a class="anchor" href="#line-497" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/guardrails.py">S07</a>] 모듈에는 <code>run_input_guardrails</code>, <code>run_input_guardrails_with_queue</code>, <code>run_single_input_guardrail</code>, <code>run_output_guardrails</code>, <code>run_single_output_guardrail</code>, <code>input_guardrail_tripwire_triggered_for_stream</code> 등의 함수가 있다.</p>
+<p>코드 분석 순서:</p>
+<ol>
+<li>Guardrail이 어느 Agent에 연결되는가?</li>
+<li>해당 함수가 <code>asyncio</code> Task로 시작되는가, 차단형으로 기다리는가?</li>
+<li>검사 결과가 Tripwire로 표시될 때 어떤 예외 또는 Run 상태를 만드는가?</li>
+<li>모델 실행 중이면 Cancellation 경로가 실행되는가?</li>
+<li>이미 발생한 Stream Event와 Session 저장 항목은 어떻게 처리하는가?</li>
+<li>Output Guardrail 실패 시 사용자에게 보이거나 Session에 저장되는 정보는 무엇인가?</li>
+</ol>
+<p>특히 스트리밍에서는 <strong>Event가 이미 사용자에게 노출된 상태</strong>를 고려해야 한다. 안전한 출력이 필요한 시스템에서 Raw Token Delta를 아무 검증 없이 즉시 공개하는 설계는 출력 Guardrail의 의미를 약화할 수 있다. [INF]</p>
+</section>
+<section class="source-section" data-source-section="20-1"><h2 id="line-512">20. <code>needs_approval</code>과 RunState 중단<a class="anchor" href="#line-512" aria-label="이 절의 고유 링크">#</a></h2><p>승인이 필요한 Tool 호출이 발생하면 SDK는 <code>interruptions</code>를 포함한 결과를 반환하고, 앱은 <code>result.to_state()</code>로 중단 상태를 직렬화한 후 사람이나 외부 정책이 승인·거절한 결과를 반영해 재개할 수 있다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>]</p>
+<figure class="diagram" data-diagram="6"><figcaption><span>도식 6</span> 20. needsapproval과 RunState 중단</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출·분기 순서표"><table class="sequence"><thead><tr><th>순서</th><th>보내는 쪽 → 받는 쪽</th><th>호출 내용·조건</th></tr></thead><tbody><tr><td>1</td><td>Runner → Model</td><td>Tool이 포함된 모델 요청</td></tr><tr><td>2</td><td>Model ⇢ Runner</td><td>위험 Tool 호출</td></tr><tr><td>3</td><td>Runner ⇢ Application</td><td>interruptions + resumable RunState</td></tr><tr><td>4</td><td>Application → Approval System</td><td>정책/사용자 승인 요청</td></tr><tr><td>5</td><td>Approval System ⇢ Application</td><td>approve / reject</td></tr><tr><td>6</td><td>Application → Runner</td><td>resume(state with decision)</td></tr><tr><td>7</td><td>Runner → Runner</td><td>승인 정책 확인 후 미처리 작업 계속</td></tr><tr><td>8</td><td>Runner ⇢ Application</td><td>Final/Next interruption</td></tr></tbody></table></div><p class="figure-note">원문의 학습용 도식입니다. 호출 방향과 반복·분기·참고를 순서표로 보존했습니다. 실선 →와 점선 ⇢를 구분합니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+  participant A as Application
+  participant R as Runner
+  participant M as Model
+  participant P as Approval System
+  R-&gt;&gt;M: Tool이 포함된 모델 요청
+  M--&gt;&gt;R: 위험 Tool 호출
+  R--&gt;&gt;A: interruptions + resumable RunState
+  A-&gt;&gt;P: 정책/사용자 승인 요청
+  P--&gt;&gt;A: approve / reject
+  A-&gt;&gt;R: resume(state with decision)
+  R-&gt;&gt;R: 승인 정책 확인 후 미처리 작업 계속
+  R--&gt;&gt;A: Final/Next interruption</code></pre></details></figure><h3 id="line-532">20.1 중요한 개념: 승인 보존 범위<a class="anchor" href="#line-532" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>승인 판단은 <strong>현재 호출 ID</strong>에 적용할 수 있다.</li>
+<li><code>always_approve=True</code>, <code>always_reject=True</code>는 재사용할 <code>RunContextWrapper</code> 또는 직렬화한 RunState에 지속될 수 있다.</li>
+<li><strong>일반 Python context 객체만 새 Runner 호출에 재사용해도 승인 상태가 자동 유지되는 것은 아니다.</strong></li>
+<li>Function Tool의 sticky 결정은 해당 Agent 범위에서 관리된다.</li>
+<li><strong>로컬 <code>ShellTool</code>/<code>ApplyPatchTool</code>의 sticky 승인은 Agent별이 아니라 도구 유형·이름 기준으로 적용될 수 있어</strong>, 서로 다른 권한을 가진 도구에서 예상치 못한 승인 재사용 위험이 있다.</li>
+<li>Hosted MCP의 sticky 승인에는 서버 레이블과 Tool 이름 조합이 사용된다.</li>
+</ul>
+<p>이 차이는 공식 HITL 문서에서 특별히 경고하는 사항이다. 보안에 민감하다면 전역 영구 승인보다 호출별 승인, 별도 ContextWrapper, 실행 환경 권한 분리를 우선 검토해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>]</p>
+<h3 id="line-543">20.2 승인 없이 실행되는 기본값을 혼동하지 말 것<a class="anchor" href="#line-543" aria-label="이 절의 고유 링크">#</a></h3><p>로컬 Shell/ApplyPatch Tool에서 <code>needs_approval</code>은 별도로 활성화해야 할 수 있다. <code>on_approval</code> Callback을 제공했다는 사실만으로 승인 단계가 항상 작동하지 않는다. Hosted Tool, Computer Safety Check, 일반 Function Tool은 서로 다른 API를 사용한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>]</p>
+<h3 id="line-547">20.3 Fail-closed와 잘못된 도구 인자<a class="anchor" href="#line-547" aria-label="이 절의 고유 링크">#</a></h3><p>함수 형태로 승인 여부를 판단하는 Policy에서 인자 JSON이 없거나 잘못되었을 때, 안전하게 인자를 해석할 수 없으면 자동 승인 콜백 대신 수동 승인을 요구하는 동작이 공식 문서에 명시되어 있다. 즉 <strong>승인 정책의 입력도 검증 대상</strong>이다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>]</p>
+</section>
+<section class="source-section" data-source-section="21-1"><h2 id="line-551">21. 승인·중단·재개가 정확히 한 번 실행을 보장하는가?<a class="anchor" href="#line-551" aria-label="이 절의 고유 링크">#</a></h2><p><strong>아니다.</strong> SDK가 Run 상태를 직렬화하여 승인 대기를 복원할 수 있어도, 외부 DB/API 작업의 성공 여부와 SDK 상태가 원자적으로 함께 저장되는 것은 아니다. 다음과 같은 실패를 가정해야 한다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>T1: Tool 실행 → 외부 시스템 변경 성공
+T2: SDK 프로세스 종료 → 결과 저장 실패
+T3: 앱이 재개 → 같은 Tool 재호출 가능성</code></pre></div><p>핵심 설계 대안:</p>
+<ul>
+<li>Tool Call ID 또는 업무 요청 ID 기반 <strong>Idempotency Key</strong>.</li>
+<li>상태와 실행 요청을 함께 기록하는 Transactional Outbox.</li>
+<li>외부 시스템의 상태 조회 및 이미 처리된 요청 탐지.</li>
+<li>Side effect Tool을 승인 대상 및 전용 워커로 분리.</li>
+<li>취소·Timeout 발생 시 보상 작업 또는 운영자 확인.</li>
+</ul>
+<p>이 항목들은 <strong>SDK의 자동 내장 보증이 아니라, 자체 Agent 런타임 설계 시 고려할 일반적인 분산 시스템 원칙</strong>이다. [INF]</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-05.html"><small>이전 단원</small>← Tool 종류부터 실행 경계를 나눈다 외 5개 주제</a><a class="next" href="unit-07.html"><small>다음 단원</small>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-461">17. Guardrail은 한 번의 전역 검사 함수가 아니다</a><a class="toc-depth-2" href="#line-474">18. Input Guardrail의 병렬 모드가 만드는 위험</a><a class="toc-depth-3" href="#line-491">18.1 차단이 목적이면 Blocking 모드</a><a class="toc-depth-2" href="#line-497">19. runinternal/guardrails.py 추적</a><a class="toc-depth-2" href="#line-512">20. needsapproval과 RunState 중단</a><a class="toc-depth-3" href="#line-532">20.1 중요한 개념: 승인 보존 범위</a><a class="toc-depth-3" href="#line-543">20.2 승인 없이 실행되는 기본값을 혼동하지 말 것</a><a class="toc-depth-3" href="#line-547">20.3 Fail-closed와 잘못된 도구 인자</a><a class="toc-depth-2" href="#line-551">21. 승인·중단·재개가 정확히 한 번 실행을 보장하는가?</a></nav></aside></div></body></html>

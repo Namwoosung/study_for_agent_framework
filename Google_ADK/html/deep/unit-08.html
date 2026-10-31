@@ -1,0 +1,129 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가? 외 2개 주제 — Google ADK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">G.</span><span>Google ADK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 진입</p><a href="unit-02.html" ><span class="nav-number">02</span><span>ADK는 SDK인가, Framework인가, Harness인가? 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>InvocationContext·Session·Event를 분리해서 생각하기</span></a><p class="nav-group">Loop와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다 외 4개 주제</span></a><p class="nav-group">Tool 준비·병렬·실패</p><a href="unit-05.html" ><span class="nav-number">05</span><span>FunctionTool: Python 함수가 모델 Tool이 되는 과정 외 2개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>병렬 Tool과 병렬 Agent는 같은 것이 아니다</span></a><p class="nav-group">Event와 상태 저장</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Event.isfinalresponse()의 정밀한 정의 외 3개 주제</span></a><p class="nav-group">Cache·압축·검색</p><a href="unit-08.html" aria-current="page" class="current"><span class="nav-number">08</span><span>Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가? 외 2개 주제</span></a><p class="nav-group">협업·Graph·복구</p><a href="unit-09.html" ><span class="nav-number">09</span><span>기존 Template Workflow는 어떤 구조였나? 외 3개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Workflow의 Checkpoint는 ‘완전한 프로세스 스냅샷’인가? 외 1개 주제</span></a><p class="nav-group">확장·운영·실패</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Callback·Plugin은 Guardrail인가, Hook인가? 외 2개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>실행 실패 시나리오 24개 외 1개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적의 원칙</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적의 원칙 / WB-05. 병렬 Tool에서 한 호출만 실패한다면?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적의 원칙 / WB-10. Workflow Checkpoint에 무엇이 남는가?</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>7개 기술과 ADK의 실제 설계 차이 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>자가 점검 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>버전 고정 공개 소스코드 외 2개 주제</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python ADK v2.13.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Cache·압축·검색</p><h1>Cache·압축·검색</h1><div class="chapter-meta">단원 08 · 원문 2026.10.31 · Python ADK v2.13.0 · 약 5분 · 원문 565–627행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Prefix 계산 재사용과 History 요약, 검색 저장소의 역할을 나눕니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>최적화 사이 간섭과 정보 손실, 근거의 재조회 가능성을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-567">19. Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가?</a><a href="#line-581">Prefix가 ‘깨진다’는 의미</a><a href="#line-588">20. Context Compaction: 무엇을 버리고 무엇을 남기는가?</a><a href="#line-604">캐싱과 압축의 Trade-off</a><a href="#line-613">21. Retrieval / RAG / MemoryService의 선택</a></nav></details><section class="source-section" data-source-section="19-1"><p class="part-divider" id="line-565">Part V. 실제 Context/Cache/Memory 동작을 이해하기</p><h2 id="line-567">19. Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가?<a class="anchor" href="#line-567" aria-label="이 절의 고유 링크">#</a></h2><p><strong>기초:</strong> 모델에 동일한 Prefix 토큰을 다시 전송하더라도, Provider가 이전 Prefix 계산 결과를 저장해 재사용한다면 모든 토큰에 대한 내부 Attention/KV 관련 계산을 새로 할 필요가 없을 수 있다. <strong>입력 요청에 동일 데이터가 들어간다</strong>는 사실과 <strong>모델이 처음부터 다시 계산한다</strong>는 사실은 다르다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>경우</th>
+<th>요청에 들어가는 데이터</th>
+<th>가능한 계산/요금 처리</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>캐싱 없음</td>
+<td>매 호출 전체 Prefix+Suffix</td>
+<td>전량 새 계산/청구</td>
+</tr>
+<tr>
+<td>캐시 일치</td>
+<td>Prefix는 같고 최근 질문만 변경</td>
+<td>재사용 가능한 Prefix 계산 절약</td>
+</tr>
+<tr>
+<td>캐시 깨짐</td>
+<td>Prefix의 앞부분부터 달라짐</td>
+<td>일치하는 구간 축소·재생성 가능</td>
+</tr>
+<tr>
+<td>캐시 TTL 만료</td>
+<td>텍스트가 같더라도 캐시 객체는 없음</td>
+<td>다시 캐시 생성 필요</td>
+</tr>
+<tr>
+<td>Context Compaction 발생</td>
+<td>과거 메시지가 요약으로 대체</td>
+<td>Prefix가 상당 부분 변경될 수 있음</td>
+</tr>
+</tbody></table>
+</div><p>[DOC] ADK는 <code>ContextCacheConfig</code>로 모델의 Context Caching 설정을 관리하며, <code>min_tokens</code>, <code>ttl_seconds</code>, <code>cache_intervals</code> 등의 정책을 문서화한다. 이는 MemoryService나 일반 응답 캐시와 다른 기능이다. [<a target="_blank" rel="noopener noreferrer" href="https://adk.dev/context/caching/">D05</a>]</p>
+<h3 id="line-581">Prefix가 ‘깨진다’는 의미<a class="anchor" href="#line-581" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>기존 고정 Instruction과 Tool Schema <strong>앞부분</strong>의 문자열·필드·순서가 바뀌면 동일 Prefix 길이가 줄어들 수 있다.</li>
+<li>대화 요약, 동적 Instruction, Tool 목록 변경은 최종 요청을 바꾸므로 Cache Hit에 영향을 줄 수 있다.</li>
+<li>Provider의 실제 캐시 키·Token Count·모델 이름·세부 옵션이 무엇인지는 해당 Provider 스펙 및 실행 Trace로 확인해야 한다.</li>
+<li><code>ContextCacheConfig</code>가 설정되어 있다고 <strong>모든 호출에서 Cache Hit가 발생한다는 보장은 없다</strong>.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="20-1"><h2 id="line-588">20. Context Compaction: 무엇을 버리고 무엇을 남기는가?<a class="anchor" href="#line-588" aria-label="이 절의 고유 링크">#</a></h2><p>[DOC] <code>EventsCompactionConfig</code>는 오래된 Session History를 요약 또는 줄이는 전략을 제공하며, 토큰 임계값 기반과 일정 Invocation 간격 기반을 설명한다. 최근 이벤트는 Raw 형태로 남겨 참조성을 유지할 수 있다. [<a target="_blank" rel="noopener noreferrer" href="https://adk.dev/context/compaction/">D06</a>]</p>
+<p>[SRC] Runner에는 Invocation 종료 이후 best-effort Compaction을 수행하는 <code>_run_post_invocation_compaction</code> 경로가 있으며, 동시에 업데이트된 Session 때문에 과거 요약이 현재 정보를 덮어쓰지 않도록 확인하는 로직이 존재한다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/runners.py">S01</a>]</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Session: E1..E100
+         ├─ 오래된 E1..E85 → summary/compaction event
+         └─ 최근 E86..E100 → raw retained history
+                   ↓
+           Next model request context</code></pre></div><p><strong>핵심 주의:</strong> 위는 설명용 시나리오이며 <code>85/15</code>를 ADK 기본 설정으로 주장하는 것이 아니다. 컴팩션은 Token Budget을 줄일 수 있지만, 세부 수치·Tool 결과·예외 상황·승인 근거가 요약에서 누락될 수 있다. <strong>압축된 요약은 이전 이력의 완전한 재현본이 아니다.</strong></p>
+<h3 id="line-604">캐싱과 압축의 Trade-off<a class="anchor" href="#line-604" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>목표</th>
+<th>캐싱에 유리한 전략</th>
+<th>압축에 유리한 전략</th>
+<th>충돌 가능성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>공통 규칙 재사용</td>
+<td>앞부분 고정·동일 정책</td>
+<td>변경 최소화</td>
+<td>동적 Instruction 삽입 시 캐시 부분 감소</td>
+</tr>
+<tr>
+<td>긴 대화 비용 절감</td>
+<td>안정된 Prefix 재사용</td>
+<td>오래된 History 요약</td>
+<td>요약이 Prefix 재사용을 방해 가능</td>
+</tr>
+<tr>
+<td>정확한 과거 기록</td>
+<td>Raw Event 보관</td>
+<td>추출한 핵심 정보 유지</td>
+<td>누락·왜곡 위험</td>
+</tr>
+<tr>
+<td>실행 재현성</td>
+<td>Cache Hit 여부 로깅</td>
+<td>Compaction 버전 추적</td>
+<td>동일 원문 복원 불가 가능</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="21-1"><h2 id="line-613">21. Retrieval / RAG / MemoryService의 선택<a class="anchor" href="#line-613" aria-label="이 절의 고유 링크">#</a></h2><p>“ADK는 RAG를 하나만 사용한다”는 설명은 부정확하다. ADK는 MemoryService를 통해 대화 장기 기억을 검색할 수도 있고, MCP/Vector DB/API Tool을 통해 문서를 검색할 수도 있다. 과거 Session 원문 검색, LLM이 추출한 장기 Memory, 도메인 문서 Vector Search는 서로 다르다. [<a target="_blank" rel="noopener noreferrer" href="https://adk.dev/sessions/memory/">D04</a>]</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>검색 기법</th>
+<th>장점</th>
+<th>약점</th>
+<th>평가 관점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>InMemory 키워드 검색</td>
+<td>간단·설치 쉬움</td>
+<td>동의어·의미 매칭 취약</td>
+<td>Recall, 속도</td>
+</tr>
+<tr>
+<td>Vector Search</td>
+<td>의미 유사 문서 검색</td>
+<td>Exact ID/수치 조건이 약할 수 있음</td>
+<td>Grounding, 오탐</td>
+</tr>
+<tr>
+<td>BM25/FTS</td>
+<td>정확 키워드·기술 용어</td>
+<td>표현이 다르면 누락</td>
+<td>키워드 일치</td>
+</tr>
+<tr>
+<td>Hybrid Search</td>
+<td>키워드+의미 균형</td>
+<td>시스템 복잡도와 튜닝</td>
+<td>Recall/Precision</td>
+</tr>
+<tr>
+<td>구조화 DB Tool</td>
+<td>필터·집계·추적 가능</td>
+<td>스키마/권한 설계 필요</td>
+<td>계산 정확성</td>
+</tr>
+</tbody></table>
+</div><p><strong>설계적 결론:</strong> 검색 방식은 도메인 데이터의 특성에 따라 선택할 문제이고, 프레임워크가 제공하는 Memory 인터페이스의 존재만으로 특정 검색 알고리즘이 강제되는 것은 아니다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-07.html"><small>이전 단원</small>← Event.isfinalresponse()의 정밀한 정의 외 3개 주제</a><a class="next" href="unit-09.html"><small>다음 단원</small>기존 Template Workflow는 어떤 구조였나? 외 3개 주제 →</a></nav><footer>Google ADK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-567">19. Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가?</a><a class="toc-depth-3" href="#line-581">Prefix가 ‘깨진다’는 의미</a><a class="toc-depth-2" href="#line-588">20. Context Compaction: 무엇을 버리고 무엇을 남기는가?</a><a class="toc-depth-3" href="#line-604">캐싱과 압축의 Trade-off</a><a class="toc-depth-2" href="#line-613">21. Retrieval / RAG / MemoryService의 선택</a></nav></aside></div></body></html>

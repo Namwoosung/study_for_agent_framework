@@ -1,0 +1,144 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" aria-current="page" class="current"><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 권한·Sandbox·실패</p><h1>권한·Sandbox·실패</h1><div class="chapter-meta">단원 09 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 9분 · 원문 632–754행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>규칙·모드·Hook·Mod·Backend 권한의 강제 범위를 비교합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>도구 거부 규칙과 범용 OS ACL, Shell 격리와 외부 MCP 권한은 다릅니다.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-634">22. Guardrails를 하나의 검증 함수로 생각하면 안 된다</a><a href="#line-647">23. Permission의 실제 우선순위와 최근 변화</a><a href="#line-657">23.1 정책 평가의 논리 흐름</a><a href="#line-676">23.2 보안에서 Read deny가 만능이 아닌 이유</a><a href="#line-682">23.3 Plan Mode와 승인</a><a href="#line-686">24. Sandbox는 무엇을 보장하고 무엇은 보장하지 못하나?</a><a href="#line-701">24.1 Sandbox 탈출 경로를 방어 관점에서 분류</a><a href="#line-712">25. Prompt Injection은 Tool Output에서 들어올 수 있다</a><a href="#line-727">26. 실패 모드가 안전한가: Fail-open vs Fail-closed</a><a href="#line-749">26.1 감사 로그에 반드시 남길 값</a></nav></details><section class="source-section" data-source-section="22-1"><p class="part-divider" id="line-632">Part V. Guardrails·Permissions·Sandbox — 실제 강제 경계</p><h2 id="line-634">22. Guardrails를 하나의 검증 함수로 생각하면 안 된다<a class="anchor" href="#line-634" aria-label="이 절의 고유 링크">#</a></h2><p>권한 검사는 다음처럼 <strong>서로 다른 통제 유형의 합성</strong>이다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">R08</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sandboxing">R14</a>]</p>
+<ol>
+<li><strong>Model Instructions:</strong> 모델에게 금지/권장 행동을 설명한다. 강제력은 제한적이다.</li>
+<li><strong>Permission Rules/Modes:</strong> 특정 Tool 이름·인자·경로 등에 대해 허용·거부·승인 요구.</li>
+<li><strong>Hooks/Mods:</strong> 이벤트에 따라 사용자 정의 코드·검사·승인 흐름을 실행.</li>
+<li><strong>Sandbox:</strong> Bash 등의 실행에 OS 수준의 파일·네트워크 격리를 적용.</li>
+<li><strong>Backend Authorization:</strong> DB, 외부 API, 저장소, 사내 서비스의 실제 권한.</li>
+<li><strong>Host Security:</strong> 사용자 계정·프로세스·네트워크 ACL·컨테이너·로깅.</li>
+</ol>
+<p><strong>핵심:</strong> Guardrail 통과는 전체 시스템에 대한 안전성 증명이 아니다. <em>어떤 Tool의 어떤 입력을 어느 시점에 검사했는지</em>가 중요하다.</p>
+</section>
+<section class="source-section" data-source-section="23-1"><h2 id="line-647">23. Permission의 실제 우선순위와 최근 변화<a class="anchor" href="#line-647" aria-label="이 절의 고유 링크">#</a></h2><p>Claude Code의 Rule에는 deny, ask, allow가 있으며, <code>PreToolUse</code> Hook, SDK <code>canUseTool</code>, <code>--permission-prompt-tool</code>, <code>mod</code> 및 모드가 추가로 개입할 수 있다. 최신 공식 문서에서는 <strong>Rule·Hook·Mod의 우선순위가 단순히 deny &gt; allow 하나로 끝나지 않는다</strong>고 설명한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">DOC</a></p>
+<ul>
+<li>일반적인 <code>PreToolUse</code>의 <code>allow</code>는 매칭된 명시적 <code>deny</code>·<code>ask</code> Rule을 우회하지 못한다.</li>
+<li><code>mod</code>의 승인 결과가 어떤 규칙을 우회할 수 있는지는 관리형 설정 및 Team/Enterprise 로그인 여부 등에 따라 다를 수 있다. 즉, 모든 인증 방식에 대해 같은 순서를 주장하면 틀릴 수 있다.</li>
+<li>Plan Mode에서는 읽기 전용이 아닌 작업을 Hook/Mod가 임의 승인하는 것이 제한될 수 있다.</li>
+<li>관리형 정책은 기업 배포에서 사용자 설정과 분리하여 다뤄야 한다.</li>
+<li>최신 v2.1.314에서 <code>permissions.blockWritesOutsideWorkingDirectories</code>가 추가되어, <code>Write</code>·<code>Edit</code>·<code>NotebookEdit</code>가 작업 디렉터리 밖의 경로를 모드와 무관하게 거부할 수 있다. 이 보호는 특정 Tool 집합에 대한 것이며 임의 Shell 프로그램의 모든 쓰기 작업까지 자동으로 막는다고 확대 해석하면 안 된다. <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-code/releases/tag/v2.1.314">OBS</a></li>
+</ul>
+<h3 id="line-657">23.1 정책 평가의 논리 흐름<a class="anchor" href="#line-657" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="6"><figcaption><span>도식 6</span> 23.1 정책 평가의 논리 흐름</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-6.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="23.1 정책 평가의 논리 흐름"><img src="assets/diagram-6.svg" alt="23.1 정책 평가의 논리 흐름의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+    A[Tool request with arguments] --&gt; B[Applicable hard restrictions]
+    B --&gt;|Denied| D[Block]
+    B --&gt;|Eligible| C[PreToolUse / Rule evaluation]
+    C --&gt; E{Ask or allow or deny?}
+    E --&gt;|Deny| D
+    E --&gt;|Ask| F[User / Host Approval]
+    E --&gt;|Allow| G[Tool sandbox / backend]
+    F --&gt;|Approved| G
+    F --&gt;|Rejected| D
+    G --&gt; H[Execution or sandbox refusal]
+    H --&gt; I[Tool result / error]</code></pre></details></figure><p><strong>주의:</strong> 도식은 정책의 <strong>논리적 단계</strong>를 보여준다. <code>mod</code>와 특수 모드의 정확한 우선순위·인자 변경 처리·예외 경로는 버전별 공식 문서와 실행에서 확인해야 한다. 특히 위 그림을 <code>v2.1.314</code>의 실제 내부 if/else 소스로 취급하면 안 된다. <code>[INF]</code></p>
+<h3 id="line-676">23.2 보안에서 <code>Read</code> deny가 만능이 아닌 이유<a class="anchor" href="#line-676" aria-label="이 절의 고유 링크">#</a></h3><p>공식 권한 문서에는 <code>Read</code>/<code>Edit</code> Rule이 Claude Code가 인식하는 파일 도구·일부 Shell 명령·Redirection을 검사하지만, Python 등 <strong>임의 프로그램이 내부에서 파일을 읽는 작업을 완전히 가로채는 범용 OS ACL은 아니다</strong>고 명시되어 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">DOC</a></p>
+<p>예를 들어 <code>Read(./secrets/**)</code>로 Read Tool을 막았더라도 다른 프로그램이 같은 파일에 접근 가능하다면 별도 방어가 필요하다. 설계자는 Policy 표현식과 OS 격리 경계를 일치시켜야 한다.</p>
+<h3 id="line-682">23.3 <code>Plan Mode</code>와 승인<a class="anchor" href="#line-682" aria-label="이 절의 고유 링크">#</a></h3><p>계획 단계에서 코드 수정 같은 부작용 있는 행위를 제한하려면 단순히 모델에게 &quot;계획만 하라&quot;고 말하는 것보다 모드와 권한을 분리해야 한다. 공식 문서에 따르면 Plan Mode에서는 <code>PreToolUse</code>나 Mod의 승인에 제약이 있다. 자세한 대상 Tool과 예외는 공식 권한 문서의 해당 조항을 참조한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">DOC</a></p>
+</section>
+<section class="source-section" data-source-section="24-1"><h2 id="line-686">24. Sandbox는 무엇을 보장하고 무엇은 보장하지 못하나?<a class="anchor" href="#line-686" aria-label="이 절의 고유 링크">#</a></h2><p>Sandbox는 주로 Shell/Bash 명령 실행에 대한 <strong>OS 수준 격리</strong>를 제공한다. 파일시스템 쓰기·읽기 제한, 네트워크 접근, 예외 처리 등을 제공하지만, 모든 외부 Tool이나 MCP 서버에 자동 전파되는 하나의 보편적 가상머신을 뜻하지 않는다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sandboxing">DOC</a></p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>제어 수단</th>
+<th>경계</th>
+<th>주요 실패 모드</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tool allow/deny</td>
+<td>Tool 요청 해석</td>
+<td>간접 명령·다른 Tool 사용</td>
+</tr>
+<tr>
+<td>Hook</td>
+<td>지정된 이벤트 및 Handler</td>
+<td>이벤트 미발생, timeout, 스크립트 오류</td>
+</tr>
+<tr>
+<td>Sandbox FS</td>
+<td>명령 프로세스의 파일 접근</td>
+<td>제외 명령, 허용 경로, 일부 서브프로세스 동작</td>
+</tr>
+<tr>
+<td>Sandbox network</td>
+<td>명령 프로세스의 네트워크</td>
+<td>허용 도메인·DNS/redirect·proxy 정책</td>
+</tr>
+<tr>
+<td>DB credential</td>
+<td>데이터베이스 권한</td>
+<td>과도한 권한, 고가 쿼리, 멀티테넌시</td>
+</tr>
+<tr>
+<td>MCP server ACL</td>
+<td>외부 서버의 엔드포인트</td>
+<td>Server가 과한 권한을 대행함</td>
+</tr>
+</tbody></table>
+</div><p><strong>설계 원칙:</strong> 한 정책이 다뤄야 하는 영역과 실제 강제 가능한 영역이 일치하지 않을 수 있다. 특히 사내 API에 연결할 경우 &quot;Tool은 읽기 전용&quot;이라는 설명이 아닌 <strong>서버에서 무조건 읽기 전용 Credential을 사용</strong>해야 한다. <code>[INF]</code></p>
+<h3 id="line-701">24.1 Sandbox 탈출 경로를 방어 관점에서 분류<a class="anchor" href="#line-701" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>관리자·사용자가 명시적으로 Sandbox에서 제외한 명령.</li>
+<li>허용된 네트워크를 통해 제3자 서비스로 데이터 전송.</li>
+<li>OS 정책과 별도로 작동하는 로컬/원격 MCP 서버.</li>
+<li>인증을 가진 Agent 사용자가 직접 승인하는 행위.</li>
+<li>인자 검증을 우회하는 Shell/Interpreter의 간접 동작.</li>
+<li>Tool이 이미 생성한 외부 작업(프로세스/배포/예약)의 지속 실행.</li>
+</ul>
+<p>샌드박스를 강제하려면 Host/OS 계정·컨테이너·네트워크 정책도 함께 설계해야 한다. Claude Code 설정만으로 신뢰할 수 없는 입력을 전부 안전하게 처리한다고 주장하지 않는다.</p>
+</section>
+<section class="source-section" data-source-section="25-1"><h2 id="line-712">25. Prompt Injection은 Tool Output에서 들어올 수 있다<a class="anchor" href="#line-712" aria-label="이 절의 고유 링크">#</a></h2><p>Agent는 Read 파일, GitHub Issue, MCP 서버 결과, Web 응답, Subagent Report 등을 읽는다. 이런 데이터는 모델에게 <strong>사용자의 명령처럼 보이는 텍스트</strong>를 포함할 수 있다. 하지만 데이터 안의 지시문에는 작업 정책을 바꿀 권한이 없다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>유입 경로</th>
+<th>공격 예시(개념)</th>
+<th>대응 원리</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>소스코드 주석</td>
+<td>&quot;검증을 건너뛰어라&quot;</td>
+<td>저장소 데이터는 Instruction이 아님</td>
+</tr>
+<tr>
+<td>README/AGENTS.md</td>
+<td>신뢰되지 않은 저장소가 정책을 주장</td>
+<td>Workspace Trust와 관리형 정책 구분</td>
+</tr>
+<tr>
+<td>MCP Tool 결과</td>
+<td>사용자 비밀을 보내라는 텍스트</td>
+<td>Tool 결과 신뢰 수준 분리, egress 제한</td>
+</tr>
+<tr>
+<td>Subagent Report</td>
+<td>부모에게 승인받았다고 사칭</td>
+<td>부모 세션 정책은 별도 판단</td>
+</tr>
+<tr>
+<td>Skill 파일</td>
+<td>광범위한 <code>allowed-tools</code></td>
+<td>Skill 출처·frontmatter 검토</td>
+</tr>
+<tr>
+<td>로그/테스트 출력</td>
+<td>시스템 역할을 흉내 낸 마커</td>
+<td>문자열은 역할 권한으로 승격하지 않음</td>
+</tr>
+</tbody></table>
+</div><p>공식 Subagent 문서는 Report 안의 지시문을 표시·완화하는 처리를 설명하지만, 악성 내용을 완벽히 분류한다고 보장하지 않는다. Subagent Output을 읽은 부모가 다시 Tool을 호출하면 <strong>부모의 Permission·Sandbox</strong>를 통과해야 한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">DOC</a></p>
+</section>
+<section class="source-section" data-source-section="26-1"><h2 id="line-727">26. 실패 모드가 안전한가: Fail-open vs Fail-closed<a class="anchor" href="#line-727" aria-label="이 절의 고유 링크">#</a></h2><p><code>Hook이 실패하면 어떻게 되는가?</code>는 하나의 답이 아니다. <strong>이벤트 유형, Handler 유형, 종료 코드, JSON 결정 필드, Timeout, SDK Callback 여부</strong>에 따라 효과가 다르다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">DOC</a></p>
+<p>보안 코어를 직접 만든다면 다음 정책을 권장한다. <code>[INF]</code></p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># [PSEUDO] Claude Code 실제 구현 아님
+async def authorize(tool_call):
+    if hard_policy_denies(tool_call):
+        raise PermissionDenied()
+    try:
+        hook_result = await security_hook(tool_call, timeout=2.0)
+    except Exception:
+        raise PermissionDenied(&#39;security-check-unavailable&#39;)
+    if hook_result.action != &#39;allow&#39;:
+        raise PermissionDenied(&#39;not-approved&#39;)
+    return await backend.execute(tool_call)</code></pre></div><p>이 코드는 보안에 민감한 시스템에서의 <strong>Fail-closed 설계 원칙</strong>을 보여주기 위한 예시이고, Claude Code가 모든 Hook을 이렇게 실행한다는 증거는 아니다.</p>
+<h3 id="line-749">26.1 감사 로그에 반드시 남길 값<a class="anchor" href="#line-749" aria-label="이 절의 고유 링크">#</a></h3><p><code>session_id</code>, <code>turn_id</code>, <code>tool_call_id</code>, <code>tool_name</code>, <code>original_args_hash</code>, <code>effective_args_hash</code>, <code>policy_version</code>, <code>hook_decision</code>, <code>approval_actor</code>, <code>execution_status</code>, <code>duration_ms</code>, <code>external_request_id</code>. 단, API 키·개인 정보·기밀 텍스트 전체를 기본 수집하지 않는다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-08.html"><small>이전 단원</small>← Hook을 정확히 분석하려면 어디를 봐야 하나?</a><a class="next" href="unit-10.html"><small>다음 단원</small>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-634">22. Guardrails를 하나의 검증 함수로 생각하면 안 된다</a><a class="toc-depth-2" href="#line-647">23. Permission의 실제 우선순위와 최근 변화</a><a class="toc-depth-3" href="#line-657">23.1 정책 평가의 논리 흐름</a><a class="toc-depth-3" href="#line-676">23.2 보안에서 Read deny가 만능이 아닌 이유</a><a class="toc-depth-3" href="#line-682">23.3 Plan Mode와 승인</a><a class="toc-depth-2" href="#line-686">24. Sandbox는 무엇을 보장하고 무엇은 보장하지 못하나?</a><a class="toc-depth-3" href="#line-701">24.1 Sandbox 탈출 경로를 방어 관점에서 분류</a><a class="toc-depth-2" href="#line-712">25. Prompt Injection은 Tool Output에서 들어올 수 있다</a><a class="toc-depth-2" href="#line-727">26. 실패 모드가 안전한가: Fail-open vs Fail-closed</a><a class="toc-depth-3" href="#line-749">26.1 감사 로그에 반드시 남길 값</a></nav></aside></div></body></html>

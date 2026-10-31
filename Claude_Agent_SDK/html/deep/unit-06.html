@@ -1,0 +1,72 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다 외 1개 주제 — Claude Agent SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Agent SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 CLI 실행 책임</p><a href="unit-02.html" ><span class="nav-number">02</span><span>Claude Agent SDK를 정확히 정의하기 외 3개 주제</span></a><p class="nav-group">호출·프로세스·제어 프로토콜</p><a href="unit-03.html" ><span class="nav-number">03</span><span>query()와 ClaudeSDKClient는 프로토콜 관점에서 다르다 외 5개 주제</span></a><a href="unit-04.html" ><span class="nav-number">04</span><span>메시지 파싱과 ResultMessage의 의미 외 1개 주제</span></a><p class="nav-group">Tool·MCP·권한·Hook</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 호출은 모델 결정과 실행 결정을 분리해야 한다 외 2개 주제</span></a><a href="unit-06.html" aria-current="page" class="current"><span class="nav-number">06</span><span>Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다 외 1개 주제</span></a><p class="nav-group">Context·Session·이중 쓰기</p><a href="unit-07.html" ><span class="nav-number">07</span><span>최종 LLM Context에는 무엇이 들어가는가? 외 3개 주제</span></a><p class="nav-group">Skills·위임·중단·복구</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Skills는 도구인가, Prompt인가, Agent인가? 외 3개 주제</span></a><p class="nav-group">워크북: 진입과 CLI 구성</p><a href="unit-09.html" ><span class="nav-number">09</span><span>[WB-01] query()의 진입점과 리소스 책임 외 2개 주제</span></a><p class="nav-group">워크북: 제어 요청과 콜백</p><a href="unit-10.html" ><span class="nav-number">10</span><span>[WB-04] Query.initialize()의 Callback-ID 생성 외 3개 주제</span></a><p class="nav-group">워크북: MCP·메시지·수명</p><a href="unit-11.html" ><span class="nav-number">11</span><span>[WB-08] handlesdkmcprequest()의 JSON-RPC 처리 외 2개 주제</span></a><p class="nav-group">워크북: 저장·위임·취소</p><a href="unit-12.html" ><span class="nav-number">12</span><span>[WB-11] sessionstore materialize와 mirror 외 4개 주제</span></a><p class="nav-group">서비스 설계와 기술 비교</p><a href="unit-13.html" ><span class="nav-number">13</span><span>직접 Agent Framework를 만든다면 필요한 컴포넌트 외 4개 주제</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>Claude Code와 Claude Agent SDK의 심화 학습을 분리하는 이유</span></a><p class="nav-group">장애·발표·복습</p><a href="unit-15.html" ><span class="nav-number">15</span><span>학습자가 반드시 생각해 봐야 할 24개 장애 사례 외 2개 주제</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>개념 확인 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-17.html" ><span class="nav-number">17</span><span>공식 문서(동작 계약 근거) 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 반드시 기억할 다섯 가지</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Tool·MCP·권한·Hook</p><h1>Tool·MCP·권한·Hook</h1><div class="chapter-meta">단원 06 · 원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316 · 약 4분 · 원문 424–485행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>모델 요청과 실제 부작용 시점을 나누고 내장·외부 MCP·Python MCP 경로를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>자동 승인·명시적 거부·Hook·콜백의 조건과 우회 가능한 경로를 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-424">16. Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다</a><a href="#line-437">16.1 Hook 결과 유형을 구별</a><a href="#line-445">16.2 Guardrail의 보장 수준</a><a href="#line-457">17. 권한 승인과 Human-in-the-loop</a><a href="#line-469">17.1 정확한 승인 기록을 위한 데이터</a></nav></details><section class="source-section" data-source-section="16-1"><h2 id="line-424">16. Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다<a class="anchor" href="#line-424" aria-label="이 절의 고유 링크">#</a></h2><p><code>HookMatcher</code>에서 Tool 이름 등 이벤트 조건을 정하고 <code>PreToolUse</code>, <code>PostToolUse</code>, <code>Stop</code>, <code>PreCompact</code>, Subagent 이벤트 등 등록한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/hooks">D05</a>]</p>
+<p><strong>실제 등록 코드 경로 [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/query.py">C05</a>]:</strong></p>
+<ol>
+<li>Python <code>ClaudeAgentOptions.hooks</code>에 callback 함수를 보관한다.</li>
+<li><code>_hooks_to_internal_format()</code>이 Hook 정의를 직렬화 가능한 형태로 바꾼다.</li>
+<li><code>Query.initialize()</code>가 callback마다 ID를 만들어 내부 <code>hook_callbacks</code>에 등록한다.</li>
+<li>CLI에 전송한 initialize 메시지에는 <code>hookCallbackIds</code>가 들어간다.</li>
+<li>CLI가 훅 발생 시 제어 요청을 보내면 <code>Query._handle_control_request()</code>가 ID를 기준으로 실제 Python 함수를 찾아 실행한다.</li>
+<li>결과를 JSON으로 CLI에 돌려주고, CLI가 후속 정책 평가 또는 실행을 결정한다.</li>
+</ol>
+<h3 id="line-437">16.1 Hook 결과 유형을 구별<a class="anchor" href="#line-437" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>deny:</strong> 사전에 실행을 거부하는 정책 목적.</li>
+<li><strong>allow:</strong> 후속 평가에서 Deny/Ask를 우회하는 만능 허가증이 아님.</li>
+<li><strong>input modification:</strong> 변경한 인수가 실제 Tool에 어떻게 전달되는지 확인할 것.</li>
+<li><strong>context injection:</strong> 모델의 판단 정보를 바꾸는 것이지 서버 권한 자체를 바꾸는 것이 아님.</li>
+<li><strong>post-event logging:</strong> 이미 실행된 부작용을 취소하지 않음.</li>
+</ul>
+<h3 id="line-445">16.2 Guardrail의 보장 수준<a class="anchor" href="#line-445" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>형태</th>
+<th>강제 위치</th>
+<th>일반적인 한계</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System Prompt 지침</td>
+<td>모델 입력</td>
+<td>확률적 준수, 강제 차단 아님</td>
+</tr>
+<tr>
+<td>Python SDK Hook</td>
+<td>CLI가 callback 실행 요청한 지점</td>
+<td>callback 지연·오류·등록 누락에 주의</td>
+</tr>
+<tr>
+<td>Permission Deny</td>
+<td>CLI 정책 엔진</td>
+<td>Tool 경유 아닌 다른 경로를 별도 제한해야 함</td>
+</tr>
+<tr>
+<td>OS Sandbox</td>
+<td>프로세스/컨테이너</td>
+<td>설정·마운트·네트워크 권한 정확성 필요</td>
+</tr>
+<tr>
+<td>MCP Backend IAM</td>
+<td>Tool 서버</td>
+<td>실제 데이터 접근 권한의 마지막 방어선</td>
+</tr>
+</tbody></table>
+</div><p><strong>추천 발표 슬라이드 제목:</strong> “모델이 하지 말라는 말을 듣는 것과, 실행 경로를 차단하는 것은 다르다.”</p>
+</section>
+<section class="source-section" data-source-section="17-1"><h2 id="line-457">17. 권한 승인과 Human-in-the-loop<a class="anchor" href="#line-457" aria-label="이 절의 고유 링크">#</a></h2><p><code>can_use_tool</code>은 앞서 결정되지 않은 도구 권한 문제를 앱으로 넘기는 <strong>인터랙티브 승인 지점</strong>이다. 앱은 사용자의 허가를 얻거나 정책에 따라 거부할 수 있다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/permissions">D03</a>]</p>
+<p><strong>중요한 구분:</strong></p>
+<ul>
+<li>Tool 실행 전 권한 승인 = <strong>특정 행위의 허가 판단</strong>.</li>
+<li>에이전트가 사용자에게 질문하는 <code>AskUserQuestion</code> = <strong>정보 수집</strong>.</li>
+<li>작업 전체를 pause한 뒤 나중에 resume하는 durable workflow = <strong>지속형 상태 관리</strong>.</li>
+</ul>
+<p>이 셋은 구현 방식이 달라야 한다. 특히 사용자 화면에서 “승인”을 누르기 전 서버가 오래 대기하는 경우, HTTP 요청을 계속 열어 둘지, 별도 승인 ID와 durable queue로 전환할지 판단해야 한다.</p>
+<h3 id="line-469">17.1 정확한 승인 기록을 위한 데이터<a class="anchor" href="#line-469" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>{
+  &quot;run_id&quot;: &quot;example-run&quot;,
+  &quot;tool_use_id&quot;: &quot;example-tool&quot;,
+  &quot;tool_name&quot;: &quot;Bash&quot;,
+  &quot;arguments_sha256&quot;: &quot;illustrative-hash&quot;,
+  &quot;principal_id&quot;: &quot;example-user&quot;,
+  &quot;decision&quot;: &quot;deny&quot;,
+  &quot;reason&quot;: &quot;operation_not_approved&quot;,
+  &quot;policy_version&quot;: &quot;policy-2026-10&quot;
+}</code></pre></div><p>위 JSON은 <strong>[설계 제안] 감사 이벤트 스키마</strong>일 뿐 실제 SDK에서 동일한 필드를 모두 자동 출력하는 것이 아니다. 인수가 바뀌면 기존 승인이 동일한 의미를 유지하는지 재평가해야 한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-05.html"><small>이전 단원</small>← Tool 호출은 모델 결정과 실행 결정을 분리해야 한다 외 2개 주제</a><a class="next" href="unit-07.html"><small>다음 단원</small>최종 LLM Context에는 무엇이 들어가는가? 외 3개 주제 →</a></nav><footer>Claude Agent SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-424">16. Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다</a><a class="toc-depth-3" href="#line-437">16.1 Hook 결과 유형을 구별</a><a class="toc-depth-3" href="#line-445">16.2 Guardrail의 보장 수준</a><a class="toc-depth-2" href="#line-457">17. 권한 승인과 Human-in-the-loop</a><a class="toc-depth-3" href="#line-469">17.1 정확한 승인 기록을 위한 데이터</a></nav></aside></div></body></html>

@@ -1,0 +1,83 @@
+{
+  "viewports": [
+    {
+      "folder": "Google_ADK",
+      "page": "index.html",
+      "size": "desktop-1440",
+      "bodyWidth": 1425,
+      "brokenImages": 0,
+      "documentWidth": 1425,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 696.4625244140625,
+      "nestedAnchors": 0,
+      "sidebarVisible": true,
+      "title": "2차 심층 학습 안내 — Google ADK 심층 학습",
+      "width": 1440
+    },
+    {
+      "folder": "Google_ADK",
+      "page": "unit-09.html",
+      "size": "desktop-1440",
+      "bodyWidth": 1425,
+      "brokenImages": 0,
+      "documentWidth": 1425,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 696.4625244140625,
+      "nestedAnchors": 0,
+      "sidebarVisible": true,
+      "title": "기존 Template Workflow는 어떤 구조였나? 외 3개 주제 — Google ADK 심층 학습",
+      "width": 1440
+    },
+    {
+      "folder": "Google_ADK",
+      "page": "index.html",
+      "size": "mobile-375",
+      "bodyWidth": 360,
+      "brokenImages": 0,
+      "codeRegions": 0,
+      "documentWidth": 360,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 318,
+      "menuExpanded": "false",
+      "tableRegions": 0,
+      "title": "2차 심층 학습 안내 — Google ADK 심층 학습",
+      "width": 375
+    },
+    {
+      "folder": "Google_ADK",
+      "page": "unit-09.html",
+      "size": "mobile-375",
+      "bodyWidth": 360,
+      "brokenImages": 0,
+      "codeRegions": 3,
+      "documentWidth": 360,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 318,
+      "menuExpanded": "false",
+      "tableRegions": 2,
+      "title": "기존 Template Workflow는 어떤 구조였나? 외 3개 주제 — Google ADK 심층 학습",
+      "width": 375
+    }
+  ],
+  "interaction": {
+    "folder": "Google_ADK",
+    "open": "true",
+    "closed": "false",
+    "anchor": "#line-630",
+    "hash": "#line-630",
+    "targetVisible": true
+  },
+  "notes": [
+    "데스크톱 1440×1000, 모바일 375×812 뷰포트 검사",
+    "각 교재의 안내 페이지와 도식·표가 포함된 대표 단원 검사",
+    "실물 기기·실제 SDK 실행·성능 테스트는 수행하지 않음"
+  ]
+}

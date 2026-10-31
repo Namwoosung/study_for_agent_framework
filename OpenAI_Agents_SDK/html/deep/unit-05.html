@@ -1,0 +1,138 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Tool 종류부터 실행 경계를 나눈다 외 5개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" aria-current="page" class="current"><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Tool 계획과 실행</p><h1>Tool 계획과 실행</h1><div class="chapter-meta">단원 05 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 9분 · 원문 320–458행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Tool 실행 위치와 스키마·Task 배치·결과 정책·실패 정규화를 나눕니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Hosted Tool 경로, 병렬성의 단위, 모델 재호출 없이 종료하는 조건을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-322">11. Tool 종류부터 실행 경계를 나눈다</a><a href="#line-339">12. Python 함수가 Tool이 되는 세 단계</a><a href="#line-341">12.1 스키마 변환</a><a href="#line-345">12.2 모델에게 도구를 노출</a><a href="#line-349">12.3 실행 요청을 SDK가 처리</a><a href="#line-368">12.4 Argument validation ≠ 업무 데이터 검증</a><a href="#line-372">13. toolexecution.py의 내부 구조와 실패 처리</a><a href="#line-386">13.1 실패 전파 설계에서 알아야 할 질문</a><a href="#line-396">14. 병렬 Tool Call: 무엇이 병렬인가?</a><a href="#line-420">14.1 병렬 실행에서 데이터 경합이 발생하는 이유</a><a href="#line-424">14.2 병렬 Tool vs 병렬 Agent</a><a href="#line-432">15. Tool 결과로 종료할 수도 있다: toolusebehavior</a><a href="#line-438">15.1 결과 문자열과 구조화 출력의 혼동</a><a href="#line-442">16. Function Tool 실패는 어떻게 보이는가?</a></nav></details><section class="source-section" data-source-section="11-1"><p class="part-divider" id="line-320">Part III. Tool Calling: 스키마에서 실제 실행까지</p><h2 id="line-322">11. Tool 종류부터 실행 경계를 나눈다<a class="anchor" href="#line-322" aria-label="이 절의 고유 링크">#</a></h2><p>SDK에서 <code>tools=[...]</code>에 들어간 모든 항목이 같은 위치에서 실행되는 것은 아니다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>도구 유형</th>
+<th>실행 주체</th>
+<th>일반적인 책임 경계</th>
+<th>중요 검사</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FunctionTool</code> (<code>@function_tool</code>)</td>
+<td>사용자 Python 런타임</td>
+<td>사용자 코드가 DB/API/파일 접근</td>
+<td>Argument validation, Tool Guardrail, Approval, 업무 권한</td>
+</tr>
+<tr>
+<td><code>Agent.as_tool()</code></td>
+<td>부모 Runner가 중첩 Agent 실행</td>
+<td>자식 Run, 내부 Tool, 승인 전파</td>
+<td>부모/자식 Context, 승인/이력 전파</td>
+</tr>
+<tr>
+<td><code>Hosted</code> OpenAI Tool</td>
+<td>OpenAI 모델 플랫폼</td>
+<td>OpenAI 측 도구 처리</td>
+<td>해당 도구 자체의 정책 및 제공 기능</td>
+</tr>
+<tr>
+<td>로컬 <code>ShellTool</code> / <code>ApplyPatchTool</code></td>
+<td>앱이 제공한 Executor / Editor</td>
+<td>OS/파일 시스템</td>
+<td>Sandbox, Approval, 실행 권한</td>
+</tr>
+<tr>
+<td><code>ComputerTool</code></td>
+<td>앱 측 컴퓨터 작업</td>
+<td>브라우저/데스크톱</td>
+<td>Safety Check, 실행 환경</td>
+</tr>
+<tr>
+<td>Local MCP</td>
+<td>연결된 MCP 서버</td>
+<td>서버의 도구 실행 환경</td>
+<td>서버 인증, Tool filtering, Approval</td>
+</tr>
+<tr>
+<td>Hosted MCP</td>
+<td>OpenAI 호스팅 연결 경로</td>
+<td>모델 서비스 및 MCP 서버</td>
+<td>Hosted MCP Approval/Tool 정책</td>
+</tr>
+<tr>
+<td>Sandbox Agent의 Tool</td>
+<td>Sandbox Backend</td>
+<td>격리 실행 공간</td>
+<td>파일·네트워크·비밀정보 권한</td>
+</tr>
+</tbody></table>
+</div><p><strong>[DOC]</strong> Tool Guardrail은 모든 Hosted Tool과 Handoff에 자동 적용되는 전역 방화벽이 아니다. Function Tool 주변 검증이 중심이다. 각 도구별로 안전 정책을 분리해야 한다. [<a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/guardrails/">D04</a>, <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/tools/">D09</a>]</p>
+</section>
+<section class="source-section" data-source-section="12-1"><h2 id="line-339">12. Python 함수가 Tool이 되는 세 단계<a class="anchor" href="#line-339" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-341">12.1 스키마 변환<a class="anchor" href="#line-341" aria-label="이 절의 고유 링크">#</a></h3><p>Python 함수의 매개변수, 타입 힌트, docstring 등을 참고하여 Function Tool의 JSON Schema 및 설명을 구성한다. Pydantic 기반 파싱·검증 기능을 사용한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/tools/">D09</a>]</p>
+<h3 id="line-345">12.2 모델에게 도구를 노출<a class="anchor" href="#line-345" aria-label="이 절의 고유 링크">#</a></h3><p><code>turn_preparation.get_all_tools()</code> 등에서 활성화 여부, 도구 목록과 Handoff를 정리해 모델 측 요청에 연결한다. <strong>Tool을 등록했다는 것</strong>과 <strong>모델이 실제로 그 Tool을 호출한다는 것</strong>은 다르다.</p>
+<h3 id="line-349">12.3 실행 요청을 SDK가 처리<a class="anchor" href="#line-349" aria-label="이 절의 고유 링크">#</a></h3><p>모델 응답에 <code>function_call</code>이 나오면 SDK는 Tool 이름과 호출 ID를 사용해 실행 계획을 만든다. 호출 인자를 검증한 뒤 Function Tool의 실행기로 넘기며, 승인 및 Guardrail 결과에 따라 실행 대신 중단 또는 거절이 일어날 수 있다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py">S03</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_planning.py">S05</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py">S06</a>]</p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># [PSEUDO] 실제 데코레이터 구현을 대체하는 설명 코드
+schema = derive_json_schema(python_fn)
+model_request.tools.append(schema)
+model_output = await llm(...)
+for call in model_output.tool_calls:
+    tool = lookup_tool_by_name(call.name)
+    parsed = validate_call_arguments(call.arguments, tool.schema)
+    if approval_required(call, parsed):
+        record_pending_approval(call)
+    else:
+        result = await execute_with_guardrails(tool, parsed)
+        append_result_for_next_model_turn(call.id, result)</code></pre></div><h3 id="line-368">12.4 Argument validation ≠ 업무 데이터 검증<a class="anchor" href="#line-368" aria-label="이 절의 고유 링크">#</a></h3><p><code>lot_id: str</code> 스키마를 통과해도 그 Lot의 조회 권한이 있는지, SQL이 안전한지, 결과가 실제로 존재하는지까지 보장하지 않는다. <strong>타입 검증 → 인증/인가 → 업무 규칙 → 실행 → 결과 검증</strong>은 별도 계층이다.</p>
+</section>
+<section class="source-section" data-source-section="13-1"><h2 id="line-372">13. <code>tool_execution.py</code>의 내부 구조와 실패 처리<a class="anchor" href="#line-372" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/tool_execution.py">S06</a>] <code>tool_execution.py</code>에는 <code>execute_function_tool_calls</code>, <code>function_needs_approval</code>, <code>resolve_enabled_function_tools</code>와 Shell/ApplyPatch/Computer 관련 실행 함수가 있다. v0.24.0에는 함수 도구를 배치로 실행할 때 <strong>작업 상태·취소·후처리·오류 우선순위</strong>를 관리하는 구조가 있다.</p>
+<p>공개 코드에서 확인한 내부 자료구조 예:</p>
+<ul>
+<li><code>_FunctionToolTaskState</code>: 개별 Tool Run, 순서, 실제 <code>asyncio.Task</code>, post-invoke 단계 진입 여부.</li>
+<li><code>_FunctionToolFailure</code>: 실패 예외와 호출 순서 및 발생 소스(<code>direct</code>, <code>cancelled_teardown</code>, <code>post_invoke</code>).</li>
+<li><code>_select_function_tool_failure</code>: 동시에 실패한 여러 Tool 중 어떤 실패를 표면화할지 결정.</li>
+<li><code>_consume_function_tool_task_result</code>: 백그라운드 Task에서 늦게 발생한 예외의 처리.</li>
+<li><code>_FUNCTION_TOOL_CANCELLED_DRAIN_SECONDS</code> 등: 취소 후 남은 작업 정리를 위한 상수.</li>
+</ul>
+<p>이 구조가 중요한 이유는 <strong>여러 Tool을 동시에 실행할 때 한 개가 실패한다고 나머지 모든 Task가 마법처럼 사라지는 것은 아니기 때문</strong>이다.</p>
+<h3 id="line-386">13.1 실패 전파 설계에서 알아야 할 질문<a class="anchor" href="#line-386" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>동시 실행한 다른 Tool에 취소 요청을 보내는가?</li>
+<li>취소된 Tool에서 <code>finally</code> 또는 외부 API 요청이 여전히 진행 중일 수 있는가?</li>
+<li>Task가 취소된 후 남은 예외를 어떻게 회수하는가?</li>
+<li>Tool 결과를 모델 입력에 쌓는 순서는 호출 완료 순서인가, 요청 순서인가?</li>
+<li>이미 외부 시스템을 변경한 Tool에 대한 보상 트랜잭션을 누가 구현하는가?</li>
+</ul>
+<p>이 내용이 처음 어려우면 Python <code>asyncio.create_task</code>, <code>asyncio.gather</code>, <code>asyncio.CancelledError</code>, <code>try/finally</code>를 먼저 복습하면 좋다.</p>
+</section>
+<section class="source-section" data-source-section="14-1"><h2 id="line-396">14. 병렬 Tool Call: 무엇이 병렬인가?<a class="anchor" href="#line-396" aria-label="이 절의 고유 링크">#</a></h2><p><strong>병렬의 단계는 셋으로 나눠야 한다.</strong></p>
+<ol>
+<li><strong>모델 수준:</strong> 한 모델 응답이 <code>Tool A, Tool B</code>를 동시에 요청하는 것.</li>
+<li><strong>SDK 수준:</strong> 여러 Tool 요청을 Python 비동기 Task로 동시에 스케줄링하는 것.</li>
+<li><strong>시스템 수준:</strong> DB 드라이버·네트워크·실제 외부 서버가 요청을 실제로 겹쳐 처리하는 것.</li>
+</ol>
+<p>모델이 3개 Tool을 한 번에 내놓아도 실제 속도가 3배로 빨라진다고 보장하지 않는다. 동기 함수의 차단, 서비스 Rate Limit, GIL 영향, 공유 DB 락, 워커 수 제한 등으로 이득이 감소할 수 있다.</p>
+<figure class="diagram" data-diagram="4"><figcaption><span>도식 4</span> 14. 병렬 Tool Call: 무엇이 병렬인가?</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="14. 병렬 Tool Call: 무엇이 병렬인가?"><img src="assets/diagram-4.svg" alt="14. 병렬 Tool Call: 무엇이 병렬인가?의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  A[한 모델 응답: Tool A+B+C] --&gt; B[SDK Tool plan]
+  B --&gt; C[Task A]
+  B --&gt; D[Task B]
+  B --&gt; E[Task C]
+  C --&gt; F[Result / Failure]
+  D --&gt; F
+  E --&gt; F
+  F --&gt; G[Tool 결과를 next model input에 반영]</code></pre></details></figure><p><strong>[SRC]</strong> v0.24.0의 <code>tool_execution.py</code>에는 Function Tool 배치를 위한 <code>asyncio.Task</code> 상태·취소 정리·오류 우선순위 처리 코드가 있다. 즉 <strong>병렬 Tool 실행은 실체가 있는 Runtime 기능</strong>이다. 그러나 특정 Tool 유형, 승인 대기, 스트리밍 및 오류 분기에서 항상 동일하게 동작하는지 개별 경로를 확인해야 한다.</p>
+<h3 id="line-420">14.1 병렬 실행에서 데이터 경합이 발생하는 이유<a class="anchor" href="#line-420" aria-label="이 절의 고유 링크">#</a></h3><p>읽기 전용 Tool은 병렬 이점이 큰 반면 같은 파일을 수정하거나 같은 세션 상태를 바꾸는 Tool은 경쟁이 발생한다. 프레임워크가 <strong>애플리케이션 도메인의 모든 충돌을 자동 판정하는 것은 아니다.</strong> 필요 시 개발자가 read/write lock, 세마포어, 낙관적 버전 확인, DB transaction을 설계해야 한다. [INF]</p>
+<h3 id="line-424">14.2 병렬 Tool vs 병렬 Agent<a class="anchor" href="#line-424" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>병렬 Tool</strong>: 모델 하나가 여러 Tool을 호출해 실행함. 보통 다음 모델 호출은 그 결과를 수집한 뒤 계속 진행.</li>
+<li><strong>병렬 Agent</strong>: 부모가 여러 <code>Agent.as_tool()</code> 자식 또는 외부 작업을 동시에 실행하도록 구성. 각 Agent는 자체 LLM Loop를 돌 수 있음.</li>
+<li><strong>Handoff</strong>: 다음 Agent로 소유권 이전. 같은 시점에 독립 Agent가 여러 개 실행된다는 뜻이 아님.</li>
+</ul>
+<p><strong>발표에 반드시 넣을 문장:</strong> 여러 Tool 호출, 여러 Agent 호출, 여러 모델 호출은 서로 다른 병렬성이다.</p>
+</section>
+<section class="source-section" data-source-section="15-1"><h2 id="line-432">15. Tool 결과로 종료할 수도 있다: <code>tool_use_behavior</code><a class="anchor" href="#line-432" aria-label="이 절의 고유 링크">#</a></h2><p>일반적인 Tool Flow는 <code>도구 결과 → 모델 재호출 → 최종 답</code>이지만, 일부 Agent 설정에서는 Tool 결과를 최종 출력으로 사용하는 정책이 가능하다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/tools/">D09</a>]</p>
+<p>이 설계는 정형 결과를 이미 확보했을 때 비용과 Latency를 줄일 수 있지만, 모델이 요약·해석할 기회를 건너뛰므로 최종 출력 스키마와 에러 메시지 처리 정책을 명확히 해야 한다.</p>
+<h3 id="line-438">15.1 결과 문자열과 구조화 출력의 혼동<a class="anchor" href="#line-438" aria-label="이 절의 고유 링크">#</a></h3><p>Pydantic 모델 등으로 설정한 <code>output_type</code>이 있다고 해서 실제 세계에서 참인 답을 보장하는 것은 아니다. 출력 구조 유효성, 데이터 근거의 타당성, 계산 재현성은 서로 다른 검증 기준이다.</p>
+</section>
+<section class="source-section" data-source-section="16-1"><h2 id="line-442">16. Function Tool 실패는 어떻게 보이는가?<a class="anchor" href="#line-442" aria-label="이 절의 고유 링크">#</a></h2><p>도구 실행에서 오류가 났을 때 고려해야 할 층:</p>
+<ol>
+<li>호출 인자 JSON 자체가 잘못됨.</li>
+<li>Pydantic/스키마 검증 실패.</li>
+<li><code>needs_approval</code>에 따른 승인 대기·거절.</li>
+<li>Tool Input Guardrail에서 거절/차단.</li>
+<li>Python 함수 예외·Timeout·취소.</li>
+<li>Tool Output Guardrail에서 결과 거절/교체/차단.</li>
+<li>Tool 결과를 모델 입력으로 변환하는 단계의 에러.</li>
+<li>모델 재호출 또는 전체 Run 종료 오류.</li>
+</ol>
+<p>v0.24.0에는 Run 전체에 적용되는 Tool 오류 메시지 포맷터 기능이 추가되었다. <code>RunConfig.tool_error_formatter</code>는 특정 에러를 <strong>모델에 어떻게 보여줄지</strong>에 개입할 수 있지만, underlying 부작용을 되돌리거나 접근제어를 대신하지 않는다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/releases/tag/v0.24.0">D00</a>, <a target="_blank" rel="noopener noreferrer" href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals">D10</a>]</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-04.html"><small>이전 단원</small>← ProcessedResponse와 NextStep 상태 기계 외 2개 주제</a><a class="next" href="unit-06.html"><small>다음 단원</small>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-322">11. Tool 종류부터 실행 경계를 나눈다</a><a class="toc-depth-2" href="#line-339">12. Python 함수가 Tool이 되는 세 단계</a><a class="toc-depth-3" href="#line-341">12.1 스키마 변환</a><a class="toc-depth-3" href="#line-345">12.2 모델에게 도구를 노출</a><a class="toc-depth-3" href="#line-349">12.3 실행 요청을 SDK가 처리</a><a class="toc-depth-3" href="#line-368">12.4 Argument validation ≠ 업무 데이터 검증</a><a class="toc-depth-2" href="#line-372">13. toolexecution.py의 내부 구조와 실패 처리</a><a class="toc-depth-3" href="#line-386">13.1 실패 전파 설계에서 알아야 할 질문</a><a class="toc-depth-2" href="#line-396">14. 병렬 Tool Call: 무엇이 병렬인가?</a><a class="toc-depth-3" href="#line-420">14.1 병렬 실행에서 데이터 경합이 발생하는 이유</a><a class="toc-depth-3" href="#line-424">14.2 병렬 Tool vs 병렬 Agent</a><a class="toc-depth-2" href="#line-432">15. Tool 결과로 종료할 수도 있다: toolusebehavior</a><a class="toc-depth-3" href="#line-438">15.1 결과 문자열과 구조화 출력의 혼동</a><a class="toc-depth-2" href="#line-442">16. Function Tool 실패는 어떻게 보이는가?</a></nav></aside></div></body></html>

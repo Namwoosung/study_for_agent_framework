@@ -1,0 +1,148 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>발표용 정리와 학습 점검 질문 — PydanticAI 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">P.</span><span>PydanticAI<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Core·Graph·Harness 경계</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 설계 질문 외 2개 주제</span></a><p class="nav-group">Node와 Run 수명</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 실행을 하나의 상태기계로 이해하기 외 2개 주제</span></a><p class="nav-group">모델 입력과 Provider</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt Assembly 및 최종 모델 요청 외 1개 주제</span></a><p class="nav-group">Tool 정의·검증·동시성</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 정의와 JSON Schema 변환 외 1개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Tool 병렬 실행, 장벽, 순서와 취소</span></a><p class="nav-group">Output와 Retry</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Structured Output 및 EndStrategy 상세 외 1개 주제</span></a><p class="nav-group">Dependencies·Capabilities·승인</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Dependencies와 RunContext의 데이터 흐름 외 1개 주제</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Human-in-the-loop·Deferred Tool·복원</span></a><p class="nav-group">History·Context·외부 확장</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Message History·State·Persistence·Memory 외 2개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Multi-Agent·Graph·오케스트레이션</span></a><p class="nav-group">Serving·보안·장애</p><a href="unit-12.html" ><span class="nav-number">12</span><span>Streaming·Serving·동시 요청·취소 외 2개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>핵심 코드 추적 워크북</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>핵심 코드 추적 워크북 / W3. ToolDefinition → ToolManager → 검증</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>핵심 코드 추적 워크북 / W5. 병렬 Tool의 실행·기록·중복 방지</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>핵심 코드 추적 워크북 / W8. Capability Lifecycle + Tool 노출 정책</span></a><p class="nav-group">비교·발표·복습</p><a href="unit-17.html" ><span class="nav-number">17</span><span>다른 Agent Framework와 설계 비교</span></a><a href="unit-18.html" aria-current="page" class="current"><span class="nav-number">18</span><span>발표용 정리와 학습 점검 질문</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-20.html" ><span class="nav-number">20</span><span>최종 요약: PydanticAI의 진짜 설계적 특징</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python Core v2.61.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 비교·발표·복습</p><h1>비교·발표·복습</h1><div class="chapter-meta">단원 18 · 원문 2026.10.31 · Python Core v2.61.0 · 약 7분 · 원문 1503–1602행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>기능 수보다 실행·검증·상태·권한의 설계를 비교하고 문답으로 설명해 봅니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>성능 순위로 읽지 말고 각 설계의 적용 조건과 비용을 연결하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1503">26. 발표용 정리와 학습 점검 질문</a><a href="#line-1505">26.1 추천 기술 발표 흐름 — 14장</a><a href="#line-1526">26.2 코드 분석 시 구분할 표현</a><a href="#line-1535">26.3 복습 질문 — 개념·실행·소스·설계</a><a href="#line-1589">26.4 이 자료를 학습했다고 판단하는 기준</a></nav></details><section class="source-section" data-source-section="26-1"><h2 id="line-1503">26. 발표용 정리와 학습 점검 질문<a class="anchor" href="#line-1503" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1505">26.1 추천 기술 발표 흐름 — 14장<a class="anchor" href="#line-1505" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>발표 페이지</th>
+<th>핵심 전달 내용</th>
+<th>보여주면 좋은 자료</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>이번 연구는 Framework 사용법이 아니라 내부 구현 비교다</td>
+<td>목표/범위</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PydanticAI의 계층: Core/Graph/Harness/Provider</td>
+<td>전체 구조도</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Agent Loop의 Node 전이</td>
+<td><code>UserPrompt → ModelRequest → CallTools</code> 도식</td>
+</tr>
+<tr>
+<td>4</td>
+<td>호출자의 <code>run()</code>부터 Final까지의 책임</td>
+<td>Run Lifecycle 그림</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Tool 정의가 검증 가능한 함수 호출이 되는 과정</td>
+<td>Tool Schema/Manager 파이프라인</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Tool 병렬과 Barrier</td>
+<td><code>[A,B]→[C]→[D,E]</code> 예시</td>
+</tr>
+<tr>
+<td>7</td>
+<td>EndStrategy는 Tool 부작용을 바꾼다</td>
+<td>Early/Graceful/Exhaustive 비교표</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Structured Output과 사실 정확성의 경계</td>
+<td>Schema vs 의미 검증</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Retry는 여러 레이어에서 증폭된다</td>
+<td>Retry stack 및 수학 예시</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Approval과 Deferred의 상태를 어떻게 보존하나</td>
+<td>후속 Run 시퀀스</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Memory/History/Compaction은 서로 다르다</td>
+<td>데이터 생명주기 그림</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Core와 Harness의 확장 구조</td>
+<td>Capability 삽입 지점</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Guardrails와 실제 보안 경계</td>
+<td>Tool 권한 체크 흐름</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Hermes·OpenAI SDK와 비교한 설계 선택</td>
+<td>Trade-off 결론</td>
+</tr>
+</tbody></table>
+</div><p>발표에서는 각 페이지에 코드 전체를 보여주지 말고 <strong>핵심 코드 경로·조건문·State 변화를 1개씩 강조</strong>한다. <code>EndStrategy</code>, Tool Barrier, Deferred Resume는 발표에서 가장 차별화된 설계 주제가 될 수 있다.</p>
+<h3 id="line-1526">26.2 코드 분석 시 구분할 표현<a class="anchor" href="#line-1526" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><code>[SRC]</code> <strong>직접 확인:</strong> 고정 버전의 공개 코드에서 분기·필드·호출 관계를 확인함.</li>
+<li><code>[DOC]</code> <strong>문서 설명:</strong> 공식 기술 문서가 기능과 계약을 설명함.</li>
+<li><code>[INF]</code> <strong>설계 판단:</strong> 코드/문서의 구조를 바탕으로 장단점을 해석함.</li>
+<li><code>[UNV]</code> <strong>미검증:</strong> 실제 서버/모델/동시 부하에서 측정하지 않음.</li>
+</ul>
+<p>예: &#39;Parallel tools are scheduled concurrently&#39;는 공식 문서와 소스의 근거를 제시할 수 있지만, &#39;이 프레임워크가 다른 프레임워크보다 2배 빠르다&#39;는 벤치마크 없이 말하면 안 된다.</p>
+<h3 id="line-1535">26.3 복습 질문 — 개념·실행·소스·설계<a class="anchor" href="#line-1535" aria-label="이 절의 고유 링크">#</a></h3><h4 id="line-1537">개념 (Q01–Q10)<a class="anchor" href="#line-1537" aria-label="이 절의 고유 링크">#</a></h4><ol>
+<li>PydanticAI Core와 Harness의 패키지 경계는?</li>
+<li>Python의 라이브러리/SKD 설치형이면서 Framework로 볼 수 있는 이유는?</li>
+<li>내부 Agent Graph와 사용자 정의 Pydantic Graph는 무엇이 다른가?</li>
+<li><code>RunContext.deps</code>와 Message History가 다른 이유는?</li>
+<li>Tool, Toolset, MCP, Skill의 책임 차이는?</li>
+<li>Schema Validation과 의미 정확성이 다른 이유는?</li>
+<li>Model과 Provider가 다른 이유는?</li>
+<li>Session/Conversation/Memory/State가 각각 의미하는 것은?</li>
+<li><code>ToolOutput</code>, <code>NativeOutput</code>, <code>PromptedOutput</code> 차이는?</li>
+<li>Compaction이 Prefix Caching에 불리할 수 있는 이유는?</li>
+</ol>
+<h4 id="line-1550">동작 원리 (Q11–Q20)<a class="anchor" href="#line-1550" aria-label="이 절의 고유 링크">#</a></h4><ol start="11">
+<li><code>UserPromptNode</code>의 결과가 <code>CallToolsNode</code>로 바로 갈 수 있는 상황은?</li>
+<li><code>early</code>에서 Function Tool 실행을 건너뛰는 조건은?</li>
+<li><code>graceful</code>에서 출력 전에 나온 Function Tool은 어떻게 처리되는가?</li>
+<li><code>exhaustive</code>가 비즈니스 Side Effect 측면에서 주의가 필요한 이유는?</li>
+<li>여러 Tool에 <code>sequential=True</code>가 섞였을 때 실행 구간을 나누는 법은?</li>
+<li><code>ModelRetry</code>와 Provider 429 재시도는 어떻게 다른가?</li>
+<li>Tool Validation 실패는 어떤 경로로 모델 수정 요청이 되는가?</li>
+<li>승인 대기 후 새로운 Run으로 이어질 때 무엇을 보존하는가?</li>
+<li><code>run_stream()</code>의 종료와 외부 Tool의 부작용 완료가 다를 수 있는 이유는?</li>
+<li>ToolManager가 Capability 활성 집합을 Cache Key에 반영하는 이유는?</li>
+</ol>
+<h4 id="line-1563">코드·아키텍처 (Q21–Q30)<a class="anchor" href="#line-1563" aria-label="이 절의 고유 링크">#</a></h4><ol start="21">
+<li><code>_agent_graph.py</code>의 주요 Node와 그 책임을 소스에서 설명할 수 있는가?</li>
+<li><code>process_tool_calls</code>의 입력 인자와 출력 Event의 역할은?</li>
+<li><code>_segment_by_barriers</code>의 시간 복잡도와 상태를 설명할 수 있는가?</li>
+<li>ToolCall ID와 ToolResult ID는 왜 대응되어야 하는가?</li>
+<li>출력 Retry Count를 병렬 Task들이 즉시 변경하면 어떤 문제가 생기는가?</li>
+<li>Input Guardrail의 검증 위치가 Tool Side Effect에 미치는 영향은?</li>
+<li>Deferred Results에서 조작된 승인 입력의 위험을 어떻게 차단할까?</li>
+<li>Model Request/Response 기록과 외부 저장소를 어떻게 연결할까?</li>
+<li>원격 MCP 서버를 안전하게 실행하려면 어떤 권한 경계가 필요한가?</li>
+<li>Agent를 웹 서버로 Serving할 때 어떤 상태를 서버가 소유해야 할까?</li>
+</ol>
+<h4 id="line-1576">설계 판단 (Q31–Q40)<a class="anchor" href="#line-1576" aria-label="이 절의 고유 링크">#</a></h4><ol start="31">
+<li>모든 Tool을 순차 실행하지 않고 일부만 Barrier로 만드는 이유는?</li>
+<li>Tool 정의 Cache를 공격자가 악용할 수 있는 경로를 어떻게 막을까?</li>
+<li>온전히 Graph 기반 Agent Loop로 구현할 때의 장점과 비용은?</li>
+<li>Output Schema만으로 통계 분석의 진실성을 보장할 수 없는 이유는?</li>
+<li>Prompt Cache가 잘 되도록 Context를 설계할 때 바꾸지 말아야 할 것은?</li>
+<li>장기 메모리를 Core에 모두 내장하는 것과 Harness로 분리하는 것 중 무엇이 유리한가?</li>
+<li>재시도 계층이 많을수록 비용 상한을 어떻게 설계해야 할까?</li>
+<li>여러 Agent가 같은 DB를 수정한다면 어디서 최종 충돌을 제어할까?</li>
+<li>Hermes 대비 PydanticAI에서 직접 구현해야 하는 Harness 구성요소는?</li>
+<li>OpenAI Agents SDK 대비 PydanticAI의 Graph·타입·Toolset 설계가 적합한 문제는?</li>
+</ol>
+<h3 id="line-1589">26.4 이 자료를 학습했다고 판단하는 기준<a class="anchor" href="#line-1589" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><input disabled="" type="checkbox"> <code>Agent.run</code> 시작부터 종료까지 주요 모듈을 단계별로 설명한다.</li>
+<li><input disabled="" type="checkbox"> <code>ToolManager</code>, <code>_tool_execution</code>, <code>_output</code>이 서로 무엇을 나누어 맡는지 설명한다.</li>
+<li><input disabled="" type="checkbox"> <code>EndStrategy</code> 셋의 Side Effect 차이를 예제로 설명한다.</li>
+<li><input disabled="" type="checkbox"> 병렬 Tool과 Subagent 병렬화를 구별한다.</li>
+<li><input disabled="" type="checkbox"> Schema/Output Validator/Guardrail/Authorization의 책임을 구분한다.</li>
+<li><input disabled="" type="checkbox"> <code>DeferredToolRequests</code> 후속 Run 재개의 데이터 계약을 설명한다.</li>
+<li><input disabled="" type="checkbox"> History·Context·Compaction·Memory·RAG의 저장/검색 경계를 그릴 수 있다.</li>
+<li><input disabled="" type="checkbox"> 고정 버전 코드의 <code>SRC</code> 사실과 설계 추론 <code>INF</code>를 혼동하지 않는다.</li>
+<li><input disabled="" type="checkbox"> Hermes 및 OpenAI Agents SDK와 최소 5개 항목의 구조적 Trade-off를 비교할 수 있다.</li>
+</ul>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-17.html"><small>이전 단원</small>← 다른 Agent Framework와 설계 비교</a><a class="next" href="unit-19.html"><small>다음 단원</small>공식 출처·코드 인덱스 →</a></nav><footer>PydanticAI · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-1503">26. 발표용 정리와 학습 점검 질문</a><a class="toc-depth-2" href="#line-1505">26.1 추천 기술 발표 흐름 — 14장</a><a class="toc-depth-2" href="#line-1526">26.2 코드 분석 시 구분할 표현</a><a class="toc-depth-2" href="#line-1535">26.3 복습 질문 — 개념·실행·소스·설계</a><a class="toc-depth-2" href="#line-1589">26.4 이 자료를 학습했다고 판단하는 기준</a></nav></aside></div></body></html>

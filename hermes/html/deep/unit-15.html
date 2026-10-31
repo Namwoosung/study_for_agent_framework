@@ -1,0 +1,99 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Cron: 언제 실행되고 무엇을 재실행하는가? — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" ><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" aria-current="page" class="current"><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" ><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" ><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Gateway와 예약 실행</p><h1>Gateway와 예약 실행</h1><div class="chapter-meta">단원 15 · 원문 2026.10.31 · Hermes v0.22.5 · 약 6분 · 원문 1263–1356행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>세션 정본의 쓰기 소유권과 요청·Run·Stream의 수명을 읽습니다. Cron은 예약 시각에 새 Agent Session을 시작합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>스케줄 슬롯 Claim, 실행 성공, 결과 Delivery와 외부 효과 exactly-once를 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1263">16. Cron: 언제 실행되고 무엇을 재실행하는가?</a><a href="#line-1265">16.1 Cron은 단순 타이머가 아니다</a><a href="#line-1273">16.2 Cron Scheduler의 핵심 구조</a><a href="#line-1305">16.3 왜 새 Session으로 실행할까?</a><a href="#line-1314">16.4 Skills 및 Script는 Cron에서 어떻게 들어가나?</a><a href="#line-1330">16.5 중복 실행 방지의 진짜 문제</a><a href="#line-1344">16.6 Cron과 기존 Session을 공유하면 안 되는 이유</a><a href="#line-1348">16.7 다른 프레임워크와 비교할 때의 위치</a></nav></details><section class="source-section" data-source-section="16-1"><h2 id="line-1263">16. Cron: 언제 실행되고 무엇을 재실행하는가?<a class="anchor" href="#line-1263" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1265">16.1 Cron은 단순 타이머가 아니다<a class="anchor" href="#line-1265" aria-label="이 절의 고유 링크">#</a></h3><p>Cron은 특정 시간/간격에 작업을 시작하게 하는 스케줄링 메커니즘이다. Hermes가 제공하는 Cron의 특징은 <strong>Shell 명령만 예약하는 것이 아니라, 새로운 Agent Session을 생성하여 LLM과 Tool Loop를 실행하는 것</strong>이다.</p>
+<p><strong>[DOC]</strong> 현재 공식 문서는 상대 지연, 반복 간격, 표준 5필드 Cron Expression, ISO 시각 등 네 가지 스케줄 표현을 설명한다. 모델에는 <code>cronjob_manage</code>가 노출되며 create/list/update/pause/resume/run/remove 등의 동작을 처리할 수 있다.</p>
+<p>문서: <a target="_blank" rel="noopener noreferrer" href="https://hermes-agent.nousresearch.com/docs/developer-guide/cron-internals">https://hermes-agent.nousresearch.com/docs/developer-guide/cron-internals</a></p>
+<h3 id="line-1273">16.2 Cron Scheduler의 핵심 구조<a class="anchor" href="#line-1273" aria-label="이 절의 고유 링크">#</a></h3><figure class="diagram" data-diagram="12"><figcaption><span>도식 12</span> 16.2 Cron Scheduler의 핵심 구조</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-12.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="16.2 Cron Scheduler의 핵심 구조"><img src="assets/diagram-12.svg" alt="16.2 Cron Scheduler의 핵심 구조의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+ T[Gateway 주기 Tick 또는 관리형 Trigger] --&gt; L[Scheduler Lock / Ownership 검사]
+ L --&gt; J[Jobs Store jobs.json 읽기]
+ J --&gt; D{실행 시각 도래?}
+ D --&gt;|No| Z[다음 검사 대기]
+ D --&gt;|Yes| K[실행 슬롯 Claim / Next Run 조정]
+ K --&gt; N[새 Agent Session 구성]
+ N --&gt; S[첨부 Skills / Script 결과 주입]
+ S --&gt; A[Agent Loop 실행]
+ A --&gt; O[Output 저장·전달]
+ O --&gt; U[실행 횟수·State·다음 스케줄 갱신]</code></pre></details></figure><p>코드 지도:</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>소스</th>
+<th>책임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cron/jobs.py</code></td>
+<td>Job 레코드, 저장, 시간 계산, Claim·무결성</td>
+</tr>
+<tr>
+<td><code>cron/jobs_time.py</code></td>
+<td>Timezone 및 Grace 처리</td>
+</tr>
+<tr>
+<td><code>cron/scheduler.py</code></td>
+<td>Tick, Due Scan, Dispatch, 실행 및 Delivery</td>
+</tr>
+<tr>
+<td><code>tools/cronjob_tools.py</code></td>
+<td>모델에게 제공할 Cron 관리 Tool</td>
+</tr>
+<tr>
+<td><code>gateway/run.py</code></td>
+<td>Gateway 장기 프로세스와 Cron 연결</td>
+</tr>
+<tr>
+<td><code>cron/scheduler_provider.py</code></td>
+<td>기본 또는 관리형 Trigger 선택 계층</td>
+</tr>
+</tbody></table>
+</div><p><strong>[SRC]</strong> <code>cron/scheduler.py</code>는 Gateway가 Tick을 호출하는 구조와 Cross-process Tick Lock을 기술한다. <code>cron/jobs.py</code>는 <code>jobs.json</code> 저장 및 잠금에 관련된 함수를 포함한다.</p>
+<p>코드: <a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/scheduler.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/scheduler.py</a><br>코드: <a target="_blank" rel="noopener noreferrer" href="https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/jobs.py">https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/jobs.py</a></p>
+<h3 id="line-1305">16.3 왜 새 Session으로 실행할까?<a class="anchor" href="#line-1305" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>이전 Cron 실행의 대화 이력이 무한 누적되는 문제 감소.</li>
+<li>동일한 Cron Prompt를 반복 사용할 때 결과의 독립성 강화.</li>
+<li>Task마다 Token·Tool·비용을 별도로 계량할 수 있음.</li>
+<li>특정 대화에서의 우발적 지시가 다음 Cron 작업으로 이어지는 위험 감소.</li>
+</ul>
+<p><strong>주의</strong>: 새로운 Session이더라도 <strong>영구 Memory와 승인된 Skills는 로드될 수 있다</strong>. 따라서 완전히 Stateless하다고 할 수 없다. [DOC]</p>
+<h3 id="line-1314">16.4 Skills 및 Script는 Cron에서 어떻게 들어가나?<a class="anchor" href="#line-1314" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[DOC]</strong> Cron에 첨부된 Skill은 지정된 순서로 로딩되며, Script를 설정한 경우 그 Script를 Agent 실행 전에 수행하고 stdout을 작업 입력에 전달할 수 있다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>[Scheduler fires]
+   -&gt; configured script 실행 (선택)
+   -&gt; script stdout을 문맥 데이터로 합침
+   -&gt; 지정된 Skills 지침 로딩
+   -&gt; Cron Prompt 추가
+   -&gt; Fresh Agent Loop 실행
+   -&gt; 저장/전달</code></pre></div><p>스크립트 코드 실행 자체는 LLM 이전에 발생할 수 있으므로, <strong>LLM용 Tool Approval과 같은 정책이 모든 Script에 자동 적용된다고 생각하지 말 것</strong>. Script 실행 주체/권한/Time Budget을 별도로 확인해야 한다.</p>
+<h3 id="line-1330">16.5 중복 실행 방지의 진짜 문제<a class="anchor" href="#line-1330" aria-label="이 절의 고유 링크">#</a></h3><p><strong>[DOC]</strong> 현재 Cron 문서는 Tick Lock, Claim, <code>pending_slot</code>, 스케줄 Advance 등을 통해 재시작과 중복 Tick 사이에서 실행 슬롯을 관리하는 방식을 설명한다.</p>
+<p>중요한 구분:</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>보장하려는 것</th>
+<th>의미</th>
+<th>해결 방법 예</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>At-most-once per occurrence</td>
+<td>동일 예약 시각이 여러 번 시작되지 않도록</td>
+<td>Lock, Claim, Next Run Advance</td>
+</tr>
+<tr>
+<td>At-least-once delivery</td>
+<td>결과가 반드시 사용자에게 전달되도록 재시도</td>
+<td>Outbox / Delivery Queue</td>
+</tr>
+<tr>
+<td>Exactly-once side effect</td>
+<td>동일 외부 DB 변경이 중복되지 않게</td>
+<td>대상 시스템 Idempotency / Transaction</td>
+</tr>
+</tbody></table>
+</div><p>Hermes Cron 문서의 Occurrence 추적·중복 방지 메커니즘을 <strong>외부 시스템 부작용까지 exactly-once 보장</strong>한다고 확대 해석하면 안 된다. 실행 성공과 Delivery 성공 역시 다른 이벤트다.</p>
+<h3 id="line-1344">16.6 Cron과 기존 Session을 공유하면 안 되는 이유<a class="anchor" href="#line-1344" aria-label="이 절의 고유 링크">#</a></h3><p>Cron이 사용자 Chat의 현재 열린 메시지들을 임의로 읽고 동작한다면 작업 시각마다 상태가 달라져 재현성이 떨어진다. Fresh Session과 자기완결적인 Prompt/Skill이 좋지만, 필요한 장기 상태는 Memory 또는 DB에 별도 저장해야 한다. [INF]</p>
+<h3 id="line-1348">16.7 다른 프레임워크와 비교할 때의 위치<a class="anchor" href="#line-1348" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>Hermes Cron</strong>: Agent 제품 내부의 예약 트리거·Fresh Agent Turn·Delivery 통합.</li>
+<li><strong>OpenAI Agents SDK / PydanticAI</strong>: 외부 스케줄러에서 SDK 실행 코드를 주기적으로 호출하는 아키텍처를 만들 수 있음. &#39;기본 Cron이 있다&#39;와 구별.</li>
+<li><strong>Google ADK / Microsoft Agent Framework</strong>: Workflow 및 재개 기능이 있더라도 &#39;언제 시작하나&#39;라는 Trigger는 별도 문제.</li>
+<li><strong>Claude Code / Agent SDK</strong>: 외부 CI, 작업 관리 서비스, Hook/스케줄링 기능의 연결 방식 확인이 필요.</li>
+</ul>
+<p><strong>Cron의 유용성 판단</strong>: 정기 점검·알림·자동 보고에는 유용하지만, 이벤트 기반 데이터 처리라면 Webhook/Queue, 긴 작업의 복구에는 Durable Workflow가 더 적합할 수 있다. 기술 선택은 &#39;시간 기반 Trigger가 실제 요구인가?&#39;에서 출발한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-14.html"><small>이전 단원</small>← Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</a><a class="next" href="unit-16.html"><small>다음 단원</small>실패 시나리오별 내부 동작과 설계 판단 →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-1263">16. Cron: 언제 실행되고 무엇을 재실행하는가?</a><a class="toc-depth-2" href="#line-1265">16.1 Cron은 단순 타이머가 아니다</a><a class="toc-depth-2" href="#line-1273">16.2 Cron Scheduler의 핵심 구조</a><a class="toc-depth-2" href="#line-1305">16.3 왜 새 Session으로 실행할까?</a><a class="toc-depth-2" href="#line-1314">16.4 Skills 및 Script는 Cron에서 어떻게 들어가나?</a><a class="toc-depth-2" href="#line-1330">16.5 중복 실행 방지의 진짜 문제</a><a class="toc-depth-2" href="#line-1344">16.6 Cron과 기존 Session을 공유하면 안 되는 이유</a><a class="toc-depth-2" href="#line-1348">16.7 다른 프레임워크와 비교할 때의 위치</a></nav></aside></div></body></html>

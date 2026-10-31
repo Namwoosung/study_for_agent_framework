@@ -1,0 +1,13 @@
+{
+  "name": "OpenAI Agents SDK",
+  "pages": 18,
+  "chapters": 57,
+  "sourceLines": 1455,
+  "textBlocks": 557,
+  "tableRows": 192,
+  "fencedBlocks": 24,
+  "diagrams": 11,
+  "localLinks": 1118,
+  "sourceHash": "5bb69cf78c39a05edf1de72a08bbb2a5a0cd3aa5d214da4dbc110a220f9d643a",
+  "passed": true
+}

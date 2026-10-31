@@ -1,0 +1,63 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가? — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" ><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" ><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" aria-current="page" class="current"><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 출처·검증 한계</p><h1>출처·검증 한계</h1><div class="chapter-meta">단원 20 · 원문 2026.10.31 · Hermes v0.22.5 · 약 2분 · 원문 1635–1663행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>공식 문서와 고정 소스를 나누고 조사하지 않은 실행·보안·성능 범위를 확인합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>문서의 현재 동작과 v0.22.5에서 확인한 코드의 범위를 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1635">21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</a><a href="#line-1644">21.4 후속 학습에서 재사용할 코드 추적 템플릿</a></nav></details><section class="source-section" data-source-section="21-2"><h2 class="continuation">21. 공식 출처·소스코드 인덱스·검증 한계 · 이어 읽기</h2><h3 id="line-1635">21.3 검증 한계: 무엇을 아직 확인하지 않았는가?<a class="anchor" href="#line-1635" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li><strong>실제 실행 검증 부재</strong>: Hermes를 설치하여 모델·MCP·Tool·Cron을 호출하지 않았다. 런타임 출력·실제 지연·효율은 주장하지 않는다.</li>
+<li><strong>태그 코드 vs 최신 공식 웹 문서</strong>: 공식 문서는 릴리스 이후 수정될 수 있다. 코드에서 직접 확인한 것과 문서만으로 설명한 것은 각 장에 <code>[SRC]</code>, <code>[DOC]</code>로 표시했다.</li>
+<li><strong>모든 내부 분기를 전수 검토하지 않음</strong>: Agent Loop, Tool, Memory, Cache, FTS, Approval, Cron 등의 대표 경로를 확인했지만, 모든 Backend·플랫폼·Plugin의 Path를 추적한 것은 아니다.</li>
+<li><strong>보안 보증이 아님</strong>: 승인 순서와 주요 차단 코드를 검토했지만 실질적인 공격 시뮬레이션, 권한 우회 테스트, TOCTOU 감사를 수행하지 않았다.</li>
+<li><strong>병렬성 성능 보증이 아님</strong>: Thread Pool 구조를 확인했으나 CPU/GIL, 외부 IO, Rate Limit, Lock 경합에 대한 성능 실측은 하지 않았다.</li>
+<li><strong>비교 기술의 기능 최신성</strong>: 다른 6개 프레임워크에 대한 심층 코드 비교는 후속 각 문서의 고정 버전을 기준으로 수행해야 한다.</li>
+</ol>
+<h3 id="line-1644">21.4 후속 학습에서 재사용할 코드 추적 템플릿<a class="anchor" href="#line-1644" aria-label="이 절의 고유 링크">#</a></h3><p>다른 프레임워크를 볼 때 각 주요 기능을 다음 표에 작성하면 7개를 공정하게 비교할 수 있다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>분석 항목</th>
+<th>작성 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Trigger</td>
+<td>무엇이 이 경로를 시작시키는가?</td>
+</tr>
+<tr>
+<td>Entry</td>
+<td>어떤 함수/클래스에 진입하는가?</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>어떤 데이터·State·Context를 받는가?</td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>어떤 If/Match 조건에 따라 경로가 바뀌는가?</td>
+</tr>
+<tr>
+<td>Side Effect</td>
+<td>어떤 파일/DB/네트워크/Tool 상태를 바꾸는가?</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>Thread/Task/Process/Queue/Distributed Worker 중 무엇인가?</td>
+</tr>
+<tr>
+<td>Failure</td>
+<td>Timeout/Cancel/Retry/Partial 상태는 어떻게 처리하나?</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Model/Client/Session DB에 무엇을 기록하는가?</td>
+</tr>
+<tr>
+<td>Security Boundary</td>
+<td>어느 단계에서 누가 실행을 강제 통제하는가?</td>
+</tr>
+<tr>
+<td>Alternative</td>
+<td>같은 문제를 다른 구조로 해결하면 무엇이 달라지는가?</td>
+</tr>
+<tr>
+<td>Evidence</td>
+<td>정확한 코드 태그, 함수·문서 URL, 검증 등급</td>
+</tr>
+</tbody></table>
+</div><hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-19.html"><small>이전 단원</small>← 공식 출처·소스코드 인덱스·검증 한계</a><a class="next" href="unit-21.html"><small>다음 단원</small>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장 →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1635">21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</a><a class="toc-depth-2" href="#line-1644">21.4 후속 학습에서 재사용할 코드 추적 템플릿</a></nav></aside></div></body></html>

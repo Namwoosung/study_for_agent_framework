@@ -1,0 +1,71 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Hook을 정확히 분석하려면 어디를 봐야 하나? — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" aria-current="page" class="current"><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Skills·MCP·Plugin·Tool</p><h1>Skills·MCP·Plugin·Tool</h1><div class="chapter-meta">단원 08 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 4분 · 원문 578–631행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>절차 선택과 외부 기능 실행·배포, Tool 전후 Hook 효력을 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>모든 파일 입력이 Read Tool을 거치는 것은 아니라는 조건을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-578">21. Hook을 정확히 분석하려면 어디를 봐야 하나?</a><a href="#line-582">21.1 모델이 판단하는 것 vs 강제 실행되는 것</a><a href="#line-594">21.2 PreToolUse의 특별한 경계</a><a href="#line-600">21.3 Hook 예제는 모델 수준 정책이 아니다</a><a href="#line-622">21.4 Hook 완료와 Tool 완료를 혼동하지 말 것</a></nav></details><section class="source-section" data-source-section="21-1"><h2 id="line-578">21. Hook을 정확히 분석하려면 어디를 봐야 하나?<a class="anchor" href="#line-578" aria-label="이 절의 고유 링크">#</a></h2><p>Hooks는 SessionStart, UserPromptSubmit, PreToolUse, PermissionRequest, PostToolUse, Stop, SubagentStart/Stop, PreCompact/PostCompact 등 <strong>수명주기의 특정 이벤트</strong>를 가로챌 수 있다. Handler는 Command, HTTP, Prompt 또는 Agent 기반 등 지원되는 유형을 사용한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks-guide">R13</a>]</p>
+<h3 id="line-582">21.1 모델이 판단하는 것 vs 강제 실행되는 것<a class="anchor" href="#line-582" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>동작</th>
+<th>모델이 자발적으로 선택?</th>
+<th>실패·차단 정책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Skill을 사용하라</code>는 Instruction</td>
+<td>일부 판단에 의존</td>
+<td>보장된 강제가 아님</td>
+</tr>
+<tr>
+<td><code>PreToolUse</code> Hook</td>
+<td>Tool 호출 이벤트에 연결</td>
+<td>지정한 반환·종료코드·timeout 정책 적용</td>
+</tr>
+<tr>
+<td><code>PostToolUse</code> Hook</td>
+<td>Tool 완료 이벤트에 연결</td>
+<td>이미 발생한 외부 효과는 소급 차단 못함</td>
+</tr>
+<tr>
+<td><code>Stop</code> Hook</td>
+<td>종료 이벤트에 연결</td>
+<td>마무리 검증·조건부 종료 차단 가능</td>
+</tr>
+<tr>
+<td><code>PermissionRequest</code> Hook</td>
+<td>승인 요구 시 연결</td>
+<td>사용자 대신 승인/거부 동작 가능, 사용 조건 제한</td>
+</tr>
+<tr>
+<td><code>PreCompact</code> Hook</td>
+<td>압축 직전 이벤트</td>
+<td>요약 전 필요한 맥락 처리 가능</td>
+</tr>
+<tr>
+<td><code>InstructionsLoaded</code> Hook</td>
+<td>Instruction 로더와 연결</td>
+<td>별도 AGENTS.md 경로에서는 이벤트 차이 있음</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-594">21.2 <code>PreToolUse</code>의 특별한 경계<a class="anchor" href="#line-594" aria-label="이 절의 고유 링크">#</a></h3><p>공식 Hook Reference는 사용자가 <code>@file</code>로 입력에 포함한 파일 내용은 Tool 호출 없이 Prompt 구성 단계에 들어갈 수 있으므로, <strong>Read Tool용 <code>PreToolUse</code>가 실행되지 않을 수 있다</strong>고 경고한다. 따라서 민감 파일 유출 방어를 <code>PreToolUse(Read)</code>에만 맡겨서는 안 된다. <code>Read</code> deny 및 Host 접근 제어 등 추가 레이어가 필요하다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">DOC</a></p>
+<p><code>PreToolUse</code>는 <code>allow</code>, <code>deny</code>, <code>ask</code>, <code>defer</code> 등의 제어 계약을 갖지만, SDK Callback Hook의 타임아웃 처리와 로컬 Command Hook의 실패 처리는 별개로 확인해야 한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">DOC</a></p>
+<h3 id="line-600">21.3 Hook 예제는 모델 수준 정책이 아니다<a class="anchor" href="#line-600" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Bash&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;python3 .claude/hooks/check_shell.py&quot;
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre></div><p>위는 <strong>공식 문서의 Hook 설정 형식을 따른 교육용 스케치</strong>다. <code>check_shell.py</code> 파일은 구현되지 않았고, 이 설정만으로 어떠한 명령도 차단되지 않는다. 별도의 Handler가 표준 입력 JSON을 파싱하고 공식 Hook 응답 스키마에 맞춰 명시적으로 거부해야 한다. Hook을 켠다는 사실과 보안 강제가 된다는 사실은 다르다.</p>
+<h3 id="line-622">21.4 Hook 완료와 Tool 완료를 혼동하지 말 것<a class="anchor" href="#line-622" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><code>PreToolUse</code> 종료 시점: Tool 실행을 허용/차단/수정할 수 있는 경계.</li>
+<li><code>PostToolUse</code> 종료 시점: Tool 실행 뒤 결과를 보고 검증할 수 있는 경계.</li>
+<li><code>Stop</code>: 대화가 끝나려는 경계. 파일수정·외부 배포의 실제 완료 또는 롤백을 보장하지 않음.</li>
+<li><code>SessionEnd</code>: 세션 종료 알림이지 백엔드 트랜잭션 commit이 아님.</li>
+</ul>
+<p><strong>코드 설계 관점:</strong> 이벤트 Hook의 이름·input schema·output schema·timeout·실패 기본값을 표로 정리하는 일이 Agent Framework를 처음 만드는 사람에게 핵심적인 작업이다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-07.html"><small>이전 단원</small>← Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</a><a class="next" href="unit-09.html"><small>다음 단원</small>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-578">21. Hook을 정확히 분석하려면 어디를 봐야 하나?</a><a class="toc-depth-3" href="#line-582">21.1 모델이 판단하는 것 vs 강제 실행되는 것</a><a class="toc-depth-3" href="#line-594">21.2 PreToolUse의 특별한 경계</a><a class="toc-depth-3" href="#line-600">21.3 Hook 예제는 모델 수준 정책이 아니다</a><a class="toc-depth-3" href="#line-622">21.4 Hook 완료와 Tool 완료를 혼동하지 말 것</a></nav></aside></div></body></html>

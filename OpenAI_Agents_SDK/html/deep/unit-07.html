@@ -1,0 +1,80 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" aria-current="page" class="current"><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 협업과 제어권</p><h1>협업과 제어권</h1><div class="chapter-meta">단원 07 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 5분 · 원문 573–654행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Handoff와 Agent as Tool의 제어권·History·중첩 승인 전파를 비교합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>중첩 승인은 최상위 RunState와 최초 Starting Agent로 재개하는 조건을 보세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-575">22. Handoff와 Agent as Tool은 근본적으로 다르다</a><a href="#line-588">23. Handoff 내부 코드와 역사(History) 관리</a><a href="#line-605">23.1 inputfilter를 왜 따로 제공할까?</a><a href="#line-609">23.2 모델 생성 Handoff Metadata vs 앱 Context</a><a href="#line-613">23.3 Handoff와 Guardrail의 적용 범위</a><a href="#line-617">24. 중첩 Agent.astool() 실행과 승인 전파</a><a href="#line-637">25. Agent 협업을 위한 세 가지 방식과 선택 기준</a><a href="#line-645">25.1 모델이 위임할지 결정하는 것과 프로그램이 결정하는 것</a></nav></details><section class="source-section" data-source-section="22-1"><p class="part-divider" id="line-573">Part V. Multi-Agent 및 오케스트레이션</p><h2 id="line-575">22. Handoff와 Agent as Tool은 근본적으로 다르다<a class="anchor" href="#line-575" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>질문</th>
+<th>Handoff</th>
+<th><code>Agent.as_tool()</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>현재 대화의 소유 Agent</td>
+<td>대상 Agent로 전환</td>
+<td>부모 Agent가 유지</td>
+</tr>
+<tr>
+<td>별도 Agent Loop</td>
+<td>대상 Agent로 이어감</td>
+<td>중첩 Run이 실행될 수 있음</td>
+</tr>
+<tr>
+<td>결과의 귀속</td>
+<td>대상 Agent가 사용자 최종 결과 생성 가능</td>
+<td>자식 결과가 부모의 Tool Output이 됨</td>
+</tr>
+<tr>
+<td>입력 맥락</td>
+<td>Handoff history 필터·매퍼로 관리</td>
+<td>자식 Tool 입력·Context/이력 정책으로 관리</td>
+</tr>
+<tr>
+<td>승인 중단</td>
+<td>같은 Run의 현재 단계에서 발생</td>
+<td>중첩 승인도 외부 Run에 전파 가능</td>
+</tr>
+<tr>
+<td>병렬화</td>
+<td>자체적으로 병렬 실행의 뜻은 아님</td>
+<td>부모가 여러 자식 Tool을 실행하도록 설계 가능</td>
+</tr>
+</tbody></table>
+</div><p>Handoff는 &#39;담당자를 바꾸는 것&#39;, Agent as Tool은 &#39;전문가에게 질문하고 다시 돌아오는 것&#39;에 가깝다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/multi_agent/">D06</a>, <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/handoffs/">D07</a>]</p>
+</section>
+<section class="source-section" data-source-section="23-1"><h2 id="line-588">23. Handoff 내부 코드와 역사(History) 관리<a class="anchor" href="#line-588" aria-label="이 절의 고유 링크">#</a></h2><p>핵심 추적 경로:</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Agent.handoffs
+  → turn_preparation.get_handoffs
+  → LLM에 Handoff가 호출 가능한 Tool로 노출
+  → turn_resolution.process_model_response
+  → is_handoff_tool_call
+  → execute_handoffs
+  → NextStepHandoff
+  → 새 Agent의 다음 모델 Turn</code></pre></div><p>[SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/turn_resolution.py">S03</a>] <code>is_handoff_tool_call</code>은 모델 출력이 Handoff로 등록된 맨몸(bare) Tool 이름에 해당하는지를 확인한다. 일반 Function Tool과 Handoff는 겉으로는 모두 모델의 Tool Call 형식일 수 있지만, Runner가 해석하는 <strong>다음 단계</strong>는 다르다.</p>
+<h3 id="line-605">23.1 <code>input_filter</code>를 왜 따로 제공할까?<a class="anchor" href="#line-605" aria-label="이 절의 고유 링크">#</a></h3><p>보통 Handoff 대상에게는 기존 대화와 도구 결과가 전달되지만, 필요하지 않은 기록을 줄이거나 민감 정보를 숨기기 위해 필터를 사용할 수 있다. 그러나 Structured Tool Items를 제거했다고 해서 <strong>일반 텍스트 메시지에 복사된 민감 정보까지 자동 삭제되는 것은 아니다.</strong> [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/handoffs/">D07</a>]</p>
+<h3 id="line-609">23.2 모델 생성 Handoff Metadata vs 앱 Context<a class="anchor" href="#line-609" aria-label="이 절의 고유 링크">#</a></h3><p><code>handoff(input_type=...)</code>를 통해 모델이 생성한 이유·우선순위 등 작은 Metadata를 수신할 수 있지만, 이것이 기존 Python <code>RunContextWrapper.context</code>를 대체하거나 대상 Agent를 동적으로 자동 선택하는 기능은 아니다. 어떤 Agent로 넘길지 이미 정의된 Handoff의 선택과 분리해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/handoffs/">D07</a>]</p>
+<h3 id="line-613">23.3 Handoff와 Guardrail의 적용 범위<a class="anchor" href="#line-613" aria-label="이 절의 고유 링크">#</a></h3><p>Input Guardrail은 첫 Agent, Output Guardrail은 최종 출력 Agent라는 경계가 있다. Handoff 시 모든 중간 Agent가 동일한 Guardrail로 재검사된다고 가정하면 안 된다. 각 Agent 및 Tool에 실제 필요한 검증을 배치해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/guardrails/">D04</a>, <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/handoffs/">D07</a>]</p>
+</section>
+<section class="source-section" data-source-section="24-1"><h2 id="line-617">24. 중첩 <code>Agent.as_tool()</code> 실행과 승인 전파<a class="anchor" href="#line-617" aria-label="이 절의 고유 링크">#</a></h2><p>일반 Function Tool처럼 보이지만 내부적으로 자식 Agent가 별도 Run을 수행할 수 있다는 점이 핵심이다.</p>
+<figure class="diagram" data-diagram="7"><figcaption><span>도식 7</span> 24. 중첩 Agent.astool() 실행과 승인 전파</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-7.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="24. 중첩 Agent.astool() 실행과 승인 전파"><img src="assets/diagram-7.svg" alt="24. 중첩 Agent.astool() 실행과 승인 전파의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+  P[Parent Agent Loop] --&gt; C1[Child Agent as Tool 1]
+  P --&gt; C2[Child Agent as Tool 2]
+  C1 --&gt; T1[Child Tool]
+  C2 --&gt; T2[Child Tool]
+  T1 --&gt; PA[Pending approval]
+  T2 --&gt; R2[Tool result]
+  PA --&gt; PS[Outer Run interruption]
+  R2 --&gt; P</code></pre></details></figure><p>공식 HITL 문서는 Nested <code>Agent.as_tool()</code> 내부 Tool의 승인 필요도 바깥 Run에 전달될 수 있으며, <strong>부모 최상위 RunState에서 승인하고 최초 Starting Agent를 사용해 재개</strong>해야 한다고 설명한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>]</p>
+<p>이 동작은 단순히 <code>await Runner.run(child)</code>하고 문자열을 돌려주는 것보다 복잡하다. 상태·승인·결과의 소유권이 부모와 자식 사이에 연결되어야 한다.</p>
+</section>
+<section class="source-section" data-source-section="25-1"><h2 id="line-637">25. Agent 협업을 위한 세 가지 방식과 선택 기준<a class="anchor" href="#line-637" aria-label="이 절의 고유 링크">#</a></h2><ol>
+<li><strong>Handoff 기반:</strong> 최종 응답 책임을 특정 Agent에게 넘길 때.</li>
+<li><strong>Agent-as-Tool:</strong> 부모가 여러 전문가를 호출하고 결과를 통합할 때.</li>
+<li><strong>Python Workflow 기반:</strong> 순서·조건·병렬·비용 정책이 고정적이어서 LLM에게 결정을 맡길 필요가 적을 때.</li>
+</ol>
+<p>OpenAI Agents SDK의 Runner가 <strong>모든 다단계 업무의 완전한 DAG 스케줄러를 자동 제공한다는 뜻은 아니다.</strong> 명시적인 장기 Workflow나 작업 큐는 사용자 애플리케이션 또는 별도 오케스트레이터로 설계할 수 있다.</p>
+<h3 id="line-645">25.1 모델이 위임할지 결정하는 것과 프로그램이 결정하는 것<a class="anchor" href="#line-645" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>LLM 기반 위임: 유연성은 좋으나 호출 경로, 지연, 비용 변동성이 커질 수 있다.</li>
+<li>코드 기반 위임: 실행 경로가 예측 가능하고 로깅·검증이 쉽지만 상황별 적응력은 제한될 수 있다.</li>
+<li>혼합형: 고정된 단계 사이의 판단만 Agent에게 맡김.</li>
+</ul>
+<p><strong>설계자의 질문:</strong> 다른 Agent를 부르는 이유가 단지 다른 지시문 때문인지, 권한·모델·컨텍스트를 격리할 실질적인 목적이 있는지 먼저 판단해야 한다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-06.html"><small>이전 단원</small>← Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</a><a class="next" href="unit-08.html"><small>다음 단원</small>상태를 최소 다섯 종류로 나누자 외 4개 주제 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-575">22. Handoff와 Agent as Tool은 근본적으로 다르다</a><a class="toc-depth-2" href="#line-588">23. Handoff 내부 코드와 역사(History) 관리</a><a class="toc-depth-3" href="#line-605">23.1 inputfilter를 왜 따로 제공할까?</a><a class="toc-depth-3" href="#line-609">23.2 모델 생성 Handoff Metadata vs 앱 Context</a><a class="toc-depth-3" href="#line-613">23.3 Handoff와 Guardrail의 적용 범위</a><a class="toc-depth-2" href="#line-617">24. 중첩 Agent.astool() 실행과 승인 전파</a><a class="toc-depth-2" href="#line-637">25. Agent 협업을 위한 세 가지 방식과 선택 기준</a><a class="toc-depth-3" href="#line-645">25.1 모델이 위임할지 결정하는 것과 프로그램이 결정하는 것</a></nav></aside></div></body></html>

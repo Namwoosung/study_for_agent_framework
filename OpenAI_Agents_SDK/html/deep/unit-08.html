@@ -1,0 +1,171 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>상태를 최소 다섯 종류로 나누자 외 4개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" aria-current="page" class="current"><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Session·Memory·Cache</p><h1>Session·Memory·Cache</h1><div class="chapter-meta">단원 08 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 8분 · 원문 655–771행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>저장 View·공개 결과·다음 모델 입력을 나누고 Session과 RunState, 압축과 캐시를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>session_id와 인증, 직렬화와 외부 상태 복원, 캐시 키와 실제 Hit를 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-657">26. 상태를 최소 다섯 종류로 나누자</a><a href="#line-672">27. Session은 &#39;학습된 장기 메모리&#39;가 아니다</a><a href="#line-676">27.1 Session 인터페이스의 핵심 연산</a><a href="#line-685">27.2 대표 저장 구현을 왜 여러 개 제공할까?</a><a href="#line-699">27.3 저장된 Session과 모델 요청 입력은 동일하지 않다</a><a href="#line-713">28. RunState와 Session의 본질적 차이</a><a href="#line-720">28.1 &#39;RunState를 저장하면 그 즉시 모든 외부 상태도 복원되나?&#39;</a><a href="#line-724">28.2 승인 대기 시 상태를 어떻게 보존할까?</a><a href="#line-728">28.3 Resume 보안</a><a href="#line-732">29. Context History의 길이가 무한히 늘어나면?</a><a href="#line-744">29.1 &#39;RAG&#39;의 의미를 정확히</a><a href="#line-748">29.2 Compaction의 Trade-off</a><a href="#line-755">30. Prompt Prefix Caching: 같은 내용도 매번 보내야 하는데?</a></nav></details><section class="source-section" data-source-section="26-1"><p class="part-divider" id="line-655">Part VI. Session, RunState, Memory, 캐싱, 영속성</p><h2 id="line-657">26. 상태를 최소 다섯 종류로 나누자<a class="anchor" href="#line-657" aria-label="이 절의 고유 링크">#</a></h2><p>&#39;에이전트가 상태를 저장한다&#39;는 말만으로는 구현을 이해할 수 없다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>상태 종류</th>
+<th>대표 객체/형태</th>
+<th>범위</th>
+<th>모델이 직접 보는가?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델 대화 기록</td>
+<td><code>RunItem</code>, 입력 메시지</td>
+<td>현재/이전 모델 Turn</td>
+<td>직렬화·필터링된 부분만</td>
+</tr>
+<tr>
+<td>앱 의존성 객체</td>
+<td><code>RunContextWrapper.context</code></td>
+<td>해당 Run 또는 주입한 공유 객체</td>
+<td>자동 노출되지 않음</td>
+</tr>
+<tr>
+<td>Session</td>
+<td><code>Session</code> 구현</td>
+<td>여러 사용자 Turn</td>
+<td>다음 Run에서 읽어 입력으로 반영될 수 있음</td>
+</tr>
+<tr>
+<td>일시중단 복원 상태</td>
+<td><code>RunState</code></td>
+<td>승인·중단·재개</td>
+<td>필요한 기록만 모델 요청으로 변환</td>
+</tr>
+<tr>
+<td>외부 업무 상태</td>
+<td>DB·파일·커스텀 Memory</td>
+<td>영구 혹은 업무 수명</td>
+<td>Tool/프롬프트로 노출된 때만</td>
+</tr>
+<tr>
+<td>관측 상태</td>
+<td>Trace/Span/Usage</td>
+<td>운영·디버깅</td>
+<td>보통 모델 입력이 아님</td>
+</tr>
+</tbody></table>
+</div><p><strong>질문:</strong> <code>RunContextWrapper.context</code>에 <code>db_connection</code>이 있다면 모델이 DB 연결 문자열을 보나? → 아니야. Tool이 사용하도록 주입된 Python 객체다. 단, Tool 결과나 지시문으로 연결 정보를 노출하면 그때 모델 입력에 포함될 수 있다.</p>
+</section>
+<section class="source-section" data-source-section="27-1"><h2 id="line-672">27. <code>Session</code>은 &#39;학습된 장기 메모리&#39;가 아니다<a class="anchor" href="#line-672" aria-label="이 절의 고유 링크">#</a></h2><p>OpenAI Agents SDK의 Session은 기본적으로 <strong>이전 대화 이력 기록과 재사용</strong>에 초점이 있다. 이력을 저장한다고 해서 Agent가 자동으로 중요한 사실을 추출하고, 근거 검증하고, 영구적 지식베이스의 충돌을 해결하는 것은 아니다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/sessions/">D05</a>]</p>
+<h3 id="line-676">27.1 Session 인터페이스의 핵심 연산<a class="anchor" href="#line-676" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><code>get_items()</code>: 지금까지의 이력 조회.</li>
+<li><code>add_items(...)</code>: 새 RunItem/메시지 기록 저장.</li>
+<li><code>pop_item()</code> 또는 이력 수정 관련 연산: 대화 이력 수정·정리.</li>
+<li><code>clear_session()</code>: 저장된 Session 항목 제거.</li>
+</ul>
+<p>정확한 메서드 세부 형태는 구현체에 따라 차이가 있으므로 <code>Session</code> 추상 인터페이스와 구체 Session 유형을 분리해 읽어야 한다.</p>
+<h3 id="line-685">27.2 대표 저장 구현을 왜 여러 개 제공할까?<a class="anchor" href="#line-685" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>적합 조건</th>
+<th>검토할 점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SQLiteSession</code></td>
+<td>단일 노드/간단한 실험</td>
+<td>파일 권한, 멀티프로세스, 잠금, 사용자별 접근통제</td>
+</tr>
+<tr>
+<td>Redis 기반 Session</td>
+<td>여러 앱 인스턴스가 이력 공유</td>
+<td>TTL, 네트워크, 장애 복구, 순서, 인증</td>
+</tr>
+<tr>
+<td>SQLAlchemySession</td>
+<td>기존 RDB와 통합</td>
+<td>Transaction, connection pool, schema migration</td>
+</tr>
+<tr>
+<td>MongoDBSession</td>
+<td>문서형 운영 저장소</td>
+<td>순서, Atomic sequence, 인증</td>
+</tr>
+<tr>
+<td>OpenAIConversationsSession</td>
+<td>원격 서버 관리형 이력</td>
+<td>외부 데이터 전송과 보존 정책</td>
+</tr>
+<tr>
+<td><code>OpenAIResponsesCompactionSession</code></td>
+<td>이력 압축이 필요한 긴 대화</td>
+<td>원본 손실, 승인 상태와 충돌, Compaction 비용</td>
+</tr>
+<tr>
+<td><code>EncryptedSession</code></td>
+<td>저장 데이터 암호화/TTL</td>
+<td>Key 관리, 무결성·순서 검증은 별도</td>
+</tr>
+</tbody></table>
+</div><p>[DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/sessions/">D05</a>] <strong>중요:</strong> <code>SQLiteSession</code>의 <code>session_id</code>는 이력을 선택하는 식별자이지 사용자 인증 증명이 아니다. 공식 문서는 DB 파일이 신뢰되지 않거나 외부에서 변조될 경우 이를 자동 탐지하지 못할 수 있다고 경고한다. 암호화한 Session도 <strong>기록 누락·순서의 완전성</strong>을 자동 보장하지 않는다.</p>
+<h3 id="line-699">27.3 저장된 Session과 모델 요청 입력은 동일하지 않다<a class="anchor" href="#line-699" aria-label="이 절의 고유 링크">#</a></h3><p>SDK 내부는 저장용 View, 사용자에게 노출할 Run Items, 다음 모델 요청에 재사용할 View를 분리할 수 있다. Handoff Filter, Output Guardrail, 중단 승인, 모델 API에서 지원하지 않는 항목 등의 이유로 세 집합이 달라진다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/session_persistence.py">S08</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/items.py">S11</a>]</p>
+<figure class="diagram" data-diagram="8"><figcaption><span>도식 8</span> 27.3 저장된 Session과 모델 요청 입력은 동일하지 않다</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-8.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="27.3 저장된 Session과 모델 요청 입력은 동일하지 않다"><img src="assets/diagram-8.svg" alt="27.3 저장된 Session과 모델 요청 입력은 동일하지 않다의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+  A[ModelResponse / RunItems] --&gt; B[Session persistence view]
+  A --&gt; C[Public RunResult view]
+  A --&gt; D[Next model input view]
+  D --&gt; E[Input filter / normalization / compaction]</code></pre></details></figure><p><strong>코드 추적:</strong> <code>run_internal/session_persistence.py</code> 및 <code>run_internal/items.py</code>의 <code>prepare_model_input_items</code>, <code>run_items_to_input_items</code>를 함께 읽는다. 단순히 <code>history = all_messages</code>로 구현하면 완료된 Tool 호출과 응답의 짝이 깨지거나, 승인 관련 Metadata가 유실되는 문제를 만들 수 있다.</p>
+</section>
+<section class="source-section" data-source-section="28-1"><h2 id="line-713">28. <code>RunState</code>와 Session의 본질적 차이<a class="anchor" href="#line-713" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li><strong>Session:</strong> 여러 Run 간 대화 이력을 관리.</li>
+<li><strong>RunState:</strong> <strong>현재 Run이 어디까지 실행됐는지</strong>와 재개 시 필요한 승인·실행 문맥을 담음.</li>
+</ul>
+<p>예: 데이터 수정 Tool이 승인 대기 중이면 Session에 사용자의 질문이 저장되어 있더라도, &#39;어떤 Tool Call ID가 대기 중이고 승인 결과가 무엇인가&#39;가 없으면 안전하게 재개하기 어렵다. 이 정보는 RunState의 영역이다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/human_in_the_loop/">D03</a>, <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/ref/run_state/">D11</a>]</p>
+<h3 id="line-720">28.1 &#39;RunState를 저장하면 그 즉시 모든 외부 상태도 복원되나?&#39;<a class="anchor" href="#line-720" aria-label="이 절의 고유 링크">#</a></h3><p>아니다. RunState는 앱 프로세스가 들고 있는 모든 라이브 DB 연결, 파일 핸들, 외부 Docker 컨테이너 또는 네트워크 작업을 무조건 직렬화할 수 있는 객체가 아니다. SDK의 RunState와 개별 Sandbox Session State·Snapshot은 별개의 경계다.</p>
+<h3 id="line-724">28.2 승인 대기 시 상태를 어떻게 보존할까?<a class="anchor" href="#line-724" aria-label="이 절의 고유 링크">#</a></h3><p>실무적으로는 <code>run_id</code>, <code>user_id</code>, <code>tenant_id</code>, <code>state_version</code>, <code>approval_id</code>, <code>tool_call_id</code>, 만료시각, 승인자, 정책 버전 등을 함께 저장하는 방식을 검토한다. 이들은 <strong>SDK가 기본 제공하는 필드 전체 목록이 아닌 운영 시스템 설계 제안</strong>이다. [INF]</p>
+<h3 id="line-728">28.3 Resume 보안<a class="anchor" href="#line-728" aria-label="이 절의 고유 링크">#</a></h3><p>저장된 RunState를 사용자가 조작 가능한 입력처럼 취급하면 위험하다. 승인 상태와 Tool 인자에 직결되므로 저장 암호화/서명, 사용자/테넌트 권한 매핑, 만료 처리, 재사용 감지 등을 앱 계층에서 검토한다. &#39;직렬화할 수 있다&#39;는 말은 &#39;인증 없이 누구나 재개해도 된다&#39;는 뜻이 아니다.</p>
+</section>
+<section class="source-section" data-source-section="29-1"><h2 id="line-732">29. Context History의 길이가 무한히 늘어나면?<a class="anchor" href="#line-732" aria-label="이 절의 고유 링크">#</a></h2><p>Session 저장 공간이 충분해도 모델의 Context Window는 유한하며, 긴 입력은 비용·지연·정확도 저하를 야기할 수 있다. 다음 선택이 필요하다.</p>
+<ol>
+<li>최근 N개의 대화 메시지만 선택.</li>
+<li>과거 Tool Output 중 재조회 가능한 항목을 버림.</li>
+<li>오래된 대화를 요약/압축해 유지.</li>
+<li>관련 기록만 검색해 RAG 방식으로 넣음.</li>
+<li>서버 측 대화 상태(Conversation/previous response ID) 활용.</li>
+</ol>
+<p><strong>[DOC]</strong> SDK는 세션 이력 절단·압축 등의 기능을 제공하되, 도메인별 핵심 사실 선택·충돌 조정까지 자동으로 정확하게 해결해 준다고 볼 수 없다.</p>
+<h3 id="line-744">29.1 &#39;RAG&#39;의 의미를 정확히<a class="anchor" href="#line-744" aria-label="이 절의 고유 링크">#</a></h3><p>RAG는 검색된 외부 정보를 생성 입력에 주입하는 큰 패턴이다. 검색 저장소가 반드시 벡터 DB여야 하는 것은 아니다. Session의 최근 기록 전체를 붙이는 단순 히스토리 재사용과, 쿼리로 관련 정보를 선별하는 검색 시스템은 서로 구별한다.</p>
+<h3 id="line-748">29.2 Compaction의 Trade-off<a class="anchor" href="#line-748" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>장점: 입력 토큰·맥락 길이 감소.</li>
+<li>위험: 근거/단위/예외사항이 요약에서 빠져 오류 발생.</li>
+<li>통제: 반드시 보존해야 할 중요 필드는 구조화 저장하고, 원본 인용과 출처 ID 유지.</li>
+<li>승인 대기 중에는 원본 Tool Call/응답 항목과 상태를 보존해야 함. v0.24.0에서 관련 변경이 있었음.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="30-1"><h2 id="line-755">30. Prompt Prefix Caching: 같은 내용도 매번 보내야 하는데?<a class="anchor" href="#line-755" aria-label="이 절의 고유 링크">#</a></h2><p><strong>핵심:</strong> 모델 서버의 캐시는 이전 요청 Prefix의 계산 결과를 재사용하는 것이지, 네트워크 요청의 Prefix 문자열을 완전히 생략하는 기술과 동일하지 않다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>요소</th>
+<th>캐시 효율에 미치는 영향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>고정 instructions 앞에 배치</td>
+<td>동일 접두부 재사용 가능성 증가</td>
+</tr>
+<tr>
+<td>동일 Tool schema 순서 유지</td>
+<td>Tool schema가 캐시 키/요청 표현에 포함되는 Provider에 유리할 수 있음</td>
+</tr>
+<tr>
+<td>매 Turn 날짜·랜덤 정보가 앞부분에 추가</td>
+<td>그 변경 지점 이후 동일 Prefix 감소</td>
+</tr>
+<tr>
+<td>Handoff로 Agent 교체</td>
+<td>새 지시문·Tool schema로 Prefix 변경 가능</td>
+</tr>
+<tr>
+<td>세션 기록을 새 요약으로 치환</td>
+<td>요약 시작 지점 이후 동일성 약화</td>
+</tr>
+<tr>
+<td>모델·Provider 변경</td>
+<td>기존 Cache 재사용이 제한될 수 있음</td>
+</tr>
+</tbody></table>
+</div><p>SDK에 <code>prompt_cache_key</code> 관련 처리가 있다는 사실과 특정 Provider에서 실제로 얼마나 절약되었는지는 서로 다른 문제다. Caching 유효성은 외부 모델 서버의 구현 계약에 의존한다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/openai/openai-agents-python/blob/v0.24.0/src/agents/run_internal/run_loop.py">S02</a>; INF]</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-07.html"><small>이전 단원</small>← Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</a><a class="next" href="unit-09.html"><small>다음 단원</small>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-657">26. 상태를 최소 다섯 종류로 나누자</a><a class="toc-depth-2" href="#line-672">27. Session은 &#39;학습된 장기 메모리&#39;가 아니다</a><a class="toc-depth-3" href="#line-676">27.1 Session 인터페이스의 핵심 연산</a><a class="toc-depth-3" href="#line-685">27.2 대표 저장 구현을 왜 여러 개 제공할까?</a><a class="toc-depth-3" href="#line-699">27.3 저장된 Session과 모델 요청 입력은 동일하지 않다</a><a class="toc-depth-2" href="#line-713">28. RunState와 Session의 본질적 차이</a><a class="toc-depth-3" href="#line-720">28.1 &#39;RunState를 저장하면 그 즉시 모든 외부 상태도 복원되나?&#39;</a><a class="toc-depth-3" href="#line-724">28.2 승인 대기 시 상태를 어떻게 보존할까?</a><a class="toc-depth-3" href="#line-728">28.3 Resume 보안</a><a class="toc-depth-2" href="#line-732">29. Context History의 길이가 무한히 늘어나면?</a><a class="toc-depth-3" href="#line-744">29.1 &#39;RAG&#39;의 의미를 정확히</a><a class="toc-depth-3" href="#line-748">29.2 Compaction의 Trade-off</a><a class="toc-depth-2" href="#line-755">30. Prompt Prefix Caching: 같은 내용도 매번 보내야 하는데?</a></nav></aside></div></body></html>

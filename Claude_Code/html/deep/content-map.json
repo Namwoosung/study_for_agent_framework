@@ -1,0 +1,2822 @@
+{
+  "name": "Claude Code",
+  "source": "../../Claude_Code_2차_심층_학습_분석.md",
+  "sourceHash": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728",
+  "normalizedHash": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728",
+  "lineCount": 1525,
+  "chapterCount": 54,
+  "headings": [
+    {
+      "line": 1,
+      "depth": 1,
+      "text": "Claude Code — 2차 심층 학습 및 Agent Harness 내부 아키텍처 분석",
+      "id": "line-1"
+    },
+    {
+      "line": 9,
+      "depth": 2,
+      "text": "읽기 경로와 전체 구조",
+      "id": "line-9"
+    },
+    {
+      "line": 28,
+      "depth": 2,
+      "text": "이 문서는 1차 Claude Code 학습 자료와 무엇이 다른가?",
+      "id": "line-28"
+    },
+    {
+      "line": 34,
+      "depth": 3,
+      "text": "증거 등급",
+      "id": "line-34"
+    },
+    {
+      "line": 45,
+      "depth": 3,
+      "text": "이 학습을 마치고 답할 수 있어야 하는 질문",
+      "id": "line-45"
+    },
+    {
+      "line": 60,
+      "depth": 1,
+      "text": "Part I. Claude Code의 소프트웨어 경계와 내부 실행 모델",
+      "id": "line-60"
+    },
+    {
+      "line": 62,
+      "depth": 2,
+      "text": "1. 모델·Harness·SDK·플랫폼의 층위",
+      "id": "line-62"
+    },
+    {
+      "line": 83,
+      "depth": 3,
+      "text": "1.1 비교 대상 분류",
+      "id": "line-83"
+    },
+    {
+      "line": 97,
+      "depth": 2,
+      "text": "2. 세 가지 Control Plane을 구별하자",
+      "id": "line-97"
+    },
+    {
+      "line": 105,
+      "depth": 2,
+      "text": "3. 한 사용자 요청의 논리적 실행 흐름",
+      "id": "line-105"
+    },
+    {
+      "line": 140,
+      "depth": 3,
+      "text": "3.1 실행 1회가 끝나는 조건은 단일 조건이 아니다",
+      "id": "line-140"
+    },
+    {
+      "line": 155,
+      "depth": 2,
+      "text": "4. 학습용 Agent Loop 의사코드",
+      "id": "line-155"
+    },
+    {
+      "line": 185,
+      "depth": 2,
+      "text": "5. 사용자가 보는 상태와 내부 상태의 차이",
+      "id": "line-185"
+    },
+    {
+      "line": 201,
+      "depth": 1,
+      "text": "Part II. 실제 모델 입력, Prefix Caching, Context Compression",
+      "id": "line-201"
+    },
+    {
+      "line": 203,
+      "depth": 2,
+      "text": "6. 최종 LLM 요청은 무엇으로 구성되는가?",
+      "id": "line-203"
+    },
+    {
+      "line": 215,
+      "depth": 3,
+      "text": "6.1 왜 불변 내용부터 배치하는가?",
+      "id": "line-215"
+    },
+    {
+      "line": 227,
+      "depth": 2,
+      "text": "7. Cache Break를 정확히 이해하기",
+      "id": "line-227"
+    },
+    {
+      "line": 229,
+      "depth": 3,
+      "text": "7.1 무엇이 캐시를 흔드는가?",
+      "id": "line-229"
+    },
+    {
+      "line": 249,
+      "depth": 3,
+      "text": "7.2 공식 Cache 통계 해석",
+      "id": "line-249"
+    },
+    {
+      "line": 266,
+      "depth": 3,
+      "text": "7.3 캐시 저장 위치도 설계 요소다",
+      "id": "line-266"
+    },
+    {
+      "line": 272,
+      "depth": 2,
+      "text": "8. TTL, Session, Subagent Cache는 다른 개념",
+      "id": "line-272"
+    },
+    {
+      "line": 282,
+      "depth": 2,
+      "text": "9. Compaction은 실제로 무엇을 대체하는가?",
+      "id": "line-282"
+    },
+    {
+      "line": 296,
+      "depth": 3,
+      "text": "9.1 Compaction 후 무엇이 다시 들어오는가?",
+      "id": "line-296"
+    },
+    {
+      "line": 305,
+      "depth": 3,
+      "text": "9.2 결정적으로 잃으면 안 되는 정보는 어디에 두어야 하나?",
+      "id": "line-305"
+    },
+    {
+      "line": 318,
+      "depth": 2,
+      "text": "10. Context를 코드 수준에서 추적하는 관찰 가능한 경계",
+      "id": "line-318"
+    },
+    {
+      "line": 333,
+      "depth": 1,
+      "text": "Part III. Instructions·Memory·Sessions의 로딩과 우선순위",
+      "id": "line-333"
+    },
+    {
+      "line": 335,
+      "depth": 2,
+      "text": "11. Instruction은 파일을 읽는 것과 정책 강제가 다르다",
+      "id": "line-335"
+    },
+    {
+      "line": 339,
+      "depth": 3,
+      "text": "11.1 파일 위치별 사용 목적",
+      "id": "line-339"
+    },
+    {
+      "line": 353,
+      "depth": 2,
+      "text": "12. `AGENTS.md` 지원을 정확히 이해하기 — 2026년 10월",
+      "id": "line-353"
+    },
+    {
+      "line": 377,
+      "depth": 3,
+      "text": "12.1 비교·발표에서 중요한 설계 포인트",
+      "id": "line-377"
+    },
+    {
+      "line": 381,
+      "depth": 2,
+      "text": "13. Path-scoped Rules — 언제 모델에 보이는가?",
+      "id": "line-381"
+    },
+    {
+      "line": 397,
+      "depth": 2,
+      "text": "14. Auto Memory는 누가 쓰며 언제 로딩되는가?",
+      "id": "line-397"
+    },
+    {
+      "line": 401,
+      "depth": 3,
+      "text": "14.1 파일 기반 구조",
+      "id": "line-401"
+    },
+    {
+      "line": 416,
+      "depth": 3,
+      "text": "14.2 Memory의 업데이트가 즉시 Prompt에 반영되는가?",
+      "id": "line-416"
+    },
+    {
+      "line": 420,
+      "depth": 3,
+      "text": "14.3 장기 메모리에서 가장 중요한 실패 종류",
+      "id": "line-420"
+    },
+    {
+      "line": 431,
+      "depth": 2,
+      "text": "15. Session History와 Auto Memory는 다르다",
+      "id": "line-431"
+    },
+    {
+      "line": 445,
+      "depth": 1,
+      "text": "Part IV. Skills·Tools·MCP·Plugin의 실제 확장 경계",
+      "id": "line-445"
+    },
+    {
+      "line": 447,
+      "depth": 2,
+      "text": "16. Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다",
+      "id": "line-447"
+    },
+    {
+      "line": 451,
+      "depth": 3,
+      "text": "16.1 수명주기 다이어그램",
+      "id": "line-451"
+    },
+    {
+      "line": 470,
+      "depth": 3,
+      "text": "16.2 Skill 문서와 Tool 허용을 구분",
+      "id": "line-470"
+    },
+    {
+      "line": 488,
+      "depth": 3,
+      "text": "16.3 Skill 생성과 자체 개선을 과대해석하지 않기",
+      "id": "line-488"
+    },
+    {
+      "line": 501,
+      "depth": 2,
+      "text": "17. Skill의 점진적 로딩과 실제 Context 비용",
+      "id": "line-501"
+    },
+    {
+      "line": 509,
+      "depth": 2,
+      "text": "18. MCP를 사용하면 무엇이 실제로 실행되나?",
+      "id": "line-509"
+    },
+    {
+      "line": 529,
+      "depth": 3,
+      "text": "18.1 Tool 정의와 실행은 다른 보안 경계",
+      "id": "line-529"
+    },
+    {
+      "line": 535,
+      "depth": 3,
+      "text": "18.2 Dynamic Tool Update와 캐시",
+      "id": "line-535"
+    },
+    {
+      "line": 541,
+      "depth": 2,
+      "text": "19. Plugin은 MCP의 다른 이름이 아니다",
+      "id": "line-541"
+    },
+    {
+      "line": 553,
+      "depth": 2,
+      "text": "20. Tool 호출의 논리적 생명주기",
+      "id": "line-553"
+    },
+    {
+      "line": 569,
+      "depth": 3,
+      "text": "20.1 Hook 전후의 바인딩 문제",
+      "id": "line-569"
+    },
+    {
+      "line": 578,
+      "depth": 2,
+      "text": "21. Hook을 정확히 분석하려면 어디를 봐야 하나?",
+      "id": "line-578"
+    },
+    {
+      "line": 582,
+      "depth": 3,
+      "text": "21.1 모델이 판단하는 것 vs 강제 실행되는 것",
+      "id": "line-582"
+    },
+    {
+      "line": 594,
+      "depth": 3,
+      "text": "21.2 `PreToolUse`의 특별한 경계",
+      "id": "line-594"
+    },
+    {
+      "line": 600,
+      "depth": 3,
+      "text": "21.3 Hook 예제는 모델 수준 정책이 아니다",
+      "id": "line-600"
+    },
+    {
+      "line": 622,
+      "depth": 3,
+      "text": "21.4 Hook 완료와 Tool 완료를 혼동하지 말 것",
+      "id": "line-622"
+    },
+    {
+      "line": 632,
+      "depth": 1,
+      "text": "Part V. Guardrails·Permissions·Sandbox — 실제 강제 경계",
+      "id": "line-632"
+    },
+    {
+      "line": 634,
+      "depth": 2,
+      "text": "22. Guardrails를 하나의 검증 함수로 생각하면 안 된다",
+      "id": "line-634"
+    },
+    {
+      "line": 647,
+      "depth": 2,
+      "text": "23. Permission의 실제 우선순위와 최근 변화",
+      "id": "line-647"
+    },
+    {
+      "line": 657,
+      "depth": 3,
+      "text": "23.1 정책 평가의 논리 흐름",
+      "id": "line-657"
+    },
+    {
+      "line": 676,
+      "depth": 3,
+      "text": "23.2 보안에서 `Read` deny가 만능이 아닌 이유",
+      "id": "line-676"
+    },
+    {
+      "line": 682,
+      "depth": 3,
+      "text": "23.3 `Plan Mode`와 승인",
+      "id": "line-682"
+    },
+    {
+      "line": 686,
+      "depth": 2,
+      "text": "24. Sandbox는 무엇을 보장하고 무엇은 보장하지 못하나?",
+      "id": "line-686"
+    },
+    {
+      "line": 701,
+      "depth": 3,
+      "text": "24.1 Sandbox 탈출 경로를 방어 관점에서 분류",
+      "id": "line-701"
+    },
+    {
+      "line": 712,
+      "depth": 2,
+      "text": "25. Prompt Injection은 Tool Output에서 들어올 수 있다",
+      "id": "line-712"
+    },
+    {
+      "line": 727,
+      "depth": 2,
+      "text": "26. 실패 모드가 안전한가: Fail-open vs Fail-closed",
+      "id": "line-727"
+    },
+    {
+      "line": 749,
+      "depth": 3,
+      "text": "26.1 감사 로그에 반드시 남길 값",
+      "id": "line-749"
+    },
+    {
+      "line": 755,
+      "depth": 1,
+      "text": "Part VI. Multi-Agent, Parallelism, Task Delegation",
+      "id": "line-755"
+    },
+    {
+      "line": 757,
+      "depth": 2,
+      "text": "27. 병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다",
+      "id": "line-757"
+    },
+    {
+      "line": 769,
+      "depth": 2,
+      "text": "28. Subagent 하나의 라이프사이클",
+      "id": "line-769"
+    },
+    {
+      "line": 792,
+      "depth": 3,
+      "text": "28.1 Subagent Context 격리의 실익",
+      "id": "line-792"
+    },
+    {
+      "line": 799,
+      "depth": 3,
+      "text": "28.2 격리의 위험",
+      "id": "line-799"
+    },
+    {
+      "line": 807,
+      "depth": 2,
+      "text": "29. Foreground vs Background Subagent",
+      "id": "line-807"
+    },
+    {
+      "line": 814,
+      "depth": 3,
+      "text": "29.1 부모가 병렬 Subagent를 써야 하는 기준",
+      "id": "line-814"
+    },
+    {
+      "line": 818,
+      "depth": 2,
+      "text": "30. Agent Teams와 Subagent의 구조적 차이",
+      "id": "line-818"
+    },
+    {
+      "line": 834,
+      "depth": 3,
+      "text": "30.1 Agent Team에서 제어해야 할 네 계약",
+      "id": "line-834"
+    },
+    {
+      "line": 843,
+      "depth": 3,
+      "text": "30.2 실제 병렬성의 층위",
+      "id": "line-843"
+    },
+    {
+      "line": 852,
+      "depth": 2,
+      "text": "31. Worktree는 Context 격리와 별개",
+      "id": "line-852"
+    },
+    {
+      "line": 858,
+      "depth": 2,
+      "text": "32. Subagent 결과의 검증과 권한",
+      "id": "line-858"
+    },
+    {
+      "line": 865,
+      "depth": 1,
+      "text": "Part VII. Claude Code CLI·SDK 경계, Serving, 동시 요청, Cron",
+      "id": "line-865"
+    },
+    {
+      "line": 867,
+      "depth": 2,
+      "text": "33. Claude Code는 모델 서버가 아니라 Agent Runtime이다",
+      "id": "line-867"
+    },
+    {
+      "line": 883,
+      "depth": 2,
+      "text": "34. CLI 실행 모드 비교",
+      "id": "line-883"
+    },
+    {
+      "line": 904,
+      "depth": 2,
+      "text": "35. 공개 Python SDK에서 검증 가능한 진짜 호출 경로",
+      "id": "line-904"
+    },
+    {
+      "line": 908,
+      "depth": 3,
+      "text": "35.1 공개 소스 경로",
+      "id": "line-908"
+    },
+    {
+      "line": 931,
+      "depth": 3,
+      "text": "35.2 호출 경로의 의미와 기술적 장단점",
+      "id": "line-931"
+    },
+    {
+      "line": 943,
+      "depth": 2,
+      "text": "36. 일반적인 Agent Serving 시스템에서 추가할 컴포넌트",
+      "id": "line-943"
+    },
+    {
+      "line": 976,
+      "depth": 3,
+      "text": "36.1 API 응답 동기·스트리밍·비동기",
+      "id": "line-976"
+    },
+    {
+      "line": 984,
+      "depth": 2,
+      "text": "37. Session 소유권과 동시 요청",
+      "id": "line-984"
+    },
+    {
+      "line": 998,
+      "depth": 2,
+      "text": "38. Remote Control, Cloud Runner, Headless의 차이",
+      "id": "line-998"
+    },
+    {
+      "line": 1004,
+      "depth": 2,
+      "text": "39. Cron과 Scheduler — Claude Code에도 있는가?",
+      "id": "line-1004"
+    },
+    {
+      "line": 1018,
+      "depth": 3,
+      "text": "39.1 자체 Scheduler 설계 시 필요한 상태",
+      "id": "line-1018"
+    },
+    {
+      "line": 1022,
+      "depth": 2,
+      "text": "40. Gateway와 Model 호환성의 경계",
+      "id": "line-1022"
+    },
+    {
+      "line": 1042,
+      "depth": 2,
+      "text": "40.1 Observability: 내부를 모두 볼 수 없을 때 무엇을 관찰할 것인가?",
+      "id": "line-1042"
+    },
+    {
+      "line": 1061,
+      "depth": 1,
+      "text": "Part VIII. 소스·공식 인터페이스 추적 워크북",
+      "id": "line-1061"
+    },
+    {
+      "line": 1065,
+      "depth": 2,
+      "text": "W01. 요청 한 건의 제어 경계",
+      "id": "line-1065"
+    },
+    {
+      "line": 1073,
+      "depth": 2,
+      "text": "W02. 최종 모델 입력의 세 계층",
+      "id": "line-1073"
+    },
+    {
+      "line": 1080,
+      "depth": 2,
+      "text": "W03. Cache miss가 왜 발생하는가?",
+      "id": "line-1080"
+    },
+    {
+      "line": 1087,
+      "depth": 2,
+      "text": "W04. Instruction 파일은 정확히 언제 로드되는가?",
+      "id": "line-1087"
+    },
+    {
+      "line": 1094,
+      "depth": 2,
+      "text": "W05. Auto Memory 파일 쓰기·검색",
+      "id": "line-1094"
+    },
+    {
+      "line": 1101,
+      "depth": 2,
+      "text": "W06. Skill 선택·로딩·권한",
+      "id": "line-1101"
+    },
+    {
+      "line": 1108,
+      "depth": 2,
+      "text": "W07. MCP 서버 연결의 진짜 경계",
+      "id": "line-1108"
+    },
+    {
+      "line": 1115,
+      "depth": 2,
+      "text": "W08. `PreToolUse` Hook과 경로 정책",
+      "id": "line-1115"
+    },
+    {
+      "line": 1122,
+      "depth": 2,
+      "text": "W09. Permission Rule과 Mod 우선순위",
+      "id": "line-1122"
+    },
+    {
+      "line": 1128,
+      "depth": 2,
+      "text": "W10. Sandbox와 백엔드 접근권한",
+      "id": "line-1128"
+    },
+    {
+      "line": 1134,
+      "depth": 2,
+      "text": "W11. Subagent 위임과 결과 반환",
+      "id": "line-1134"
+    },
+    {
+      "line": 1141,
+      "depth": 2,
+      "text": "W12. Agent Teams의 공유 상태",
+      "id": "line-1141"
+    },
+    {
+      "line": 1148,
+      "depth": 2,
+      "text": "W13. CLI Serving 진입과 SDK Transport",
+      "id": "line-1148"
+    },
+    {
+      "line": 1154,
+      "depth": 2,
+      "text": "W14. Control Protocol과 Message Parser",
+      "id": "line-1154"
+    },
+    {
+      "line": 1161,
+      "depth": 2,
+      "text": "W15. Cron/자동화의 수명",
+      "id": "line-1161"
+    },
+    {
+      "line": 1170,
+      "depth": 1,
+      "text": "Part IX. 실패·경계 사례로 읽는 Claude Code 설계",
+      "id": "line-1170"
+    },
+    {
+      "line": 1201,
+      "depth": 2,
+      "text": "41. 정확히 한 번 실행(Exactly-once)의 함정",
+      "id": "line-1201"
+    },
+    {
+      "line": 1218,
+      "depth": 2,
+      "text": "42. 취소는 Undo와 다르다",
+      "id": "line-1218"
+    },
+    {
+      "line": 1229,
+      "depth": 2,
+      "text": "43. 정책 변경 중 실행 중인 Tool 처리",
+      "id": "line-1229"
+    },
+    {
+      "line": 1235,
+      "depth": 1,
+      "text": "Part X. 7개 기술을 비교하기 위한 아키텍처 해석",
+      "id": "line-1235"
+    },
+    {
+      "line": 1237,
+      "depth": 2,
+      "text": "44. 같은 기능, 다른 구현 방식",
+      "id": "line-1237"
+    },
+    {
+      "line": 1253,
+      "depth": 2,
+      "text": "45. Claude Code vs Hermes — 두 완성형 Harness",
+      "id": "line-1253"
+    },
+    {
+      "line": 1263,
+      "depth": 2,
+      "text": "46. Claude Code vs Claude Agent SDK",
+      "id": "line-1263"
+    },
+    {
+      "line": 1278,
+      "depth": 2,
+      "text": "47. Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF",
+      "id": "line-1278"
+    },
+    {
+      "line": 1287,
+      "depth": 2,
+      "text": "48. 직접 Agent Harness를 설계한다면 필요한 인터페이스",
+      "id": "line-1287"
+    },
+    {
+      "line": 1322,
+      "depth": 3,
+      "text": "48.1 직접 구현해야 할 우선순위",
+      "id": "line-1322"
+    },
+    {
+      "line": 1334,
+      "depth": 1,
+      "text": "Part XI. 학습·발표 구성과 복습",
+      "id": "line-1334"
+    },
+    {
+      "line": 1336,
+      "depth": 2,
+      "text": "49. 발표 구성안 — 본문 15장 + 선택적 심화 부록",
+      "id": "line-1336"
+    },
+    {
+      "line": 1356,
+      "depth": 3,
+      "text": "49.1 발표에서 가급적 피할 단정",
+      "id": "line-1356"
+    },
+    {
+      "line": 1368,
+      "depth": 2,
+      "text": "50. 핵심 학습 질문 40개",
+      "id": "line-1368"
+    },
+    {
+      "line": 1370,
+      "depth": 3,
+      "text": "A. 아키텍처·Loop",
+      "id": "line-1370"
+    },
+    {
+      "line": 1378,
+      "depth": 3,
+      "text": "B. Prompt·Cache·Context",
+      "id": "line-1378"
+    },
+    {
+      "line": 1389,
+      "depth": 3,
+      "text": "C. Instructions·Memory·Skills",
+      "id": "line-1389"
+    },
+    {
+      "line": 1401,
+      "depth": 3,
+      "text": "D. Tool·MCP·Guardrails",
+      "id": "line-1401"
+    },
+    {
+      "line": 1412,
+      "depth": 3,
+      "text": "E. 병렬성·Serving·복구",
+      "id": "line-1412"
+    },
+    {
+      "line": 1425,
+      "depth": 2,
+      "text": "51. 학습 완료 체크리스트",
+      "id": "line-1425"
+    },
+    {
+      "line": 1441,
+      "depth": 1,
+      "text": "Part XII. 공식 출처·고정 버전 코드·검증 한계",
+      "id": "line-1441"
+    },
+    {
+      "line": 1443,
+      "depth": 2,
+      "text": "52. 핵심 공식 출처 인덱스",
+      "id": "line-1443"
+    },
+    {
+      "line": 1481,
+      "depth": 2,
+      "text": "53. 버전 고정 범위 — 중요한 주의사항",
+      "id": "line-1481"
+    },
+    {
+      "line": 1493,
+      "depth": 2,
+      "text": "54. 핵심 사실과 해석의 분리 요약",
+      "id": "line-1493"
+    },
+    {
+      "line": 1507,
+      "depth": 1,
+      "text": "최종 요약 — 발표자가 기억할 15문장",
+      "id": "line-1507"
+    }
+  ],
+  "pages": [
+    "index.html",
+    "unit-01.html",
+    "unit-02.html",
+    "unit-03.html",
+    "unit-04.html",
+    "unit-05.html",
+    "unit-06.html",
+    "unit-07.html",
+    "unit-08.html",
+    "unit-09.html",
+    "unit-10.html",
+    "unit-11.html",
+    "unit-12.html",
+    "unit-13.html",
+    "unit-14.html",
+    "unit-15.html",
+    "unit-16.html",
+    "unit-17.html",
+    "unit-18.html"
+  ],
+  "sections": [
+    {
+      "key": "intro-1",
+      "chapter": "intro",
+      "startLine": 1,
+      "endLine": 59,
+      "rawHash": "ab6be8b3a673e93017331853b091326df0b3f0aad21b6b90f0878cf0edadc9db",
+      "htmlHash": "58c891dc70ddb777337053277f3680b4a7965b958a4122a39459b9290831e50e"
+    },
+    {
+      "key": "1-1",
+      "chapter": "1",
+      "startLine": 60,
+      "endLine": 96,
+      "rawHash": "0cbf6cbb9a5c42be19e1e4a3c2125aebcab188a4b54a64ae7b95100a53e763f6",
+      "htmlHash": "c44b4f5b9e1f74a3f566bbf3f1ccdec7ca6f83e294f183bc72325f3b43ba4632"
+    },
+    {
+      "key": "2-1",
+      "chapter": "2",
+      "startLine": 97,
+      "endLine": 104,
+      "rawHash": "696c827bca4c5dc84759d8b1dd8aec3d69becdc312e32e32dc0a6c10f7c7e6c1",
+      "htmlHash": "62fffb23976986e915f444bcef46f2295107512834301c72b2638a23dc6d0e83"
+    },
+    {
+      "key": "3-1",
+      "chapter": "3",
+      "startLine": 105,
+      "endLine": 154,
+      "rawHash": "241226ce6b41d8a2d622ee91b8a8c884572fe78499cce05bc240d3cd12063f0b",
+      "htmlHash": "419744ee15219501ff70a26495bccf578a7e795bbe4c69e994c9f360f3f30ab2"
+    },
+    {
+      "key": "4-1",
+      "chapter": "4",
+      "startLine": 155,
+      "endLine": 184,
+      "rawHash": "4d7be0b65058eb9145873a791b03b3d6fa511b1f51cd387f84c5f55d0313e672",
+      "htmlHash": "f532d57496388dbe90b4ba34fc2934724c9c49fa790d8b9176efd5c0c2a7a13c"
+    },
+    {
+      "key": "5-1",
+      "chapter": "5",
+      "startLine": 185,
+      "endLine": 200,
+      "rawHash": "5001063a74eec400a387050adb5f469d5ea0af70906b1cb2815d3a0c6d16b17f",
+      "htmlHash": "f2df901a55ae95da370a8d6a9fb6b7fe141125a643e36601cb6e5932f838730c"
+    },
+    {
+      "key": "6-1",
+      "chapter": "6",
+      "startLine": 201,
+      "endLine": 226,
+      "rawHash": "c38613f49db4a4c55c9a201cad09bfa61f920db6eb6cfc69654ce65a4822db49",
+      "htmlHash": "5d1a6bc5499829a213afdfaa89e0bdd76d6ac9f136fdc74d2ebc72f34a4ee7b3"
+    },
+    {
+      "key": "7-1",
+      "chapter": "7",
+      "startLine": 227,
+      "endLine": 271,
+      "rawHash": "eaf80876dd9088db750cb4781b236554c9d4827600d54ba41087923d73c82867",
+      "htmlHash": "04f802f318f5a5cea2587471d1864810f2189ab9fe33bcd329de0749da099c19"
+    },
+    {
+      "key": "8-1",
+      "chapter": "8",
+      "startLine": 272,
+      "endLine": 281,
+      "rawHash": "ce662de42d14206cd07aea11b401d184614c08528d00b56dd78d24ae21ee86c4",
+      "htmlHash": "c885d9aa0690fd82844b17e7bd263b06cad71ace550893b240524bad6f154528"
+    },
+    {
+      "key": "9-1",
+      "chapter": "9",
+      "startLine": 282,
+      "endLine": 317,
+      "rawHash": "1b8e2bb2d9f1405c6fd2eb8e31f2abc07aeaa0eefa5d95b7bdbba4e2efaa8f17",
+      "htmlHash": "839f402e091dedf1846f81cd03cdeda3683e590fd9e87bc301e3984428b068ac"
+    },
+    {
+      "key": "10-1",
+      "chapter": "10",
+      "startLine": 318,
+      "endLine": 332,
+      "rawHash": "34dc461b642092709fb582ca5250468dace34fc05211f20f1df7801f51836f8f",
+      "htmlHash": "c2a53d986caa52ae7808cd44d51f530dbfe048013b6175152d9ac9ad2682c21c"
+    },
+    {
+      "key": "11-1",
+      "chapter": "11",
+      "startLine": 333,
+      "endLine": 352,
+      "rawHash": "4249e10d84001654fc3e1532f16d883e144883c989468ba79fd025e124ea8084",
+      "htmlHash": "6029d448979e3cc376aacf8a882eff03ae404fa6c0e307c9f0ec94970c949acf"
+    },
+    {
+      "key": "12-1",
+      "chapter": "12",
+      "startLine": 353,
+      "endLine": 380,
+      "rawHash": "bf66e21c9b59daf09e2954f93005b4242070d4fe3063df3782ff4af258ff9d7b",
+      "htmlHash": "eb5e87d2c85da0c4a3abc663ac88aabe2140e916decb5345e0ac016a3859c663"
+    },
+    {
+      "key": "13-1",
+      "chapter": "13",
+      "startLine": 381,
+      "endLine": 396,
+      "rawHash": "eda41866f8508325f2aa1595cae66398edbbf7d9a5ec4f2d5ff2f1aef7e7d398",
+      "htmlHash": "af95e0c7150eba50a2a8f80fad604032caf50a43a80d9d81bccae5cfa3f2965d"
+    },
+    {
+      "key": "14-1",
+      "chapter": "14",
+      "startLine": 397,
+      "endLine": 430,
+      "rawHash": "6781737178a039a53b09bb07bec68e4e9b58ecef6583a1360b16871642b1d6b0",
+      "htmlHash": "ca1a060a388d8853e47386600fe05ee40a6b5dd2274fea0053903c555afa7423"
+    },
+    {
+      "key": "15-1",
+      "chapter": "15",
+      "startLine": 431,
+      "endLine": 444,
+      "rawHash": "e660243d4edc9b7a5ab9b44f16450097597a7f6d11e7b104949e1ca13e53d083",
+      "htmlHash": "14450ccba74ab33f2e0bd284135c8306d6fec5bf1ab77b116e4f5d746cbb7ae3"
+    },
+    {
+      "key": "16-1",
+      "chapter": "16",
+      "startLine": 445,
+      "endLine": 500,
+      "rawHash": "746024fd2d7ddb188162d179640d56a8bac81f09a9d827558892669064d92d35",
+      "htmlHash": "c5e7afddece006394d776f2e979ee705fc960e12277d67fe019a3e4af72ff27a"
+    },
+    {
+      "key": "17-1",
+      "chapter": "17",
+      "startLine": 501,
+      "endLine": 508,
+      "rawHash": "12b0bcb5d1cf3278796e0413c043703b1e641f6643ab3a4ed6a902631ae51bbf",
+      "htmlHash": "d41aeff354628fa9def6b75998fd3be37ca418dc7dc3c394a6e55104b9d07882"
+    },
+    {
+      "key": "18-1",
+      "chapter": "18",
+      "startLine": 509,
+      "endLine": 540,
+      "rawHash": "1972b9fbc0148aa4f2e98cf88da1373d03ffd319044cdbec77477c15f63a5c35",
+      "htmlHash": "19238ae98f73b672fe0ac67b418037b9a7851cf6337d24bd87cd2b8f957d5fc6"
+    },
+    {
+      "key": "19-1",
+      "chapter": "19",
+      "startLine": 541,
+      "endLine": 552,
+      "rawHash": "1b08de55090f8d0ee89179bf8205678259ff81aee576ceae84c3bb27373a9cf5",
+      "htmlHash": "0dff139f6216497b8ef1a1169f4be32c3e3f51bdf4a3a73bf61393954eb58265"
+    },
+    {
+      "key": "20-1",
+      "chapter": "20",
+      "startLine": 553,
+      "endLine": 577,
+      "rawHash": "b52bcd80b60b8e0cb542a48192af0532fdbc5fd7a1640999e32a09b0e7738ca3",
+      "htmlHash": "006e004ca2fd91e7f98a3d80c12fb199a32111beceb610f609718dc06ac713d2"
+    },
+    {
+      "key": "21-1",
+      "chapter": "21",
+      "startLine": 578,
+      "endLine": 631,
+      "rawHash": "d15b913c49a00b0f42e700375aeda84528bb31257cd8b39a4225e2750e7f4d3b",
+      "htmlHash": "320428dd441a64814bca8b7201671190874a9c526789fc8270a0fbafeeddf9de"
+    },
+    {
+      "key": "22-1",
+      "chapter": "22",
+      "startLine": 632,
+      "endLine": 646,
+      "rawHash": "641a699e2b8ef666375ba2f86d3d57020524a4ad74e984a8ad3464b8e7fbdf7d",
+      "htmlHash": "9d602cae57ef94ee62b1c7878ee66aed8b92bfaa374fa0a3f485c3ccd2fcab56"
+    },
+    {
+      "key": "23-1",
+      "chapter": "23",
+      "startLine": 647,
+      "endLine": 685,
+      "rawHash": "2109cab20de13697571545f04209b6ffb6be41af07bf78c74b549c6a69aa9b39",
+      "htmlHash": "3d5bce960577ef4e4a51df0efbd4d3861c56fac84e2881830a3c473f97dc49be"
+    },
+    {
+      "key": "24-1",
+      "chapter": "24",
+      "startLine": 686,
+      "endLine": 711,
+      "rawHash": "a6056e887c2ceb0019c8980d52dea67b2edd7e867102f967d160d4f1fd270411",
+      "htmlHash": "9829adf353d6338e7ab4ee83d8125fe6ceb6a2159ebaf7f895e7264f8871911e"
+    },
+    {
+      "key": "25-1",
+      "chapter": "25",
+      "startLine": 712,
+      "endLine": 726,
+      "rawHash": "c7ba2040a0e14cf51b97d826b9e7ba39484274a86474a1fe8ed5a3cb42693436",
+      "htmlHash": "2ec22268bf8c86279fefd9e58b8bab9fe022c717dec4e4599539d091a2d93346"
+    },
+    {
+      "key": "26-1",
+      "chapter": "26",
+      "startLine": 727,
+      "endLine": 754,
+      "rawHash": "5af8c4efbb3b8e06984180973d48258ddc9da7b8f2d0fed663d86d8688f60f90",
+      "htmlHash": "c8233a1d9aaecc2a5d4577a5a43e06ff6abeef9c5700186bf01996d13094f81a"
+    },
+    {
+      "key": "27-1",
+      "chapter": "27",
+      "startLine": 755,
+      "endLine": 768,
+      "rawHash": "dc0d537ae12dd43ef537b1bd9487927c30904a480dc2330532e91f6364ee4450",
+      "htmlHash": "8f3c5a8fc94884c05d7bd0e98e8dda06116054cd895ee2f4ae0d733f266a203f"
+    },
+    {
+      "key": "28-1",
+      "chapter": "28",
+      "startLine": 769,
+      "endLine": 806,
+      "rawHash": "b81071eff05bafedf011a782f0450ea53f9ab181ae0955a3d84fb523b6b66e69",
+      "htmlHash": "d754abcd0cd4006129936f27281a140c02bf21a9aa22145373fc46ec2f2d5ae1"
+    },
+    {
+      "key": "29-1",
+      "chapter": "29",
+      "startLine": 807,
+      "endLine": 817,
+      "rawHash": "4409c5f60a9047575275e8ee5bedff4c2725cc0a090e2d2d8bf9fde3544075e8",
+      "htmlHash": "ac2962c6e5a8fe3dd6cb6d05ab09da3656ecc6cb04a59a977021e4a5f3cfaa49"
+    },
+    {
+      "key": "30-1",
+      "chapter": "30",
+      "startLine": 818,
+      "endLine": 851,
+      "rawHash": "98ebc3ff4ffe067a53387191ad2d1faa8427b4e2eaa78aa67e1ad9945798665b",
+      "htmlHash": "2c5be1b4489af35375b0ac4aad18a8450cdb6ee5634143b464b29fab343cd901"
+    },
+    {
+      "key": "31-1",
+      "chapter": "31",
+      "startLine": 852,
+      "endLine": 857,
+      "rawHash": "d2cb0168d8d4810f90627de54606ff6cf0563b0fee0327ac64b85dadfde46101",
+      "htmlHash": "65d8c58565486d77708188e5e3359a80597dffe1c74b037803aff30fed346cd6"
+    },
+    {
+      "key": "32-1",
+      "chapter": "32",
+      "startLine": 858,
+      "endLine": 864,
+      "rawHash": "3bc25d61b0375dc7c7161efb28e9b7dfd29a8ab1a89212c0de59be7cf522be33",
+      "htmlHash": "d8e6c225e795de826fba782ce81a6eb233bba031a512858b389085d37cae4a2f"
+    },
+    {
+      "key": "33-1",
+      "chapter": "33",
+      "startLine": 865,
+      "endLine": 882,
+      "rawHash": "197243cf4142c87b44ec74e9d139a8ec5f9de4c6ea3d14f66d12f495b5d51084",
+      "htmlHash": "f0c9503b66355896eb31c0010353add064ee7942273b245b3927fa10c5c119a7"
+    },
+    {
+      "key": "34-1",
+      "chapter": "34",
+      "startLine": 883,
+      "endLine": 903,
+      "rawHash": "7b35b92ac564830954d68e396d54c2aa5bac900544748837dc012d69e46f5172",
+      "htmlHash": "1704cb1051a5ff86635c1fef8affc90e89197a6922b780888f9d58f35ae03d73"
+    },
+    {
+      "key": "35-1",
+      "chapter": "35",
+      "startLine": 904,
+      "endLine": 942,
+      "rawHash": "cb59ef396920a0b2a2dbc687412dfea403fdb1dd733149553d1a70d290a4c043",
+      "htmlHash": "0f2c0020a521dd3e268e6f9adaee2e4158ba427110099d88bf19d4c5d2651873"
+    },
+    {
+      "key": "36-1",
+      "chapter": "36",
+      "startLine": 943,
+      "endLine": 983,
+      "rawHash": "3e90228ba0ff48b86e6d83c89ba45c0a476d016e640c1212d1d5532c836c990a",
+      "htmlHash": "8fec4b371e05ce9cff43c77eadba1dfd94195b5ed60bb7aa246aa2918be7ed09"
+    },
+    {
+      "key": "37-1",
+      "chapter": "37",
+      "startLine": 984,
+      "endLine": 997,
+      "rawHash": "c1d247fe3f50012225790e4d83aefa3d8e513675cae003478c17d2d9b8aecca9",
+      "htmlHash": "bb61150deadc7bce0a803d33c76dbffa7971e458d5d87120baa2ab1fe7848e20"
+    },
+    {
+      "key": "38-1",
+      "chapter": "38",
+      "startLine": 998,
+      "endLine": 1003,
+      "rawHash": "1ef0f2cd2779917eee8fba71f3ef15b8996d43408b1fc88b5ad43cfa6b637600",
+      "htmlHash": "85fa80d2a2667105554085a7e12076ae69e8baf5c715aaefbf058485618f2d64"
+    },
+    {
+      "key": "39-1",
+      "chapter": "39",
+      "startLine": 1004,
+      "endLine": 1021,
+      "rawHash": "457f66aa5a5670f8bb4ead8f7569d5f590072362c40d17af71b6ec7a01fb8e52",
+      "htmlHash": "9774d7d9d768587bea6bceef06d14fca8c6843d0c4bfb4de75a53b764baedbf4"
+    },
+    {
+      "key": "40-1",
+      "chapter": "40",
+      "startLine": 1022,
+      "endLine": 1060,
+      "rawHash": "8817c4b420a4cd95df28d747cb7c44af7287e0418f866c5518a53fa16027e266",
+      "htmlHash": "efc45d6ef3f72e56301ad527bbf51ff3b7350f9d26fe603b32273cb4d5502a48"
+    },
+    {
+      "key": "W01-1",
+      "chapter": "W01",
+      "startLine": 1061,
+      "endLine": 1072,
+      "rawHash": "2b89ba9e9a5eb3c07f868ef930b76d36866cbaa122b258143ad39284d573c100",
+      "htmlHash": "3adf31538790bb7eb6c57450d0ef6f7abf8a84d9fbb1ad333b530d8bfc7eac3d"
+    },
+    {
+      "key": "W02-1",
+      "chapter": "W02",
+      "startLine": 1073,
+      "endLine": 1079,
+      "rawHash": "69c251dc4824b7a7e7835a2fbe1ba3b6cb28e32b5ed29b391a7d99da53820e7b",
+      "htmlHash": "a87d18423bec2667031dbe87c0b90504c8a3a191bebb0e9d8bfed34e27e9a0a0"
+    },
+    {
+      "key": "W03-1",
+      "chapter": "W03",
+      "startLine": 1080,
+      "endLine": 1086,
+      "rawHash": "e69cf2a84d04c4c3249b5b99fe04e905c329f3e57aa44c4b76c7addb568f5ac0",
+      "htmlHash": "7eb4318958123d86bf22a56248d51c2e24e68787e9256d8fa6cea3ebf74c486c"
+    },
+    {
+      "key": "W04-1",
+      "chapter": "W04",
+      "startLine": 1087,
+      "endLine": 1093,
+      "rawHash": "c210be9fe3aa9bbf982a7bfb5171240cca2cb275b18b99cb0e0e425865541c54",
+      "htmlHash": "88a57a87b5caf90b8368aa6051ce68d647bd973aa33e54a179536edc6b3fdca2"
+    },
+    {
+      "key": "W05-1",
+      "chapter": "W05",
+      "startLine": 1094,
+      "endLine": 1100,
+      "rawHash": "691f5155f054d5eb1cf70bf24492ddd240bbe55948d8782d86cc38b13506c6e8",
+      "htmlHash": "3e37890cf39ee18b80f3150c9b7b9f00f9e6b8467f80631fc43874bf8df6ae1f"
+    },
+    {
+      "key": "W06-1",
+      "chapter": "W06",
+      "startLine": 1101,
+      "endLine": 1107,
+      "rawHash": "eaa10bf153a516cd63f35c10fb4fa97bea49af9ac528e29e641774769448c2c8",
+      "htmlHash": "c5f5bd1f7737231e077136199c2d18bcd4227a40d1d7a14967e423d9e48d34b2"
+    },
+    {
+      "key": "W07-1",
+      "chapter": "W07",
+      "startLine": 1108,
+      "endLine": 1114,
+      "rawHash": "7234ee6eb1e0d7f5f2216307e5120b91924285b8d76d9f9f4b37150f9c9cdbc3",
+      "htmlHash": "90c5c8994c35e93906e1914fc42703472c2e1bbf7f6b2ef25e6826b74a31cdcb"
+    },
+    {
+      "key": "W08-1",
+      "chapter": "W08",
+      "startLine": 1115,
+      "endLine": 1121,
+      "rawHash": "2b065d8c4893241d3f3e9769e980be6bd678472200f4450229aba096643daa81",
+      "htmlHash": "c9714549435d12ac3fd935d15e210b06a06593c48e7ea4edf4a0cbe62449112c"
+    },
+    {
+      "key": "W09-1",
+      "chapter": "W09",
+      "startLine": 1122,
+      "endLine": 1127,
+      "rawHash": "36b666a3552c080c0e7ad4df62848f18ca5af55e4b86ade82f49d66b33cdbaf8",
+      "htmlHash": "9070757fa4e9f163c5e4d1b99dd60a6496cf193f49464d4952e698155d5ece3f"
+    },
+    {
+      "key": "W10-1",
+      "chapter": "W10",
+      "startLine": 1128,
+      "endLine": 1133,
+      "rawHash": "8f08765d3c298cf33917dde6ca5d21e3952ed42383dcbf742071f5c2d8305811",
+      "htmlHash": "59a9720a7bb7ba571b5e323c650a7a8d4f79682caf0f691548dd155521ba7d95"
+    },
+    {
+      "key": "W11-1",
+      "chapter": "W11",
+      "startLine": 1134,
+      "endLine": 1140,
+      "rawHash": "bd0ef07bcd36e84df594132902d0d6fc3a845637c7153b908616ee64fec9e1e0",
+      "htmlHash": "09763b11f65158d1d54f5f0c1a229b650d1a1751c7253bb32a1ebef977fb46c3"
+    },
+    {
+      "key": "W12-1",
+      "chapter": "W12",
+      "startLine": 1141,
+      "endLine": 1147,
+      "rawHash": "98ee8eda7d4c82991d23d9dc782300b50b4f66ad9ac1079c6a7ed62289250998",
+      "htmlHash": "996c9ad464c4bc818473d9edc7c69c62947434eb5a7ccb51e567aa0651eb8385"
+    },
+    {
+      "key": "W13-1",
+      "chapter": "W13",
+      "startLine": 1148,
+      "endLine": 1153,
+      "rawHash": "ad90d78f7efba14a4911d500cdc9a68a56c49e85b4c232bbb50e68830ae63b44",
+      "htmlHash": "21aa8b95fd2a7566ed27e3bea45b65e6335e998fad96d72a0985b7ed24e26b69"
+    },
+    {
+      "key": "W14-1",
+      "chapter": "W14",
+      "startLine": 1154,
+      "endLine": 1160,
+      "rawHash": "8a2212d1d64dbc4b1f48150a74dee9714970493dead6a58f48f47190b70bee28",
+      "htmlHash": "2d4a14fe72a5b7b1967af1eebb889f68c294ba1f3057273c0661f7bbbf126ad1"
+    },
+    {
+      "key": "W15-1",
+      "chapter": "W15",
+      "startLine": 1161,
+      "endLine": 1169,
+      "rawHash": "bf8f443e439d97bd417b324e409c54ed1be69de9e276eced3bf38025a75c2e01",
+      "htmlHash": "abc13a9c797c34e77dd409b40a7f8a914501c4f564d9c3e71c27d391e82c8a6c"
+    },
+    {
+      "key": "41-1",
+      "chapter": "41",
+      "startLine": 1170,
+      "endLine": 1217,
+      "rawHash": "5a9dab11135b324b71e61ec72c7f02b5a42adb20fa773714b900c8c5bb2294f5",
+      "htmlHash": "85ba9eeb805ea8253c760b6625acca045ddc0a4b8595c1752b1f9f73f0dd285f"
+    },
+    {
+      "key": "42-1",
+      "chapter": "42",
+      "startLine": 1218,
+      "endLine": 1228,
+      "rawHash": "f852ddb77bc1440f8efc5189d60894dbc7df0955a92eab3d702bc6fa74f41bd5",
+      "htmlHash": "e00e1b7654ce2f2366bf6f1f934875de4ea935ee4f9086cc4b2d36f5879582f3"
+    },
+    {
+      "key": "43-1",
+      "chapter": "43",
+      "startLine": 1229,
+      "endLine": 1234,
+      "rawHash": "84f2e4037e4f5f3ee9c954dc472b102e471c1261b41c880611ee6cd83a259540",
+      "htmlHash": "82d60f4e63271fab76b5d284ac1b1d7d151b02482316cb62de208cd08fedd92e"
+    },
+    {
+      "key": "44-1",
+      "chapter": "44",
+      "startLine": 1235,
+      "endLine": 1252,
+      "rawHash": "100187e12387a0534e5d4a46c36d86f9875c4283cf741158c8302dbf31964095",
+      "htmlHash": "ff4bba5dd7efaf670cf5dead0ef9b54e54a7aaa4562ff831188d1afd4ad07a10"
+    },
+    {
+      "key": "45-1",
+      "chapter": "45",
+      "startLine": 1253,
+      "endLine": 1262,
+      "rawHash": "86825df7b16de5b9e3211d2b5aba042753b2dc024b5e35246efed164c927d369",
+      "htmlHash": "1ef2f91dada7abbd926066946cdf782a1a9bb787aca321a8616923b64287eb15"
+    },
+    {
+      "key": "46-1",
+      "chapter": "46",
+      "startLine": 1263,
+      "endLine": 1277,
+      "rawHash": "f5abcf21a7d7ab32ab7c336f617ff67c36aebfa4808b8791eef4e020bf4781a2",
+      "htmlHash": "e5ff22e5161d95f07f4a2666837a0cad62d17451f9dfe50ad598e1a265973528"
+    },
+    {
+      "key": "47-1",
+      "chapter": "47",
+      "startLine": 1278,
+      "endLine": 1286,
+      "rawHash": "440a586de5282494f6fe7b23da049e8793dbbbf82ff052dcd368e1f660229684",
+      "htmlHash": "4d5e9a30ae30b263f00e4cb636c84bb87330df4db31945ee4ac73794dde63fea"
+    },
+    {
+      "key": "48-1",
+      "chapter": "48",
+      "startLine": 1287,
+      "endLine": 1333,
+      "rawHash": "a0309cb686ffd329e8d8c7d287094b1ff9ab0105b5a0dfc896acbc4862358676",
+      "htmlHash": "97c103840a4311e4c4efa7407193903eae81751c20e6fafcf846c50bf9c3ad8c"
+    },
+    {
+      "key": "49-1",
+      "chapter": "49",
+      "startLine": 1334,
+      "endLine": 1367,
+      "rawHash": "b50ebb91de3196ae032af4ca22d93ecc1975c4555b55ce0d97dabb799232fbce",
+      "htmlHash": "d0af6815b5b545d6a4ef5924b3fa1d711a4fa4321318c40ba5bf5b3efa994b15"
+    },
+    {
+      "key": "50-1",
+      "chapter": "50",
+      "startLine": 1368,
+      "endLine": 1424,
+      "rawHash": "528d50242f4e4e38852fcab86298220e68099b11e8225e3da22d6c93a32bee0a",
+      "htmlHash": "1ed7d853c4129cfed65fd48d85e3eed4d3767ad1bb90dce46748822df2987783"
+    },
+    {
+      "key": "51-1",
+      "chapter": "51",
+      "startLine": 1425,
+      "endLine": 1440,
+      "rawHash": "e7c6bab4955afa70869610a07035c4bddf4e13e26ff898bd1bfe7fe4c644bb32",
+      "htmlHash": "3d38c0aefe98ea632df9f2a8545cdc887aa62a6a967f680c5e0e5f2751b4253f"
+    },
+    {
+      "key": "52-1",
+      "chapter": "52",
+      "startLine": 1441,
+      "endLine": 1480,
+      "rawHash": "ca40df0b4ec29846dd4811dc12fc92b9955bf63ea2ee0f2fbc5c2b3fdc05e2d6",
+      "htmlHash": "69280277e7f5ba10a7cb13404b6eae8bfdfc4aa8d3d8155d995ead2a43684a36"
+    },
+    {
+      "key": "53-1",
+      "chapter": "53",
+      "startLine": 1481,
+      "endLine": 1492,
+      "rawHash": "5734e9139f6aedc1aa7f08358d1e35f37fc0c34a9fcc566a83b97e8daaf0408e",
+      "htmlHash": "1ce2befd314491cab56f593b08239bad299a0104e9018934a0167f01fd87a8a5"
+    },
+    {
+      "key": "54-1",
+      "chapter": "54",
+      "startLine": 1493,
+      "endLine": 1506,
+      "rawHash": "50c9f15770ff4d9c3aadab606cc05c70ebf4f04adf93a7362699b8fc0d1cfb8c",
+      "htmlHash": "db7f54a4df31f386405dcd03dff1cd36ec23862df4b18b6e0c7b30a57bac8c94"
+    },
+    {
+      "key": "final-1",
+      "chapter": "final",
+      "startLine": 1507,
+      "endLine": 1525,
+      "rawHash": "ec260aa7ac567f250b5da7be97aec9c7d48bf17cd7d65b602fc6cf0f4a7f0295",
+      "htmlHash": "531d7919c6baf85371f46d389462283de62833843606255fb7cbddbfb2f21ac4"
+    }
+  ],
+  "mapping": [
+    {
+      "page": "unit-01.html",
+      "sections": [
+        "intro-1"
+      ]
+    },
+    {
+      "page": "unit-02.html",
+      "sections": [
+        "1-1",
+        "2-1",
+        "3-1",
+        "4-1"
+      ]
+    },
+    {
+      "page": "unit-03.html",
+      "sections": [
+        "5-1"
+      ]
+    },
+    {
+      "page": "unit-04.html",
+      "sections": [
+        "6-1",
+        "7-1",
+        "8-1",
+        "9-1"
+      ]
+    },
+    {
+      "page": "unit-05.html",
+      "sections": [
+        "10-1"
+      ]
+    },
+    {
+      "page": "unit-06.html",
+      "sections": [
+        "11-1",
+        "12-1",
+        "13-1",
+        "14-1",
+        "15-1"
+      ]
+    },
+    {
+      "page": "unit-07.html",
+      "sections": [
+        "16-1",
+        "17-1",
+        "18-1",
+        "19-1",
+        "20-1"
+      ]
+    },
+    {
+      "page": "unit-08.html",
+      "sections": [
+        "21-1"
+      ]
+    },
+    {
+      "page": "unit-09.html",
+      "sections": [
+        "22-1",
+        "23-1",
+        "24-1",
+        "25-1",
+        "26-1"
+      ]
+    },
+    {
+      "page": "unit-10.html",
+      "sections": [
+        "27-1",
+        "28-1",
+        "29-1",
+        "30-1",
+        "31-1",
+        "32-1"
+      ]
+    },
+    {
+      "page": "unit-11.html",
+      "sections": [
+        "33-1",
+        "34-1",
+        "35-1",
+        "36-1",
+        "37-1",
+        "38-1"
+      ]
+    },
+    {
+      "page": "unit-12.html",
+      "sections": [
+        "39-1",
+        "40-1"
+      ]
+    },
+    {
+      "page": "unit-13.html",
+      "sections": [
+        "W01-1",
+        "W02-1",
+        "W03-1",
+        "W04-1",
+        "W05-1",
+        "W06-1",
+        "W07-1",
+        "W08-1",
+        "W09-1",
+        "W10-1",
+        "W11-1",
+        "W12-1",
+        "W13-1",
+        "W14-1",
+        "W15-1"
+      ]
+    },
+    {
+      "page": "unit-14.html",
+      "sections": [
+        "41-1",
+        "42-1",
+        "43-1",
+        "44-1",
+        "45-1",
+        "46-1"
+      ]
+    },
+    {
+      "page": "unit-15.html",
+      "sections": [
+        "47-1",
+        "48-1"
+      ]
+    },
+    {
+      "page": "unit-16.html",
+      "sections": [
+        "49-1",
+        "50-1",
+        "51-1"
+      ]
+    },
+    {
+      "page": "unit-17.html",
+      "sections": [
+        "52-1",
+        "53-1",
+        "54-1"
+      ]
+    },
+    {
+      "page": "unit-18.html",
+      "sections": [
+        "final-1"
+      ]
+    }
+  ],
+  "references": {
+    "R01": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+    "R02": "https://code.claude.com/docs/en/how-claude-code-works",
+    "R03": "https://code.claude.com/docs/en/prompt-caching",
+    "R04": "https://code.claude.com/docs/en/context-window",
+    "R05": "https://code.claude.com/docs/en/memory",
+    "R06": "https://code.claude.com/docs/en/hooks-guide",
+    "R07": "https://code.claude.com/docs/en/permissions",
+    "R08": "https://code.claude.com/docs/en/hooks",
+    "R09": "https://code.claude.com/docs/en/sessions",
+    "R10": "https://code.claude.com/docs/en/skills",
+    "R11": "https://code.claude.com/docs/en/mcp",
+    "R12": "https://code.claude.com/docs/en/plugins",
+    "R13": "https://code.claude.com/docs/en/hooks-guide",
+    "R14": "https://code.claude.com/docs/en/sandboxing",
+    "R15": "https://code.claude.com/docs/en/mcp",
+    "R16": "https://code.claude.com/docs/en/sub-agents",
+    "R17": "https://code.claude.com/docs/en/agent-teams",
+    "R18": "https://code.claude.com/docs/en/scheduled-tasks",
+    "R19": "https://code.claude.com/docs/en/env-vars",
+    "R20": "https://code.claude.com/docs/en/settings",
+    "R21": "https://code.claude.com/docs/en/cli-reference",
+    "R22": "https://code.claude.com/docs/en/headless",
+    "R23": "https://code.claude.com/docs/en/monitoring-usage",
+    "R24": "https://github.com/anthropics/claude-code/blob/v2.1.314/README.md",
+    "R25": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py",
+    "R26": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/message_parser.py",
+    "R27": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py",
+    "R28": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/query.py",
+    "R29": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/client.py",
+    "R30": "https://code.claude.com/docs/en/llm-gateway",
+    "R31": "https://code.claude.com/docs/en/remote-control"
+  },
+  "codeBlocks": [
+    {
+      "section": "1-1",
+      "language": "mermaid",
+      "hash": "73aa133adb474710fe7b286a27ad907282576a2e7110361b924dbc445c41f1ac"
+    },
+    {
+      "section": "3-1",
+      "language": "mermaid",
+      "hash": "cb476907dcdf3d45db1ada1f244e84d4d12e8359efb7257c4a5b5c227414cc2e"
+    },
+    {
+      "section": "4-1",
+      "language": "python",
+      "hash": "7b2be121060a00a4294d26f22186efd5a9dfda2640faa5233992c70623416c07"
+    },
+    {
+      "section": "6-1",
+      "language": "text",
+      "hash": "a7e720571b6093739140ee97c0ec037b5b802b520d37d74aaaa5f8f0ea2f8f69"
+    },
+    {
+      "section": "7-1",
+      "language": "text",
+      "hash": "ec5137c41b139042d92d9ed7512bcf05b611eaf78d0ce3a609e268455c06c244"
+    },
+    {
+      "section": "9-1",
+      "language": "mermaid",
+      "hash": "83943534d7d38f008b98e4cb1d300e61c70cd7ddbd9833405be89211d142171b"
+    },
+    {
+      "section": "12-1",
+      "language": "json",
+      "hash": "284a3358ac0a7d2bc3cf73ccd3fa785f7002d4f510d93b112c0d70acf1c5465e"
+    },
+    {
+      "section": "13-1",
+      "language": "yaml",
+      "hash": "99267e4c975756a35f579bb7573ae1f5e79344c1f2a7641cafd8e7b4ac240c8d"
+    },
+    {
+      "section": "14-1",
+      "language": "text",
+      "hash": "8332851c519f796c98501f757f4f04af26a789b7677709f42186251c91137245"
+    },
+    {
+      "section": "16-1",
+      "language": "mermaid",
+      "hash": "670aac9a90be2023d4ce3b41237ce2312eb7489ed3960c35eaef6cdd6224dea3"
+    },
+    {
+      "section": "16-1",
+      "language": "yaml",
+      "hash": "c6934da9787e9efcb173da19278a95328e292accba405db4e3788f307409b18d"
+    },
+    {
+      "section": "18-1",
+      "language": "mermaid",
+      "hash": "7251ad9b9b6c8528d8f110e1075c9f2edd5b0ef2cff4a3dcdd64c485d15c2ccf"
+    },
+    {
+      "section": "20-1",
+      "language": "text",
+      "hash": "a419900670b8e65792e4e25d5d75fe9d652e3ad88a1ecfc4bc0c6aa319726629"
+    },
+    {
+      "section": "21-1",
+      "language": "json",
+      "hash": "a173318067082dd263997da1822b2d45c478adff293cde9c5913c5cc889c5c17"
+    },
+    {
+      "section": "23-1",
+      "language": "mermaid",
+      "hash": "0a864ef61cc1c5cba2831141ce766efc80f0f54240a64772b9b9c71e6eacb9e1"
+    },
+    {
+      "section": "26-1",
+      "language": "python",
+      "hash": "9a74ded7c9e7f2e85405d144d6a089b274ee198f4b045e739e0948ad251c1670"
+    },
+    {
+      "section": "28-1",
+      "language": "mermaid",
+      "hash": "da80b0219ea02e3d3e0bf6163e8bf3d68230de43e7501e138caf20791a03f1e4"
+    },
+    {
+      "section": "30-1",
+      "language": "mermaid",
+      "hash": "6d45d4172a77c751583fcb43168ac87e9b878ce51a919967b06d6dac540ba46f"
+    },
+    {
+      "section": "33-1",
+      "language": "mermaid",
+      "hash": "721c764861ffe8f2231a2474fb8a64e64a1374733c2bd5fc01b67fd6c08d759d"
+    },
+    {
+      "section": "34-1",
+      "language": "bash",
+      "hash": "3088f58d3256dd97d88b4edcf997dfa60fd5432899f16ffa0b40b8fc55bf9128"
+    },
+    {
+      "section": "35-1",
+      "language": "text",
+      "hash": "0004406a80c54f4f35213d85f7d586981223dc62483a49604a08a6a76b294b7b"
+    },
+    {
+      "section": "36-1",
+      "language": "mermaid",
+      "hash": "9046328304cacc2504c6cc31e4611bbff68fd4fa37af72bdf6ebb5ac523f752e"
+    },
+    {
+      "section": "37-1",
+      "language": "text",
+      "hash": "696df71c483fa86e5626c74c62351169382186fefac32aafc2f024d921cc958f"
+    },
+    {
+      "section": "41-1",
+      "language": "text",
+      "hash": "1570329c7f7eda1c4bb7c2dab824c10ac1d546c4709f3cde8b9c74826000bdd1"
+    },
+    {
+      "section": "48-1",
+      "language": "python",
+      "hash": "cfd70099760c11506cd6f56fc5cb10df92932a2d582358c9fcec5c292391f6aa"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "title": "1. 모델·Harness·SDK·플랫폼의 층위",
+      "section": "1-1",
+      "rawHash": "73aa133adb474710fe7b286a27ad907282576a2e7110361b924dbc445c41f1ac",
+      "type": "flow",
+      "file": "assets/diagram-1.svg",
+      "nodes": [
+        {
+          "id": "U",
+          "label": "User / Host / CLI",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "Claude Code Application / Harness",
+          "shape": "box"
+        },
+        {
+          "id": "CX",
+          "label": "Prompt & Context Manager",
+          "shape": "box"
+        },
+        {
+          "id": "PC",
+          "label": "Permissions / Hooks / Sandbox Policies",
+          "shape": "box"
+        },
+        {
+          "id": "OR",
+          "label": "Agent Loop Controller",
+          "shape": "box"
+        },
+        {
+          "id": "LLM",
+          "label": "Claude API / Serving Provider",
+          "shape": "box"
+        },
+        {
+          "id": "TD",
+          "label": "Tool Dispatcher",
+          "shape": "box"
+        },
+        {
+          "id": "BUILT",
+          "label": "Built-in Tools: Read, Edit, Bash, etc.",
+          "shape": "box"
+        },
+        {
+          "id": "MCP",
+          "label": "MCP Client -> MCP Server",
+          "shape": "box"
+        },
+        {
+          "id": "CHILD",
+          "label": "Subagent Sessions",
+          "shape": "box"
+        },
+        {
+          "id": "STORE",
+          "label": "Session Transcript / Auto Memory / Config",
+          "shape": "box"
+        },
+        {
+          "id": "OUT",
+          "label": "Terminal UI / CLI Stream / SDK Transport",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "U",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "CX",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "PC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "OR",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "OR",
+          "to": "LLM",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "OR",
+          "to": "TD",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "TD",
+          "to": "BUILT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "TD",
+          "to": "MCP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "TD",
+          "to": "CHILD",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "STORE",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "OUT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "3. 한 사용자 요청의 논리적 실행 흐름",
+      "section": "3-1",
+      "rawHash": "cb476907dcdf3d45db1ada1f244e84d4d12e8359efb7257c4a5b5c227414cc2e",
+      "type": "sequence",
+      "actors": {
+        "U": "User",
+        "H": "Claude Code Harness",
+        "C": "Context/State",
+        "M": "Claude Model API",
+        "P": "Policy/Hook",
+        "T": "Tool/MCP"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "U",
+          "to": "H",
+          "arrow": "->>",
+          "text": "요청"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "C",
+          "arrow": "->>",
+          "text": "로드된 지침·세션·메모리 결합"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "M",
+          "arrow": "->>",
+          "text": "System + Project + Conversation + Tools"
+        },
+        {
+          "type": "message",
+          "from": "M",
+          "to": "H",
+          "arrow": "-->>",
+          "text": "텍스트 또는 Tool 요청"
+        },
+        {
+          "type": "control",
+          "text": "alt Tool 호출"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "P",
+          "arrow": "->>",
+          "text": "권한·Hook·환경 검사"
+        },
+        {
+          "type": "control",
+          "text": "alt 승인·허용"
+        },
+        {
+          "type": "message",
+          "from": "P",
+          "to": "H",
+          "arrow": "-->>",
+          "text": "허용/수정된 인자"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "T",
+          "arrow": "->>",
+          "text": "도구 실행"
+        },
+        {
+          "type": "message",
+          "from": "T",
+          "to": "H",
+          "arrow": "-->>",
+          "text": "관찰 결과/에러"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "C",
+          "arrow": "->>",
+          "text": "도구 결과·상태 반영"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "M",
+          "arrow": "->>",
+          "text": "업데이트된 대화로 재요청"
+        },
+        {
+          "type": "control",
+          "text": "else 거부/승인 대기"
+        },
+        {
+          "type": "message",
+          "from": "P",
+          "to": "H",
+          "arrow": "-->>",
+          "text": "차단 또는 사용자 입력 요구"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "C",
+          "arrow": "->>",
+          "text": "거부·대기 정보 반영"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "control",
+          "text": "else 최종 응답"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "U",
+          "arrow": "-->>",
+          "text": "결과"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "9. Compaction은 실제로 무엇을 대체하는가?",
+      "section": "9-1",
+      "rawHash": "83943534d7d38f008b98e4cb1d300e61c70cd7ddbd9833405be89211d142171b",
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Long conversation + tool results",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Context near limit?",
+          "shape": "diamond"
+        },
+        {
+          "id": "C",
+          "label": "Continue append",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Summarization pass",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Shorter conversation summary",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Selective reinjection: memory, skills, files",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Next model request",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "No",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "Yes",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "16.1 수명주기 다이어그램",
+      "section": "16-1",
+      "rawHash": "670aac9a90be2023d4ce3b41237ce2312eb7489ed3960c35eaef6cdd6224dea3",
+      "type": "flow",
+      "file": "assets/diagram-4.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Discover skill directories / account sync",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Read metadata/frontmatter",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Invocation?",
+          "shape": "diamond"
+        },
+        {
+          "id": "D",
+          "label": "Load skill body",
+          "shape": "box"
+        },
+        {
+          "id": "X",
+          "label": "Do not load body",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Inject instructions, arguments, supporting resources",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Tool calls under applicable policies",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Results, possible long-term context",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "Compaction?",
+          "shape": "diamond"
+        },
+        {
+          "id": "I",
+          "label": "Reinjection with budgets/truncation",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "Continue conversation",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "User slash command",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "Model selection",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "X",
+          "label": "Not selected",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "label": "Yes",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "J",
+          "label": "No",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "18. MCP를 사용하면 무엇이 실제로 실행되나?",
+      "section": "18-1",
+      "rawHash": "7251ad9b9b6c8528d8f110e1075c9f2edd5b0ef2cff4a3dcdd64c485d15c2ccf",
+      "type": "sequence",
+      "actors": {
+        "C": "Claude Code",
+        "S": "MCP Server",
+        "B": "Backend API / DB"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "C",
+          "to": "S",
+          "arrow": "->>",
+          "text": "connect/initialize"
+        },
+        {
+          "type": "message",
+          "from": "S",
+          "to": "C",
+          "arrow": "-->>",
+          "text": "available tools/resources"
+        },
+        {
+          "type": "message",
+          "from": "C",
+          "to": "S",
+          "arrow": "->>",
+          "text": "call_tool(name, arguments)"
+        },
+        {
+          "type": "message",
+          "from": "S",
+          "to": "B",
+          "arrow": "->>",
+          "text": "backend request under server credentials"
+        },
+        {
+          "type": "message",
+          "from": "B",
+          "to": "S",
+          "arrow": "-->>",
+          "text": "result/error"
+        },
+        {
+          "type": "message",
+          "from": "S",
+          "to": "C",
+          "arrow": "-->>",
+          "text": "MCP tool result"
+        },
+        {
+          "type": "message",
+          "from": "C",
+          "to": "C",
+          "arrow": "->>",
+          "text": "include observation in conversation"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "23.1 정책 평가의 논리 흐름",
+      "section": "23-1",
+      "rawHash": "0a864ef61cc1c5cba2831141ce766efc80f0f54240a64772b9b9c71e6eacb9e1",
+      "type": "flow",
+      "file": "assets/diagram-6.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Tool request with arguments",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Applicable hard restrictions",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Block",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "PreToolUse / Rule evaluation",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Ask or allow or deny?",
+          "shape": "diamond"
+        },
+        {
+          "id": "F",
+          "label": "User / Host Approval",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Tool sandbox / backend",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "Execution or sandbox refusal",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "Tool result / error",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "D",
+          "label": "Denied",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "Eligible",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "D",
+          "label": "Deny",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "Ask",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "G",
+          "label": "Allow",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "Approved",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "D",
+          "label": "Rejected",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "28. Subagent 하나의 라이프사이클",
+      "section": "28-1",
+      "rawHash": "da80b0219ea02e3d3e0bf6163e8bf3d68230de43e7501e138caf20791a03f1e4",
+      "type": "sequence",
+      "actors": {
+        "P": "Parent Agent",
+        "D": "Delegation/Agent Tool",
+        "S": "Subagent",
+        "R": "Results"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "P",
+          "to": "D",
+          "arrow": "->>",
+          "text": "task + role + limits + selected context"
+        },
+        {
+          "type": "message",
+          "from": "D",
+          "to": "S",
+          "arrow": "->>",
+          "text": "start isolated conversation"
+        },
+        {
+          "type": "control",
+          "text": "loop own agent loop"
+        },
+        {
+          "type": "message",
+          "from": "S",
+          "to": "S",
+          "arrow": "->>",
+          "text": "reason, tool call, observe"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "message",
+          "from": "S",
+          "to": "D",
+          "arrow": "-->>",
+          "text": "compact report / status"
+        },
+        {
+          "type": "message",
+          "from": "D",
+          "to": "R",
+          "arrow": "-->>",
+          "text": "completion event"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "P",
+          "arrow": "-->>",
+          "text": "report available"
+        },
+        {
+          "type": "message",
+          "from": "P",
+          "to": "P",
+          "arrow": "->>",
+          "text": "judge and integrate result"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "30. Agent Teams와 Subagent의 구조적 차이",
+      "section": "30-1",
+      "rawHash": "6d45d4172a77c751583fcb43168ac87e9b878ce51a919967b06d6dac540ba46f",
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": [
+        {
+          "id": "L",
+          "label": "Team Lead",
+          "shape": "box"
+        },
+        {
+          "id": "Q",
+          "label": "Shared Task List / Messages",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "Teammate A: own session",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Teammate B: own session",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Teammate C: own session",
+          "shape": "box"
+        },
+        {
+          "id": "FS",
+          "label": "Workspace / Files",
+          "shape": "box"
+        },
+        {
+          "id": "OUT",
+          "label": "Final synthesis",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "L",
+          "to": "Q",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "A",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "B",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "C",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "FS",
+          "label": "",
+          "both": false,
+          "dashed": true
+        },
+        {
+          "from": "B",
+          "to": "FS",
+          "label": "",
+          "both": false,
+          "dashed": true
+        },
+        {
+          "from": "C",
+          "to": "FS",
+          "label": "",
+          "both": false,
+          "dashed": true
+        },
+        {
+          "from": "L",
+          "to": "OUT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "33. Claude Code는 모델 서버가 아니라 Agent Runtime이다",
+      "section": "33-1",
+      "rawHash": "721c764861ffe8f2231a2474fb8a64e64a1374733c2bd5fc01b67fd6c08d759d",
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": [
+        {
+          "id": "USER",
+          "label": "HTTP/Web/CLI Client",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "App Server or CLI Host",
+          "shape": "box"
+        },
+        {
+          "id": "CC",
+          "label": "Claude Code / SDK",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Model Gateway or Provider",
+          "shape": "box"
+        },
+        {
+          "id": "M",
+          "label": "Model Inference",
+          "shape": "box"
+        },
+        {
+          "id": "T",
+          "label": "Tools / MCP / OS",
+          "shape": "box"
+        },
+        {
+          "id": "S",
+          "label": "App Sessions / Queue / Audit",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "USER",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "CC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CC",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "M",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CC",
+          "to": "T",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "S",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "title": "36. 일반적인 Agent Serving 시스템에서 추가할 컴포넌트",
+      "section": "36-1",
+      "rawHash": "9046328304cacc2504c6cc31e4611bbff68fd4fa37af72bdf6ebb5ac523f752e",
+      "type": "flow",
+      "file": "assets/diagram-10.svg",
+      "nodes": [
+        {
+          "id": "API",
+          "label": "HTTP API / Auth",
+          "shape": "box"
+        },
+        {
+          "id": "Q",
+          "label": "Task Queue & Rate Limiter",
+          "shape": "box"
+        },
+        {
+          "id": "W1",
+          "label": "Worker 1: Claude SDK/CLI",
+          "shape": "box"
+        },
+        {
+          "id": "W2",
+          "label": "Worker 2: Claude SDK/CLI",
+          "shape": "box"
+        },
+        {
+          "id": "SS",
+          "label": "Session + Run State DB",
+          "shape": "box"
+        },
+        {
+          "id": "ART",
+          "label": "Artifact Store",
+          "shape": "box"
+        },
+        {
+          "id": "EV",
+          "label": "Event Bus / SSE",
+          "shape": "box"
+        },
+        {
+          "id": "AUD",
+          "label": "Audit / Metrics / Trace",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "API",
+          "to": "Q",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "W1",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "W2",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W1",
+          "to": "SS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W2",
+          "to": "SS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W1",
+          "to": "ART",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W2",
+          "to": "ART",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W1",
+          "to": "EV",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "W2",
+          "to": "EV",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "EV",
+          "to": "API",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "API",
+          "to": "AUD",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    }
+  ]
+}

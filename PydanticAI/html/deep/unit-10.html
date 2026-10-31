@@ -1,0 +1,159 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Message History·State·Persistence·Memory 외 2개 주제 — PydanticAI 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">P.</span><span>PydanticAI<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Core·Graph·Harness 경계</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 설계 질문 외 2개 주제</span></a><p class="nav-group">Node와 Run 수명</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 실행을 하나의 상태기계로 이해하기 외 2개 주제</span></a><p class="nav-group">모델 입력과 Provider</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt Assembly 및 최종 모델 요청 외 1개 주제</span></a><p class="nav-group">Tool 정의·검증·동시성</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 정의와 JSON Schema 변환 외 1개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Tool 병렬 실행, 장벽, 순서와 취소</span></a><p class="nav-group">Output와 Retry</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Structured Output 및 EndStrategy 상세 외 1개 주제</span></a><p class="nav-group">Dependencies·Capabilities·승인</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Dependencies와 RunContext의 데이터 흐름 외 1개 주제</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Human-in-the-loop·Deferred Tool·복원</span></a><p class="nav-group">History·Context·외부 확장</p><a href="unit-10.html" aria-current="page" class="current"><span class="nav-number">10</span><span>Message History·State·Persistence·Memory 외 2개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Multi-Agent·Graph·오케스트레이션</span></a><p class="nav-group">Serving·보안·장애</p><a href="unit-12.html" ><span class="nav-number">12</span><span>Streaming·Serving·동시 요청·취소 외 2개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>핵심 코드 추적 워크북</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>핵심 코드 추적 워크북 / W3. ToolDefinition → ToolManager → 검증</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>핵심 코드 추적 워크북 / W5. 병렬 Tool의 실행·기록·중복 방지</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>핵심 코드 추적 워크북 / W8. Capability Lifecycle + Tool 노출 정책</span></a><p class="nav-group">비교·발표·복습</p><a href="unit-17.html" ><span class="nav-number">17</span><span>다른 Agent Framework와 설계 비교</span></a><a href="unit-18.html" ><span class="nav-number">18</span><span>발표용 정리와 학습 점검 질문</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-20.html" ><span class="nav-number">20</span><span>최종 요약: PydanticAI의 진짜 설계적 특징</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python Core v2.61.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / History·Context·외부 확장</p><h1>History·Context·외부 확장</h1><div class="chapter-meta">단원 10 · 원문 2026.10.31 · Python Core v2.61.0 · 약 9분 · 원문 937–1094행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>보관 이력과 현재 입력을 나누고 압축·캐시·Skills·MCP·Child Loop를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>권한·메모리 자동 상속을 가정하지 말고 ToolCall/Return 쌍 보존을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-937">17. Message History·State·Persistence·Memory</a><a href="#line-939">17.1 메모리는 한 종류가 아니다</a><a href="#line-952">17.2 실제 메시지 단위 분석</a><a href="#line-972">17.3 History Processor와 Context가 다른 이유</a><a href="#line-983">17.4 Harness Memory의 특징</a><a href="#line-999">18. Context 최적화·Compaction·Caching</a><a href="#line-1001">18.1 Prefix Caching과 Compaction은 서로 다른 기능</a><a href="#line-1009">18.2 Harness Compaction의 실제 성격</a><a href="#line-1017">18.3 Tool 결과가 Context를 폭발시키는 문제</a><a href="#line-1029">18.4 Core와 Harness의 기능 위치</a><a href="#line-1039">19. Skills·MCP·Toolsets·외부 확장</a><a href="#line-1041">19.1 네 가지 개념을 구분</a><a href="#line-1052">19.2 MCP 실행 흐름</a><a href="#line-1065">19.3 Skills의 점진적 로딩</a><a href="#line-1079">19.4 Skill 자동 생성은 무엇을 의미하는가?</a></nav></details><section class="source-section" data-source-section="17-1"><h2 id="line-937">17. Message History·State·Persistence·Memory<a class="anchor" href="#line-937" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-939">17.1 메모리는 한 종류가 아니다<a class="anchor" href="#line-939" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>무엇을 저장하는가?</th>
+<th>기본 유지 범위</th>
+<th>누가 관리하는가?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Graph State</td>
+<td>현재 Agent Run의 실행 진행 상태</td>
+<td>Run</td>
+<td>Core Graph</td>
+</tr>
+<tr>
+<td>Message History</td>
+<td>ModelRequest/Response, Tool Call/Return</td>
+<td>호출자 전달·반환 기준 대화</td>
+<td>Core + 앱</td>
+</tr>
+<tr>
+<td>Conversation</td>
+<td>히스토리와 Deferred 등 연결 상태</td>
+<td>외부에 저장 가능</td>
+<td>Core 표현 + 앱 저장</td>
+</tr>
+<tr>
+<td>Long-term Memory</td>
+<td>요약된 사실, 사용자 지식, 회수 가능한 노트</td>
+<td>여러 세션</td>
+<td>Harness/외부 저장소</td>
+</tr>
+<tr>
+<td>RAG Corpus</td>
+<td>전문 문서·검색용 인덱스</td>
+<td>프로젝트/서비스</td>
+<td>외부 검색 계층</td>
+</tr>
+<tr>
+<td>Evaluation Trace</td>
+<td>실행 기록, 메트릭</td>
+<td>정책에 따라 보관</td>
+<td>Observability 시스템</td>
+</tr>
+</tbody></table>
+</div><p><strong>핵심:</strong> Conversation History = 자동 장기 메모리가 아니다.</p>
+<h3 id="line-952">17.2 실제 메시지 단위 분석<a class="anchor" href="#line-952" aria-label="이 절의 고유 링크">#</a></h3><p>PydanticAI에서는 단순 문자열 배열이 아니라 ModelRequest와 ModelResponse가 여러 Part를 가진다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>ModelRequest
+  ├─ SystemPromptPart
+  ├─ UserPromptPart
+  ├─ ToolReturnPart
+  └─ Retry/feedback parts
+
+ModelResponse
+  ├─ TextPart
+  └─ ToolCallPart</code></pre></div><p>v2의 메시지 타입과 Outcome 처리 등은 변경될 수 있으므로, 문서에 낡은 <code>RetryPromptPart</code> 예제를 무조건 복사하지 말고 해당 버전의 Message/Tool 처리 함수를 확인해야 한다. v2.60.0 릴리스는 일부 Retry 메시지 타입의 대체 방향을 공개했다.</p>
+<p><code>[SRC]</code> <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/messages.py">Messages</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/releases/tag/v2.61.0">Release v2.61.0</a>.</p>
+<h3 id="line-972">17.3 History Processor와 Context가 다른 이유<a class="anchor" href="#line-972" aria-label="이 절의 고유 링크">#</a></h3><p>History Processor는 <strong>모델에 전달하는 기록을 변화시키는 함수</strong>에 가깝다. 영구 메모리 자체를 보장하는 모듈은 아니다. 예컨대 오래된 메시지 1,000개 중 100개만 남기는 정책을 구현할 수 있지만, 버린 기록을 다시 검색하려면 저장소가 필요하다.</p>
+<ul>
+<li>Raw History = 모든 이벤트의 사실 기록 (서비스 정책상 보관할 수 있음)</li>
+<li>Model Context = 이번 호출에 선택된 일부 메시지</li>
+<li>Summary = 기록 일부를 압축해 만든 2차 표현</li>
+<li>Memory = 이후에도 다시 참고할 수 있도록 저장한 중요 지식</li>
+</ul>
+<p>이 네 가지를 구분하는 설계가 추후 학습의 핵심이다.</p>
+<h3 id="line-983">17.4 Harness Memory의 특징<a class="anchor" href="#line-983" aria-label="이 절의 고유 링크">#</a></h3><p><code>[DOC]</code> Harness는 네임스페이스 기반의 지속 저장 노트와 검색 기능을 제공하며, Memory Store로 메모리·파일·Postgres 등을 지원한다. 별도 Conversation Search는 저장된 이력을 대상으로 BM25 검색을 제공할 수 있다. 이는 Core의 기본 Agent Loop 안에 Vector DB가 항상 내장되어 있다는 의미가 아니다.</p>
+<p>학습할 구현 질문:</p>
+<ul>
+<li>메모리는 어느 Hook/Tool을 통해 저장되는가?</li>
+<li>누가 메모리를 쓰라고 결정하는가? 모델/코드/사용자 중 누구인가?</li>
+<li>메모리 데이터의 신뢰 등급과 수정 권한은 무엇인가?</li>
+<li>Prompt에 얼마나 주입하고, 어느 조건에서 검색하는가?</li>
+<li>오래된 내용의 갱신·중복 정리·삭제는 어떻게 처리하는가?</li>
+</ul>
+<p>참고: <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/harness/">Harness</a>, <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/capabilities/overview/">Capabilities overview</a>.</p>
+<hr>
+</section>
+<section class="source-section" data-source-section="18-1"><h2 id="line-999">18. Context 최적화·Compaction·Caching<a class="anchor" href="#line-999" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1001">18.1 Prefix Caching과 Compaction은 서로 다른 기능<a class="anchor" href="#line-1001" aria-label="이 절의 고유 링크">#</a></h3><p><strong>Prefix Caching:</strong> 동일하거나 호환되는 입력 접두부를 제공자에서 재사용하는 최적화. 목적은 비용/지연시간 감소.</p>
+<p><strong>Compaction:</strong> 컨텍스트 윈도우 제한에 맞추기 위해 오래된 메시지나 결과를 요약·제거·변환. 목적은 입력 크기 제어.</p>
+<p>Compaction이 기존 앞부분을 수정하면 모델이 보는 Prefix가 바뀌어 캐시 재사용이 줄어들 수 있다. 반대로 모델이 지원하는 Provider-native Compaction과 캐시 정책은 구체적인 API가 다를 수 있으므로 실제 토큰 사용량으로 확인해야 한다.</p>
+<h3 id="line-1009">18.2 Harness Compaction의 실제 성격<a class="anchor" href="#line-1009" aria-label="이 절의 고유 링크">#</a></h3><p><code>[DOC]</code> 공식 Harness Compaction은 Tool 결과 삭제, 슬라이딩 윈도우, 요약, Tiered 등 여러 전략을 제공한다. 일부 전략은 LLM 호출 없이 메시지 편집만 수행하지만 Summarizing/Relevance와 일부 Tiered 단계는 별도 모델 비용이 들 수 있다. 또한 ToolCall/ToolReturn의 쌍을 보존하는 정책이 중요하다.</p>
+<p>일부 전략은 모델 요청 직전에 History를 변경하고, 변경 사항이 이후 Run History에도 지속될 수 있다. 따라서 &#39;원본은 항상 그대로 두고 요청 직전에만 임시 Summary를 만든다&#39;고 가정하지 말아야 한다.</p>
+<p><code>[DOC]</code> <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/harness/compaction/">Compaction</a>.</p>
+<h3 id="line-1017">18.3 Tool 결과가 Context를 폭발시키는 문제<a class="anchor" href="#line-1017" aria-label="이 절의 고유 링크">#</a></h3><p>예: 데이터베이스에서 200만 행을 전부 Tool 결과로 텍스트 변환한다고 가정하면, Tool 호출 자체는 성공해도 모델 Context에 담을 수 없다. 해결책은 다음처럼 분리된다.</p>
+<ul>
+<li>Tool에서 aggregation/limit 등으로 결과량 제한.</li>
+<li>큰 결과는 파일·객체 저장소에 저장하고 요약/참조만 반환.</li>
+<li>특정 부분만 다시 조회할 수 있도록 파일 검색·SQL Tool 구성.</li>
+<li>Tool Output Limit/Spill Capability 활용.</li>
+<li>Code Mode로 중간 계산 결과를 컨텍스트에 모두 넣지 않는 설계.</li>
+</ul>
+<p><strong>설계 판단:</strong> LLM의 Context에 큰 데이터 전체를 넣는 것을 기본으로 삼지 않는 편이 좋다.</p>
+<h3 id="line-1029">18.4 Core와 Harness의 기능 위치<a class="anchor" href="#line-1029" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>모델이 지원하는 Native Compaction/Tool 기능은 Core 어댑터·Capability에서 다룰 수 있다.</li>
+<li>모델 독립형 History 요약·Tool Output Limit·Cache Bust 모니터링은 Harness Capability로 제공될 수 있다.</li>
+<li>Provider Prompt Cache의 실제 Hit/Write 계상은 Provider API와 모델 설정에 따라 달라진다.</li>
+</ul>
+<p>이 때문에 <strong>메모리 관리 기능이 있다</strong>는 한 문장으로 PydanticAI를 평가하면 구현 차이를 놓친다.</p>
+<hr>
+</section>
+<section class="source-section" data-source-section="19-1"><h2 id="line-1039">19. Skills·MCP·Toolsets·외부 확장<a class="anchor" href="#line-1039" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1041">19.1 네 가지 개념을 구분<a class="anchor" href="#line-1041" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>개념</th>
+<th>본질</th>
+<th>실행 주체</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tool</td>
+<td>모델이 호출하는 개별 작업 인터페이스</td>
+<td>Python Runtime/외부 서비스</td>
+</tr>
+<tr>
+<td>Toolset</td>
+<td>Tool의 발견·노출·호출을 묶는 단위</td>
+<td>Core Toolset</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>Tool·Resource 등을 외부 서버와 교환하는 프로토콜</td>
+<td>MCP 클라이언트 + 서버</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>특정 작업에 필요한 절차·지침·참고자료를 필요 시 제공</td>
+<td>Harness / Context 구성</td>
+</tr>
+</tbody></table>
+</div><p>따라서 Skill은 반드시 Tool이어야 하는 것이 아니고, MCP는 반드시 Skill 배포 방식이 아니다.</p>
+<h3 id="line-1052">19.2 MCP 실행 흐름<a class="anchor" href="#line-1052" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Agent -&gt; Toolset(MCP client) -&gt; MCP server tool discovery
+      -&gt; model sees allowed tool definitions
+      -&gt; model chooses MCP tool
+      -&gt; ToolManager validates/dispatches
+      -&gt; remote MCP server executes
+      -&gt; result goes back into model message</code></pre></div><p>MCP에서 도구 이름이나 스키마가 달라져도 본체 코드 수정 없이 확장 가능하다는 장점이 있지만, 원격 서버는 별도의 권한·네트워크·비밀정보·버전 관리 경계가 된다.</p>
+<h3 id="line-1065">19.3 Skills의 점진적 로딩<a class="anchor" href="#line-1065" aria-label="이 절의 고유 링크">#</a></h3><p><code>[DOC]</code> Harness Skills는 먼저 Skill 이름과 설명을 알려주고, 필요한 경우 <code>load_capability</code> 등의 Tool을 이용해 지침 본문을 로딩하도록 지원한다. 무조건 모든 <code>SKILL.md</code>를 매번 System Prompt에 합치지 않는 구조다.</p>
+<p>개념적인 과정을 구분한다.</p>
+<ol>
+<li><strong>Discovery:</strong> Skill의 메타데이터 수집.</li>
+<li><strong>Selection:</strong> 모델 또는 호스트 정책이 사용할 Skill 결정.</li>
+<li><strong>Loading:</strong> 지침 본문 및 Resource 로딩.</li>
+<li><strong>Execution:</strong> 모델이 별도 Tool이나 API를 호출하며 절차 수행.</li>
+<li><strong>Validation:</strong> 출력·근거·결과를 별도 정책으로 검증.</li>
+</ol>
+<p><code>[DOC]</code> <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/harness/skills/">Skills</a>.</p>
+<h3 id="line-1079">19.4 Skill 자동 생성은 무엇을 의미하는가?<a class="anchor" href="#line-1079" aria-label="이 절의 고유 링크">#</a></h3><p>PydanticAI Harness 문서에는 Agent가 Capability를 작성·검증·저장하고 이후 Run에서 로딩하도록 하는 Self-extension 기능도 소개한다. 하지만 &#39;생성 완료&#39;가 곧 &#39;안전하고 유용함&#39;을 뜻하지 않는다.</p>
+<p>생성형 Skill·Capability는 다음을 평가해야 한다.</p>
+<ul>
+<li>신규 기능의 필요성: 기존 Tool/Instruction으로 해결 가능한가?</li>
+<li>내용의 정확성과 소스 근거.</li>
+<li>실행 가능 명령·파일 접근 권한.</li>
+<li>승인된 저장소 이외의 Scope로 퍼지지 않는지.</li>
+<li>변경 전후 평가 테스트와 롤백.</li>
+</ul>
+<p>특히 분석 결과나 법적·안전상 중요한 판단을 내리는 시스템에서는 <strong>자체 작성한 규칙을 검증 없이 영속화</strong>하면 오류가 다음 실행에 재사용되는 위험이 있다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-09.html"><small>이전 단원</small>← Human-in-the-loop·Deferred Tool·복원</a><a class="next" href="unit-11.html"><small>다음 단원</small>Multi-Agent·Graph·오케스트레이션 →</a></nav><footer>PydanticAI · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-937">17. Message History·State·Persistence·Memory</a><a class="toc-depth-2" href="#line-939">17.1 메모리는 한 종류가 아니다</a><a class="toc-depth-2" href="#line-952">17.2 실제 메시지 단위 분석</a><a class="toc-depth-2" href="#line-972">17.3 History Processor와 Context가 다른 이유</a><a class="toc-depth-2" href="#line-983">17.4 Harness Memory의 특징</a><a class="toc-depth-1" href="#line-999">18. Context 최적화·Compaction·Caching</a><a class="toc-depth-2" href="#line-1001">18.1 Prefix Caching과 Compaction은 서로 다른 기능</a><a class="toc-depth-2" href="#line-1009">18.2 Harness Compaction의 실제 성격</a><a class="toc-depth-2" href="#line-1017">18.3 Tool 결과가 Context를 폭발시키는 문제</a><a class="toc-depth-2" href="#line-1029">18.4 Core와 Harness의 기능 위치</a><a class="toc-depth-1" href="#line-1039">19. Skills·MCP·Toolsets·외부 확장</a><a class="toc-depth-2" href="#line-1041">19.1 네 가지 개념을 구분</a><a class="toc-depth-2" href="#line-1052">19.2 MCP 실행 흐름</a><a class="toc-depth-2" href="#line-1065">19.3 Skills의 점진적 로딩</a><a class="toc-depth-2" href="#line-1079">19.4 Skill 자동 생성은 무엇을 의미하는가?</a></nav></aside></div></body></html>

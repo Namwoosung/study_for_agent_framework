@@ -1,0 +1,256 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제 — Microsoft Agent Framework 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">M.</span><span>Microsoft Agent Framework<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">계층과 호출 지도</p><a href="unit-02.html" ><span class="nav-number">02</span><span>분석 목표와 증거 수준 외 3개 주제</span></a><p class="nav-group">Agent·Context·Tool Loop</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 클래스의 다층 합성 외 2개 주제</span></a><p class="nav-group">Tool·정책·승인</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제</span></a><p class="nav-group">상태와 모델 입력</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Session, History, Memory, Checkpoint가 어떻게 다른가? 외 1개 주제</span></a><p class="nav-group">Harness와 명시적 Workflow</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나? 외 2개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Superstep: 실제 상태 commit와 메시지 전달</span></a><p class="nav-group">복구와 협업 모델</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Checkpoint와 Resume: 직렬화보다 중요한 것은 경계 외 2개 주제</span></a><p class="nav-group">외부 연결·보안·실패</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>설계자가 반드시 이해해야 할 실패 모드</span></a><p class="nav-group">소스코드 추적 워크북</p><a href="unit-12.html" ><span class="nav-number">12</span><span>코드 추적 워크북 15개</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적 워크북 15개 / W05. Function Middleware 인자 수정과 Policy Gate</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적 워크북 15개 / W09. Compaction 적용과 메모리 보존</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" aria-current="page" class="current"><span class="nav-number">16</span><span>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>학습 완료 점검 문제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>공식 참고자료·소스코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-19.html" ><span class="nav-number">19</span><span>최종 요약 — 반드시 기억해야 할 12개 문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK python-1.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 설계 비교와 복습</p><h1>설계 비교와 복습</h1><div class="chapter-meta">단원 16 · 원문 2026.10.31 · Python SDK python-1.24.0 · 약 8분 · 원문 1099–1187행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>교체 가능한 구성과 추적 복잡성의 비용을 비교하고 발표·문답으로 개념을 점검합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>성능·보안 순위로 해석하지 말고 설계 선택의 조건을 연결하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1099">26. Framework를 직접 설계한다면 어떤 선택이 필요한가?</a><a href="#line-1119">27. 학습 대상 7개 기술과 설계 차이 비교</a><a href="#line-1132">27.1 반드시 비교할 다섯 가지 ‘같은 문제, 다른 해법’</a><a href="#line-1144">27.2 장점과 한계 — 기능 나열이 아닌 구조 평가</a><a href="#line-1164">28. 발표 구성안 — 15장 + 심층 부록</a></nav></details><section class="source-section" data-source-section="26-1"><h2 id="line-1099">26. Framework를 직접 설계한다면 어떤 선택이 필요한가?<a class="anchor" href="#line-1099" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>설계 요소</th>
+<th>MAF에서 관찰한 접근</th>
+<th>가능한 대안</th>
+<th>선택 시 고려할 비용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent·Provider 관계</td>
+<td>계층 합성 및 Protocol 기반 분리</td>
+<td>단일 Runner 클래스</td>
+<td>추적 난이도 vs 교체성</td>
+</tr>
+<tr>
+<td>Tool Loop</td>
+<td>ChatClient Function Invocation에서 반복</td>
+<td>Agent Runner가 직접 반복</td>
+<td>Tool 코드 재사용 vs 제어 흐름 분산</td>
+</tr>
+<tr>
+<td>정책</td>
+<td>Agent/Chat/Function Middleware</td>
+<td>중앙 Policy Engine, 도구 서버 전용 정책</td>
+<td>검증 지점 일관성</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>공통 Message/Content</td>
+<td>Domain-specific 결과 객체</td>
+<td>공급자 독립성 vs 변환 손실</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Context Providers로 모듈화</td>
+<td>Agent 클래스 내부 Memory</td>
+<td>확장성 vs 설정 복잡도</td>
+</tr>
+<tr>
+<td>상위 반복</td>
+<td>선택적 Harness Loop Middleware</td>
+<td>명시적 Planner/Task DAG</td>
+<td>자율성 vs 예측성</td>
+</tr>
+<tr>
+<td>Orchestration</td>
+<td>Executor/Edge Workflow</td>
+<td>코드 직접 Orchestration</td>
+<td>상태 복구·가시성 비용</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>Workflow Superstep/Edge Runner</td>
+<td>Queue 기반 Worker, Actor 모델</td>
+<td>순서 보장과 장애 격리</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>Graph State Snapshot</td>
+<td>Event Sourcing 전용</td>
+<td>저장 비용·재생 신뢰성</td>
+</tr>
+<tr>
+<td>Approval</td>
+<td>Tool/Workflow 각각의 권한 상태</td>
+<td>중앙 승인 서비스</td>
+<td>단순성 vs 다중 환경 추적</td>
+</tr>
+<tr>
+<td>Compaction</td>
+<td>별도 전략 객체</td>
+<td>모델 제공자 관리</td>
+<td>예측 가능성 vs 구성 편의</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>Middleware + FIDES + Tool-side RBAC</td>
+<td>샌드박스 최우선</td>
+<td>범위와 검증 가능성</td>
+</tr>
+<tr>
+<td>Serving</td>
+<td>Hosting Integration / 호스트 프로세스</td>
+<td>별도 API/Worker 분리</td>
+<td>운영 복잡성·수평 확장</td>
+</tr>
+</tbody></table>
+</div><p><strong>핵심 설계 원칙 [INF]:</strong> Agent Runtime의 핵심에 넣어야 할 것은 <strong>모델 호출·Tool 실행·반복 제어·상태/권한의 명확한 계약</strong>이고, 조직·도메인별 선택이 달라질 내용은 Provider/Middleware/Storage/Workflow 등 확장 지점으로 나누는 것이 유연하다. MAF는 이러한 모듈화의 장점과 계층 복잡성이라는 비용을 동시에 보여준다.</p>
+</section>
+<section class="source-section" data-source-section="27-1"><h2 id="line-1119">27. 학습 대상 7개 기술과 설계 차이 비교<a class="anchor" href="#line-1119" aria-label="이 절의 고유 링크">#</a></h2><p>이 표는 <strong>이번에 MAF 코드에서 확인한 특징</strong>을 중심으로 각 기술과 비교 학습할 질문을 정리한다. 다른 기술의 세부 API·버전은 각 심화 학습 문서에서 교차 검증해야 한다. 이것은 실측 성능·보안 우열의 순위가 아니다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>비교 기술</th>
+<th>비교할 핵심 질문</th>
+<th>MAF를 기준으로 관찰할 차이</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hermes Agent</strong></td>
+<td>완성형 Agent의 내부 Memory·Skills·Cron·Gateway를 MAF처럼 확장 구성하려면?</td>
+<td>Hermes는 구성된 Agent Runtime에, MAF는 개발자가 조립하는 실행 계층과 Workflow에 중점</td>
+</tr>
+<tr>
+<td><strong>PydanticAI</strong></td>
+<td>PydanticAI의 내부 Graph Node와 MAF의 ChatClient Function Invocation이 어디서 같은 문제를 푸는가?</td>
+<td>MAF는 Tool Loop/Agent Pipeline/Workflow 분리가 뚜렷함</td>
+</tr>
+<tr>
+<td><strong>OpenAI Agents SDK</strong></td>
+<td><code>Runner</code> 중심 반복·Handoff와 MAF의 <code>ChatClient</code> Loop가 어떻게 다른가?</td>
+<td>Tool 반복을 Agent Runner 쪽 vs ChatClient 쪽에 두는 선택 비교</td>
+</tr>
+<tr>
+<td><strong>Google ADK</strong></td>
+<td>Event/Session/Workflow Scheduler와 MAF Superstep/Checkpoint의 처리 순서는 어떻게 다른가?</td>
+<td>MAF의 Pending State Commit/Edge Runner 순서 계약을 비교 기준으로 사용</td>
+</tr>
+<tr>
+<td><strong>Claude Agent SDK</strong></td>
+<td>SDK가 CLI Runtime을 조종하는 방식과 MAF의 공개 Python Runtime은 어떻게 다른가?</td>
+<td>수정 가능 코드 범위·프로세스/권한 경계</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>완성형 Harness에 포함된 메모리·승인·도구·서브에이전트와 MAF Harness 구성 가능 범위는?</td>
+<td>즉시 사용 가능한 Runtime vs 직접 조합 가능한 부품의 대가</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1132">27.1 반드시 비교할 다섯 가지 ‘같은 문제, 다른 해법’<a class="anchor" href="#line-1132" aria-label="이 절의 고유 링크">#</a></h3><p><strong>(A) Agent Loop의 위치</strong> — MAF Tool Invocation / OpenAI SDK Runner / PydanticAI 내부 Graph / Google ADK LLM Flow / Hermes·Claude Code Harness.</p>
+<p><strong>(B) 종료 조건</strong> — 최종 응답 vs 재시도 상한 vs Task 완료 조건 vs Graph Convergence. ‘정상 답변 1개’가 끝이라는 가정은 모든 시스템에서 통하지 않는다.</p>
+<p><strong>(C) 멀티에이전트</strong> — Subagent-as-Tool의 함수 위임 vs 명시적 Workflow/Graph 협업. 병렬 처리라도 상태 수명과 권한 분리가 다르다.</p>
+<p><strong>(D) 승인·보안</strong> — 프롬프트 지침만으로 충분한지, Function Tool 호출을 강제할 수 있는지, 외부 Tool Server도 권한을 검사하는지.</p>
+<p><strong>(E) 복구</strong> — Session History, RunState, Checkpoint, 실제 Tool 서버 멱등성. 같은 ‘복구 지원’이라고 설명하지 않는다.</p>
+<h3 id="line-1144">27.2 장점과 한계 — 기능 나열이 아닌 구조 평가<a class="anchor" href="#line-1144" aria-label="이 절의 고유 링크">#</a></h3><p><strong>강점 [INF]</strong></p>
+<ul>
+<li>Agent와 ChatClient가 분리되어 있어 공급자·호스팅·Middleware의 조합 범위가 넓다.</li>
+<li>Function Tool Policy가 개별 호출 지점에서 동작하도록 구성할 수 있다.</li>
+<li>Graph Workflow는 Executor/Edge, Superstep, Checkpoint로 상태·복구 경계가 명확하다.</li>
+<li>Harness는 기존 부품을 결합하므로 단일 Agent를 학습한 뒤 단계적으로 확장할 수 있다.</li>
+</ul>
+<p><strong>비용/한계 [INF]</strong></p>
+<ul>
+<li>Runner/ChatClient/Provider/Workflow를 동시에 이해해야 실제 호출 경로가 보이는 복잡성이 있다.</li>
+<li>고급 기능은 실험 상태이거나 Python·.NET 간 지원 범위가 다르다.</li>
+<li>정보 흐름 보안도 CodeAct·외부 Hosted Tool까지 일괄 강제하지 않는다.</li>
+<li>Graph Checkpoint를 갖췄더라도 외부 작업 정확히 한 번 실행과 시스템 동기화는 애플리케이션 책임이다.</li>
+<li>‘기능 지원’만으로 기업 환경 적용성이 결정되는 것은 아니다. 시스템 권한·데이터 흐름·감사·운영·복구 검증이 뒤따라야 한다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="28-1"><p class="part-divider" id="line-1162">Part VII. 발표와 최종 정리</p><h2 id="line-1164">28. 발표 구성안 — 15장 + 심층 부록<a class="anchor" href="#line-1164" aria-label="이 절의 고유 링크">#</a></h2><blockquote>
+<p><strong>권장 방식:</strong> 청중이 SDK API를 외우게 하는 발표가 아니라, <strong>설계 문제 → MAF의 해법 → 실제 코드상 근거 → 다른 프레임워크와 비교</strong>로 설명한다. 발표 본문은 개념·시퀀스·Trade-off에 집중하고, 긴 소스코드나 버전 의존적 세부 조건은 부록에 둔다.</p>
+</blockquote>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>장</th>
+<th>발표 제목</th>
+<th>화면/다이어그램</th>
+<th>발표자가 반드시 이해할 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>왜 MAF를 분석하는가</td>
+<td>전체 구조와 목표</td>
+<td>단순 Agent 사용법과 Runtime 설계 분석의 차이</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SDK / Framework / Harness</td>
+<td>개념 계층 그림</td>
+<td>SDK와 Framework는 상호 배타적인가?</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4개의 실행 계층</td>
+<td>Agent/Tool Loop/Harness/Workflow</td>
+<td>각 Loop가 어디에서 종료되는가?</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Agent Pipeline</td>
+<td>RawAgent+Middleware+ChatClient</td>
+<td>모델 호출과 Tool 호출의 책임 경계</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Tool Calling 1회 전체 과정</td>
+<td>모델→스키마→검증→Tool→모델</td>
+<td>Tool을 누가 실제 실행하나?</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Middleware / Guardrail</td>
+<td>세 종류의 Interception</td>
+<td>정책은 어떤 시점에서 강제되는가?</td>
+</tr>
+<tr>
+<td>7</td>
+<td>예외 처리와 Fail-closed</td>
+<td>일반 Exception vs MiddlewareFailure</td>
+<td>보안 오류를 모델에 다시 주면 왜 위험한가?</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Session / Memory / Context</td>
+<td>저장소·컨텍스트 비교표</td>
+<td>Session과 Checkpoint는 어떻게 다른가?</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Tool Approval / HITL</td>
+<td>승인 State Diagram</td>
+<td>승인 요청과 재개의 바인딩 범위</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Harness의 바깥 루프</td>
+<td>중첩 Loop Diagram</td>
+<td>max iterations와 should_continue</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Workflow / Executor / Edge</td>
+<td>Fan-out/Fan-in Graph</td>
+<td>Agent Loop 대신 Workflow를 선택할 시점</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Superstep과 동시성</td>
+<td>Pending State→Commit→Checkpoint</td>
+<td>같은 Target으로 간 메시지의 순서</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Checkpoint/Replay의 함정</td>
+<td>장애 시점 타임라인</td>
+<td>정확히 한 번 외부 Tool 실행을 보장하나?</td>
+</tr>
+<tr>
+<td>14</td>
+<td>FIDES와 보안 경계</td>
+<td>정보 흐름 Label &amp; 외부 Tool</td>
+<td>CodeAct 내부 Tool까지 강제하나?</td>
+</tr>
+<tr>
+<td>15</td>
+<td>기술 설계 선택</td>
+<td>7개 비교·의사결정 매트릭스</td>
+<td>어떤 구조를 자체 Framework 설계에 차용할 것인가?</td>
+</tr>
+</tbody></table>
+</div><p><strong>코드 부록 추천:</strong> <code>MiddlewareFailure</code>, <code>_evaluate_stop</code>, <code>run_until_convergence</code>, <code>WorkflowCheckpoint</code>, <code>_execute_with_message_or_checkpoint</code>의 <em>분기 조건</em>만 보여주고 실제 긴 함수 본문은 발표 자료에서 생략한다. 각 장에서 원본 함수/파일 URL을 제공해 청중이 직접 확인할 수 있게 한다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-15.html"><small>이전 단원</small>← 코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</a><a class="next" href="unit-17.html"><small>다음 단원</small>학습 완료 점검 문제 →</a></nav><footer>Microsoft Agent Framework · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1099">26. Framework를 직접 설계한다면 어떤 선택이 필요한가?</a><a class="toc-depth-2" href="#line-1119">27. 학습 대상 7개 기술과 설계 차이 비교</a><a class="toc-depth-3" href="#line-1132">27.1 반드시 비교할 다섯 가지 ‘같은 문제, 다른 해법’</a><a class="toc-depth-3" href="#line-1144">27.2 장점과 한계 — 기능 나열이 아닌 구조 평가</a><a class="toc-depth-2" href="#line-1164">28. 발표 구성안 — 15장 + 심층 부록</a></nav></aside></div></body></html>

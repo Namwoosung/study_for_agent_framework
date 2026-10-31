@@ -1,0 +1,165 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Google ADK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다 외 4개 주제 — Google ADK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Google ADK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">G.</span><span>Google ADK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 진입</p><a href="unit-02.html" ><span class="nav-number">02</span><span>ADK는 SDK인가, Framework인가, Harness인가? 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>InvocationContext·Session·Event를 분리해서 생각하기</span></a><p class="nav-group">Loop와 모델 입력</p><a href="unit-04.html" aria-current="page" class="current"><span class="nav-number">04</span><span>LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다 외 4개 주제</span></a><p class="nav-group">Tool 준비·병렬·실패</p><a href="unit-05.html" ><span class="nav-number">05</span><span>FunctionTool: Python 함수가 모델 Tool이 되는 과정 외 2개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>병렬 Tool과 병렬 Agent는 같은 것이 아니다</span></a><p class="nav-group">Event와 상태 저장</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Event.isfinalresponse()의 정밀한 정의 외 3개 주제</span></a><p class="nav-group">Cache·압축·검색</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Prefix Caching: 같은 Prompt를 보내는데 왜 절약되는가? 외 2개 주제</span></a><p class="nav-group">협업·Graph·복구</p><a href="unit-09.html" ><span class="nav-number">09</span><span>기존 Template Workflow는 어떤 구조였나? 외 3개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Workflow의 Checkpoint는 ‘완전한 프로세스 스냅샷’인가? 외 1개 주제</span></a><p class="nav-group">확장·운영·실패</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Callback·Plugin은 Guardrail인가, Hook인가? 외 2개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>실행 실패 시나리오 24개 외 1개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적의 원칙</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적의 원칙 / WB-05. 병렬 Tool에서 한 호출만 실패한다면?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적의 원칙 / WB-10. Workflow Checkpoint에 무엇이 남는가?</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>7개 기술과 ADK의 실제 설계 차이 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>자가 점검 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" ><span class="nav-number">18</span><span>버전 고정 공개 소스코드 외 2개 주제</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python ADK v2.13.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Loop와 모델 입력</p><h1>Loop와 모델 입력</h1><div class="chapter-meta">단원 04 · 원문 2026.10.31 · Python ADK v2.13.0 · 약 9분 · 원문 211–347행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>BaseLlmFlow의 반복과 한 Step의 전처리·모델 호출·후처리를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>종료·Abort·Partial과 Processor 순서, 실제 Provider 입력을 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-213">6. LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다</a><a href="#line-235">7. BaseLlmFlow.runasync: 반복과 종료의 실제 조건</a><a href="#line-256">이 로직에서 무엇을 배워야 하나?</a><a href="#line-264">종료 상태 매트릭스</a><a href="#line-276">8. runonestepasync: 모델 호출 1회의 실제 단계</a><a href="#line-306">9. 최종 모델 입력은 단순한 instruction + history가 아니다</a><a href="#line-324">Prompt Prefix Cache를 생각할 때</a><a href="#line-330">10. 모델 호출·Streaming·예산·오류 경로</a></nav></details><section class="source-section" data-source-section="6-1"><p class="part-divider" id="line-211">Part II. Agent Loop를 코드에서 읽기</p><h2 id="line-213">6. LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다<a class="anchor" href="#line-213" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC] <code>LlmAgent._run_async_impl(ctx)</code>는 준비된 상태를 읽고 <code>self._llm_flow.run_async(ctx)</code>가 반환하는 Event를 전달하는 경로를 가진다. 출력 State 저장, 스트리밍 결과 처리, pause 등 Agent 수준의 래핑 로직이 있다. **실제 <code>while</code> 반복은 <code>BaseLlmFlow.run_async()</code>**에 존재한다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/agents/llm_agent.py">S02</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/base_llm_flow.py">S03</a>]</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Runner → LlmAgent.run_async / BaseNode.run
+                    ↓
+          LlmAgent._run_async_impl
+                    ↓
+          BaseLlmFlow.run_async  ────────┐
+                    ↓                   │
+          _run_one_step_async           │
+                    ↓                   │
+          model request/response        │
+                    ↓                   │
+          postprocess + Tools           │
+                    ↓                   │
+        마지막 이벤트 조건 판정 ──────→ 반복/종료</code></pre></div><p><strong>주의:</strong> LlmAgent를 <code>Workflow</code> 내 노드로 사용할 때는 <code>_run_impl</code> 및 <code>workflow/_llm_agent_wrapper.py</code> 경로가 개입한다. 동일 Agent가 호출 환경에 따라 달리 감싸질 수 있음을 구분한다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/agents/llm_agent.py">S02</a>]</p>
+</section>
+<section class="source-section" data-source-section="7-1"><h2 id="line-235">7. <code>BaseLlmFlow.run_async</code>: 반복과 종료의 실제 조건<a class="anchor" href="#line-235" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/base_llm_flow.py">S03</a>, 약 264–285행]의 핵심을 <strong>의사코드</strong>로 재구성:</p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># 교육용 의사코드: 실제 원본 복제 아님
+while True:
+    if ctx.is_aborted is True:
+        break
+    last_event = None
+    async for event in one_llm_step(ctx):
+        last_event = event
+        yield event
+        if ctx.is_aborted is True:
+            break
+    if ctx.is_aborted is True:
+        break
+    if last_event is None or last_event.is_final_response() or last_event.partial:
+        break</code></pre></div><h3 id="line-256">이 로직에서 무엇을 배워야 하나?<a class="anchor" href="#line-256" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li><strong>모델을 한 번 호출했다고 Agent 작업이 종료되는 것이 아니다.</strong> Tool 호출이 반환되면 다음 모델 요청이 필요할 수 있다.</li>
+<li>마지막 Event가 최종 응답인지 <code>is_final_response()</code>로 판단한다. <code>FunctionCall</code>만 있는 Event는 일반적으로 최종이 아니다.</li>
+<li>Abort는 루프 앞/이벤트 전달 중/루프 끝에서 확인해 지연을 줄인다.</li>
+<li>마지막 이벤트가 예상 밖의 <code>partial</code>이면 경고하고 종료한다. 즉 Streaming 단편 상태까지 판단에 들어간다.</li>
+<li>이 루프만으로 무한 실행이 절대 불가능한 것은 아니다. 최대 LLM 호출 수, 애플리케이션 예산, 시간 제한을 별도로 고려해야 한다.</li>
+</ol>
+<h3 id="line-264">종료 상태 매트릭스<a class="anchor" href="#line-264" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>상황</th>
+<th>일반적인 경로</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>일반 텍스트 완성</td>
+<td>final Event → break</td>
+<td>사용자에게 보일 최종 응답</td>
+</tr>
+<tr>
+<td>Function Call 요청</td>
+<td>Tool → FunctionResponse → 다음 LLM step</td>
+<td>아직 사고/행동 연속</td>
+</tr>
+<tr>
+<td><code>ctx.is_aborted</code></td>
+<td>Loop 중단</td>
+<td>외부 작업 취소는 별도 확인</td>
+</tr>
+<tr>
+<td>step이 Event를 생성하지 않음</td>
+<td><code>last_event is None</code> → 종료</td>
+<td>계속할 근거가 없음</td>
+</tr>
+<tr>
+<td>마지막이 partial</td>
+<td>경고 후 종료</td>
+<td>정상적인 완료 신호와 구분</td>
+</tr>
+<tr>
+<td>HITL·Workflow interrupt</td>
+<td>별도 재개/중단 로직</td>
+<td>단순 최종 텍스트 종료와 다름</td>
+</tr>
+<tr>
+<td>모델/Tool 오류</td>
+<td>정책에 따라 Event/예외/Retry</td>
+<td>모두 같은 종류의 Retry가 아님</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="8-1"><h2 id="line-276">8. <code>_run_one_step_async</code>: 모델 호출 1회의 실제 단계<a class="anchor" href="#line-276" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC] 이 함수는 주석에서 한 step을 <strong>하나의 LLM 호출</strong>이라고 정의한다. 일반 경로는 아래와 같다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/base_llm_flow.py">S03</a>, 약 306–370행]</p>
+<ol>
+<li><code>LlmRequest()</code> 생성.</li>
+<li><code>_preprocess_async</code>로 이전 대화, 지시문, Tool, 동적 요청 등을 조립.</li>
+<li>전처리 과정에서 Invocation을 끝내거나 이미 처리된 최종 응답이 있으면 중단.</li>
+<li><code>decide_step_resume</code>으로 <code>PAUSE</code>, <code>REPLAY_CALLS</code>, 정상 모델 호출을 분기.</li>
+<li>필요할 때 <code>_call_llm_async</code>로 Model Adapter 호출.</li>
+<li><code>_postprocess_async</code>에서 Callback, 모델 출력, Function Call, Tool Result 등을 Event로 변환.</li>
+<li>Event yield 후 다음 Loop로 복귀.</li>
+</ol>
+<figure class="diagram" data-diagram="3"><figcaption><span>도식 3</span> 8. runonestepasync: 모델 호출 1회의 실제 단계</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-3.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="8. runonestepasync: 모델 호출 1회의 실제 단계"><img src="assets/diagram-3.svg" alt="8. runonestepasync: 모델 호출 1회의 실제 단계의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  A[_run_one_step_async] --&gt; B[Create LlmRequest]
+  B --&gt; C[_preprocess_async]
+  C --&gt; D{end / final already?}
+  D --&gt;|yes| Z[return]
+  D --&gt;|no| E[decide_step_resume]
+  E --&gt;|PAUSE| Z
+  E --&gt;|REPLAY_CALLS| F[Replay previous function calls]
+  E --&gt;|proceed| G[call_llm_async]
+  G --&gt; H[_postprocess_async]
+  F --&gt; I[Emit Event]
+  H --&gt; I
+  I --&gt; J[Back to outer loop]</code></pre></details></figure><p><strong>심층 포인트:</strong> 재개 시 항상 모델을 다시 부르는 것이 아니라 기존 Function Call을 재생하는 경로가 있다. 하지만 “Replay = 외부 부작용을 전혀 반복하지 않음”이라고 단정해서는 안 된다. 실제 복원 경계와 Tool의 멱등성을 함께 확인해야 한다.</p>
+</section>
+<section class="source-section" data-source-section="9-1"><h2 id="line-306">9. 최종 모델 입력은 단순한 <code>instruction + history</code>가 아니다<a class="anchor" href="#line-306" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC] <code>BaseLlmFlow.__init__</code>는 <code>request_processors</code>, <code>tool_request_processors</code>, <code>response_processors</code>를 구분한다. Tool 목록이 아직 준비되지 않은 초기 처리기와, Toolset 인증·도구 resolve·동적 Instruction 등 Tool 확정 이후 처리기의 순서가 중요하다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/base_llm_flow.py">S03</a>, 약 86–113행]</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Session/State + current input
+  → Request processors (history, cache/compaction 등 구성된 단계)
+  → Tool request processors
+       · toolset auth
+       · agent tools resolve
+       · dynamic instructions
+  → LlmRequest (contents / config / tools)
+  → Model Adapter request
+  → Response processors + Tool postprocessing</code></pre></div><p><strong>주의:</strong> 이것은 처리기 그룹의 흐름이고, 전처리기 전체의 정확한 등록 순서는 <code>AutoFlow</code> 또는 <code>SingleFlow</code>의 생성 코드를 추가 확인해야 한다. 임의로 ‘항상 동일한 문자열 순서’라고 주장하면 안 된다. 모델에 전달되는 <strong>최종 요청 객체</strong>와 내부 Instruction 템플릿, Tool Declaration, 세션 기록은 서로 별도 필드로 표현될 수 있다.</p>
+<h3 id="line-324">Prompt Prefix Cache를 생각할 때<a class="anchor" href="#line-324" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>큰 공통 Instruction/Tool Schema를 반복 요청에 재사용하려면 Provider의 캐시 정책, 같은 Prefix, 토큰 한도, TTL 등이 충족되어야 한다.</li>
+<li>사용자의 세션 기록이 길어져도 자주 바뀌는 부분을 뒤쪽에 두는 편이 Prefix 재사용에 유리할 수 있다. <strong>단 실제 ADK 요청 빌더가 정확히 어떤 정렬을 보장하는지와 Provider의 Cache Key를 구분해야 한다.</strong></li>
+<li>Model Context Caching과 Session 저장, 응답 캐시, Compaction은 서로 다른 기술이다.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="10-1"><h2 id="line-330">10. 모델 호출·Streaming·예산·오류 경로<a class="anchor" href="#line-330" aria-label="이 절의 고유 링크">#</a></h2><p>[SRC] <code>flows/llm_flows/core/_model_call.py</code>를 따라 Model Resolution → Request → SDK 호출 → 응답 처리 흐름을 분석한다. <code>BaseLlmFlow._call_llm_async()</code>는 그 함수로 위임하는 얇은 메서드이다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/base_llm_flow.py">S03</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/google/adk-python/blob/v2.13.0/src/google/adk/flows/llm_flows/core/_model_call.py">S14</a>]</p>
+<p>검토해야 할 항목은 다음과 같다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>소스에서 찾을 것</th>
+<th>주의할 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델 선택</td>
+<td><code>LlmAgent.canonical_model_async()</code> 및 Model Adapter</td>
+<td>Dynamic model 교체/Provider 호환성</td>
+</tr>
+<tr>
+<td>호출 예산</td>
+<td><code>RunConfig</code> 및 LLM 호출 상한</td>
+<td>상한이 전체 Workflow/모델 시도/재시도 중 어디에 적용되는가</td>
+</tr>
+<tr>
+<td>Streaming</td>
+<td>Partial Event와 Complete Event 구분</td>
+<td>UI 연결을 닫으면 실행이 취소되는가</td>
+</tr>
+<tr>
+<td>오류</td>
+<td>모델 API/HTTP/timeout/empty response의 분기</td>
+<td>에러를 최종 Event로 바꿀지 예외 전파할지</td>
+</tr>
+<tr>
+<td>중단</td>
+<td><code>abort_signal</code>, <code>ctx.is_aborted</code></td>
+<td>자식 Tool도 실제 중단하는가</td>
+</tr>
+<tr>
+<td>관찰성</td>
+<td>OpenTelemetry, Plugin Hooks</td>
+<td>민감한 Prompt/Tool Result가 노출되는가</td>
+</tr>
+</tbody></table>
+</div><p>[<a target="_blank" rel="noopener noreferrer" href="https://adk.dev/runtime/runconfig/">D08</a>]의 <code>max_llm_calls</code> 및 관련 런타임 설정은 버전에 따라 기본값·예외가 있을 수 있다. 문서의 숫자만 보지 말고 고정 버전 타입과 실행 경로를 함께 확인해야 한다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-03.html"><small>이전 단원</small>← InvocationContext·Session·Event를 분리해서 생각하기</a><a class="next" href="unit-05.html"><small>다음 단원</small>FunctionTool: Python 함수가 모델 Tool이 되는 과정 외 2개 주제 →</a></nav><footer>Google ADK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Google_ADK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-213">6. LlmAgent는 Loop 소유자가 아니라 Flow 실행의 진입점이다</a><a class="toc-depth-2" href="#line-235">7. BaseLlmFlow.runasync: 반복과 종료의 실제 조건</a><a class="toc-depth-3" href="#line-256">이 로직에서 무엇을 배워야 하나?</a><a class="toc-depth-3" href="#line-264">종료 상태 매트릭스</a><a class="toc-depth-2" href="#line-276">8. runonestepasync: 모델 호출 1회의 실제 단계</a><a class="toc-depth-2" href="#line-306">9. 최종 모델 입력은 단순한 instruction + history가 아니다</a><a class="toc-depth-3" href="#line-324">Prompt Prefix Cache를 생각할 때</a><a class="toc-depth-2" href="#line-330">10. 모델 호출·Streaming·예산·오류 경로</a></nav></aside></div></body></html>

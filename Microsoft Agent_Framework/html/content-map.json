@@ -1,0 +1,465 @@
+{
+  "name": "Microsoft Agent Framework",
+  "source": "../Microsoft_Agent_Framework.md",
+  "sourceSha256": "4dcf2431b5aeed18f86141c4ec4487b02354dc3e67d98a5e8a548b3c485e5b7a",
+  "sourceSections": [
+    "intro",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38"
+  ],
+  "sourceCodes": 36,
+  "sourceDiagrams": 9,
+  "pages": [
+    "index.html",
+    "foundations.html",
+    "runtime.html",
+    "tools.html",
+    "context.html",
+    "workflows.html",
+    "recovery.html",
+    "harness.html",
+    "operations.html",
+    "source-code.html",
+    "semiconductor.html",
+    "selection.html",
+    "review.html",
+    "sources.html"
+  ],
+  "mapping": [
+    {
+      "page": "foundations.html",
+      "chapters": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "page": "runtime.html",
+      "chapters": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "page": "tools.html",
+      "chapters": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "page": "context.html",
+      "chapters": [
+        "10",
+        "11"
+      ]
+    },
+    {
+      "page": "workflows.html",
+      "chapters": [
+        "12",
+        "13",
+        "14"
+      ]
+    },
+    {
+      "page": "recovery.html",
+      "chapters": [
+        "15",
+        "16"
+      ]
+    },
+    {
+      "page": "harness.html",
+      "chapters": [
+        "17",
+        "18",
+        "19"
+      ]
+    },
+    {
+      "page": "operations.html",
+      "chapters": [
+        "20",
+        "21"
+      ]
+    },
+    {
+      "page": "source-code.html",
+      "chapters": [
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27"
+      ]
+    },
+    {
+      "page": "semiconductor.html",
+      "chapters": [
+        "28",
+        "29",
+        "30",
+        "31"
+      ]
+    },
+    {
+      "page": "selection.html",
+      "chapters": [
+        "32",
+        "33",
+        "34",
+        "35"
+      ]
+    },
+    {
+      "page": "review.html",
+      "chapters": [
+        "36",
+        "37"
+      ]
+    },
+    {
+      "page": "sources.html",
+      "chapters": [
+        "intro",
+        "38"
+      ]
+    }
+  ],
+  "references": {
+    "D01": "https://learn.microsoft.com/en-us/agent-framework/",
+    "D02": "https://learn.microsoft.com/en-us/agent-framework/overview/",
+    "D03": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/",
+    "D04": "https://learn.microsoft.com/en-us/agent-framework/concepts/harness",
+    "D05": "https://learn.microsoft.com/en-us/agent-framework/get-started/",
+    "D06": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline",
+    "D07": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/",
+    "D08": "https://learn.microsoft.com/en-us/agent-framework/agents/tools/",
+    "D09": "https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/",
+    "D10": "https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints/",
+    "D11": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers",
+    "D12": "https://learn.microsoft.com/en-us/agent-framework/integrations/",
+    "D13": "https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution",
+    "D14": "https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/",
+    "D15": "https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat",
+    "D16": "https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop",
+    "D17": "https://learn.microsoft.com/en-us/agent-framework/agents/skills",
+    "D18": "https://learn.microsoft.com/en-us/agent-framework/agents/",
+    "D19": "https://learn.microsoft.com/en-us/agent-framework/agents/security",
+    "D20": "https://learn.microsoft.com/en-us/agent-framework/agents/conversations/session",
+    "D21": "https://learn.microsoft.com/en-us/agent-framework/agents/conversations/storage",
+    "R01": "https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0",
+    "S02": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py",
+    "S03": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py",
+    "S04": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py",
+    "S05": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py",
+    "S06": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py",
+    "S07": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py",
+    "S08": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py",
+    "S10": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/README.md",
+    "S01": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md",
+    "S09": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md"
+  },
+  "codeBlocks": [
+    {
+      "chapter": "3",
+      "language": "text",
+      "hash": "cf9fc44199f62b79e8f6c034f046055114b3b20cfe1beb2e0c20fcd74a933954"
+    },
+    {
+      "chapter": "4",
+      "language": "bash",
+      "hash": "4b0d5b9160a8acc5ddb9b95e3d2d6eddb5c00a038a874079acc64478a1684cdd"
+    },
+    {
+      "chapter": "4",
+      "language": "python",
+      "hash": "7d0e9c6776a8d26ffcb38fdfa7a841768c0d0696c877abdf9541c2a3c7920cde"
+    },
+    {
+      "chapter": "4",
+      "language": "python",
+      "hash": "0eea5548081b3af77d502d6455afcc15fccb85490a4b786a5c08109ee604fb0f"
+    },
+    {
+      "chapter": "6",
+      "language": "mermaid",
+      "hash": "27639baea3795323764a6c5bcf64a4ec38cbbb707a109cee24a674dc7c89819c"
+    },
+    {
+      "chapter": "7",
+      "language": "text",
+      "hash": "66956dcc543e022dbe4b6e0ff25a7b741642a8fd7f461fff16d35ca69a7a9a8a"
+    },
+    {
+      "chapter": "7",
+      "language": "mermaid",
+      "hash": "a6261271c5a0029f9121b7534465a3f87a2298b57f7fa9d36735b09cc42593b4"
+    },
+    {
+      "chapter": "8",
+      "language": "text",
+      "hash": "56204936e62de81da555c2d33ffa97c1e6b0de0bb4b9c68399ce1bbe1fb273da"
+    },
+    {
+      "chapter": "9",
+      "language": "python",
+      "hash": "2e311d2c4c6331ae5c10c1fb838a91610405878ec062a22573daba206f0cc543"
+    },
+    {
+      "chapter": "10",
+      "language": "python",
+      "hash": "4ffa3b75f488b21e22f892d0fe799ed41d6a50cf53d16302b5041fc6cdb026d9"
+    },
+    {
+      "chapter": "11",
+      "language": "text",
+      "hash": "2730d849e6de1fb9f7b5630992bdd35e92e7d5c461c4d99d7ed4fbf9a8896e33"
+    },
+    {
+      "chapter": "11",
+      "language": "mermaid",
+      "hash": "b8bf999fc36c3a98ddc1c88f9e6c1fd87755db781d06aeacd703c19301f95a47"
+    },
+    {
+      "chapter": "12",
+      "language": "mermaid",
+      "hash": "1c8f901d6d7cbcff0db26038880dd5589b0d2184178ba8a1936de05e22a554f0"
+    },
+    {
+      "chapter": "12",
+      "language": "text",
+      "hash": "e58b28233cbf33603a17d6e3f2143dcd77ac5cf6388acf7cd074336f92704884"
+    },
+    {
+      "chapter": "13",
+      "language": "python",
+      "hash": "aa66c82195f956bfec77b4f8d4cce299d922a5ab9dd353c3f869e19102d4eb6b"
+    },
+    {
+      "chapter": "15",
+      "language": "mermaid",
+      "hash": "d245eb14154aa94a00f395985e73eb6baca7194529ad3dd96f48e6531ab9098c"
+    },
+    {
+      "chapter": "16",
+      "language": "python",
+      "hash": "b3124b359d3d89497b6fd165286dac23fc59795ef9c7325c1e90305d5f1afc7c"
+    },
+    {
+      "chapter": "16",
+      "language": "text",
+      "hash": "f151a41ce955218c5a8f53e2d7334555afe86b8f41504d792c8472fe3571febd"
+    },
+    {
+      "chapter": "17",
+      "language": "mermaid",
+      "hash": "8a9d4722384956997a30e0ccf2c68fd7886dfe3fb79cd31c0810614d6342e182"
+    },
+    {
+      "chapter": "17",
+      "language": "python",
+      "hash": "1c69a20b80ad0ef6c81c9a24ffd3bae925f16d2d9f932f872689ae34325050bb"
+    },
+    {
+      "chapter": "18",
+      "language": "python",
+      "hash": "af398db5dd31b467dce35a727636c556ee49c32ac110ccb2835835d69cdd1d8e"
+    },
+    {
+      "chapter": "19",
+      "language": "text",
+      "hash": "413d1d227b452a9de6aaf42a67737dc56141e04fc48a49af51082742d20c8738"
+    },
+    {
+      "chapter": "22",
+      "language": "text",
+      "hash": "3b6a3b7633970d435e8927ff3b5d668027014362dd95cf8c9293fd16d4a377b8"
+    },
+    {
+      "chapter": "23",
+      "language": "python",
+      "hash": "c619182458d96edfccb4d54d3b75dfb322ec71adfd5da015b24b4ea088afeb8b"
+    },
+    {
+      "chapter": "23",
+      "language": "python",
+      "hash": "9877746cf9cc48f3a9b23b32fad6fc62091bb0442da61d92babcc36cfb1b5544"
+    },
+    {
+      "chapter": "24",
+      "language": "python",
+      "hash": "e5a30249b0c5ccbeda62af0b73e28e02043cb4f045049eb6ba74a0c7fa3c34cf"
+    },
+    {
+      "chapter": "24",
+      "language": "text",
+      "hash": "47901a6035fa1c8059424e5a4e06584fed9fa8034315ba87a6155641d85c4a66"
+    },
+    {
+      "chapter": "25",
+      "language": "python",
+      "hash": "8d5673fcfa09833a65d283338c3b31fa1da66ab91768c3464047a0677ec56c01"
+    },
+    {
+      "chapter": "25",
+      "language": "python",
+      "hash": "9aeb0d744dd56aeb203034ae564cc696cd1c0003f40c1ed54194afa3ffd716cc"
+    },
+    {
+      "chapter": "25",
+      "language": "python",
+      "hash": "bf49958ea36b5afbc4e309fbadd7021668c2af0d76595dcca7a456c0f96c054f"
+    },
+    {
+      "chapter": "26",
+      "language": "mermaid",
+      "hash": "1de69d1b616a2cc39e27492220145aba61531d9399a513dde197820016b109fd"
+    },
+    {
+      "chapter": "27",
+      "language": "python",
+      "hash": "ded2f09768492a6786e14321005f85eb2a62fab5f4e5cf81180f5fd8f64d7c0c"
+    },
+    {
+      "chapter": "29",
+      "language": "mermaid",
+      "hash": "29e48093e684d9bc5b79878c5598981ec5200bc9423dbc07a9b695bccafbd033"
+    },
+    {
+      "chapter": "29",
+      "language": "python",
+      "hash": "7b7ef38d6b82f438c1d3378ead2e30a07ac96e1e323340844179731bf3a40226"
+    },
+    {
+      "chapter": "30",
+      "language": "text",
+      "hash": "749a7bdaa2bd058f0c2d4ee9710378b5d94bb6806bbbea5bc1e32c95bbb3d19a"
+    },
+    {
+      "chapter": "31",
+      "language": "mermaid",
+      "hash": "ff4ad141b65aef16748ef42ced934c2c55f2e4e7fd0071b5f04b4d358aec32ff"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "type": "flow",
+      "file": "assets/diagram-1.svg",
+      "nodes": 10,
+      "edges": 13,
+      "chapter": "6",
+      "title": "Agent·Context·ChatClient와 Tool 실행의 계층"
+    },
+    {
+      "number": 2,
+      "type": "sequence",
+      "messages": 13,
+      "chapter": "7",
+      "title": "단일 Tool 요청이 최종 AgentResponse로 돌아오는 순서"
+    },
+    {
+      "number": 3,
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": 8,
+      "edges": 7,
+      "chapter": "11",
+      "title": "권한 검사에서 근거 연결 답변까지의 RAG 개념"
+    },
+    {
+      "number": 4,
+      "type": "flow",
+      "file": "assets/diagram-4.svg",
+      "nodes": 5,
+      "edges": 4,
+      "chapter": "12",
+      "title": "검증 결과에 따라 분기하는 Workflow"
+    },
+    {
+      "number": 5,
+      "type": "sequence",
+      "messages": 8,
+      "chapter": "15",
+      "title": "승인 대기·허용·거절과 재개 흐름"
+    },
+    {
+      "number": 6,
+      "type": "flow",
+      "file": "assets/diagram-6.svg",
+      "nodes": 12,
+      "edges": 11,
+      "chapter": "17",
+      "title": "Harness의 기본 기능과 선택 기능"
+    },
+    {
+      "number": 7,
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": 8,
+      "edges": 9,
+      "chapter": "26",
+      "title": "Agent 전체 재실행의 승인·상한·완료 분기"
+    },
+    {
+      "number": 8,
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": 10,
+      "edges": 9,
+      "chapter": "29",
+      "title": "공정 데이터 조회·계산·검증과 Agent 해석 설계"
+    },
+    {
+      "number": 9,
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": 10,
+      "edges": 11,
+      "chapter": "31",
+      "title": "설비 이상 분석 역할의 병렬 처리와 근거 통합"
+    }
+  ]
+}

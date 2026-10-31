@@ -128,3 +128,6 @@ const report={source:'../Hermes_Agent.md',sha256:createHash('sha256').update(ori
 fs.writeFileSync(path.join(root,'content-map.json'),JSON.stringify(report,null,2)+'\n');
 if(diagramCount!==7)throw Error('Expected all 7 source diagrams to render');
 console.log(`Built ${allPages.length} static pages; preserved ${sections.size} source sections; rendered ${diagramCount} SVG diagrams.`);
+
+// 기본 교재를 재생성해도 2차 과정 탐색을 유지한다.
+await import('./link-courses.mjs');

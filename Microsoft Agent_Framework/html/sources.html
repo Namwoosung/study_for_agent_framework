@@ -1,0 +1,261 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework의 원리·구현·한계를 배우는 개인 학습 교재"><title>원문의 근거와 검증 범위 — Microsoft Agent Framework</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script><link rel="stylesheet" href="course-links.css"></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">M.</span><span>Microsoft Agent Framework<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>큰 그림과 첫 Agent</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Python 실행 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Tool과 Middleware</span></a><a href="context.html" ><span class="nav-number">04</span><span>Session·Memory·RAG</span></a><p class="nav-group">흐름과 복구</p><a href="workflows.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><a href="recovery.html" ><span class="nav-number">06</span><span>승인과 Checkpoint</span></a><p class="nav-group">확장과 운영</p><a href="harness.html" ><span class="nav-number">07</span><span>Harness와 확장</span></a><a href="operations.html" ><span class="nav-number">08</span><span>보안·관측·평가</span></a><p class="nav-group">코드와 적용</p><a href="source-code.html" ><span class="nav-number">09</span><span>공개 코드 추적</span></a><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용 설계</span></a><a href="selection.html" ><span class="nav-number">11</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="review.html" >핵심 복습과 문답</a><a href="sources.html" class="current" aria-current="page">출처와 검증 범위</a></nav><div class="book-meta"><span>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c</span><a href="../Microsoft_Agent_Framework.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><!-- deep-course-link --><nav class="course-switch" aria-label="학습 과정"><span>학습 과정</span><a href="index.html" aria-current="true">1차 기본 교재</a><a href="deep/index.html">2차 심층 교재 →</a></nav><!-- /deep-course-link --><div class="breadcrumb"><a href="index.html">Microsoft Agent Framework</a><span aria-hidden="true">/</span><span>출처와 검증 범위</span></div><header class="chapter-header"><p class="eyebrow">참고 자료 / REFERENCE</p><h1>원문의 근거와 검증 범위</h1><p class="lead">문서·공개 코드·의사코드·설계 제안과 미검증 항목을 구분합니다.</p></header><div class="callout"><strong>원문의 조사·버전 기준을 확인하세요.</strong><p>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c. 공식 자료에 대한 원문의 조사 결과와 직접 실행해서 확인해야 할 조건을 구분합니다. 이번 페이지 제작에서 최신 구현을 추가 검증하지 않았습니다.</p></div><section class="source-section" data-source-chapter="intro"><h2 id="s-intro-1">원문 읽기 안내와 조사 범위<a class="anchor" href="#s-intro-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p><strong>분석 범위:</strong> Python SDK 중심, .NET/Go는 구조·기능 차이가 중요한 경우만 보조 비교<br><strong>기준일:</strong> 2026-10-31 (KST)<br><strong>고정 릴리스:</strong> <code>python-1.24.0</code> (공식 GitHub 릴리스 날짜 2026-10-30, 태그 커밋 <code>43d767c</code>)<br><strong>목표:</strong> Agent 개발 전 단계의 기술 학습, 아키텍처 이해, 실제 공개 코드 추적, 반도체 도메인 Agent 데모 설계 기준 도출<br><strong>자료 수준:</strong> 기초 → 중급 → 심화 → 코드 레벨 → 실무 설계<br><strong>주의:</strong> 코드 예제는 실행 검증하지 않았다. 확인된 공식 API 예제와 설계용 의사코드를 분리한다. 최신 문서가 태그보다 앞서갈 수 있어 고정 버전의 API를 우선한다.</p>
+</blockquote>
+<hr>
+<h2 id="s-intro-2">학습 방법과 증거 등급<a class="anchor" href="#s-intro-2" aria-label="이 절의 고유 링크">#</a></h2>
+<p>이 문서에서는 단순히 &#39;지원한다&#39;가 아니라 <strong>어떤 계층에서 무엇을 제공하는지, 개발자가 무엇을 직접 구현해야 하는지</strong>를 설명한다.</p>
+<ul>
+<li><strong>[공식 문서]</strong> Microsoft Learn에 명시된 제품 기능·사용 규약.</li>
+<li><strong>[공개 코드]</strong> <code>python-1.24.0</code> 태그의 GitHub 소스에 존재하는 클래스·파일·흐름. 코드 링크로 직접 확인 가능.</li>
+<li><strong>[의사코드]</strong> 원리를 설명하기 위해 재구성한 예시. 실제 소스와 1:1로 일치하는 코드는 아니다.</li>
+<li><strong>[설계 제안]</strong> 반도체 도메인 적용을 가정한 권장 아키텍처. Microsoft 기본 기능과 구별한다.</li>
+<li><strong>[미검증]</strong> 직접 실행·성능 측정·폐쇄망 실증을 수행하지 않은 항목.</li>
+</ul>
+<h3 id="s-intro-3">목차<a class="anchor" href="#s-intro-3" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>3분 핵심 요약</li>
+<li>탄생 배경: AutoGen / Semantic Kernel과의 관계</li>
+<li>전체 제품 범위: Agents / Workflows / Harness / Integrations</li>
+<li>설치와 가장 작은 Agent</li>
+<li>핵심 객체 사전</li>
+<li>가장 중요한 Python 런타임 아키텍처</li>
+<li><code>Agent.run()</code> 호출부터 종료까지</li>
+<li>Tool 정의·실행·재시도</li>
+<li>Middleware: Agent / Chat / Function</li>
+<li>Session, History, State, Memory의 차이</li>
+<li>Context Compaction과 RAG</li>
+<li>Workflow: Agent Loop와 완전히 다른 실행 개념</li>
+<li>Graph Workflow와 Functional Workflow 비교</li>
+<li>Multi-Agent Orchestration</li>
+<li>Human-in-the-loop(HITL)와 승인</li>
+<li>Checkpoint와 Persistence</li>
+<li>Harness Agent의 구성과 일반 Agent와의 차이</li>
+<li>Agent Loop의 두 층: Tool Loop vs 재실행 Loop</li>
+<li>Skills, MCP, CodeAct, Background Agents</li>
+<li>Guardrails, 보안, FIDES</li>
+<li>Observability / Evaluation / Deployment</li>
+<li>코드 분석 범위와 저장소 레이아웃</li>
+<li>코드 레벨 ① — Agent의 계층 구조</li>
+<li>코드 레벨 ② — Context Provider와 Session 저장</li>
+<li>코드 레벨 ③ — Tool Loop와 Middleware</li>
+<li>코드 레벨 ④ — AgentLoopMiddleware</li>
+<li>코드 레벨 ⑤ — Workflow 실행 및 복구</li>
+<li>무엇이 기본 제공되고 무엇을 직접 만들어야 하는가?</li>
+<li>반도체 시나리오 A — 공정 데이터 분석 Agent</li>
+<li>반도체 시나리오 B — 기술 문서·공정 지식 Agent</li>
+<li>반도체 시나리오 C — 설비 이상 원인 분석 Multi-Agent</li>
+<li>기술적 장점과 단점</li>
+<li>다른 학습 대상과의 비교 — 설계 철학 중심</li>
+<li>프레임워크 선정 질문 20개</li>
+<li>단계별 후속 실험 설계</li>
+<li>핵심 내용을 다시 10문장으로 요약</li>
+<li>확인 질문과 학습용 답변</li>
+<li>공식 참고자료 및 공개 코드 링크</li>
+</ol>
+<hr>
+</section>
+<section class="source-section" data-source-chapter="38"><h2 id="s-38-1">38. 공식 참고자료 및 공개 코드 링크<a class="anchor" href="#s-38-1" aria-label="이 절의 고유 링크">#</a></h2>
+<blockquote>
+<p>열람 기준: 2026-10-31. 공식 문서는 지속적으로 갱신되므로 원문 최신 내용과 고정 버전 릴리스의 차이를 확인할 것. 문서의 대괄호 인용은 아래 원문으로 연결한다.</p>
+</blockquote>
+<h3 id="s-38-2">A. Microsoft Learn — 개념과 기능<a class="anchor" href="#s-38-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>식별자</th>
+<th>출처</th>
+<th>무엇을 확인할 때 보는가</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/" target="_blank" rel="noopener noreferrer">D01</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/" target="_blank" rel="noopener noreferrer">공식 문서 포털</a></td>
+<td>전체 학습 지도</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer">D02</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer">Microsoft Agent Framework Overview</a></td>
+<td>제품 정의, AutoGen/Semantic Kernel 관계</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer">D03</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer">Agent Concepts</a></td>
+<td>Agent 인터페이스, provider, session</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness" target="_blank" rel="noopener noreferrer">D04</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness" target="_blank" rel="noopener noreferrer">Agent Harness</a></td>
+<td>기본/선택 기능, <code>create_harness_agent</code></td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/get-started/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/get-started/" target="_blank" rel="noopener noreferrer">D05</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/get-started/" target="_blank" rel="noopener noreferrer">Get Started</a></td>
+<td>단계별 공식 튜토리얼</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">D06</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">Agent Pipeline Architecture</a></td>
+<td>Python Agent/ChatClient 실행 계층</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/" target="_blank" rel="noopener noreferrer">D07</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/" target="_blank" rel="noopener noreferrer">Conversations &amp; Memory</a></td>
+<td>Session·History·Memory 구분</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/" target="_blank" rel="noopener noreferrer">D08</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/" target="_blank" rel="noopener noreferrer">Tools</a></td>
+<td>Function/MCP/Hosted/Code Tool</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">D09</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">Workflow Concepts</a></td>
+<td>Graph/Functional·Superstep</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints/" target="_blank" rel="noopener noreferrer">D10</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints/" target="_blank" rel="noopener noreferrer">Workflow Checkpoints</a></td>
+<td>저장·재개·복구 예제</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers" target="_blank" rel="noopener noreferrer">D11</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers" target="_blank" rel="noopener noreferrer">Context Providers</a></td>
+<td>메모리·RAG·상태 공급</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/integrations/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/integrations/" target="_blank" rel="noopener noreferrer">D12</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/integrations/" target="_blank" rel="noopener noreferrer">Agent Framework Integrations</a></td>
+<td>외부 모델/서비스 통합</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution" target="_blank" rel="noopener noreferrer">D13</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution" target="_blank" rel="noopener noreferrer">Workflow Builder &amp; Execution</a></td>
+<td>Builder·Executor·Edge</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/" target="_blank" rel="noopener noreferrer">D14</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/" target="_blank" rel="noopener noreferrer">Workflow Orchestrations</a></td>
+<td>Sequential/Concurrent/Handoff/GroupChat/Magentic</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat" target="_blank" rel="noopener noreferrer">D15</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat" target="_blank" rel="noopener noreferrer">Group Chat Orchestration</a></td>
+<td>Agent별 Session 및 대화 동기화</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop" target="_blank" rel="noopener noreferrer">D16</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop" target="_blank" rel="noopener noreferrer">Workflow Human-in-the-loop</a></td>
+<td>승인·RequestInfoEvent·재개</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/skills" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/skills" target="_blank" rel="noopener noreferrer">D17</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/skills" target="_blank" rel="noopener noreferrer">Agent Skills</a></td>
+<td>SkillsProvider·Progressive Disclosure</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/" target="_blank" rel="noopener noreferrer">D18</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/" target="_blank" rel="noopener noreferrer">Agent Capabilities</a></td>
+<td>Loop/Observability/Evaluation/CodeAct</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/security" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/security" target="_blank" rel="noopener noreferrer">D19</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/security" target="_blank" rel="noopener noreferrer">Agent Security with FIDES</a></td>
+<td>실험적 Label 정책과 한계</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/session" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/session" target="_blank" rel="noopener noreferrer">D20</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/session" target="_blank" rel="noopener noreferrer">Session</a></td>
+<td>직렬화·서비스 소유 세션 ID</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/storage" target="_blank" rel="noopener noreferrer"><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/storage" target="_blank" rel="noopener noreferrer">D21</a></a></td>
+<td><a href="https://learn.microsoft.com/en-us/agent-framework/agents/conversations/storage" target="_blank" rel="noopener noreferrer">Storage</a></td>
+<td>영구 저장과 호환성</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-38-3">B. 릴리스·고정 소스코드<a class="anchor" href="#s-38-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>식별자</th>
+<th>출처</th>
+<th>기준</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0" target="_blank" rel="noopener noreferrer">R01</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0" target="_blank" rel="noopener noreferrer">Python 1.24.0 공식 릴리스</a></td>
+<td>2026-10-30</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer">S01</a></a>, <a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer">S09</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer">Core AGENTS.md</a></td>
+<td>패키지 모듈·설계 주의</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py" target="_blank" rel="noopener noreferrer">S02</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py" target="_blank" rel="noopener noreferrer"><code>_agents.py</code></a></td>
+<td>Agent/RawAgent/Protocol</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py" target="_blank" rel="noopener noreferrer">S03</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py" target="_blank" rel="noopener noreferrer"><code>_tools.py</code></a></td>
+<td>Tool 스키마·입력</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py" target="_blank" rel="noopener noreferrer">S04</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py" target="_blank" rel="noopener noreferrer"><code>_middleware.py</code></a></td>
+<td>Middleware</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py" target="_blank" rel="noopener noreferrer">S05</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py" target="_blank" rel="noopener noreferrer"><code>_clients.py</code></a></td>
+<td>Chat Client</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py" target="_blank" rel="noopener noreferrer">S06</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py" target="_blank" rel="noopener noreferrer"><code>_sessions.py</code></a></td>
+<td>Session/Provider</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py" target="_blank" rel="noopener noreferrer">S07</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py" target="_blank" rel="noopener noreferrer"><code>_harness/_loop.py</code></a></td>
+<td>Outer Agent Loop</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py" target="_blank" rel="noopener noreferrer">S08</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py" target="_blank" rel="noopener noreferrer"><code>_workflows/_workflow.py</code></a></td>
+<td>Workflow.run / Checkpoint</td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/README.md" target="_blank" rel="noopener noreferrer"><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/README.md" target="_blank" rel="noopener noreferrer">S10</a></a></td>
+<td><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/README.md" target="_blank" rel="noopener noreferrer">Core README</a></td>
+<td>설치 및 패키지 구조</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-38-4">C. 선택적 확장 학습<a class="anchor" href="#s-38-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/python/api/agent-framework-core/agent_framework.workflow?view=agent-framework-python-latest" target="_blank" rel="noopener noreferrer">Python API Reference</a></li>
+<li><a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/magentic/" target="_blank" rel="noopener noreferrer">Workflow — Magentic</a></li>
+<li><a href="https://github.com/microsoft/agent-framework" target="_blank" rel="noopener noreferrer">Agent Framework 원본 저장소</a></li>
+<li><a href="https://github.com/microsoft/agent-framework/tree/python-1.24.0/python" target="_blank" rel="noopener noreferrer">Python 소스 및 샘플</a></li>
+<li><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/pyproject.toml" target="_blank" rel="noopener noreferrer">Python 프로젝트 패키지 버전 정보</a></li>
+</ul>
+<h3 id="s-38-5">D. 검증 범위와 한계<a class="anchor" href="#s-38-5" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>이 문서는 <code>python-1.24.0</code>의 공식 릴리스·Microsoft Learn·GitHub에 공개된 핵심 코드 파일 및 설명을 토대로 작성했다.</li>
+<li>개별 파일의 전체 함수 호출 그래프를 실행 디버거로 검증한 <strong>동적 코드 추적 보고서는 아니다.</strong> 코드 경로와 책임은 확인 가능한 범위까지만 서술했고 상세 실행 흐름에는 의사코드를 썼다.</li>
+<li>설치·CLI·모델 API·DB Tool·MCP 연결·Checkpoint 재개에 대한 <strong>실제 실행 테스트를 수행하지 않았다.</strong></li>
+<li>릴리스 당일 기능 추가와 빠른 변경에 유의해야 한다. 특히 FIDES·Functional Workflow·일부 Harness 확장·MCP 규격 변경 등은 API 상태와 버전 적합성을 확인한다.</li>
+<li>상용 모델/관리형 서비스의 비용, 데이터 거주지, SLA, 인프라 정책은 각 공급자 약관·배포 환경에 따라 다르므로 여기에 일반화된 보장은 포함하지 않는다.</li>
+<li>반도체 시나리오는 설계 제안이며 특정 회사의 실제 공정 데이터, 비밀 SOP, 장비 설정을 사용하지 않았다.</li>
+</ol>
+<hr>
+<h2 id="s-38-6">최종 결론<a class="anchor" href="#s-38-6" aria-label="이 절의 고유 링크">#</a></h2>
+<p><strong>Microsoft Agent Framework의 가장 중요한 학습 포인트는 &#39;Agent가 얼마나 자율적인가&#39; 자체보다, 모델이 주도하는 Tool 실행과 사람이 정의하는 Workflow 실행을 명확히 나누고, 그 사이에 상태·검증·승인·복구를 설계하는 방법이다.</strong></p>
+<p>반도체 Agent 데모를 목표로 한다면 처음부터 모든 기능을 사용하기보다 다음 순서가 합리적이다.</p>
+<p><strong>(1)</strong> 단일 Agent의 호출/Tool Loop 분석 → <strong>(2)</strong> 읽기 전용 Tool과 상태 관리 → <strong>(3)</strong> 검증형 Workflow → <strong>(4)</strong> 승인·Checkpoint → <strong>(5)</strong> 필요성이 입증된 Multi-Agent → <strong>(6)</strong> Harness/보안/운영 확장.</p>
+<p>이 순서로 학습하면 프레임워크의 기능을 나열하는 데서 그치지 않고, <strong>어느 부분에 Agent를 쓰고 어느 부분에는 일반 코드가 더 안전하며, 무엇이 실제 개발 비용이 되는지</strong> 판단할 수 있다.</p>
+<!-- 문서 본문에 사용된 근거 표기의 Markdown 참조 링크 -->
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="review.html"><small>이전 단원</small>← 핵심 복습과 문답</a><a class="next" href="index.html"><small>처음으로</small>학습 안내 →</a></nav><footer>Microsoft Agent Framework 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#s-intro-1">원문 읽기 안내와 조사 범위</a><a href="#s-intro-2">학습 방법과 증거 등급</a><a href="#s-38-1">38. 공식 참고자료 및 공개 코드 링크</a><a href="#s-38-6">최종 결론</a></nav></aside></div></body></html>

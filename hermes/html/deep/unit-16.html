@@ -1,0 +1,107 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hermes Agent 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>실패 시나리오별 내부 동작과 설계 판단 — Hermes Agent 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Hermes Agent<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">H.</span><span>Hermes Agent<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">실행 계층과 요청 경로</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 증거 등급 외 1개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제</span></a><p class="nav-group">모델 입력·캐시·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt 조립: &#39;최종 모델 입력&#39;의 정체</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Prefix Caching: 매번 보내는데 왜 절약되는가?</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Context Compression: 무엇을 버리고 무엇을 보존하는가?</span></a><p class="nav-group">Memory·검색·Skills</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>SQLite·FTS5와 RAG의 차이</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?</span></a><p class="nav-group">도구·권한·동시성</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Tool Registry·MCP·Plugin: 실행 경로와 확장 경계</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Guardrails: 정확히 어디서 차단되나?</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?</span></a><p class="nav-group">Gateway와 예약 실행</p><a href="unit-14.html" ><span class="nav-number">14</span><span>Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Cron: 언제 실행되고 무엇을 재실행하는가?</span></a><p class="nav-group">실패와 설계 비교</p><a href="unit-16.html" aria-current="page" class="current"><span class="nav-number">16</span><span>실패 시나리오별 내부 동작과 설계 판단</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>7개 프레임워크 비교를 위한 Hermes 기준값</span></a><p class="nav-group">발표와 복습</p><a href="unit-18.html" ><span class="nav-number">18</span><span>학습 및 발표 구성안 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·소스코드 인덱스·검증 한계</span></a><a href="unit-20.html" ><span class="nav-number">20</span><span>공식 출처·소스코드 인덱스·검증 한계 / 21.3 검증 한계: 무엇을 아직 확인하지 않았는가?</span></a><p class="nav-group">최종 정리</p><a href="unit-21.html" ><span class="nav-number">21</span><span>마지막 정리: Hermes에서 학습해야 하는 핵심 10문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Hermes v0.22.5</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 실패와 설계 비교</p><h1>실패와 설계 비교</h1><div class="chapter-meta">단원 16 · 원문 2026.10.31 · Hermes v0.22.5 · 약 5분 · 원문 1357–1411행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>실패 시나리오를 상태 불변식과 연결하고 다른 기술과 비교할 기준을 정리합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>실제 확인한 구현, 일반 설계 제안과 실험으로 확인할 질문을 나눠 보세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1357">17. 실패 시나리오별 내부 동작과 설계 판단</a><a href="#line-1361">17.1 상태 무결성을 위한 12개 시나리오</a><a href="#line-1378">17.2 &#39;세션 DB 기록 먼저&#39;가 의미하는 것</a><a href="#line-1392">17.3 Guardrail의 Fail-Open / Fail-Closed 판단</a><a href="#line-1400">17.4 발표에서 피해야 할 일반화</a></nav></details><section class="source-section" data-source-section="17-1"><h2 id="line-1357">17. 실패 시나리오별 내부 동작과 설계 판단<a class="anchor" href="#line-1357" aria-label="이 절의 고유 링크">#</a></h2><p>이 장은 기능 소개가 아니라 <strong>어떤 상태 불변식(Invariant)을 지키기 위해 어떤 경로를 사용하는지</strong>를 점검한다. 실제 테스트는 하지 않았으며, 소스 구조에서 식별 가능한 위험과 설계적 검토사항을 연결했다.</p>
+<h3 id="line-1361">17.1 상태 무결성을 위한 12개 시나리오<a class="anchor" href="#line-1361" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>사건</th>
+<th>Hermes에서 확인할 핵심 경계</th>
+<th>설계상 중요한 판단</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델이 없는 Tool 호출</td>
+<td><code>validate_tool_calls</code> / 허용 이름 목록</td>
+<td>Model Hallucination이 임의 Python 실행으로 이어지지 않는가</td>
+<td>[SRC] <code>turn_tool_validation.py</code></td>
+</tr>
+<tr>
+<td>Tool 인자 JSON 잘림</td>
+<td>Argument Repair/Validation</td>
+<td>실패를 Tool Result로 정합하게 반환하는가</td>
+<td>[SRC] <code>turn_tool_validation.py</code></td>
+</tr>
+<tr>
+<td>DB 저장 실패</td>
+<td>Persist-before-execute</td>
+<td>실행 전 기록 실패면 부작용을 시작하지 않는가</td>
+<td>[SRC] <code>turn_tool_round.py</code></td>
+</tr>
+<tr>
+<td>Tool Worker Timeout</td>
+<td>Batch Deadline 및 Interrupt</td>
+<td>실행 중 외부 부작용이 &#39;미상&#39;일 수 있음을 표시하는가</td>
+<td>[SRC] <code>tool_executor.py</code></td>
+</tr>
+<tr>
+<td>Tool 두 개가 같은 파일 쓰기</td>
+<td>Batch Segment Planner</td>
+<td>경로 겹침을 감지해 배리어로 분리하는가</td>
+<td>[SRC] <code>tool_dispatch_helpers.py</code></td>
+</tr>
+<tr>
+<td>위험한 Shell 명령</td>
+<td>Approval Gate</td>
+<td>Hard Block vs 승인 가능 위험을 나누는가</td>
+<td>[SRC] <code>tools/approval.py</code></td>
+</tr>
+<tr>
+<td>요청 중 Memory 갱신</td>
+<td>Frozen Memory Snapshot</td>
+<td>Prefix 유지와 현재 Session의 일관성을 어떻게 잡나</td>
+<td>[SRC] <code>tools/memory_tool.py</code></td>
+</tr>
+<tr>
+<td>Context가 초과</td>
+<td>Preflight/Compression</td>
+<td>원본을 버리기 전에 복구 가능한가</td>
+<td>[DOC][SRC] Context Compressor</td>
+</tr>
+<tr>
+<td>오래된 Tool 결과가 너무 큼</td>
+<td>Pruning/Artifact Storage</td>
+<td>근거를 잃지 않고 크기 줄일 수 있나</td>
+<td>[DOC] Compression</td>
+</tr>
+<tr>
+<td>Skill을 잘못 생성</td>
+<td>Write Approval/Scanner</td>
+<td>잘못된 절차가 후속 세션에 확산되는가</td>
+<td>[DOC] Skills</td>
+</tr>
+<tr>
+<td>Cron 중 재시작</td>
+<td>Tick Lock/Claim/Pending Slot</td>
+<td>같은 예약 시각 중복 실행을 줄이는가</td>
+<td>[DOC][SRC] Cron</td>
+</tr>
+<tr>
+<td>외부 클라이언트 연결 끊김</td>
+<td>API Run/Session/Event</td>
+<td>실행 지속·최종 전달·승인을 어떻게 복원하나</td>
+<td>[DOC] Programmatic API</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1378">17.2 &#39;세션 DB 기록 먼저&#39;가 의미하는 것<a class="anchor" href="#line-1378" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>나쁜 설계:
+  execute_destructive_tool() → DB 기록 시도 → DB 오류 → 다음 시작에서 알 수 없음
+
+Hermes에 관찰되는 중요한 방어:
+  persist_tool_call() → 실패하면 STOP
+                      → 성공하면 Tool 실행
+                      → Tool 결과 기록</code></pre></div><p>다만 persist-before-execute로도 외부 부작용 이후, Tool Result 기록 전 Crash가 발생하면 &#39;실행했으나 결과는 없는&#39; 상태가 가능하다. 안전한 복구에는 <code>tool_call_id</code>와 외부 시스템의 작업 키를 매칭하는 <strong>Idempotency/Effect Reconciliation</strong>이 추가로 필요하다. 이는 일반 시스템 설계 원칙이며 Hermes가 모든 Tool에 이를 이미 강제한다고 단정하지 않는다. [INF]</p>
+<h3 id="line-1392">17.3 Guardrail의 Fail-Open / Fail-Closed 판단<a class="anchor" href="#line-1392" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>Fail-Closed</strong>: 중요한 검사·인증·승인 시스템이 실패할 때 실행을 허용하지 않는다.</li>
+<li><strong>Fail-Open</strong>: 검사 실패로 제품 전체를 막지 않도록 제한된 동작을 허용하거나 경고 후 계속한다.</li>
+<li>어느 것이 항상 옳은 것은 아니다. 보안·안전 경계(파일 쓰기·비밀정보·권한)는 Fail-Closed가 일반적으로 필요하고, 검색 인덱스/부가 Observability는 원본 상태를 유지한 채 기능을 축소하는 Fallback이 유용할 수 있다.</li>
+</ul>
+<p>Hermes의 FTS Tokenizer 미가용 시 검색 기능을 저하시켜도 DB의 원본 저장은 계속하려는 설계와, Tool Call 정본 저장 실패 시 부작용 실행을 막는 설계는 <strong>서로 다른 실패 정책</strong>의 좋은 비교 사례다. [INF]</p>
+<h3 id="line-1400">17.4 발표에서 피해야 할 일반화<a class="anchor" href="#line-1400" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>&#39;Hermes의 Guardrail은 모든 Tool을 무조건 안전하게 만든다.&#39; → 틀린 일반화.</li>
+<li>&#39;ThreadPoolExecutor로 실행하므로 모든 Tool이 실제 CPU 병렬 처리된다.&#39; → 틀린 일반화.</li>
+<li>&#39;MEMORY.md 저장 즉시 모든 Session의 Prompt가 갱신된다.&#39; → Frozen Snapshot과 다름.</li>
+<li>&#39;FTS5를 쓰므로 RAG를 사용하지 않는다.&#39; → RAG 패턴과 Dense Vector 인덱스의 혼동.</li>
+<li>&#39;Cron은 정확히 한 번씩 외부 동작을 실행한다.&#39; → 스케줄 슬롯 통제와 외부 Side Effect 보장을 혼동.</li>
+<li>&#39;Skill 자동 생성은 학습된 지식이 검증된 것이다.&#39; → 생성과 정확성 검증은 다른 단계.</li>
+<li>&#39;API Server가 있으므로 프레임워크 자체가 LLM을 서빙한다.&#39; → Agent Serving과 Model Inference Serving의 혼동.</li>
+</ul>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-15.html"><small>이전 단원</small>← Cron: 언제 실행되고 무엇을 재실행하는가?</a><a class="next" href="unit-17.html"><small>다음 단원</small>7개 프레임워크 비교를 위한 Hermes 기준값 →</a></nav><footer>Hermes Agent · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Hermes_Agent_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-1357">17. 실패 시나리오별 내부 동작과 설계 판단</a><a class="toc-depth-2" href="#line-1361">17.1 상태 무결성을 위한 12개 시나리오</a><a class="toc-depth-2" href="#line-1378">17.2 &#39;세션 DB 기록 먼저&#39;가 의미하는 것</a><a class="toc-depth-2" href="#line-1392">17.3 Guardrail의 Fail-Open / Fail-Closed 판단</a><a class="toc-depth-2" href="#line-1400">17.4 발표에서 피해야 할 일반화</a></nav></aside></div></body></html>

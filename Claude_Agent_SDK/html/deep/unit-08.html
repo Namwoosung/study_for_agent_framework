@@ -1,0 +1,127 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Agent SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Skills는 도구인가, Prompt인가, Agent인가? 외 3개 주제 — Claude Agent SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Agent SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Agent SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 CLI 실행 책임</p><a href="unit-02.html" ><span class="nav-number">02</span><span>Claude Agent SDK를 정확히 정의하기 외 3개 주제</span></a><p class="nav-group">호출·프로세스·제어 프로토콜</p><a href="unit-03.html" ><span class="nav-number">03</span><span>query()와 ClaudeSDKClient는 프로토콜 관점에서 다르다 외 5개 주제</span></a><a href="unit-04.html" ><span class="nav-number">04</span><span>메시지 파싱과 ResultMessage의 의미 외 1개 주제</span></a><p class="nav-group">Tool·MCP·권한·Hook</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 호출은 모델 결정과 실행 결정을 분리해야 한다 외 2개 주제</span></a><a href="unit-06.html" ><span class="nav-number">06</span><span>Hooks는 &#39;확장 지점&#39;이자 실행 이전 정책 경계다 외 1개 주제</span></a><p class="nav-group">Context·Session·이중 쓰기</p><a href="unit-07.html" ><span class="nav-number">07</span><span>최종 LLM Context에는 무엇이 들어가는가? 외 3개 주제</span></a><p class="nav-group">Skills·위임·중단·복구</p><a href="unit-08.html" aria-current="page" class="current"><span class="nav-number">08</span><span>Skills는 도구인가, Prompt인가, Agent인가? 외 3개 주제</span></a><p class="nav-group">워크북: 진입과 CLI 구성</p><a href="unit-09.html" ><span class="nav-number">09</span><span>[WB-01] query()의 진입점과 리소스 책임 외 2개 주제</span></a><p class="nav-group">워크북: 제어 요청과 콜백</p><a href="unit-10.html" ><span class="nav-number">10</span><span>[WB-04] Query.initialize()의 Callback-ID 생성 외 3개 주제</span></a><p class="nav-group">워크북: MCP·메시지·수명</p><a href="unit-11.html" ><span class="nav-number">11</span><span>[WB-08] handlesdkmcprequest()의 JSON-RPC 처리 외 2개 주제</span></a><p class="nav-group">워크북: 저장·위임·취소</p><a href="unit-12.html" ><span class="nav-number">12</span><span>[WB-11] sessionstore materialize와 mirror 외 4개 주제</span></a><p class="nav-group">서비스 설계와 기술 비교</p><a href="unit-13.html" ><span class="nav-number">13</span><span>직접 Agent Framework를 만든다면 필요한 컴포넌트 외 4개 주제</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>Claude Code와 Claude Agent SDK의 심화 학습을 분리하는 이유</span></a><p class="nav-group">장애·발표·복습</p><a href="unit-15.html" ><span class="nav-number">15</span><span>학습자가 반드시 생각해 봐야 할 24개 장애 사례 외 2개 주제</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>개념 확인 35문항 외 1개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-17.html" ><span class="nav-number">17</span><span>공식 문서(동작 계약 근거) 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 반드시 기억할 다섯 가지</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Skills·위임·중단·복구</p><h1>Skills·위임·중단·복구</h1><div class="chapter-meta">단원 08 · 원문 2026.10.31 · Python v0.2.176 / CLI v2.1.316 · 약 8분 · 원문 589–700행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>재사용 절차와 독립 작업 Context, Interrupt·Cancel·Close·Resume를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>각 동작이 무엇을 종료·보존하고 외부 효과에는 어디까지 영향을 주는지 확인하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-591">22. Skills는 도구인가, Prompt인가, Agent인가?</a><a href="#line-595">22.1 skills 옵션과 CLI 초기화의 관계</a><a href="#line-608">22.2 Skill이 자체적으로 &#39;똑똑해지는&#39; 것은 아니다</a><a href="#line-612">22.3 Skill과 Subagent의 상호작용</a><a href="#line-616">23. Subagents와 병렬 Tool은 다른 동시성 계층</a><a href="#line-627">23.1 SDK 수준에서 명확히 확인되는 부분</a><a href="#line-646">23.2 비동기 기본 동작을 혼동하지 말 것</a><a href="#line-650">23.3 Context 격리의 이점과 비용</a><a href="#line-658">24. 중단(Interrupt), 취소(Cancel), 종료(Close)는 서로 다른 상태</a><a href="#line-662">24.1 상태 모델 [INF]</a><a href="#line-676">24.2 취소 협조가 핵심</a><a href="#line-684">24.3 receiveresponse()와 receivemessages()</a><a href="#line-688">25. 재개(Resume)와 복구(Recovery)를 혼동하지 말 것</a></nav></details><section class="source-section" data-source-section="22-1"><p class="part-divider" id="line-589">Part V. Skills·Subagents·병렬성·실행 종료</p><h2 id="line-591">22. Skills는 도구인가, Prompt인가, Agent인가?<a class="anchor" href="#line-591" aria-label="이 절의 고유 링크">#</a></h2><p>Skills는 주로 재사용 가능한 작업 지침과 관련 리소스의 묶음이다. 실제 파일 조작·코드 실행을 수행하는 권한은 다른 Tool과 Permission에서 관리한다. SDK를 통해 Skills를 활용하려면 <strong>Skill 발견 경로, 로딩 조건, 허용 범위, 어떤 Tool이 실제로 실행되는지</strong>를 별도로 확인해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/skills">D09</a>]</p>
+<h3 id="line-595">22.1 <code>skills</code> 옵션과 CLI 초기화의 관계<a class="anchor" href="#line-595" aria-label="이 절의 고유 링크">#</a></h3><p>[<strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/transport/subprocess_cli.py">C04</a></strong>, <strong><a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/query.py">C05</a></strong>]의 v0.2.176 소스에서는 <code>skills</code> 옵션을 CLI 시작 명령의 허용 Tool 및 setting sources 처리와, <code>Query.initialize()</code>의 Skill 필터 전달에 사용한다. 필터가 명시적 리스트라면 초기화 요청에 전달하며, <code>&quot;all&quot;</code>과 미설정은 wire-level에서 같은 의미로 처리될 수 있다. 단, 사용 가능한 Skill의 실제 발견·본문 읽기·실행은 CLI의 런타임 책임이다.</p>
+<p><strong>Skill 생명주기 질문:</strong></p>
+<ol>
+<li>어떤 디렉터리의 Skill을 발견하는가?</li>
+<li>목록의 설명이 언제 모델 Context에 노출되는가?</li>
+<li>Skill의 본문은 항상 초기 Context에 들어가는가? 일반적으로 아니다.</li>
+<li>모델이 <code>Skill</code> Tool을 호출하는 기준은 결정적인 rule인가? 모델 판단을 포함한다.</li>
+<li>Skill이 포함한 스크립트를 실행하려면 어떤 OS/Tool 권한이 필요한가?</li>
+<li>Skill 내용을 바꾸면 캐시와 기존 세션에 어떤 차이가 나는가?</li>
+</ol>
+<h3 id="line-608">22.2 Skill이 자체적으로 &#39;똑똑해지는&#39; 것은 아니다<a class="anchor" href="#line-608" aria-label="이 절의 고유 링크">#</a></h3><p>설명 문서가 존재한다고 자동 학습·자동 수정 기능이 생기지는 않는다. 모델이 파일을 수정할 수 있는 환경과 허용된 Tool, 명시적 워크플로가 있어야 Skill 작성 또는 수정이 이루어진다. Skill 성능을 평가·승인하는 구조는 별도로 설계해야 한다. 외부 파일이나 MCP에서 주입된 설명이 지침처럼 작동할 수 있으므로 공급망 보안을 고려한다.</p>
+<h3 id="line-612">22.3 Skill과 Subagent의 상호작용<a class="anchor" href="#line-612" aria-label="이 절의 고유 링크">#</a></h3><p>Subagent 정의에는 별도 Skills 목록을 설정할 수 있고, 일부 스킬을 시작 시 pre-load할 수 있다. 이는 Skill을 새로운 모델 인스턴스로 만든다는 뜻이 아니라 <strong>다른 실행 컨텍스트의 지침 로딩 정책을 지정</strong>한다는 뜻이다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/subagents">D08</a>]</p>
+</section>
+<section class="source-section" data-source-section="23-1"><h2 id="line-616">23. Subagents와 병렬 Tool은 다른 동시성 계층<a class="anchor" href="#line-616" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>실행 형태</th>
+<th>무엇이 동시에 실행되나?</th>
+<th>Context / 소유자</th>
+<th>결과 수집</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>한 Turn의 여러 Tool</td>
+<td>독립 Tool 호출</td>
+<td>동일 주 Agent Turn</td>
+<td>Tool 결과 여러 개</td>
+</tr>
+<tr>
+<td>Subagent</td>
+<td>별도 Agent 실행 작업</td>
+<td>별도 컨텍스트·작업 지침</td>
+<td>요약 또는 Result Report</td>
+</tr>
+<tr>
+<td>Background Task</td>
+<td>비동기 수행 중인 작업</td>
+<td>작업 ID·수명 상태</td>
+<td>Task Update/Notification</td>
+</tr>
+<tr>
+<td>여러 사용자 <code>query()</code></td>
+<td>서로 다른 Python 호출·CLI 프로세스</td>
+<td>사용자 앱이 격리해야 함</td>
+<td>요청별 스트림·세션</td>
+</tr>
+</tbody></table>
+</div><p>Claude Code의 Subagent 기능은 별도 역할·도구 scope·모델·Skills·일부 메모리 소스 등을 설정할 수 있다. Python SDK에서 <code>AgentDefinition</code>을 전달하면 <code>initialize</code> 과정에서 CLI에 전달되며, 실제 하위 Agent 생성과 실행은 CLI가 책임진다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/client.py">C02</a>,<a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/query.py">C05</a>; DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/subagents">D08</a>]</p>
+<h3 id="line-627">23.1 SDK 수준에서 명확히 확인되는 부분<a class="anchor" href="#line-627" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code># [DOC 예제 성격] 직접 실행한 코드는 아니며, 구조 학습용으로 최소화.
+from claude_agent_sdk import ClaudeAgentOptions, AgentDefinition
+
+options = ClaudeAgentOptions(
+    agents={
+        &quot;reviewer&quot;: AgentDefinition(
+            description=&quot;Review only; no edits&quot;,
+            prompt=&quot;Review evidence and provide concise findings.&quot;,
+            tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+        )
+    }
+)</code></pre></div><p>SDK는 <code>AgentDefinition</code>을 직렬화해 전달하고, CLI는 Agent Tool 등을 통해 실행할 수 있다. <strong>하위 Agent의 정확한 스케줄링 알고리즘은 공개 Python 코드에서 구현되지 않는다.</strong></p>
+<h3 id="line-646">23.2 비동기 기본 동작을 혼동하지 말 것<a class="anchor" href="#line-646" aria-label="이 절의 고유 링크">#</a></h3><p>공식 Subagent 문서는 백그라운드 실행 및 다음 턴에서의 결과 수신, 필요 시 동기 대기 등의 선택을 설명한다. <code>background=True</code> 같은 설정과 Agent Tool의 상태(<code>async_launched</code>, <code>completed</code>)는 실제 API 버전과 설정에 따라 검토해야 한다. 모든 Agent가 <code>asyncio.gather</code> 안에서 단순 병렬 호출되는 것으로 설명해서는 안 된다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-sdk/subagents">D08</a>]</p>
+<h3 id="line-650">23.3 Context 격리의 이점과 비용<a class="anchor" href="#line-650" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>이점: Subagent가 많은 파일을 읽거나 실험하더라도 주 Agent Context에는 최종 결과 중심으로 전달할 수 있다.</li>
+<li>비용: 별도 모델 사용량·비용·대기시간, 다른 Agent의 Tool 권한 관리, 결과 신뢰도·중복 작업 문제가 생긴다.</li>
+<li>병렬성의 한계: 동시에 실행되더라도 동일 파일에 쓰면 충돌할 수 있고, 후속 작업이 의존하면 결국 기다려야 한다.</li>
+</ul>
+<p><strong>설계 평가:</strong> 하위 Agent에 작업을 위임했다고 사실 검증이 강화되는 것이 아니다. 별도 검증 기준이나 서로 독립적인 확인 절차가 있어야 효과가 있다.</p>
+</section>
+<section class="source-section" data-source-section="24-1"><h2 id="line-658">24. 중단(Interrupt), 취소(Cancel), 종료(Close)는 서로 다른 상태<a class="anchor" href="#line-658" aria-label="이 절의 고유 링크">#</a></h2><p><code>ClaudeSDKClient.interrupt()</code>는 Python에서 CLI에 <code>interrupt</code> control request를 전송한다. <code>disconnect()</code>는 <code>Query.close()</code>와 transport cleanup을 수행한다. SDK가 내부 작업의 종료를 요청한다고, 외부 서비스에 이미 전달한 모든 부작용을 철회하는 것은 아니다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/client.py">C02</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/_internal/query.py">C05</a>]</p>
+<h3 id="line-662">24.1 상태 모델 [INF]<a class="anchor" href="#line-662" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>CONNECTED / IDLE
+  ├── query() → RUNNING
+  │      ├── TOOL_WAIT / HOOK_WAIT
+  │      ├── RESULT_SUCCESS → IDLE
+  │      ├── RESULT_ERROR → IDLE or CLOSE
+  │      └── interrupt() → INTERRUPTING → IDLE / ERROR
+  └── disconnect() → CLOSING → CLOSED</code></pre></div><p>실제 SDK의 내부 enum을 그대로 옮긴 상태 기계가 아니다. 사용자 앱 관점에서 <strong>여러 종류의 완료 신호를 구별하기 위한 논리 모델</strong>이다.</p>
+<h3 id="line-676">24.2 취소 협조가 핵심<a class="anchor" href="#line-676" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>Model API 요청 취소: 요청 중단에 따라 네트워크 리소스가 회수되는가?</li>
+<li>Python MCP Task 취소: async await에서 적절히 취소되는가?</li>
+<li>스레드에서 실행 중인 함수: cancel을 받아도 진행 중인 외부 작업을 취소하지 못할 수 있다.</li>
+<li>OS Subprocess: 자식 프로세스/프로세스 그룹 전체를 정리하는가?</li>
+<li>External API: 이미 전송한 POST/DB Commit은 별도 보상/취소 처리 필요.</li>
+</ul>
+<h3 id="line-684">24.3 <code>receive_response()</code>와 <code>receive_messages()</code><a class="anchor" href="#line-684" aria-label="이 절의 고유 링크">#</a></h3><p><code>receive_response()</code>는 하나의 <code>ResultMessage</code>까지 읽고 종료하는 편의 메서드다. <code>receive_messages()</code>는 연결 전체의 메시지 스트림이다. Stream completion을 작업의 모든 외부 side effect 완료와 동일시하면 안 된다. [SRC: <a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.176/src/claude_agent_sdk/client.py">C02</a>]</p>
+</section>
+<section class="source-section" data-source-section="25-1"><h2 id="line-688">25. 재개(Resume)와 복구(Recovery)를 혼동하지 말 것<a class="anchor" href="#line-688" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>복구 대상</th>
+<th>SDK/CLI 기능</th>
+<th>개발자가 해야 할 일</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>대화 맥락</td>
+<td><code>resume</code>, <code>continue_conversation</code>, session store</td>
+<td>ID 저장, 사용자 격리, 충돌 방지</td>
+</tr>
+<tr>
+<td>파일 변경</td>
+<td>File checkpointing + rewind</td>
+<td>해당 기능 활성화, 스냅샷 범위 이해</td>
+</tr>
+<tr>
+<td>외부 DB 변경</td>
+<td>자동 롤백 아님</td>
+<td>트랜잭션, 보상 로직, idempotency key</td>
+</tr>
+<tr>
+<td>외부 API 호출</td>
+<td>자동 중복 방지 아님</td>
+<td>요청 ID 저장, 상태 조회, 재시도 정책</td>
+</tr>
+<tr>
+<td>백그라운드 작업</td>
+<td>CLI task ID 및 상태 이벤트</td>
+<td>orphan task 정리, 취소·재연결 설계</td>
+</tr>
+<tr>
+<td>비용/사용량</td>
+<td>Result 및 사용량 이벤트</td>
+<td>실패 종료 포함한 추적·집계</td>
+</tr>
+</tbody></table>
+</div><p><strong>실패 예시:</strong> 모델이 외부 MCP Tool로 파일을 업로드한 직후 CLI가 비정상 종료되었다. Resume 시 해당 Tool 호출이 다시 필요하다고 판단될 수도 있다. API 쪽이 idempotency를 제공하지 않으면 같은 업로드가 중복될 수 있다. 이 문제는 Session의 지속성만으로 해결되지 않는다.</p>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-07.html"><small>이전 단원</small>← 최종 LLM Context에는 무엇이 들어가는가? 외 3개 주제</a><a class="next" href="unit-09.html"><small>다음 단원</small>[WB-01] query()의 진입점과 리소스 책임 외 2개 주제 →</a></nav><footer>Claude Agent SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Agent_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-591">22. Skills는 도구인가, Prompt인가, Agent인가?</a><a class="toc-depth-3" href="#line-595">22.1 skills 옵션과 CLI 초기화의 관계</a><a class="toc-depth-3" href="#line-608">22.2 Skill이 자체적으로 &#39;똑똑해지는&#39; 것은 아니다</a><a class="toc-depth-3" href="#line-612">22.3 Skill과 Subagent의 상호작용</a><a class="toc-depth-2" href="#line-616">23. Subagents와 병렬 Tool은 다른 동시성 계층</a><a class="toc-depth-3" href="#line-627">23.1 SDK 수준에서 명확히 확인되는 부분</a><a class="toc-depth-3" href="#line-646">23.2 비동기 기본 동작을 혼동하지 말 것</a><a class="toc-depth-3" href="#line-650">23.3 Context 격리의 이점과 비용</a><a class="toc-depth-2" href="#line-658">24. 중단(Interrupt), 취소(Cancel), 종료(Close)는 서로 다른 상태</a><a class="toc-depth-3" href="#line-662">24.1 상태 모델 [INF]</a><a class="toc-depth-3" href="#line-676">24.2 취소 협조가 핵심</a><a class="toc-depth-3" href="#line-684">24.3 receiveresponse()와 receivemessages()</a><a class="toc-depth-2" href="#line-688">25. 재개(Resume)와 복구(Recovery)를 혼동하지 말 것</a></nav></aside></div></body></html>

@@ -1,0 +1,138 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" aria-current="page" class="current"><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Instructions·Memory·Session</p><h1>Instructions·Memory·Session</h1><div class="chapter-meta">단원 06 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 7분 · 원문 333–444행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>지침 파일의 존재·선택·로딩 시점과 실제 정책 강제를 구분합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>AGENTS fallback과 병합, Auto Memory의 선택 지식과 대화 이력을 나눠 읽으세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-335">11. Instruction은 파일을 읽는 것과 정책 강제가 다르다</a><a href="#line-339">11.1 파일 위치별 사용 목적</a><a href="#line-353">12. AGENTS.md 지원을 정확히 이해하기 — 2026년 10월</a><a href="#line-377">12.1 비교·발표에서 중요한 설계 포인트</a><a href="#line-381">13. Path-scoped Rules — 언제 모델에 보이는가?</a><a href="#line-397">14. Auto Memory는 누가 쓰며 언제 로딩되는가?</a><a href="#line-401">14.1 파일 기반 구조</a><a href="#line-416">14.2 Memory의 업데이트가 즉시 Prompt에 반영되는가?</a><a href="#line-420">14.3 장기 메모리에서 가장 중요한 실패 종류</a><a href="#line-431">15. Session History와 Auto Memory는 다르다</a></nav></details><section class="source-section" data-source-section="11-1"><p class="part-divider" id="line-333">Part III. Instructions·Memory·Sessions의 로딩과 우선순위</p><h2 id="line-335">11. Instruction은 파일을 읽는 것과 정책 강제가 다르다<a class="anchor" href="#line-335" aria-label="이 절의 고유 링크">#</a></h2><p><code>CLAUDE.md</code>는 프로젝트 규칙·코딩 스타일·작업 방식 등을 모델 입력에 전달하는 <strong>Instruction 텍스트</strong>다. 파일 내용이 완벽한 권한 정책으로 변환되는 것은 아니다. Instruction은 모델이 고려하지만, 실제 Tool 실행을 중단하는 것은 Permission·Hook·Sandbox·Tool Backend의 역할이다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">R07</a>]</p>
+<h3 id="line-339">11.1 파일 위치별 사용 목적<a class="anchor" href="#line-339" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>위치</th>
+<th>범위</th>
+<th>관리 관점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Organization managed</td>
+<td>조직 정책·공통 규칙</td>
+<td>배포·관리자 강제와 검토 필요</td>
+</tr>
+<tr>
+<td><code>~/.claude/CLAUDE.md</code></td>
+<td>사용자 공통</td>
+<td>여러 프로젝트에 적용되는 선호·규칙</td>
+</tr>
+<tr>
+<td>프로젝트 루트 <code>CLAUDE.md</code></td>
+<td>프로젝트 전체</td>
+<td>협업 기준, 빌드·테스트·안전 수칙</td>
+</tr>
+<tr>
+<td>하위 디렉터리 <code>CLAUDE.md</code></td>
+<td>관련 파일/폴더 탐색 시</td>
+<td>작업 컨텍스트와 연관된 세부 규칙</td>
+</tr>
+<tr>
+<td><code>.claude/rules/*.md</code></td>
+<td>세분화된 규칙</td>
+<td>경로별 또는 범위 없는 규칙 분리</td>
+</tr>
+<tr>
+<td><code>CLAUDE.local.md</code></td>
+<td>개인 로컬</td>
+<td>공유하지 않는 로컬 작업 지침</td>
+</tr>
+<tr>
+<td><code>AGENTS.md</code></td>
+<td>Claude 외 다른 도구와 공유 가능</td>
+<td>로딩 방식과 <code>CLAUDE.md</code> 공존 정책 확인</td>
+</tr>
+</tbody></table>
+</div><p>이 표는 <strong>의미적 범위</strong>를 설명한다. 정확한 병합·중복·우선순위 처리는 설정과 버전, 로더 정책에 의존한다.</p>
+</section>
+<section class="source-section" data-source-section="12-1"><h2 id="line-353">12. <code>AGENTS.md</code> 지원을 정확히 이해하기 — 2026년 10월<a class="anchor" href="#line-353" aria-label="이 절의 고유 링크">#</a></h2><p>최신 공식 문서는 <code>AGENTS.md</code>를 전용 내장 Plugin을 통해 지원한다고 설명한다. <strong>기본 설정에서 <code>CLAUDE.md</code>와 <code>AGENTS.md</code>를 무조건 모두 읽는 것은 아니다.</strong> <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">DOC</a></p>
+<ul>
+<li>기본 <code>claude-md-or-agents-md</code>: 작업 디렉터리 및 상위 경로에 <code>CLAUDE.md</code>/<code>CLAUDE.local.md</code>가 없으면 <code>AGENTS.md</code>를 읽는 fallback.</li>
+<li><code>claude-md-and-agents-md</code>: 두 형식을 함께 읽음. 동일한 <code>AGENTS.md</code>가 import로 이미 들어왔으면 중복을 피함.</li>
+<li><code>claude-md</code>: Claude 형식만 읽음.</li>
+<li><code>managed-only</code>: 관리형 정책 중심으로 제한하는 특별 구성. 세부 on-demand 예외를 확인해야 함.</li>
+<li><code>AGENTS.md</code> 기본 지원은 특정 버전 이후 도입됐고, 과거 버전·일부 활성화 상태에서 지원이 다를 수 있다.</li>
+</ul>
+<p>공식 문서가 제공하는 구성 예시는 다음과 같다. <code>[DOC]</code> (설치된 해당 버전에서 기능 사용 가능 여부 확인)</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>json</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>{
+  &quot;pluginConfigs&quot;: {
+    &quot;cc-plugin-agents-md@builtin&quot;: {
+      &quot;options&quot;: { &quot;instructionFiles&quot;: &quot;claude-md-and-agents-md&quot; }
+    }
+  }
+}</code></pre></div><p>위 설정은 공식 문서에 따라 <strong>사용자 설정 또는 Managed Settings</strong>에 두는 방식이며, 프로젝트/로컬 설정에서 같은 값을 적었다고 항상 반영되는 것이 아니다. <code>AGENTS.md</code> 로더는 <code>CLAUDE.md</code> 로딩 시 발생하는 <code>InstructionsLoaded</code> Hook과 동작이 다를 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">DOC</a></p>
+<h3 id="line-377">12.1 비교·발표에서 중요한 설계 포인트<a class="anchor" href="#line-377" aria-label="이 절의 고유 링크">#</a></h3><p><code>AGENTS.md</code> 지원 여부만 보는 것은 불충분하다. <strong>어떤 파일을 선택하는지, 우선순위, 중복 회피, 대화 압축 뒤 재로드 조건, 외부 경로 import 승인, 하위 폴더 로딩 조건</strong>을 확인해야 한다. 파일 이름은 Agent에게 규칙을 읽히는 인터페이스일 뿐이며, 정책의 실행 엔진은 아니다.</p>
+</section>
+<section class="source-section" data-source-section="13-1"><h2 id="line-381">13. Path-scoped Rules — 언제 모델에 보이는가?<a class="anchor" href="#line-381" aria-label="이 절의 고유 링크">#</a></h2><p>루트 규칙을 모두 매번 Prompt에 넣으면 컨텍스트가 낭비된다. 파일 경로와 연관된 규칙은 그 경로에서 파일을 열거나 수정할 때 삽입하는 방식으로 지연 로딩할 수 있다. 하지만 <code>paths</code>로 한정된 규칙은 압축 전 대화에 포함되었다가 요약되는 과정에서 사라질 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/context-window">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">R05</a>]</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 예시 · 실행 미검증</span><span>yaml</span></div><pre tabindex="0" aria-label="원문 수록 코드 예시 · 실행 미검증"><code>---
+paths:
+  - &quot;src/analysis/**/*.py&quot;
+---
+# 예시: 수치 분석 작업 규칙
+- 결과에 사용한 단위와 집계 기준을 명시한다.
+- 원본 데이터를 수정하는 명령은 실행하지 않는다.</code></pre></div><p><strong>분석 포인트:</strong> 파일 변경과 Instruction 로딩의 연관을 갖는 <strong>event-driven context injection</strong>은 비용 면에서 유리하지만, 보안 핵심 정책을 여기만 두면 로딩 이벤트를 놓쳤을 때 정책이 적용되지 않을 수 있다. 보안 강제는 별도 검사 계층에 둔다.</p>
+</section>
+<section class="source-section" data-source-section="14-1"><h2 id="line-397">14. Auto Memory는 누가 쓰며 언제 로딩되는가?<a class="anchor" href="#line-397" aria-label="이 절의 고유 링크">#</a></h2><p>Claude Code의 Auto Memory는 모델이 향후 유용하다고 판단한 정보를 파일로 남기는 기능이다. 공식 문서는 <code>user</code>, <code>feedback</code>, <code>project</code>, <code>reference</code> 유형을 설명하며, 코드·Git 기록이나 <code>CLAUDE.md</code>만으로 다시 알 수 있는 사실은 저장 대상에서 제외하려 한다. <strong>모든 세션에 반드시 기억을 남기는 것은 아니다.</strong> <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">DOC</a></p>
+<h3 id="line-401">14.1 파일 기반 구조<a class="anchor" href="#line-401" aria-label="이 절의 고유 링크">#</a></h3><div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>~/.claude/projects/&lt;project&gt;/memory/
+  MEMORY.md              # 작은 메모리 색인
+  user_role.md            # 주제별 파일
+  feedback_testing.md
+  ...</code></pre></div><ul>
+<li><code>MEMORY.md</code>는 상세 내용을 모두 넣는 파일보다 다른 주제 파일로 이어지는 <strong>Index</strong> 역할을 한다.</li>
+<li>2026-10-31 공식 문서 기준 시작 시 <code>MEMORY.md</code>는 <strong>최대 200줄 또는 25KB 중 먼저 걸리는 한도까지</strong> 로드된다.</li>
+<li>머신 로컬 저장이므로 클라우드·다른 장비·프로젝트 전체에 자동 공유된다고 가정하면 안 된다.</li>
+<li>긴 세션 기록의 보존·삭제 정책과 Auto Memory 파일의 보존은 다르다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">DOC</a></li>
+</ul>
+<h3 id="line-416">14.2 Memory의 업데이트가 즉시 Prompt에 반영되는가?<a class="anchor" href="#line-416" aria-label="이 절의 고유 링크">#</a></h3><p>파일이 쓰였다는 사실과 이미 모델에 보내진 System/Project Context가 바뀌는 것은 다르다. 기록 변경 내용은 모델이 다시 파일을 읽거나, 지정된 시점에 Context를 다시 구성할 때 들어온다. Claude Code는 Prefix 안정성을 고려하여 프로젝트 지침·메모리를 특정 경계에서 새로 로드할 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/prompt-caching">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">R05</a>]</p>
+<h3 id="line-420">14.3 장기 메모리에서 가장 중요한 실패 종류<a class="anchor" href="#line-420" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li><strong>선택 실패:</strong> 저장해야 할 중요 맥락을 모델이 기록하지 않음.</li>
+<li><strong>추론 오류:</strong> 잘못 이해한 사실을 Memory로 고정.</li>
+<li><strong>시간 경과:</strong> 예전의 프로젝트 결정이 현재 상황과 충돌.</li>
+<li><strong>검색 실패:</strong> 토픽 파일이 있지만 Index가 갱신되지 않아 찾지 못함.</li>
+<li><strong>공유 경계:</strong> 로컬에서 유용했던 메모리가 서버 실행 환경에 존재하지 않음.</li>
+<li><strong>기밀 노출:</strong> 자동 저장된 민감 데이터가 예상보다 오래 남음.</li>
+</ol>
+<p><strong>설계 교훈:</strong> Auto Memory의 편의성과 신뢰성은 다른 축이다. 개발용 자체 Agent에서는 Memory의 provenance, 수정 승인, 삭제 및 TTL, 검색 품질, 갱신 이력을 별도로 설계해야 한다.</p>
+</section>
+<section class="source-section" data-source-section="15-1"><h2 id="line-431">15. Session History와 Auto Memory는 다르다<a class="anchor" href="#line-431" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Session</th>
+<th>Auto Memory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>주된 기능</td>
+<td>특정 대화 흐름의 이어가기</td>
+<td>대화를 넘어 재사용할 작은 지식</td>
+</tr>
+<tr>
+<td>저장 내용</td>
+<td>대화 메시지·Tool 호출 결과 등의 기록</td>
+<td>선택된 사실·선호·프로젝트 참조</td>
+</tr>
+<tr>
+<td>다시 읽는 방식</td>
+<td><code>--resume</code>, <code>--continue</code> 등</td>
+<td>세션 시작 시 Index + 필요시 Topic 열람</td>
+</tr>
+<tr>
+<td>유실 위험</td>
+<td>압축으로 모델 가용 원문 축소</td>
+<td>오래된/잘못된 기억 및 인덱싱 실패</td>
+</tr>
+<tr>
+<td>상태 일관성</td>
+<td>외부 파일 변경과 별도</td>
+<td>파일 수정·로딩 시점에 의존</td>
+</tr>
+<tr>
+<td>보안 초점</td>
+<td>개인/업무 기록 보존 정책</td>
+<td>반복 사용되는 민감 내용 축적 관리</td>
+</tr>
+</tbody></table>
+</div><p><strong>재개 ≠ Rollback:</strong> <code>--resume</code>는 이전 대화에 이어 입력하는 기능이지, 이전에 수행한 Bash/DB 변경을 원상복구하는 트랜잭션 기능이 아니다. <code>/rewind</code>의 파일 Checkpoint 역시 외부 서비스에 발생한 부작용을 보장된 방식으로 취소하지 못한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/cli-reference">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sessions">R09</a>]</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-05.html"><small>이전 단원</small>← Context를 코드 수준에서 추적하는 관찰 가능한 경계</a><a class="next" href="unit-07.html"><small>다음 단원</small>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-335">11. Instruction은 파일을 읽는 것과 정책 강제가 다르다</a><a class="toc-depth-3" href="#line-339">11.1 파일 위치별 사용 목적</a><a class="toc-depth-2" href="#line-353">12. AGENTS.md 지원을 정확히 이해하기 — 2026년 10월</a><a class="toc-depth-3" href="#line-377">12.1 비교·발표에서 중요한 설계 포인트</a><a class="toc-depth-2" href="#line-381">13. Path-scoped Rules — 언제 모델에 보이는가?</a><a class="toc-depth-2" href="#line-397">14. Auto Memory는 누가 쓰며 언제 로딩되는가?</a><a class="toc-depth-3" href="#line-401">14.1 파일 기반 구조</a><a class="toc-depth-3" href="#line-416">14.2 Memory의 업데이트가 즉시 Prompt에 반영되는가?</a><a class="toc-depth-3" href="#line-420">14.3 장기 메모리에서 가장 중요한 실패 종류</a><a class="toc-depth-2" href="#line-431">15. Session History와 Auto Memory는 다르다</a></nav></aside></div></body></html>

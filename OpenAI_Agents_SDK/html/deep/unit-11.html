@@ -1,0 +1,166 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="OpenAI Agents SDK 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Observability: 무엇을 남겨야 하는가? 외 3개 주제 — OpenAI Agents SDK 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">OpenAI Agents SDK<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">O.</span><span>OpenAI Agents SDK<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">SDK와 실행 구조</p><a href="unit-02.html" ><span class="nav-number">02</span><span>1분 요약: SDK가 실제로 책임지는 일 외 4개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>Runner.run → runimpl: 상위 호출 분석 외 1개 주제</span></a><p class="nav-group">상태 전이와 모델 입력</p><a href="unit-04.html" ><span class="nav-number">04</span><span>ProcessedResponse와 NextStep 상태 기계 외 2개 주제</span></a><p class="nav-group">Tool 계획과 실행</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 종류부터 실행 경계를 나눈다 외 5개 주제</span></a><p class="nav-group">Guardrail과 승인</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Guardrail은 한 번의 전역 검사 함수가 아니다 외 4개 주제</span></a><p class="nav-group">협업과 제어권</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Handoff와 Agent as Tool은 근본적으로 다르다 외 3개 주제</span></a><p class="nav-group">Session·Memory·Cache</p><a href="unit-08.html" ><span class="nav-number">08</span><span>상태를 최소 다섯 종류로 나누자 외 4개 주제</span></a><p class="nav-group">Streaming·Serving·확장</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Streaming은 토큰 단위 출력만이 아니다 외 7개 주제</span></a><a href="unit-10.html" ><span class="nav-number">10</span><span>Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</span></a><p class="nav-group">관측과 자체 설계</p><a href="unit-11.html" aria-current="page" class="current"><span class="nav-number">11</span><span>Observability: 무엇을 남겨야 하는가? 외 3개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>다른 6개 기술과 비교할 때의 기준값</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 트레이스 A: 한 번에 답하는 Run 외 5개 주제</span></a><p class="nav-group">실패·발표·복습</p><a href="unit-14.html" ><span class="nav-number">14</span><span>16개 실패 사례와 Runtime 책임 외 3개 주제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-15.html" ><span class="nav-number">15</span><span>공식 출처 인덱스</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>소스코드 인덱스 — v0.24.0 고정 링크 외 1개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-17.html" ><span class="nav-number">17</span><span>최종 요약 — SDK 자체를 설계한다면 배워야 할 핵심 12문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK v0.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 관측과 자체 설계</p><h1>관측과 자체 설계</h1><div class="chapter-meta">단원 11 · 원문 2026.10.31 · Python SDK v0.24.0 · 약 7분 · 원문 926–1051행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Trace와 평가를 구분하고 인터페이스별 비용과 운영 통제를 비교합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Mock 기반 Loop 검사와 실제 Wire/API 검증은 다른 증거입니다.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-928">40. Observability: 무엇을 남겨야 하는가?</a><a href="#line-945">40.1 Tracing은 곧 Evaluation이 아니다</a><a href="#line-954">41. 코드 기반 테스트 전략: 모델 호출 없이도 Loop를 검증할 수 있다</a><a href="#line-971">41.1 코드 단위에서 반드시 재현할 테스트(후속 연구 계획, 현재 미실행)</a><a href="#line-988">42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트</a><a href="#line-1008">42.1 인터페이스 경계를 선택하는 기준</a><a href="#line-1022">43. 설계 Trade-off를 도출하는 프레임</a><a href="#line-1026">43.1 경량 Runner vs 명시적 Graph Runtime</a><a href="#line-1032">43.2 모델에게 위임 vs 코드가 위임 결정</a><a href="#line-1037">43.3 요청 중 모든 작업 완료 vs Job Queue</a><a href="#line-1042">43.4 메모리 자동 요약 vs 명시적 도메인 데이터 저장</a><a href="#line-1047">43.5 병렬 Tool vs 순차 Tool</a></nav></details><section class="source-section" data-source-section="40-1"><p class="part-divider" id="line-926">Part VIII. 평가, 운영 보안과 자체 Framework 설계</p><h2 id="line-928">40. Observability: 무엇을 남겨야 하는가?<a class="anchor" href="#line-928" aria-label="이 절의 고유 링크">#</a></h2><p>최소 다음 항목은 분리해서 기록한다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>기록 항목</th>
+<th>유용한 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Run ID / Session ID / Agent 이름</td>
+<td>어떤 실행이 어느 사용자·대화의 것인가?</td>
+</tr>
+<tr>
+<td>Model 호출 메타데이터</td>
+<td>모델·설정·토큰·지연 정보는?</td>
+</tr>
+<tr>
+<td>Tool Call ID / 인자·응답 형태</td>
+<td>어떤 함수가 어떤 이유로 실행되었나?</td>
+</tr>
+<tr>
+<td>Handoff 시작·종료</td>
+<td>누가 제어권을 넘겼나?</td>
+</tr>
+<tr>
+<td>Guardrail/Approval 결과</td>
+<td>차단·승인 정책이 적용되었나?</td>
+</tr>
+<tr>
+<td>RunState snapshot/version</td>
+<td>어디서 멈췄고 어떻게 재개했나?</td>
+</tr>
+<tr>
+<td>외부 Tool 부작용·Idempotency ID</td>
+<td>중복 실행과 실제 변경을 추적할 수 있나?</td>
+</tr>
+<tr>
+<td>Prompt Cache/Compaction</td>
+<td>캐시 재사용과 입력 변화가 있었나?</td>
+</tr>
+</tbody></table>
+</div><p>SDK에는 Trace/Span 기반 실행 관측 기능이 있다. 다만 <strong>기본 Tracing은 민감한 모델 입력·출력과 Function 인자·결과를 기록할 수 있다</strong>. 공식 문서에 따르면 <code>trace_include_sensitive_data</code>의 기본값이 <code>True</code>일 수 있으므로 민감한 업무 환경에서는 반드시 먼저 검토해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/tracing/">D16</a>]</p>
+<h3 id="line-945">40.1 Tracing은 곧 Evaluation이 아니다<a class="anchor" href="#line-945" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>Tracing:</strong> 무엇이 어떻게 실행되었는지 관측.</li>
+<li><strong>Evaluation:</strong> 주어진 목적을 얼마나 잘 달성했는지 평가.</li>
+<li><strong>Monitoring:</strong> 운영 중 비용·실패율·지연시간 추적.</li>
+<li><strong>Audit:</strong> 권한·승인·데이터 처리의 추적 가능성.</li>
+</ul>
+<p>실행 경로가 모두 기록됐다고 판단이 정확해지는 것은 아니다. 정답률, Tool 선택 적절성, 불필요한 반복 호출, 근거 신뢰성은 별도의 평가 지표가 필요하다.</p>
+</section>
+<section class="source-section" data-source-section="41-1"><h2 id="line-954">41. 코드 기반 테스트 전략: 모델 호출 없이도 Loop를 검증할 수 있다<a class="anchor" href="#line-954" aria-label="이 절의 고유 링크">#</a></h2><p>공식 <code>agents.testing</code>은 <code>ScriptedModel</code>, <code>ModelStep</code>, <code>assistant_message()</code>, <code>function_call()</code> 같은 Deterministic Test 도구를 제공한다. 정규화된 Model 인터페이스를 교체해 Runner 자체의 Tool, Handoff, Session, Streaming, Retry를 검증할 수 있다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/testing/">D17</a>]</p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># [PSEUDO] 테스트 아이디어. 실제 Test API 호출을 완성한 실행 예제는 아님.
+scripted_model = [
+    ModelOutput(function_call=&quot;lookup&quot;, args={&quot;id&quot;: &quot;x&quot;}),
+    ModelOutput(final_text=&quot;done&quot;),
+]
+result = await Runner.run(agent_using(scripted_model), &quot;query&quot;)
+assert_called_once(&quot;lookup&quot;)
+assert result.final_output == &quot;done&quot;</code></pre></div><p>위 예제는 테스트 아이디어를 표현한 <strong>의사코드</strong>다. 실제 라이브러리 함수와 객체 형태는 [<a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/testing/">D17</a>]의 <code>ScriptedModel</code> 예제를 참고한다.</p>
+<h3 id="line-971">41.1 코드 단위에서 반드시 재현할 테스트(후속 연구 계획, 현재 미실행)<a class="anchor" href="#line-971" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li>Tool 없이 한 번에 Final 출력.</li>
+<li>한 모델 응답에서 Function Tool 2개 실행.</li>
+<li>Tool 한 개 실패와 다른 Tool이 취소되는 상황.</li>
+<li>Handoff 이후 최종 Agent가 다른 경우.</li>
+<li>Input Guardrail 병렬 모드에서 차단 발생.</li>
+<li>Input Guardrail 차단형 모드에서 Tool 실행 0회 확인.</li>
+<li>Tool Input/Output Guardrail의 실패 경로.</li>
+<li><code>RunState</code>로 중단→승인→재개, 동일 Tool 중복 실행 여부.</li>
+<li>Handoff 뒤 <code>input_filter</code>와 Session 기록 비교.</li>
+<li>Stream Iterator 조기 종료/Cancel 후 백그라운드 Task 상태.</li>
+<li>Model Retry와 <code>max_turns</code>의 상호작용.</li>
+<li>Compaction 전후 모델 입력 View의 정합성.</li>
+</ol>
+<p><strong>Mock Test의 한계:</strong> Scripted Model 테스트가 성공해도 실제 모델이 정확히 같은 Tool을 선택하거나, 로컬 vLLM의 Tool Calling 형식이 일치한다는 뜻은 아니다. API Wire Format은 실제 Adapter 및 통제된 네트워크 경계로 별도 테스트해야 한다. [DOC: <a target="_blank" rel="noopener noreferrer" href="https://openai.github.io/openai-agents-python/testing/">D17</a>]</p>
+</section>
+<section class="source-section" data-source-section="42-1"><h2 id="line-988">42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트<a class="anchor" href="#line-988" aria-label="이 절의 고유 링크">#</a></h2><figure class="diagram" data-diagram="11"><figcaption><span>도식 11</span> 42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트</figcaption><p class="scroll-hint">가로로 이동해서 읽을 수 있습니다. <a href="assets/diagram-11.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트"><img src="assets/diagram-11.svg" alt="42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트의 노드·분기·연결 관계"></div><p class="figure-note">원문의 학습용 도식입니다. 연결 방향·분기 조건·점선·쌍방향 연결을 보존해 세로로 배치했습니다. 실제 구현·의사코드·해석의 구분은 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TB
+  A[AgentSpec] --&gt; B[RunController]
+  B --&gt; C[ModelAdapter]
+  B --&gt; D[ToolResolver]
+  D --&gt; E[ToolExecutor]
+  E --&gt; F[Approval/Guardrail]
+  B --&gt; G[StateStore]
+  G --&gt; H[SessionHistory]
+  G --&gt; I[ResumableRunState]
+  B --&gt; J[TraceCollector]
+  B --&gt; K[BudgetManager]
+  B --&gt; L[Handoff/Delegation Router]
+  E --&gt; M[Execution Sandbox]</code></pre></details></figure><p>이것은 OpenAI SDK의 실제 클래스 다이어그램이 아니라 <strong>7개 Agent 시스템에서 공통 구조를 비교하기 위한 개념 설계</strong>다. [INF]</p>
+<h3 id="line-1008">42.1 인터페이스 경계를 선택하는 기준<a class="anchor" href="#line-1008" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>경계</th>
+<th>중요한 질문</th>
+<th>잘못 설계하면</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Model Adapter</td>
+<td>Tool/Streaming/JSON 호환성을 어디서 처리?</td>
+<td>제공자 변경 시 Core Loop 대량 수정</td>
+</tr>
+<tr>
+<td>Runner Core</td>
+<td>종료 조건과 상태 전이를 어디서 관리?</td>
+<td>예외 분기 누락·무한 반복</td>
+</tr>
+<tr>
+<td>Tool Registry</td>
+<td>승인/인자 검증을 한곳에서 강제?</td>
+<td>우회 경로와 중복 구현</td>
+</tr>
+<tr>
+<td>Session Store</td>
+<td>모델 입력과 저장 View를 분리?</td>
+<td>Handoff/Approval 기록 소실</td>
+</tr>
+<tr>
+<td>RunState</td>
+<td>Resume에 필요한 상태를 무엇까지 보존?</td>
+<td>Tool 중복 실행·불완전 재개</td>
+</tr>
+<tr>
+<td>Guardrail</td>
+<td>차단형/병렬형 정책이 명확?</td>
+<td>위험 작업이 검사보다 먼저 실행</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>공유 상태/순서/취소 범위가 명확?</td>
+<td>Race condition·불완전 정리</td>
+</tr>
+<tr>
+<td>Sandbox</td>
+<td>모델과 OS 실행 권한 경계 존재?</td>
+<td>기밀 노출·파일 변조</td>
+</tr>
+<tr>
+<td>Streaming</td>
+<td>소비자 종료와 Run 종료를 분리?</td>
+<td>보이지 않는 백그라운드 실행</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="43-1"><h2 id="line-1022">43. 설계 Trade-off를 도출하는 프레임<a class="anchor" href="#line-1022" aria-label="이 절의 고유 링크">#</a></h2><p>기술 선택에는 항상 이득과 비용이 함께 있다.</p>
+<h3 id="line-1026">43.1 경량 Runner vs 명시적 Graph Runtime<a class="anchor" href="#line-1026" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>Runner 기반: 모델 응답에 따라 Tool/Handoff/Final을 반복하는 구조가 이해하기 쉽고 빠르게 구현 가능.</li>
+<li>Graph 기반: 미리 정의된 전이, 복잡한 Workflow, Checkpoint를 명시적으로 표현하기 유리할 수 있음.</li>
+<li>절충안: Agent 내부 의사결정은 Runner, 업무 순서·승인은 코드 Workflow로 관리.</li>
+</ul>
+<h3 id="line-1032">43.2 모델에게 위임 vs 코드가 위임 결정<a class="anchor" href="#line-1032" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>모델 결정: 자연어의 다양한 상황에 대응하지만 경로가 변동적.</li>
+<li>코드 결정: 재현성과 관리 편의성이 높지만 동적으로 변하는 상황을 예외 규칙으로 처리해야 할 수 있음.</li>
+</ul>
+<h3 id="line-1037">43.3 요청 중 모든 작업 완료 vs Job Queue<a class="anchor" href="#line-1037" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>동기 실행: 운영 단순, 실패 확인 용이, HTTP Timeouts 제약.</li>
+<li>비동기 Job: 장기 실행에 유리, 상태 저장·재시도·중복 실행 정책이 필요.</li>
+</ul>
+<h3 id="line-1042">43.4 메모리 자동 요약 vs 명시적 도메인 데이터 저장<a class="anchor" href="#line-1042" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>자동 요약: 개발 부담 감소, 정보 누락·오해 위험.</li>
+<li>구조화 기록: 검증/감사 유리, 설계·운영 비용 증가.</li>
+</ul>
+<h3 id="line-1047">43.5 병렬 Tool vs 순차 Tool<a class="anchor" href="#line-1047" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>병렬: 지연 감소 가능, 실패·취소·순서·동기화 복잡성 증가.</li>
+<li>순차: 데이터 의존성이 있는 작업에 안전, 지연시간 증가 가능.</li>
+</ul>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-10.html"><small>이전 단원</small>← Sandbox Agent, Skills, File Memory는 Core Runner와 분리해 이해</a><a class="next" href="unit-12.html"><small>다음 단원</small>다른 6개 기술과 비교할 때의 기준값 →</a></nav><footer>OpenAI Agents SDK · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../OpenAI_Agents_SDK_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-928">40. Observability: 무엇을 남겨야 하는가?</a><a class="toc-depth-3" href="#line-945">40.1 Tracing은 곧 Evaluation이 아니다</a><a class="toc-depth-2" href="#line-954">41. 코드 기반 테스트 전략: 모델 호출 없이도 Loop를 검증할 수 있다</a><a class="toc-depth-3" href="#line-971">41.1 코드 단위에서 반드시 재현할 테스트(후속 연구 계획, 현재 미실행)</a><a class="toc-depth-2" href="#line-988">42. 자체 Agent Framework를 설계한다면 필요한 최소 컴포넌트</a><a class="toc-depth-3" href="#line-1008">42.1 인터페이스 경계를 선택하는 기준</a><a class="toc-depth-2" href="#line-1022">43. 설계 Trade-off를 도출하는 프레임</a><a class="toc-depth-3" href="#line-1026">43.1 경량 Runner vs 명시적 Graph Runtime</a><a class="toc-depth-3" href="#line-1032">43.2 모델에게 위임 vs 코드가 위임 결정</a><a class="toc-depth-3" href="#line-1037">43.3 요청 중 모든 작업 완료 vs Job Queue</a><a class="toc-depth-3" href="#line-1042">43.4 메모리 자동 요약 vs 명시적 도메인 데이터 저장</a><a class="toc-depth-3" href="#line-1047">43.5 병렬 Tool vs 순차 Tool</a></nav></aside></div></body></html>

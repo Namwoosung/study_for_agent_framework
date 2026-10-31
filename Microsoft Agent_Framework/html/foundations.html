@@ -1,0 +1,235 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework의 원리·구현·한계를 배우는 개인 학습 교재"><title>Agent와 절차를 함께 설계하기 — Microsoft Agent Framework</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script><link rel="stylesheet" href="course-links.css"></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">M.</span><span>Microsoft Agent Framework<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" class="current" aria-current="page"><span class="nav-number">01</span><span>큰 그림과 첫 Agent</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Python 실행 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Tool과 Middleware</span></a><a href="context.html" ><span class="nav-number">04</span><span>Session·Memory·RAG</span></a><p class="nav-group">흐름과 복구</p><a href="workflows.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><a href="recovery.html" ><span class="nav-number">06</span><span>승인과 Checkpoint</span></a><p class="nav-group">확장과 운영</p><a href="harness.html" ><span class="nav-number">07</span><span>Harness와 확장</span></a><a href="operations.html" ><span class="nav-number">08</span><span>보안·관측·평가</span></a><p class="nav-group">코드와 적용</p><a href="source-code.html" ><span class="nav-number">09</span><span>공개 코드 추적</span></a><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용 설계</span></a><a href="selection.html" ><span class="nav-number">11</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="review.html" >핵심 복습과 문답</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c</span><a href="../Microsoft_Agent_Framework.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><!-- deep-course-link --><nav class="course-switch" aria-label="학습 과정"><span>학습 과정</span><a href="index.html" aria-current="true">1차 기본 교재</a><a href="deep/index.html">2차 심층 교재 →</a></nav><!-- /deep-course-link --><div class="breadcrumb"><a href="index.html">Microsoft Agent Framework</a><span aria-hidden="true">/</span><span>큰 그림과 첫 Agent</span></div><header class="chapter-header"><p class="eyebrow">큰 그림 / 단원 01</p><h1>Agent와 절차를 함께 설계하기</h1><p class="lead">제품 범위·계보·설치 예제와 핵심 객체</p><div class="chapter-meta">원문 1–5장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>먼저 Agent, Workflow, Harness, Integrations의 역할을 나눕니다. 모델이 탐색 경로를 선택할 부분과 계산·검증처럼 순서를 고정할 부분을 구별하면 프레임워크의 큰 그림이 잡힙니다.</p><p>최소 예제는 모델 클라이언트와 Agent의 연결을 보여 줍니다. 별도 모델 연결과 자격 증명이 필요하며, 원문은 예제를 실행하지 않았습니다. AutoGen·Semantic Kernel과의 관계도 자동 API 호환을 뜻하지 않습니다.</p><p class="reading-question"><strong>읽는 관점</strong>모델·Agent·Workflow가 각각 어떤 결정을 맡는지 한 문장으로 설명해 보세요.</p></section><section class="source-section" data-source-chapter="1"><h2 id="s-1-1">1. 3분 핵심 요약<a class="anchor" href="#s-1-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p><strong>Microsoft Agent Framework(MAF)</strong>는 모델을 호출하는 단일 함수가 아니라, <strong>Agent 구성·도구 호출·세션 및 메모리·미들웨어·명시적 워크플로·멀티에이전트 오케스트레이션·운영 기능</strong>을 함께 제공하는 오픈소스 개발 프레임워크다. Python, .NET, Go를 지원하지만 플랫폼별 기능 완성도와 구현 방법은 다르다. <a href="https://learn.microsoft.com/en-us/agent-framework/" target="_blank" rel="noopener noreferrer">[D01]</a><a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<p>한 문장으로:</p>
+<blockquote>
+<p>&#39;LLM이 필요한 비결정적 판단&#39;은 Agent로, &#39;순서·검증·승인·복구가 중요한 절차&#39;는 Workflow로 표현하고, 두 가지를 조합하는 개발 도구.</p>
+</blockquote>
+<p><strong>가장 중요한 네 축</strong></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>무엇인가</th>
+<th>쉬운 예시</th>
+<th>핵심 선택 기준</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent</td>
+<td>LLM 기반 판단과 Tool 선택을 하는 실행 단위</td>
+<td>&#39;불량률이 왜 증가했는지 조사&#39;</td>
+<td>탐색 경로가 고정되지 않았는가?</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>Executor·Edge로 정의하는 통제 가능한 실행 흐름</td>
+<td>데이터 조회 → 계산 → 검증 → 승인</td>
+<td>단계·분기·복구 규칙이 명시적인가?</td>
+</tr>
+<tr>
+<td>Harness Agent</td>
+<td>계획·Todo·파일 메모리·승인·컨텍스트 압축 등을 조합한 운영형 Agent</td>
+<td>여러 파일을 분석하는 장시간 조사 담당</td>
+<td>기본 Agent보다 실행 환경이 많이 필요한가?</td>
+</tr>
+<tr>
+<td>Integrations</td>
+<td>공급자·도구·메모리·호스팅 등 외부 시스템 연결</td>
+<td>OpenAI 호환 LLM, MCP, 저장소</td>
+<td>사내 인프라와 연결 가능한가?</td>
+</tr>
+</tbody></table>
+</div><p><strong>처음 접하는 사람이 헷갈리기 쉬운 부분</strong></p>
+<ol>
+<li><strong>Agent Framework는 LLM 자체가 아니다.</strong> 별도의 모델 API 또는 로컬/사내 서빙 엔드포인트가 필요하다.</li>
+<li><strong>Agent가 항상 Workflow를 의미하지 않는다.</strong> 단일 Agent는 Tool을 몇 번 반복 호출한 후 답할 수 있다.</li>
+<li><strong>&#39;Tool Loop&#39;와 &#39;Agent Loop&#39;는 다를 수 있다.</strong> Python에서는 ChatClient의 <code>FunctionInvocation</code>이 Tool 반복을 맡는다. Harness의 <code>AgentLoopMiddleware</code>는 완료 조건을 평가하여 <strong>Agent 실행 전체</strong>를 다시 호출할 수 있다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">[D06]</a><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py" target="_blank" rel="noopener noreferrer">[S07]</a></li>
+<li><strong>Session ≠ 장기 지식 메모리 ≠ Workflow Checkpoint.</strong> 목적·수명·저장 대상이 다르다.</li>
+<li><strong>&#39;기업용&#39;이라고 해서 보안이 자동 완성되지는 않는다.</strong> 실제 인증, 인가, 데이터 반출, Tool 권한, 재실행에 따른 중복 작업은 애플리케이션에서 관리해야 한다.</li>
+<li><strong>&#39;지원 가능&#39;과 &#39;기본 활성화&#39;는 다르다.</strong> <code>Skills</code>, <code>file access</code>, <code>shell</code>, <code>background agents</code> 등은 옵션 또는 별도 패키지/준비가 필요한 경우가 있다.</li>
+</ol>
+<h3 id="s-1-2">이번 학습에서 얻어야 할 핵심 관점<a class="anchor" href="#s-1-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>모델과 Agent의 책임 경계를 구분할 수 있는가?</li>
+<li>자동 Tool Loop가 실제로 어디에 존재하는가?</li>
+<li>Context Provider가 입력을 바꾸고 History Provider가 상태를 어떻게 남기는가?</li>
+<li>명시적 Workflow를 사용하는 것이 오히려 더 안전한 부분은 무엇인가?</li>
+<li>장애 후 재개, 승인, 평가가 단일 실행보다 무엇이 복잡한가?</li>
+</ul>
+</section>
+<section class="source-section" data-source-chapter="2"><h2 id="s-2-1">2. 탄생 배경: AutoGen / Semantic Kernel과의 관계<a class="anchor" href="#s-2-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Microsoft는 Agent Framework를 AutoGen과 Semantic Kernel의 후속 진화 방향으로 소개한다. AutoGen의 대화형/협업형 에이전트 추상화와 Semantic Kernel의 기업용 상태·통합·관측 기능을 계승하면서, <strong>명시적인 Graph Workflow</strong>와 통합된 Agent 개념을 제공한다. <a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer">[D02]</a></p>
+<p>단, &#39;후속&#39;이 <strong>기존 프로젝트가 자동으로 호환되거나 교체된다는 뜻은 아니다.</strong> 마이그레이션 경로, API 변경, 프레임워크별 런타임 차이를 별도로 점검해야 한다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>시스템</th>
+<th>역사적 강조점</th>
+<th>MAF를 공부할 때의 비교 포인트</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AutoGen</td>
+<td>여러 Agent 간 대화·협업·오케스트레이션</td>
+<td>Group Chat, Handoff, Magentic 패턴</td>
+</tr>
+<tr>
+<td>Semantic Kernel</td>
+<td>모델·플러그인·기업 시스템 통합</td>
+<td>ChatClient, Context, Middleware, 배포</td>
+</tr>
+<tr>
+<td>Microsoft Agent Framework</td>
+<td>Agent와 결정적 Workflow 및 운영 기능의 조합</td>
+<td>단일 API 계층과 실행 모형의 일관성</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-chapter="3"><h2 id="s-3-1">3. 전체 제품 범위: Agents / Workflows / Harness / Integrations<a class="anchor" href="#s-3-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-3-2">3.1 Agent<a class="anchor" href="#s-3-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Agent는 &#39;이 입력을 기반으로 어떤 답변과 Tool 호출을 만들지&#39;를 모델과 결합해 처리한다. Python의 중심 인터페이스는 <code>Agent</code>, 공통 실행 형태는 <code>run(...)</code>이다. 다른 구현체나 원격 Agent도 공통 프로토콜 관점에서 다룰 수 있다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer">[D03]</a><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py" target="_blank" rel="noopener noreferrer">[S02]</a></p>
+<h3 id="s-3-3">3.2 Workflow<a class="anchor" href="#s-3-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Workflow는 <strong>정해진 경로</strong>에서 함수를 실행하거나 Agent를 넣어 조합한다. 예를 들어 <code>DataLoader → FeatureAnalyzer → Reviewer → Reporter</code>라면, 각 단계의 경계와 실행 순서를 코드로 명시한다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">[D09]</a></p>
+<h3 id="s-3-4">3.3 Harness<a class="anchor" href="#s-3-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Harness는 새 모델이 아니라 기존 Agent 구성요소를 미리 결합한 실행 환경이다. 기본적으로 계획·Todo, 동작 모드, 파일 메모리, Tool 승인, 관측 등을 조합하며 옵션에 따라 압축·Skills·파일 접근·백그라운드 위임·재실행 루프를 추가한다. Python의 진입점 중 하나는 <code>create_harness_agent(...)</code>. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness" target="_blank" rel="noopener noreferrer">[D04]</a></p>
+<h3 id="s-3-5">3.4 Integrations<a class="anchor" href="#s-3-5" aria-label="이 절의 고유 링크">#</a></h3>
+<p>ChatClient, Agent 서비스, 외부 툴, MCP, 벡터 저장소, 호스팅 등 구성요소 간 연결을 제공한다. <strong>지원 모델 = 특정 플랫폼에 종속</strong>은 아니다. 하지만 프로바이더별 Tool Calling, Streaming, Structured Output, Hosted Tool 제공 여부가 다르므로 실제 연결 시 기능표를 확인해야 한다. <a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank" rel="noopener noreferrer">[D02]</a><a href="https://learn.microsoft.com/en-us/agent-framework/integrations/" target="_blank" rel="noopener noreferrer">[D12]</a></p>
+<h3 id="s-3-6">3.5 Agent / Workflow 선택 규칙<a class="anchor" href="#s-3-6" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>질문: 작업 경로를 코드로 명시할 수 있는가?
+  ├─ 예: 검증·집계·승인·로그 관리가 중요 → Workflow 중심
+  └─ 아니오: 모델의 도구 탐색과 추론이 필요 → Agent 중심
+
+질문: 둘 다 필요한가?
+  └─ 대체로 그렇다면 Workflow의 일부 Executor에 Agent 배치</code></pre></div><blockquote>
+<p>권장 원칙: <strong>명확한 계산·검증·정책 판단을 LLM으로 대체하지 않는다.</strong> 예를 들어 수율 계산은 Python 함수에서, 개선 원인 가설 생성은 Agent에서 수행한다.</p>
+</blockquote>
+</section>
+<section class="source-section" data-source-chapter="4"><h2 id="s-4-1">4. 설치와 가장 작은 Agent<a class="anchor" href="#s-4-1" aria-label="이 절의 고유 링크">#</a></h2>
+<h3 id="s-4-2">4.1 Python 환경<a class="anchor" href="#s-4-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>2026-10-30 릴리스 <code>python-1.24.0</code>은 <strong>Python 3.11 이상을 지원 기준선</strong>으로 명시했다. 3.10은 설치 메타데이터 때문에 설치될 수 있지만 호환성 보장은 아니다. 특정 통합 패키지의 상한·조건은 별도로 검증한다. <a href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0" target="_blank" rel="noopener noreferrer">[R01]</a></p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 명령 예시 · 실행 미검증</span><span>bash</span></div><pre tabindex="0" aria-label="원문 수록 명령 예시 · 실행 미검증"><code># 예시: 새 Python 3.11+ 환경에서 실행
+uv venv --python 3.11
+source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
+uv pip install &#39;agent-framework==1.24.0&#39;
+
+# 필요한 통합만 따로 설치하는 방식도 가능
+uv pip install &#39;agent-framework-core==1.24.0&#39; &#39;agent-framework-openai==1.24.0&#39;</code></pre></div><p><code>agent-framework</code>는 통합 편의를 위한 패키지, <code>agent-framework-core</code>는 핵심 추상화 패키지다. 사용하지 않는 통합까지 과도하게 설치하지 않도록 의존성을 확인하는 편이 좋다. 버전 일치 여부는 잠금 파일과 <code>pip list</code> 등으로 확인한다. <a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md" target="_blank" rel="noopener noreferrer">[S01]</a></p>
+<h3 id="s-4-3">4.2 최소 Python 예제 — 공식 API 형태<a class="anchor" href="#s-4-3" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>import asyncio
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
+
+async def main():
+    agent = Agent(
+        client=OpenAIChatClient(model=&quot;gpt-4o&quot;),
+        instructions=&quot;You are a concise technical assistant.&quot;,
+    )
+    response = await agent.run(&quot;DRAM과 NAND의 차이를 짧게 설명해줘.&quot;)
+    print(response.text)
+
+asyncio.run(main())</code></pre></div><ul>
+<li><code>Agent(...)</code>: 모델 클라이언트, instruction, tool, 미들웨어, context provider를 모은다.</li>
+<li><code>OpenAIChatClient(...)</code>: 모델 호출 담당. <strong>실제 API 자격 증명·요금·연결이 별도로 필요하다.</strong></li>
+<li><code>agent.run(...)</code>: 최종 응답을 받는다. 스트리밍 모드에서는 별도 응답 스트림을 처리한다.</li>
+</ul>
+<p><strong>검증 사항:</strong> API 키 설정, <code>open</code>/<code>close</code> 자원 생명주기, 인스턴스가 지원하는 옵션을 SDK 버전 문서로 확인해야 한다. 공식 예제가 작동할 수 있는 구조라고 하더라도, 여기서는 네트워크 호출 테스트를 수행하지 않았다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer">[D03]</a><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/README.md" target="_blank" rel="noopener noreferrer">[S10]</a></p>
+<h3 id="s-4-4">4.3 도구 연결 예제<a class="anchor" href="#s-4-4" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
+
+
+def calculate_yield(good: int, total: int) -&gt; float:
+    &quot;&quot;&quot;Calculate yield percent given good die count and total die count.&quot;&quot;&quot;
+    if total &lt;= 0 or not (0 &lt;= good &lt;= total):
+        raise ValueError(&quot;Invalid counts&quot;)
+    return round(good * 100.0 / total, 4)
+
+agent = Agent(
+    client=OpenAIChatClient(model=&quot;gpt-4o&quot;),
+    instructions=&quot;For numeric yield, call calculate_yield; never invent counts.&quot;,
+    tools=[calculate_yield],
+)</code></pre></div><p>Python 함수가 Tool로 노출되면 도구 설명과 입력 스키마가 LLM에 전달되고, 모델이 호출을 요청할 수 있다. 입력·인가·감사 로직은 단순한 type hint만으로 충족되지 않는다. <a href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/" target="_blank" rel="noopener noreferrer">[D08]</a><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py" target="_blank" rel="noopener noreferrer">[S03]</a></p>
+</section>
+<section class="source-section" data-source-chapter="5"><h2 id="s-5-1">5. 핵심 객체 사전<a class="anchor" href="#s-5-1" aria-label="이 절의 고유 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>객체</th>
+<th>기능</th>
+<th>구별해야 할 개념</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Agent</code></td>
+<td>호출 가능한 Agent 실행 엔트리</td>
+<td>LLM 모델 그 자체가 아님</td>
+</tr>
+<tr>
+<td><code>BaseAgent</code>, <code>RawAgent</code></td>
+<td>더 낮은 수준의 실행/구현 계층</td>
+<td>공개된 구현 관계를 소스에서 추적</td>
+</tr>
+<tr>
+<td><code>SupportsAgentRun</code></td>
+<td>Agent 호환 프로토콜</td>
+<td>상속하지 않아도 프로토콜을 구현하면 호환 가능</td>
+</tr>
+<tr>
+<td><code>BaseChatClient</code></td>
+<td>실제 모델 클라이언트 추상화</td>
+<td>Agent, Tool Registry와 역할 구분</td>
+</tr>
+<tr>
+<td><code>Message</code> / <code>Content</code></td>
+<td>역할·본문·Tool 요청 등 메시지 표현</td>
+<td>단순 문자열보다 다양한 타입 가능</td>
+</tr>
+<tr>
+<td><code>ChatResponse</code></td>
+<td>ChatClient 수준 결과</td>
+<td><code>AgentResponse</code>와 구별</td>
+</tr>
+<tr>
+<td><code>FunctionTool</code>, <code>@tool</code></td>
+<td>함수 → 모델 호출 가능 Tool</td>
+<td>모델의 요청과 실제 OS 실행은 별개</td>
+</tr>
+<tr>
+<td><code>AgentSession</code></td>
+<td>대화 상태·서비스 연속성 정보</td>
+<td>영구 지식 DB가 아님</td>
+</tr>
+<tr>
+<td><code>ContextProvider</code></td>
+<td>실행 전후 기억/검색 등 주입</td>
+<td>Tool과 혼동 금지</td>
+</tr>
+<tr>
+<td><code>HistoryProvider</code></td>
+<td>대화 이력의 저장·로딩</td>
+<td>원본 자료 저장소와 구분</td>
+</tr>
+<tr>
+<td><code>AgentMiddleware</code></td>
+<td>Agent 전체 호출 감싸기</td>
+<td>Chat/Function 미들웨어와 적용 위치가 다름</td>
+</tr>
+<tr>
+<td><code>WorkflowBuilder</code></td>
+<td>Executor 및 Edge로 그래프 구성</td>
+<td>Agent Loop와 달리 순서가 명시적</td>
+</tr>
+<tr>
+<td><code>CheckpointStorage</code></td>
+<td>Workflow 진행 상태 저장</td>
+<td>AgentSession 직렬화와 별도</td>
+</tr>
+<tr>
+<td><code>create_harness_agent</code></td>
+<td>기본 기능이 포함된 Agent 구성</td>
+<td>범용 기본 Agent와 기본값이 다름</td>
+</tr>
+</tbody></table>
+</div><p><strong>함수 이름/계층 출처:</strong> <a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py" target="_blank" rel="noopener noreferrer">[S02]</a>–<a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py" target="_blank" rel="noopener noreferrer">[S08]</a>, <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/" target="_blank" rel="noopener noreferrer">[D03]</a>, <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">[D06]</a>.</p>
+<hr>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="index.html"><small>이전 단원</small>← 학습 안내</a><a class="next" href="runtime.html"><small>다음 단원</small>Python 실행 계층 →</a></nav><footer>Microsoft Agent Framework 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-1-1">1. 3분 핵심 요약</a><a href="#s-2-1">2. 탄생 배경: AutoGen / Semantic Kernel과의 관계</a><a href="#s-3-1">3. 전체 제품 범위: Agents / Workflows / Harness / Integrations</a><a href="#s-4-1">4. 설치와 가장 작은 Agent</a><a href="#s-5-1">5. 핵심 객체 사전</a></nav></aside></div></body></html>

@@ -1,0 +1,68 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework의 원리·구현·한계를 배우는 개인 학습 교재"><title>run에서 모델·도구를 거쳐 돌아오기 — Microsoft Agent Framework</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script><link rel="stylesheet" href="course-links.css"></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">M.</span><span>Microsoft Agent Framework<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>큰 그림과 첫 Agent</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" class="current" aria-current="page"><span class="nav-number">02</span><span>Python 실행 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Tool과 Middleware</span></a><a href="context.html" ><span class="nav-number">04</span><span>Session·Memory·RAG</span></a><p class="nav-group">흐름과 복구</p><a href="workflows.html" ><span class="nav-number">05</span><span>Workflow와 협업</span></a><a href="recovery.html" ><span class="nav-number">06</span><span>승인과 Checkpoint</span></a><p class="nav-group">확장과 운영</p><a href="harness.html" ><span class="nav-number">07</span><span>Harness와 확장</span></a><a href="operations.html" ><span class="nav-number">08</span><span>보안·관측·평가</span></a><p class="nav-group">코드와 적용</p><a href="source-code.html" ><span class="nav-number">09</span><span>공개 코드 추적</span></a><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용 설계</span></a><a href="selection.html" ><span class="nav-number">11</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="review.html" >핵심 복습과 문답</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c</span><a href="../Microsoft_Agent_Framework.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><!-- deep-course-link --><nav class="course-switch" aria-label="학습 과정"><span>학습 과정</span><a href="index.html" aria-current="true">1차 기본 교재</a><a href="deep/index.html">2차 심층 교재 →</a></nav><!-- /deep-course-link --><div class="breadcrumb"><a href="index.html">Microsoft Agent Framework</a><span aria-hidden="true">/</span><span>Python 실행 계층</span></div><header class="chapter-header"><p class="eyebrow">핵심 원리 / 단원 02</p><h1>run에서 모델·도구를 거쳐 돌아오기</h1><p class="lead">Agent Middleware → RawAgent → Context → ChatClient</p><div class="chapter-meta">원문 6–7장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>하나의 agent.run() 안에서도 모델을 여러 번 호출할 수 있습니다. 원문의 Python 구조에서 자동 Tool 반복은 ChatClient의 FunctionInvocation 계층과 연결됩니다.</p><p>전체 요청을 감싸는 Agent 계층, 입력을 준비하는 Context 계층, 공급자 API에 연결되는 ChatClient 계층을 따라 읽으세요. 도식은 정상 경로를 단순화하므로 스트리밍·승인·예외 조건은 본문의 제약과 함께 확인해야 합니다.</p><p class="reading-question"><strong>읽는 관점</strong>각 화살표가 입력 준비인지, 모델 요청인지, 실제 도구 실행인지 구분하세요.</p></section><section class="source-section" data-source-chapter="6"><h2 id="s-6-1">6. 가장 중요한 Python 런타임 아키텍처<a class="anchor" href="#s-6-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>공식 Agent Pipeline 문서는 Python <code>Agent</code>를 <strong>외부 Agent 래핑 계층</strong>과 <strong>교체 가능한 ChatClient 계층</strong>으로 구분한다. 여기서 특히 중요한 포인트는 <em>모델 호출마다 반복되는 Tool Loop가 반드시 Agent의 최상위 <code>run()</code> 안에 직접 작성된 것은 아니라는 것</em>이다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">[D06]</a></p>
+<figure class="diagram" data-source-diagram="1"><figcaption><span>그림 1</span> Agent·Context·ChatClient와 Tool 실행의 계층</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-1.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="Agent·Context·ChatClient와 Tool 실행의 계층"><img src="assets/diagram-1.svg" alt="Agent·Context·ChatClient와 Tool 실행의 계층. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart TD
+  U[사용자 / 애플리케이션] --&gt; A[Agent.run]
+  A --&gt; AM[Agent Middleware / Telemetry]
+  AM --&gt; RA[RawAgent]
+  RA --&gt; CP[Context Providers / History]
+  CP --&gt; FI[ChatClient FunctionInvocation]
+  FI --&gt; CM[Chat Middleware / Telemetry]
+  CM --&gt; RC[RawChatClient / Provider API]
+  RC --&gt;|모델 응답| FI
+  FI --&gt;|함수 호출 요청| FM[Function Middleware / Tool Execution]
+  FM --&gt;|Tool Result| FI
+  FI --&gt;|최종 결과| CP
+  CP --&gt;|After Run 저장| AM
+  AM --&gt; O[AgentResponse]</code></pre></details></figure><p>위 그림은 공식 설명을 학습용으로 단순화한 것이다. 실제 Streaming·승인·게이트·예외 경로는 더 복잡하다.</p>
+<h3 id="s-6-2">6.1 각 레이어의 구체적인 책임<a class="anchor" href="#s-6-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li><strong>Agent Middleware</strong>: 호출 제한, 사용자 식별·요청 검사, 로깅, 실행 결과 변경 등 Agent 전체 요청을 감싼다.</li>
+<li><strong>RawAgent</strong>: 입력과 세션을 바탕으로 Context Provider를 호출하고 ChatClient 실행으로 연결한다.</li>
+<li><strong>History / Context Provider</strong>: 이전 메시지, 검색 결과, 기억, 런타임 도구·옵션 등을 준비한다.</li>
+<li><strong>FunctionInvocation</strong>: ChatClient가 모델 응답을 받으면 Tool 호출 요청을 해석하고 실행·결과 추가·재호출을 수행한다.</li>
+<li><strong>Chat Middleware</strong>: 모델 요청 단위로 정책·로그·검증 등을 개입시킨다.</li>
+<li><strong>RawChatClient</strong>: 실제 공급자 API 호출과 응답 형식 변환을 담당한다.</li>
+<li><strong>후처리/저장</strong>: History Provider와 Context Provider가 실행 결과에 따라 상태를 업데이트할 수 있다.</li>
+</ol>
+<p><strong>설계 시사점:</strong> 모델 요청에만 적용하려는 정책을 Agent Middleware에 등록하면 원하는 만큼 세분화되지 않을 수 있다. &#39;원문이 외부로 나가기 전&#39; 통제는 Chat 단계, &#39;실제 SQL 실행 전&#39; 통제는 Function Tool/실행 인가 계층에 두는 것이 더 명확하다.</p>
+</section>
+<section class="source-section" data-source-chapter="7"><h2 id="s-7-1">7. <code>Agent.run()</code> 호출부터 종료까지<a class="anchor" href="#s-7-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>가장 쉬운 입력/출력 경로는 다음과 같다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>1) app: Agent.run(user_message, session=...)
+2) Agent Middleware가 진입 (요청 전체 트레이싱/검사)
+3) History Provider가 현재 세션의 과거 대화를 로드
+4) Context Providers가 메모리·RAG·도구·옵션을 보강
+5) ChatClient/FunctionInvocation이 모델을 호출
+6a) 도구 요청 없음 → 답변 반환
+6b) 도구 요청 있음 → Tool 검사·실행 → Tool 결과 추가 → 모델 재호출
+7) 필요한 후처리·이력 저장
+8) Agent Middleware가 결과 반환
+9) AgentResponse 전달</code></pre></div><h3 id="s-7-2">Agent Loop 안에서 종료 조건은?<a class="anchor" href="#s-7-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li>모델이 최종 텍스트/구조화 결과를 반환하고 더 실행할 Tool 호출이 없으면 Tool Loop가 종료될 수 있다.</li>
+<li>요청 및 Tool 호출 횟수 상한, 정책, 취소, 승인 요청, 예외는 별도 중단 경로다.</li>
+<li>모델이 계속 Tool을 요구하는 상황에 대한 최대 호출 수·실행 시간·토큰 제한을 애플리케이션 정책으로 설정해야 한다.</li>
+<li><strong>&#39;모델이 질문에 답했지만 검토 결과 미완료&#39;</strong>일 경우, 별도 <code>AgentLoopMiddleware</code>가 Agent 전체를 재실행하는 패턴을 사용할 수 있다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/agent-pipeline" target="_blank" rel="noopener noreferrer">[D06]</a><a href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py" target="_blank" rel="noopener noreferrer">[S07]</a></li>
+</ul>
+<h3 id="s-7-3">시퀀스 다이어그램<a class="anchor" href="#s-7-3" aria-label="이 절의 고유 링크">#</a></h3>
+<figure class="diagram" data-source-diagram="2"><figcaption><span>그림 2</span> 단일 Tool 요청이 최종 AgentResponse로 돌아오는 순서</figcaption><div class="table-scroll" tabindex="0" role="region" aria-label="호출 순서도"><table class="sequence"><thead><tr><th>순서</th><th>호출자 → 수신자</th><th>전달 내용</th></tr></thead><tbody><tr><td>1</td><td>App → Agent</td><td>run(prompt, session)</td></tr><tr><td>2</td><td>Agent → Context/History</td><td>before_run / load history</td></tr><tr><td>3</td><td>Context/History → Agent</td><td>context/messages</td></tr><tr><td>4</td><td>Agent → FunctionInvocation</td><td>get_response(messages, tools)</td></tr><tr><td>5</td><td>FunctionInvocation → LLM Provider</td><td>request</td></tr><tr><td>6</td><td>LLM Provider → FunctionInvocation</td><td>tool_call</td></tr><tr><td>7</td><td>FunctionInvocation → Tool</td><td>validate/execute</td></tr><tr><td>8</td><td>Tool → FunctionInvocation</td><td>result</td></tr><tr><td>9</td><td>FunctionInvocation → LLM Provider</td><td>request + tool result</td></tr><tr><td>10</td><td>LLM Provider → FunctionInvocation</td><td>final answer</td></tr><tr><td>11</td><td>FunctionInvocation → Agent</td><td>ChatResponse</td></tr><tr><td>12</td><td>Agent → Context/History</td><td>after_run / persist</td></tr><tr><td>13</td><td>Agent → App</td><td>AgentResponse</td></tr></tbody></table></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 호출 순서와 반복·분기 조건을 표 형태의 순서도로 보존했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>sequenceDiagram
+  participant U as App
+  participant A as Agent
+  participant C as Context/History
+  participant F as FunctionInvocation
+  participant M as LLM Provider
+  participant T as Tool
+  U-&gt;&gt;A: run(prompt, session)
+  A-&gt;&gt;C: before_run / load history
+  C--&gt;&gt;A: context/messages
+  A-&gt;&gt;F: get_response(messages, tools)
+  F-&gt;&gt;M: request
+  M--&gt;&gt;F: tool_call
+  F-&gt;&gt;T: validate/execute
+  T--&gt;&gt;F: result
+  F-&gt;&gt;M: request + tool result
+  M--&gt;&gt;F: final answer
+  F--&gt;&gt;A: ChatResponse
+  A-&gt;&gt;C: after_run / persist
+  A--&gt;&gt;U: AgentResponse</code></pre></details></figure><p><strong>중요:</strong> 위 도식은 정상적인 단일 Tool 호출을 나타낸다. 여러 Tool 병렬 호출, 승인 중단, Streaming, Hosted Tool은 별도 분기로 취급해야 한다.</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="foundations.html"><small>이전 단원</small>← 큰 그림과 첫 Agent</a><a class="next" href="tools.html"><small>다음 단원</small>Tool과 Middleware →</a></nav><footer>Microsoft Agent Framework 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-6-1">6. 가장 중요한 Python 런타임 아키텍처</a><a href="#s-7-1">7. Agent.run() 호출부터 종료까지</a></nav></aside></div></body></html>

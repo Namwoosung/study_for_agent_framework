@@ -1,0 +1,2929 @@
+{
+  "name": "Hermes Agent",
+  "source": "../../Hermes_Agent_2차_심층_학습_분석.md",
+  "sourceHash": "d45b9860784cb0aa9a98238f02bb4e1f864358d184d987aa4b451ce5ec8654f3",
+  "normalizedHash": "d45b9860784cb0aa9a98238f02bb4e1f864358d184d987aa4b451ce5ec8654f3",
+  "lineCount": 1678,
+  "chapterCount": 21,
+  "headings": [
+    {
+      "line": 1,
+      "depth": 1,
+      "text": "Hermes Agent 2차 심층 학습: Agent Runtime·Harness의 실제 구현과 설계 분석",
+      "id": "line-1"
+    },
+    {
+      "line": 12,
+      "depth": 2,
+      "text": "목차",
+      "id": "line-12"
+    },
+    {
+      "line": 38,
+      "depth": 1,
+      "text": "1. 학습 목표와 증거 등급",
+      "id": "line-38"
+    },
+    {
+      "line": 40,
+      "depth": 2,
+      "text": "1.1 이 문서를 읽은 후 설명할 수 있어야 하는 것",
+      "id": "line-40"
+    },
+    {
+      "line": 51,
+      "depth": 2,
+      "text": "1.2 증거 등급: 이후 모든 코드 설명의 읽기 규칙",
+      "id": "line-51"
+    },
+    {
+      "line": 62,
+      "depth": 2,
+      "text": "1.3 가장 먼저 비교해야 하는 개념",
+      "id": "line-62"
+    },
+    {
+      "line": 76,
+      "depth": 1,
+      "text": "2. Hermes의 소프트웨어 경계와 계층 구조",
+      "id": "line-76"
+    },
+    {
+      "line": 78,
+      "depth": 2,
+      "text": "2.1 층별 아키텍처",
+      "id": "line-78"
+    },
+    {
+      "line": 101,
+      "depth": 2,
+      "text": "2.2 상태의 '소유자'를 구분하자",
+      "id": "line-101"
+    },
+    {
+      "line": 115,
+      "depth": 1,
+      "text": "3. 사용자 요청 한 건의 End-to-End Call Graph",
+      "id": "line-115"
+    },
+    {
+      "line": 117,
+      "depth": 2,
+      "text": "3.1 일반적인 진입 흐름",
+      "id": "line-117"
+    },
+    {
+      "line": 152,
+      "depth": 2,
+      "text": "3.2 구체적인 호출 체인",
+      "id": "line-152"
+    },
+    {
+      "line": 183,
+      "depth": 2,
+      "text": "3.3 '한 번의 사용자 요청'과 '여러 번의 LLM API 호출'은 다르다",
+      "id": "line-183"
+    },
+    {
+      "line": 192,
+      "depth": 1,
+      "text": "4. Agent Loop: 종료·복구·저장·Iteration Budget",
+      "id": "line-192"
+    },
+    {
+      "line": 194,
+      "depth": 2,
+      "text": "4.1 실질적인 반복 조건",
+      "id": "line-194"
+    },
+    {
+      "line": 224,
+      "depth": 3,
+      "text": "서로 다른 종료 원인",
+      "id": "line-224"
+    },
+    {
+      "line": 239,
+      "depth": 2,
+      "text": "4.2 재시도는 '동일 의미'가 아니다",
+      "id": "line-239"
+    },
+    {
+      "line": 249,
+      "depth": 2,
+      "text": "4.3 Tool Call의 유효성 검사",
+      "id": "line-249"
+    },
+    {
+      "line": 255,
+      "depth": 2,
+      "text": "4.4 발표에서 강조할 핵심",
+      "id": "line-255"
+    },
+    {
+      "line": 259,
+      "depth": 1,
+      "text": "5. Prompt 조립: '최종 모델 입력'의 정체",
+      "id": "line-259"
+    },
+    {
+      "line": 261,
+      "depth": 2,
+      "text": "5.1 왜 Prompt를 하나의 거대한 문자열로 이해하면 안 될까?",
+      "id": "line-261"
+    },
+    {
+      "line": 276,
+      "depth": 2,
+      "text": "5.2 프로젝트 Instruction 파일의 우선순위",
+      "id": "line-276"
+    },
+    {
+      "line": 289,
+      "depth": 2,
+      "text": "5.3 모델 입력을 역추적하는 방법",
+      "id": "line-289"
+    },
+    {
+      "line": 313,
+      "depth": 2,
+      "text": "5.4 학습용 최종 입력 예시 (실제 캡처 아님)",
+      "id": "line-313"
+    },
+    {
+      "line": 330,
+      "depth": 2,
+      "text": "5.5 설계 Trade-off",
+      "id": "line-330"
+    },
+    {
+      "line": 339,
+      "depth": 1,
+      "text": "6. Prefix Caching: 매번 보내는데 왜 절약되는가?",
+      "id": "line-339"
+    },
+    {
+      "line": 341,
+      "depth": 2,
+      "text": "6.1 사용자의 질문에 대한 직접 답",
+      "id": "line-341"
+    },
+    {
+      "line": 359,
+      "depth": 2,
+      "text": "6.2 왜 Prefix가 '깨지는가'?",
+      "id": "line-359"
+    },
+    {
+      "line": 371,
+      "depth": 2,
+      "text": "6.3 Hermes의 코드상 캐시 전략",
+      "id": "line-371"
+    },
+    {
+      "line": 383,
+      "depth": 3,
+      "text": "각 계층별 변경 영향",
+      "id": "line-383"
+    },
+    {
+      "line": 394,
+      "depth": 2,
+      "text": "6.4 캐싱과 동일성 검사를 어렵게 만드는 것",
+      "id": "line-394"
+    },
+    {
+      "line": 404,
+      "depth": 2,
+      "text": "6.5 발표용 핵심 코드·흐름",
+      "id": "line-404"
+    },
+    {
+      "line": 420,
+      "depth": 1,
+      "text": "7. Context Compression: 무엇을 버리고 무엇을 보존하는가?",
+      "id": "line-420"
+    },
+    {
+      "line": 422,
+      "depth": 2,
+      "text": "7.1 캐싱과 Compaction은 반대 문제가 아니다",
+      "id": "line-422"
+    },
+    {
+      "line": 430,
+      "depth": 2,
+      "text": "7.2 Hermes의 압축 계층",
+      "id": "line-430"
+    },
+    {
+      "line": 439,
+      "depth": 2,
+      "text": "7.3 단계별 압축 절차",
+      "id": "line-439"
+    },
+    {
+      "line": 462,
+      "depth": 2,
+      "text": "7.4 왜 Tool 결과를 먼저 줄일까?",
+      "id": "line-462"
+    },
+    {
+      "line": 468,
+      "depth": 2,
+      "text": "7.5 압축 실패와 무한 재압축 방지",
+      "id": "line-468"
+    },
+    {
+      "line": 474,
+      "depth": 2,
+      "text": "7.6 Cache와 Compaction의 Trade-off",
+      "id": "line-474"
+    },
+    {
+      "line": 484,
+      "depth": 1,
+      "text": "8. Built-in Memory: 파일을 누가 언제 어떻게 쓰는가?",
+      "id": "line-484"
+    },
+    {
+      "line": 486,
+      "depth": 2,
+      "text": "8.1 `MEMORY.md`는 Agent가 판단해서 직접 수정할까?",
+      "id": "line-486"
+    },
+    {
+      "line": 497,
+      "depth": 2,
+      "text": "8.2 핵심: 세션 중 기록해도 System Prompt는 즉시 바뀌지 않는다",
+      "id": "line-497"
+    },
+    {
+      "line": 522,
+      "depth": 2,
+      "text": "8.3 실제 Memory Tool 경로",
+      "id": "line-522"
+    },
+    {
+      "line": 540,
+      "depth": 2,
+      "text": "8.4 '알아서 기억하기'는 LLM의 판단과 비결정적 도구 실행에 의존",
+      "id": "line-540"
+    },
+    {
+      "line": 550,
+      "depth": 2,
+      "text": "8.5 승인 정책을 반드시 분리하여 공부",
+      "id": "line-550"
+    },
+    {
+      "line": 560,
+      "depth": 2,
+      "text": "8.6 Memory vs Session vs Skill",
+      "id": "line-560"
+    },
+    {
+      "line": 570,
+      "depth": 2,
+      "text": "8.7 '메모리'에 과도한 의미를 부여하지 말 것",
+      "id": "line-570"
+    },
+    {
+      "line": 574,
+      "depth": 1,
+      "text": "9. SQLite·FTS5와 RAG의 차이",
+      "id": "line-574"
+    },
+    {
+      "line": 576,
+      "depth": 2,
+      "text": "9.1 SQLite가 담당하는 수준",
+      "id": "line-576"
+    },
+    {
+      "line": 595,
+      "depth": 2,
+      "text": "9.2 FTS5는 어느 수준의 검색인가?",
+      "id": "line-595"
+    },
+    {
+      "line": 624,
+      "depth": 2,
+      "text": "9.3 FTS5 검색의 전체 흐름",
+      "id": "line-624"
+    },
+    {
+      "line": 638,
+      "depth": 2,
+      "text": "9.4 '왜 Hermes는 RAG를 안 쓰는가?'라는 질문 바로잡기",
+      "id": "line-638"
+    },
+    {
+      "line": 650,
+      "depth": 2,
+      "text": "9.5 인덱싱의 정합성도 배워야 한다",
+      "id": "line-650"
+    },
+    {
+      "line": 663,
+      "depth": 1,
+      "text": "10. Skills: 절차적 기억은 어떻게 발견·생성·재사용되는가?",
+      "id": "line-663"
+    },
+    {
+      "line": 665,
+      "depth": 2,
+      "text": "10.1 Skill의 본질: 저장된 행동 절차",
+      "id": "line-665"
+    },
+    {
+      "line": 683,
+      "depth": 2,
+      "text": "10.2 점진적 로딩이 왜 중요한가?",
+      "id": "line-683"
+    },
+    {
+      "line": 703,
+      "depth": 2,
+      "text": "10.3 Skill 자동 생성은 정확히 어떤 동작인가?",
+      "id": "line-703"
+    },
+    {
+      "line": 729,
+      "depth": 2,
+      "text": "10.4 핵심 로직을 지나치게 신비화하지 말 것",
+      "id": "line-729"
+    },
+    {
+      "line": 735,
+      "depth": 2,
+      "text": "10.5 Skill 자동 생성의 실패 모드",
+      "id": "line-735"
+    },
+    {
+      "line": 747,
+      "depth": 2,
+      "text": "10.6 왜 '반도체 공정 상황에서는 오히려 안 좋을 수 있나?'",
+      "id": "line-747"
+    },
+    {
+      "line": 761,
+      "depth": 1,
+      "text": "11. Tool Registry·MCP·Plugin: 실행 경로와 확장 경계",
+      "id": "line-761"
+    },
+    {
+      "line": 763,
+      "depth": 2,
+      "text": "11.1 네 가지를 정확히 분류",
+      "id": "line-763"
+    },
+    {
+      "line": 775,
+      "depth": 2,
+      "text": "11.2 Tool을 등록하면 무슨 일이 일어나나?",
+      "id": "line-775"
+    },
+    {
+      "line": 793,
+      "depth": 2,
+      "text": "11.3 실제 Tool Call Dispatch 흐름",
+      "id": "line-793"
+    },
+    {
+      "line": 823,
+      "depth": 2,
+      "text": "11.4 Agent Inline Tools와 Registry Tools의 차이",
+      "id": "line-823"
+    },
+    {
+      "line": 831,
+      "depth": 2,
+      "text": "11.5 MCP는 반드시 별도 프로세스인가?",
+      "id": "line-831"
+    },
+    {
+      "line": 848,
+      "depth": 2,
+      "text": "11.6 Plugin은 왜 따로 필요한가?",
+      "id": "line-848"
+    },
+    {
+      "line": 863,
+      "depth": 2,
+      "text": "11.7 운영상 위험: Plugin은 단순 텍스트가 아니다",
+      "id": "line-863"
+    },
+    {
+      "line": 867,
+      "depth": 1,
+      "text": "12. Guardrails: 정확히 어디서 차단되나?",
+      "id": "line-867"
+    },
+    {
+      "line": 869,
+      "depth": 2,
+      "text": "12.1 Guardrails는 하나의 함수가 아니다",
+      "id": "line-869"
+    },
+    {
+      "line": 886,
+      "depth": 2,
+      "text": "12.2 명령 실행 전 Approval Gate의 실제 코드",
+      "id": "line-886"
+    },
+    {
+      "line": 918,
+      "depth": 2,
+      "text": "12.3 모델 지침과 Runtime Guardrail의 차이",
+      "id": "line-918"
+    },
+    {
+      "line": 932,
+      "depth": 2,
+      "text": "12.4 실제 위험: Tool 호출 인자가 중간에 바뀌면?",
+      "id": "line-932"
+    },
+    {
+      "line": 947,
+      "depth": 2,
+      "text": "12.5 간접 Prompt Injection은 왜 Tool Output에서도 위험할까?",
+      "id": "line-947"
+    },
+    {
+      "line": 951,
+      "depth": 2,
+      "text": "12.6 발표 시 Guardrail 순서를 어떻게 표현할까?",
+      "id": "line-951"
+    },
+    {
+      "line": 970,
+      "depth": 1,
+      "text": "13. 병렬 Tool Call: 무엇이 병렬이고 어떤 경우에 순차인가?",
+      "id": "line-970"
+    },
+    {
+      "line": 972,
+      "depth": 2,
+      "text": "13.1 모델이 여러 Tool을 제안하는 것과 실제 병렬 실행은 다르다",
+      "id": "line-972"
+    },
+    {
+      "line": 981,
+      "depth": 2,
+      "text": "13.2 Hermes의 실제 실행 구현",
+      "id": "line-981"
+    },
+    {
+      "line": 995,
+      "depth": 2,
+      "text": "13.3 병렬 구간을 나누는 이유",
+      "id": "line-995"
+    },
+    {
+      "line": 1021,
+      "depth": 2,
+      "text": "13.4 결과 순서를 유지하는 이유",
+      "id": "line-1021"
+    },
+    {
+      "line": 1031,
+      "depth": 2,
+      "text": "13.5 Timeout과 취소는 실행 취소(Rollback)가 아니다",
+      "id": "line-1031"
+    },
+    {
+      "line": 1060,
+      "depth": 1,
+      "text": "14. Subagent/Delegation: 별도 LLM Loop는 어떻게 실행되나?",
+      "id": "line-1060"
+    },
+    {
+      "line": 1062,
+      "depth": 2,
+      "text": "14.1 Subagent는 단순 함수 호출과 다르다",
+      "id": "line-1062"
+    },
+    {
+      "line": 1083,
+      "depth": 2,
+      "text": "14.2 코드 수준에서 무엇을 확인했나?",
+      "id": "line-1083"
+    },
+    {
+      "line": 1091,
+      "depth": 3,
+      "text": "Parent → Child 계약",
+      "id": "line-1091"
+    },
+    {
+      "line": 1104,
+      "depth": 2,
+      "text": "14.3 병렬 Task Batch의 코드 동작 개념",
+      "id": "line-1104"
+    },
+    {
+      "line": 1120,
+      "depth": 2,
+      "text": "14.4 Structured Output 검증",
+      "id": "line-1120"
+    },
+    {
+      "line": 1126,
+      "depth": 2,
+      "text": "14.5 Worktree와 Context 격리의 차이",
+      "id": "line-1126"
+    },
+    {
+      "line": 1135,
+      "depth": 2,
+      "text": "14.6 Subagent가 유용한 조건과 오히려 나쁜 조건",
+      "id": "line-1135"
+    },
+    {
+      "line": 1147,
+      "depth": 2,
+      "text": "14.7 발표에서 구분할 4가지",
+      "id": "line-1147"
+    },
+    {
+      "line": 1158,
+      "depth": 1,
+      "text": "15. Gateway·Serving: 요청이 끝날 때까지 서버는 무엇을 하나?",
+      "id": "line-1158"
+    },
+    {
+      "line": 1160,
+      "depth": 2,
+      "text": "15.1 '서버에서 Agent를 다 처리한 다음 응답 반환'이란?",
+      "id": "line-1160"
+    },
+    {
+      "line": 1166,
+      "depth": 2,
+      "text": "15.2 계층적 Serving 구성",
+      "id": "line-1166"
+    },
+    {
+      "line": 1191,
+      "depth": 2,
+      "text": "15.3 Hermes의 세션 쓰기 소유권",
+      "id": "line-1191"
+    },
+    {
+      "line": 1199,
+      "depth": 2,
+      "text": "15.4 인터페이스 별 차이",
+      "id": "line-1199"
+    },
+    {
+      "line": 1214,
+      "depth": 2,
+      "text": "15.5 동기 응답과 비동기 Run의 차이",
+      "id": "line-1214"
+    },
+    {
+      "line": 1238,
+      "depth": 2,
+      "text": "15.6 Busy Session과 사용자 개입",
+      "id": "line-1238"
+    },
+    {
+      "line": 1254,
+      "depth": 2,
+      "text": "15.7 Hermes Server와 vLLM/SGLang Server는 다르다",
+      "id": "line-1254"
+    },
+    {
+      "line": 1263,
+      "depth": 1,
+      "text": "16. Cron: 언제 실행되고 무엇을 재실행하는가?",
+      "id": "line-1263"
+    },
+    {
+      "line": 1265,
+      "depth": 2,
+      "text": "16.1 Cron은 단순 타이머가 아니다",
+      "id": "line-1265"
+    },
+    {
+      "line": 1273,
+      "depth": 2,
+      "text": "16.2 Cron Scheduler의 핵심 구조",
+      "id": "line-1273"
+    },
+    {
+      "line": 1305,
+      "depth": 2,
+      "text": "16.3 왜 새 Session으로 실행할까?",
+      "id": "line-1305"
+    },
+    {
+      "line": 1314,
+      "depth": 2,
+      "text": "16.4 Skills 및 Script는 Cron에서 어떻게 들어가나?",
+      "id": "line-1314"
+    },
+    {
+      "line": 1330,
+      "depth": 2,
+      "text": "16.5 중복 실행 방지의 진짜 문제",
+      "id": "line-1330"
+    },
+    {
+      "line": 1344,
+      "depth": 2,
+      "text": "16.6 Cron과 기존 Session을 공유하면 안 되는 이유",
+      "id": "line-1344"
+    },
+    {
+      "line": 1348,
+      "depth": 2,
+      "text": "16.7 다른 프레임워크와 비교할 때의 위치",
+      "id": "line-1348"
+    },
+    {
+      "line": 1357,
+      "depth": 1,
+      "text": "17. 실패 시나리오별 내부 동작과 설계 판단",
+      "id": "line-1357"
+    },
+    {
+      "line": 1361,
+      "depth": 2,
+      "text": "17.1 상태 무결성을 위한 12개 시나리오",
+      "id": "line-1361"
+    },
+    {
+      "line": 1378,
+      "depth": 2,
+      "text": "17.2 '세션 DB 기록 먼저'가 의미하는 것",
+      "id": "line-1378"
+    },
+    {
+      "line": 1392,
+      "depth": 2,
+      "text": "17.3 Guardrail의 Fail-Open / Fail-Closed 판단",
+      "id": "line-1392"
+    },
+    {
+      "line": 1400,
+      "depth": 2,
+      "text": "17.4 발표에서 피해야 할 일반화",
+      "id": "line-1400"
+    },
+    {
+      "line": 1412,
+      "depth": 1,
+      "text": "18. 7개 프레임워크 비교를 위한 Hermes 기준값",
+      "id": "line-1412"
+    },
+    {
+      "line": 1438,
+      "depth": 2,
+      "text": "18.1 'Hermes 같은 Framework를 직접 만든다면?' 구성 제안",
+      "id": "line-1438"
+    },
+    {
+      "line": 1459,
+      "depth": 3,
+      "text": "별도 구현할지 판단할 인터페이스",
+      "id": "line-1459"
+    },
+    {
+      "line": 1490,
+      "depth": 1,
+      "text": "19. 학습 및 발표 구성안",
+      "id": "line-1490"
+    },
+    {
+      "line": 1494,
+      "depth": 2,
+      "text": "19.1 발표 12~14장 권장 구성",
+      "id": "line-1494"
+    },
+    {
+      "line": 1513,
+      "depth": 2,
+      "text": "19.2 발표 본문에 넣을 코드의 양",
+      "id": "line-1513"
+    },
+    {
+      "line": 1523,
+      "depth": 2,
+      "text": "19.3 슬라이드마다 전달할 문장",
+      "id": "line-1523"
+    },
+    {
+      "line": 1536,
+      "depth": 1,
+      "text": "20. 학습을 마친 뒤 직접 답할 수 있어야 할 심층 질문",
+      "id": "line-1536"
+    },
+    {
+      "line": 1540,
+      "depth": 2,
+      "text": "20.1 개념과 이유",
+      "id": "line-1540"
+    },
+    {
+      "line": 1553,
+      "depth": 2,
+      "text": "20.2 코드 및 실행 흐름",
+      "id": "line-1553"
+    },
+    {
+      "line": 1568,
+      "depth": 2,
+      "text": "20.3 설계 Trade-off",
+      "id": "line-1568"
+    },
+    {
+      "line": 1581,
+      "depth": 1,
+      "text": "21. 공식 출처·소스코드 인덱스·검증 한계",
+      "id": "line-1581"
+    },
+    {
+      "line": 1583,
+      "depth": 2,
+      "text": "21.1 공식 문서 (현재 갱신되는 웹 페이지)",
+      "id": "line-1583"
+    },
+    {
+      "line": 1603,
+      "depth": 2,
+      "text": "21.2 v0.22.5 고정 소스코드 (중요한 파일 25곳)",
+      "id": "line-1603"
+    },
+    {
+      "line": 1635,
+      "depth": 2,
+      "text": "21.3 검증 한계: 무엇을 아직 확인하지 않았는가?",
+      "id": "line-1635"
+    },
+    {
+      "line": 1644,
+      "depth": 2,
+      "text": "21.4 후속 학습에서 재사용할 코드 추적 템플릿",
+      "id": "line-1644"
+    },
+    {
+      "line": 1664,
+      "depth": 1,
+      "text": "마지막 정리: Hermes에서 학습해야 하는 핵심 10문장",
+      "id": "line-1664"
+    }
+  ],
+  "pages": [
+    "index.html",
+    "unit-01.html",
+    "unit-02.html",
+    "unit-03.html",
+    "unit-04.html",
+    "unit-05.html",
+    "unit-06.html",
+    "unit-07.html",
+    "unit-08.html",
+    "unit-09.html",
+    "unit-10.html",
+    "unit-11.html",
+    "unit-12.html",
+    "unit-13.html",
+    "unit-14.html",
+    "unit-15.html",
+    "unit-16.html",
+    "unit-17.html",
+    "unit-18.html",
+    "unit-19.html",
+    "unit-20.html",
+    "unit-21.html"
+  ],
+  "sections": [
+    {
+      "key": "intro-1",
+      "chapter": "intro",
+      "startLine": 1,
+      "endLine": 37,
+      "rawHash": "00aad28ee2af34709455e718708ab7b6ea17ff7b4b61424149cf386222b150d4",
+      "htmlHash": "2618145503d34542a45c6a1c76d3c4dc0e69600ec7a30a90b670a363ef6ce410"
+    },
+    {
+      "key": "1-1",
+      "chapter": "1",
+      "startLine": 38,
+      "endLine": 75,
+      "rawHash": "8e5726c8d2967f7e637a337c392eb8b9e40af8783ab7c9cc0d35099f71127da5",
+      "htmlHash": "11c83aa4621b50cd6ee5a47d6d3e705bfe0a168c35c9aa6aa73bd98eb234cdca"
+    },
+    {
+      "key": "2-1",
+      "chapter": "2",
+      "startLine": 76,
+      "endLine": 114,
+      "rawHash": "b86537864606ee11e73b6fd4a9320cb89e379ed0bc43ae470836bf4878973323",
+      "htmlHash": "660759588985787ddfca2280f0a9142339443aaa3b2874765427e73a1623d0a8"
+    },
+    {
+      "key": "3-1",
+      "chapter": "3",
+      "startLine": 115,
+      "endLine": 191,
+      "rawHash": "1304fa97b4ac104828bb3b96bd781cd71851a38793e1d1df75068b4ba74b570c",
+      "htmlHash": "90b58b8ee31f2173f100fae36b12df02375df6830f6d9d3148022f2f9f312e83"
+    },
+    {
+      "key": "4-1",
+      "chapter": "4",
+      "startLine": 192,
+      "endLine": 258,
+      "rawHash": "6190882274f618024a301042e41789ba053fcd15f32586c33fadbb1ae136196c",
+      "htmlHash": "38b82dc3496e685b18e02d7e7268d8138e3275609b68f58abb5c69fd83fb1760"
+    },
+    {
+      "key": "5-1",
+      "chapter": "5",
+      "startLine": 259,
+      "endLine": 338,
+      "rawHash": "fbf0f24b783a81e2955f14ccfa8d6968c670b3d97640a6a18df0ec7a9d7517c9",
+      "htmlHash": "015673d477e7f2d10afb86b5845845ae092fd528529b93793b3a56a692ff54a2"
+    },
+    {
+      "key": "6-1",
+      "chapter": "6",
+      "startLine": 339,
+      "endLine": 419,
+      "rawHash": "39c45a89b2f02be2385e644665ed5d870e6135540cd23a79f71b1aa724de29ad",
+      "htmlHash": "a2f2890d5cb4e655ee07bb91860dd5b9fb116f5827b5f60ebe07f88196cfb69b"
+    },
+    {
+      "key": "7-1",
+      "chapter": "7",
+      "startLine": 420,
+      "endLine": 483,
+      "rawHash": "960846a745b455bad6665dd39e130713cb0476ab550d145ea3e5311387b43af6",
+      "htmlHash": "f5d6fa2e465470e81726d1fd53bc508b3576ad34fb07b3ff4fbb82b679d7c831"
+    },
+    {
+      "key": "8-1",
+      "chapter": "8",
+      "startLine": 484,
+      "endLine": 573,
+      "rawHash": "fae4854144e763603cc5123a8158dfe3bb5ed578de61df62cdbdc2c851d78f8b",
+      "htmlHash": "b0a65d3db7bc560549d5c6b5da888f8f931b2c2adaff9de7e508fd2731b5124d"
+    },
+    {
+      "key": "9-1",
+      "chapter": "9",
+      "startLine": 574,
+      "endLine": 662,
+      "rawHash": "fffadc2c603d0b530f9f23a3b7de32e102f3bca620937ba2976c8250c7ec7020",
+      "htmlHash": "bfec2b2063b27804abca7f977da4de346c57f917194d7c80dc884c7dd259de6c"
+    },
+    {
+      "key": "10-1",
+      "chapter": "10",
+      "startLine": 663,
+      "endLine": 760,
+      "rawHash": "7c35f832df5523312cccd67a82db1b2f90352f163ca254b0301dc3329924c361",
+      "htmlHash": "fb59ebcdf44a7d6c50d0d04e4d091c6bb5bbe80af932879f71d64351dc6be35b"
+    },
+    {
+      "key": "11-1",
+      "chapter": "11",
+      "startLine": 761,
+      "endLine": 866,
+      "rawHash": "883e5f879276ea4718b2ff75daffa8b1dcce07b3798948f3d954712fedfdb5b7",
+      "htmlHash": "12993b350cf6167bd7a5d587d499aa6ae6f59a84993472fad0669dff5626f657"
+    },
+    {
+      "key": "12-1",
+      "chapter": "12",
+      "startLine": 867,
+      "endLine": 969,
+      "rawHash": "1cac4a22a9b3a88084f2576659e30099f76ba8a3105039c9694847f0a80705bb",
+      "htmlHash": "33782c23e7ccdb7a2b6c9fce7bd951ad585781fb1cf2408095b5b30012efd913"
+    },
+    {
+      "key": "13-1",
+      "chapter": "13",
+      "startLine": 970,
+      "endLine": 1059,
+      "rawHash": "dfa0f8443ff39ca3e6594a927938d9036200f11b10ecc884e09ca431ed613e02",
+      "htmlHash": "d261fb96181a5f810b477149dc355585a0f6c0eb247ec4c9dda1e05c5e20b798"
+    },
+    {
+      "key": "14-1",
+      "chapter": "14",
+      "startLine": 1060,
+      "endLine": 1157,
+      "rawHash": "2882d24bf50fb132695a67481a66c289eacd23c9e44e949e4e90dfe7115264df",
+      "htmlHash": "392589b716fbbe56079b8f7344dac700d69a8e4d625af7ea7bef6cb5d3f7782c"
+    },
+    {
+      "key": "15-1",
+      "chapter": "15",
+      "startLine": 1158,
+      "endLine": 1262,
+      "rawHash": "d290179a97cf14d3333e18a15ff1beb59470733fa85383618fa633c57e41c9ac",
+      "htmlHash": "0d6e4af9b09fc1949e2f6b188e437c0c918f84eb0dca5e94222dbea74b667e4e"
+    },
+    {
+      "key": "16-1",
+      "chapter": "16",
+      "startLine": 1263,
+      "endLine": 1356,
+      "rawHash": "f04ed95509212cc5cbe6765f8f69be29088239553e3eb3499745f5cfd0ae3762",
+      "htmlHash": "917f3529c0f5756f8b5452b441a76a36019f229fe29c96a58401c002ab74b3f3"
+    },
+    {
+      "key": "17-1",
+      "chapter": "17",
+      "startLine": 1357,
+      "endLine": 1411,
+      "rawHash": "7ae0525bab098eee972010bf2603be7c65a35af10eea4edfb134b4fdb81b43df",
+      "htmlHash": "e1d627fef98351a06fae5bddfefa906356bbe75b3de3fcdab983b4c7d952b0ef"
+    },
+    {
+      "key": "18-1",
+      "chapter": "18",
+      "startLine": 1412,
+      "endLine": 1489,
+      "rawHash": "42febee0eabe5436260263f6fb29c47ebdce4845d7c51902beeeb3193842a02d",
+      "htmlHash": "d68e0232d5e8dadab464b536f183c79affcb226d17d6c568efd71c1a0456e949"
+    },
+    {
+      "key": "19-1",
+      "chapter": "19",
+      "startLine": 1490,
+      "endLine": 1535,
+      "rawHash": "2d418c207e3a74d3fa41070e1a4e9e55f3f0bedfd9d170d73e3137f0a27b3054",
+      "htmlHash": "a3d43c9003c0eba751d71aeaa7f03a4f6f5099f1f0e2b3c074d46b36ae4bc9de"
+    },
+    {
+      "key": "20-1",
+      "chapter": "20",
+      "startLine": 1536,
+      "endLine": 1580,
+      "rawHash": "3f9d82eb13b8f01e8b4518357199823a721975c03da15f87bbdb4ec42eaa4961",
+      "htmlHash": "9dc9199cc8d7e4dde47c0f639249cd457dc66f5badca8b77a5bb3811e2c76aea"
+    },
+    {
+      "key": "21-1",
+      "chapter": "21",
+      "startLine": 1581,
+      "endLine": 1634,
+      "rawHash": "5e31666052484d30da32bc0eea2dcb90a2be298fa66ba949ad1f41bbdc6b8e13",
+      "htmlHash": "92eb622fddb2900580e527023c7910d21143f556716c2b8f85e9cfadcb94df8e"
+    },
+    {
+      "key": "21-2",
+      "chapter": "21",
+      "startLine": 1635,
+      "endLine": 1663,
+      "rawHash": "82e7c965e335c17304694c1ad2a5369a0623cc56bf72a7413b8d2a17e1ca51cf",
+      "htmlHash": "6e1c61f19cd905435dcc835915eabd8533aeddb94959cbc7951aa1019153d09c"
+    },
+    {
+      "key": "final-1",
+      "chapter": "final",
+      "startLine": 1664,
+      "endLine": 1678,
+      "rawHash": "2e0f1305e4aadbe0673f8d7fef21931625d1f6955898ab73bfdb39dbf9fe0d46",
+      "htmlHash": "c1f27f2ed95444145d072724c866bd639112ef35c77a67dab79fdc5fef6e69b1"
+    }
+  ],
+  "mapping": [
+    {
+      "page": "unit-01.html",
+      "sections": [
+        "intro-1"
+      ]
+    },
+    {
+      "page": "unit-02.html",
+      "sections": [
+        "1-1",
+        "2-1"
+      ]
+    },
+    {
+      "page": "unit-03.html",
+      "sections": [
+        "3-1",
+        "4-1"
+      ]
+    },
+    {
+      "page": "unit-04.html",
+      "sections": [
+        "5-1"
+      ]
+    },
+    {
+      "page": "unit-05.html",
+      "sections": [
+        "6-1"
+      ]
+    },
+    {
+      "page": "unit-06.html",
+      "sections": [
+        "7-1"
+      ]
+    },
+    {
+      "page": "unit-07.html",
+      "sections": [
+        "8-1"
+      ]
+    },
+    {
+      "page": "unit-08.html",
+      "sections": [
+        "9-1"
+      ]
+    },
+    {
+      "page": "unit-09.html",
+      "sections": [
+        "10-1"
+      ]
+    },
+    {
+      "page": "unit-10.html",
+      "sections": [
+        "11-1"
+      ]
+    },
+    {
+      "page": "unit-11.html",
+      "sections": [
+        "12-1"
+      ]
+    },
+    {
+      "page": "unit-12.html",
+      "sections": [
+        "13-1"
+      ]
+    },
+    {
+      "page": "unit-13.html",
+      "sections": [
+        "14-1"
+      ]
+    },
+    {
+      "page": "unit-14.html",
+      "sections": [
+        "15-1"
+      ]
+    },
+    {
+      "page": "unit-15.html",
+      "sections": [
+        "16-1"
+      ]
+    },
+    {
+      "page": "unit-16.html",
+      "sections": [
+        "17-1"
+      ]
+    },
+    {
+      "page": "unit-17.html",
+      "sections": [
+        "18-1"
+      ]
+    },
+    {
+      "page": "unit-18.html",
+      "sections": [
+        "19-1",
+        "20-1"
+      ]
+    },
+    {
+      "page": "unit-19.html",
+      "sections": [
+        "21-1"
+      ]
+    },
+    {
+      "page": "unit-20.html",
+      "sections": [
+        "21-2"
+      ]
+    },
+    {
+      "page": "unit-21.html",
+      "sections": [
+        "final-1"
+      ]
+    }
+  ],
+  "references": {
+    "D01": "https://hermes-agent.nousresearch.com/docs/developer-guide/architecture",
+    "D02": "https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop",
+    "D03": "https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly",
+    "D04": "https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching",
+    "D05": "https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage",
+    "D06": "https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime",
+    "D07": "https://hermes-agent.nousresearch.com/docs/developer-guide/gateway-internals",
+    "D08": "https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration",
+    "D09": "https://hermes-agent.nousresearch.com/docs/developer-guide/cron-internals",
+    "D10": "https://hermes-agent.nousresearch.com/docs/user-guide/features/memory",
+    "D11": "https://hermes-agent.nousresearch.com/docs/user-guide/features/skills",
+    "D12": "https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation",
+    "D13": "https://hermes-agent.nousresearch.com/docs/user-guide/security",
+    "D14": "https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins",
+    "D15": "https://github.com/NousResearch/hermes-agent/releases/tag/v0.22.5",
+    "S01": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/conversation_loop.py",
+    "S02": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_tool_round.py",
+    "S03": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_tool_validation.py",
+    "S04": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_api_call.py",
+    "S05": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_finalizer.py",
+    "S06": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/prompt_builder.py",
+    "S07": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/system_prompt.py",
+    "S08": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/prompt_caching.py",
+    "S09": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/context_engine.py",
+    "S10": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/context_compressor.py",
+    "S11": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/context_compressor_prune.py",
+    "S12": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/memory_tool.py",
+    "S13": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/memory_tool_store.py",
+    "S14": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_state_fts.py",
+    "S15": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_state_common.py",
+    "S16": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/registry.py",
+    "S17": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/model_tools.py",
+    "S18": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_executor.py",
+    "S19": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_dispatch_helpers.py",
+    "S20": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/approval.py",
+    "S21": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool.py",
+    "S22": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool_dispatch.py",
+    "S23": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/gateway/run_inbound.py",
+    "S24": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/jobs.py",
+    "S25": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/cron/scheduler.py"
+  },
+  "codeBlocks": [
+    {
+      "section": "2-1",
+      "language": "mermaid",
+      "hash": "38e6dc6e0ee652ff1871d99f134818c337f7425d7ebda2de731261c3bc0ffeae"
+    },
+    {
+      "section": "3-1",
+      "language": "mermaid",
+      "hash": "7cf58799d8144eba85c1bd2ca73392ae5f3d199e375c059395db66774990ce85"
+    },
+    {
+      "section": "3-1",
+      "language": "text",
+      "hash": "44e1d57bb53f4dbdc7731eb06bc984d3cddc09dcb373ea862a51f37970b79f87"
+    },
+    {
+      "section": "4-1",
+      "language": "python",
+      "hash": "d745f2e1c84eacdd5500e625d245a57f68c95f57121518ae7014758637fe2e2c"
+    },
+    {
+      "section": "5-1",
+      "language": "text",
+      "hash": "cbe0ba777705f5458cffe54b82eaf6f3bc44e3ae507aeff12f5c4c640e75b117"
+    },
+    {
+      "section": "5-1",
+      "language": "json",
+      "hash": "513383eed70886989c2564c834e936b686f6e14a43533fd135f857d7b265716d"
+    },
+    {
+      "section": "6-1",
+      "language": "mermaid",
+      "hash": "85ab700c169f8c83df74be8af8ae4d15cde1572e9e89fb870dfe01df52b365bf"
+    },
+    {
+      "section": "6-1",
+      "language": "text",
+      "hash": "d39a357fe5fd873d0048ba77b5e4637a198f590f2df54222304ae2f929b24009"
+    },
+    {
+      "section": "6-1",
+      "language": "text",
+      "hash": "54852f4e1220e34d397859233ca1fcf0f983207c3883c8da87e04f78a065bb4e"
+    },
+    {
+      "section": "7-1",
+      "language": "mermaid",
+      "hash": "23b3eef2c2d797f91a43082e99382591150b8c52c8cc3e8f0c7753f81bbca063"
+    },
+    {
+      "section": "8-1",
+      "language": "mermaid",
+      "hash": "29ae62b50a455b5f82f3bab7881d3c07a54a798a58e26fb1e2370c4afb21d078"
+    },
+    {
+      "section": "8-1",
+      "language": "text",
+      "hash": "ae7ea5f9a03265165a26a96851ae4f7dc751fdb9b19c90f03867ba4105cc8c85"
+    },
+    {
+      "section": "8-1",
+      "language": "yaml",
+      "hash": "24dfb98c8375515699fbefefbdafcec17a2ddaa25d485b14cc566203edd01f25"
+    },
+    {
+      "section": "9-1",
+      "language": "text",
+      "hash": "de104de7547a75d48b157522c46aea29ba9a1cfee2c2d227a01f0bb8d86a263d"
+    },
+    {
+      "section": "9-1",
+      "language": "text",
+      "hash": "65b35d0613931a4a0d793c653b3e77925052a7e8835db5be0ebe2c58ae62e4c2"
+    },
+    {
+      "section": "9-1",
+      "language": "mermaid",
+      "hash": "36022bc3d06c1c4c392bbd074591aa66fe63432798f701288f4dfa8823b78e5d"
+    },
+    {
+      "section": "10-1",
+      "language": "text",
+      "hash": "c3c07d9d557ee195725139a16597d9532b7148ba0c1f90854d47ee9b98459d60"
+    },
+    {
+      "section": "10-1",
+      "language": "mermaid",
+      "hash": "85327a35ae765346d436dbb1f6b53e65b6c7f5b33b397d4b827cad7de3d1aad1"
+    },
+    {
+      "section": "10-1",
+      "language": "yaml",
+      "hash": "8f35e9bc76ef51c8db661a8aeb690c055008efe9f9085c5adc988d9bea7d0361"
+    },
+    {
+      "section": "10-1",
+      "language": "text",
+      "hash": "03b6183a7246c3ef8bd326e12999ae4f1b7a2a0d701b2506fdee1fdb130cef4c"
+    },
+    {
+      "section": "11-1",
+      "language": "mermaid",
+      "hash": "16e573711b309ea871dfefeecd5a555a0bb738473af0199a3ff38817377395e5"
+    },
+    {
+      "section": "11-1",
+      "language": "text",
+      "hash": "924dfee5bcb2a3c113956b8372914bd56378ef4ab2cd2bcd400615e46ebd41cf"
+    },
+    {
+      "section": "12-1",
+      "language": "python",
+      "hash": "a2836a041b03ef282a26871750ac53911f1170adadc2f4978385f184cb675f54"
+    },
+    {
+      "section": "12-1",
+      "language": "text",
+      "hash": "14c050a0e30bfd88dd1c50ec457d2dc4a145f2f25aead297bb37b6b545e0c342"
+    },
+    {
+      "section": "12-1",
+      "language": "mermaid",
+      "hash": "68fa3f37afc2f2e4fb33acdcfdfa1a10ace112bba5ff336cd0fcbd7c48abf20a"
+    },
+    {
+      "section": "13-1",
+      "language": "text",
+      "hash": "21cca21b48917bb43e42414d27459b44e3900995d80c72b8a4ee6aa390fef5da"
+    },
+    {
+      "section": "13-1",
+      "language": "text",
+      "hash": "75b3572f3ad7ac945e097bb01395afc14493af2e074fc07c0d309269a32b0914"
+    },
+    {
+      "section": "13-1",
+      "language": "python",
+      "hash": "0053fa9951e92b289a460fa126a243857f74fe2e428ef299af495323d163f6d8"
+    },
+    {
+      "section": "14-1",
+      "language": "mermaid",
+      "hash": "339e17dac34c50dc7085b22a6a09f7843a8a9c1eb7f3cc4e2f3f1224b37e6efd"
+    },
+    {
+      "section": "14-1",
+      "language": "text",
+      "hash": "5fa45d28816a6d7ca5f7ce65681b354935ef111481562be8dd4cc629e451b841"
+    },
+    {
+      "section": "14-1",
+      "language": "text",
+      "hash": "fc2c051c1e457304ad92731dc67deb36dcbf26f7e913a24dd00cd79ef93afef7"
+    },
+    {
+      "section": "15-1",
+      "language": "mermaid",
+      "hash": "9b1b0b73173ef6be2df72c88af910e78e641568ee2e9fdc0bb287ad1d77c3893"
+    },
+    {
+      "section": "15-1",
+      "language": "text",
+      "hash": "37cced2282a3c167616b44344a506085ff9b032e5de7bda1210ff9e953d69f00"
+    },
+    {
+      "section": "15-1",
+      "language": "text",
+      "hash": "08c23b85956e3a4e13e993e77247ef032da4139d5677f9189bc4e164787fe9ac"
+    },
+    {
+      "section": "16-1",
+      "language": "mermaid",
+      "hash": "fa7c9e60dd92aa54bd2ea57538d8940fde24c93b89aa8131cf185e9bc05c07b7"
+    },
+    {
+      "section": "16-1",
+      "language": "text",
+      "hash": "da29beb91e36271b7d59ada67a969cce5f78dbdc422be09a647ea555419d5fc7"
+    },
+    {
+      "section": "17-1",
+      "language": "text",
+      "hash": "3f7c93e310efa5d0d8d2fd70e5d606582f9fa21e6f119eb14af499da99063246"
+    },
+    {
+      "section": "18-1",
+      "language": "mermaid",
+      "hash": "3fd11b4b1ad47a44f22ce6f81f646e8934cfb2c206c4e304d139eed5b43c9a05"
+    },
+    {
+      "section": "18-1",
+      "language": "python",
+      "hash": "41d01770823fc38310298cbd88aef3e960701dabd36c04ec4ca935f83336b707"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "title": "2.1 층별 아키텍처",
+      "section": "2-1",
+      "rawHash": "38e6dc6e0ee652ff1871d99f134818c337f7425d7ebda2de731261c3bc0ffeae",
+      "type": "flow",
+      "file": "assets/diagram-1.svg",
+      "nodes": [
+        {
+          "id": "IN",
+          "label": "CLI / TUI / Desktop / API / ACP / Messaging",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Gateway / Session Authority",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "AIAgent facade",
+          "shape": "box"
+        },
+        {
+          "id": "L",
+          "label": "Conversation Loop / Turn Phases",
+          "shape": "box"
+        },
+        {
+          "id": "P",
+          "label": "Prompt Builder + Context Engine",
+          "shape": "box"
+        },
+        {
+          "id": "M",
+          "label": "Provider Adapter / API",
+          "shape": "box"
+        },
+        {
+          "id": "LL",
+          "label": "LLM API 또는 자체 모델 서버",
+          "shape": "box"
+        },
+        {
+          "id": "X",
+          "label": "Tool Round / Tool Executor",
+          "shape": "box"
+        },
+        {
+          "id": "R",
+          "label": "Tool Registry / Inline Tools",
+          "shape": "box"
+        },
+        {
+          "id": "T",
+          "label": "Terminal / Files / Web / MCP / Plugin",
+          "shape": "box"
+        },
+        {
+          "id": "DB",
+          "label": "SQLite state.db",
+          "shape": "cylinder"
+        },
+        {
+          "id": "F",
+          "label": "MEMORY.md / USER.md / Skills / Context Files",
+          "shape": "cylinder"
+        },
+        {
+          "id": "C",
+          "label": "Cron / Delivery / Authorization",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "IN",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "L",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "P",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "M",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "M",
+          "to": "LL",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "X",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "X",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "T",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "DB",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "P",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "3.1 일반적인 진입 흐름",
+      "section": "3-1",
+      "rawHash": "7cf58799d8144eba85c1bd2ca73392ae5f3d199e375c059395db66774990ce85",
+      "type": "sequence",
+      "actors": {
+        "U": "User / Client",
+        "G": "Gateway / Session Authority",
+        "A": "AIAgent",
+        "L": "Conversation Loop",
+        "O": "Model Provider",
+        "X": "Tool Executor",
+        "S": "Session Store"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "U",
+          "to": "G",
+          "arrow": "->>",
+          "text": "요청 + 인증된 세션 식별"
+        },
+        {
+          "type": "message",
+          "from": "G",
+          "to": "S",
+          "arrow": "->>",
+          "text": "세션/이력 조회, 입장 처리"
+        },
+        {
+          "type": "message",
+          "from": "G",
+          "to": "A",
+          "arrow": "->>",
+          "text": "Turn 실행 요청"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "L",
+          "arrow": "->>",
+          "text": "run_conversation(...)"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "L",
+          "arrow": "->>",
+          "text": "사전 검사·Prompt/Context 구성"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "O",
+          "arrow": "->>",
+          "text": "messages + tools + provider 옵션"
+        },
+        {
+          "type": "message",
+          "from": "O",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "text 또는 tool_calls"
+        },
+        {
+          "type": "control",
+          "text": "alt tool_calls 존재"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "S",
+          "arrow": "->>",
+          "text": "Tool-call 메시지 먼저 기록"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "X",
+          "arrow": "->>",
+          "text": "승인·미들웨어·실행"
+        },
+        {
+          "type": "message",
+          "from": "X",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "Tool 결과(정규화)"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "S",
+          "arrow": "->>",
+          "text": "Tool 결과 저장"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "O",
+          "arrow": "->>",
+          "text": "Context 갱신 후 다시 모델 호출"
+        },
+        {
+          "type": "message",
+          "from": "O",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "다음 응답"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "S",
+          "arrow": "->>",
+          "text": "Turn 결과 최종 저장"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "G",
+          "arrow": "-->>",
+          "text": "최종 응답 / 상태"
+        },
+        {
+          "type": "message",
+          "from": "G",
+          "to": "U",
+          "arrow": "-->>",
+          "text": "Streaming 또는 완료 응답"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "6.1 사용자의 질문에 대한 직접 답",
+      "section": "6-1",
+      "rawHash": "85ab700c169f8c83df74be8af8ae4d15cde1572e9e89fb870dfe01df52b365bf",
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "API 요청 1: S + U1",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Provider Prefix 계산",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Prefix Cache: S",
+          "shape": "cylinder"
+        },
+        {
+          "id": "D",
+          "label": "API 요청 2: S + U1 + T1",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "앞부분 S가 동일하고 유효한가?",
+          "shape": "diamond"
+        },
+        {
+          "id": "F",
+          "label": "S의 계산 재사용 + 나머지 계산",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Prefix 재계산",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "Yes",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "G",
+          "label": "No",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": true
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "7.3 단계별 압축 절차",
+      "section": "7-1",
+      "rawHash": "23b3eef2c2d797f91a43082e99382591150b8c52c8cc3e8f0c7753f81bbca063",
+      "type": "flow",
+      "file": "assets/diagram-4.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "현재 메시지와 토큰 사용량",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "압축 필요?",
+          "shape": "diamond"
+        },
+        {
+          "id": "Z",
+          "label": "원래 Context 유지",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "오래된 Tool 결과 Prune",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "보호할 최근 Turn 및 Tool 쌍 결정",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "요약할 중간 History 선택",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Auxiliary LLM 요약",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "요약 + 보존 구간 합성",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "Tool Call/Result 프로토콜 정합성 보정",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "새 세션 세대·사용량 추적",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "Z",
+          "label": "아니오",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "예",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "I",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "8.2 핵심: 세션 중 기록해도 System Prompt는 즉시 바뀌지 않는다",
+      "section": "8-1",
+      "rawHash": "29ae62b50a455b5f82f3bab7881d3c07a54a798a58e26fb1e2370c4afb21d078",
+      "type": "sequence",
+      "actors": {
+        "F": "MEMORY.md",
+        "A": "Agent (Session A)",
+        "T": "memory Tool",
+        "B": "Agent (New Session B)"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "A",
+          "to": "F",
+          "arrow": "->>",
+          "text": "세션 시작 시 읽기"
+        },
+        {
+          "type": "message",
+          "from": "F",
+          "to": "A",
+          "arrow": "-->>",
+          "text": "Snapshot V1"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "T",
+          "arrow": "->>",
+          "text": "add / replace / remove"
+        },
+        {
+          "type": "message",
+          "from": "T",
+          "to": "F",
+          "arrow": "->>",
+          "text": "V2로 갱신"
+        },
+        {
+          "type": "note",
+          "text": "Note over A: 현재 시스템 스냅샷은 V1 유지"
+        },
+        {
+          "type": "message",
+          "from": "B",
+          "to": "F",
+          "arrow": "->>",
+          "text": "새 세션 시작 시 읽기"
+        },
+        {
+          "type": "message",
+          "from": "F",
+          "to": "B",
+          "arrow": "-->>",
+          "text": "Snapshot V2"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "9.3 FTS5 검색의 전체 흐름",
+      "section": "9-1",
+      "rawHash": "36022bc3d06c1c4c392bbd074591aa66fe63432798f701288f4dfa8823b78e5d",
+      "type": "flow",
+      "file": "assets/diagram-6.svg",
+      "nodes": [
+        {
+          "id": "Q",
+          "label": "모델의 session_search Query",
+          "shape": "box"
+        },
+        {
+          "id": "S",
+          "label": "Query Sanitizer",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "FTS5 MATCH / Fallback",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "세션·시간·역할 필터",
+          "shape": "box"
+        },
+        {
+          "id": "H",
+          "label": "Snippet 및 주변 Context 구성",
+          "shape": "box"
+        },
+        {
+          "id": "R",
+          "label": "Tool Result",
+          "shape": "box"
+        },
+        {
+          "id": "M",
+          "label": "현재 LLM Context",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "Q",
+          "to": "S",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "S",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "J",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "J",
+          "to": "H",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "M",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "10.2 점진적 로딩이 왜 중요한가?",
+      "section": "10-1",
+      "rawHash": "85327a35ae765346d436dbb1f6b53e65b6c7f5b33b397d4b827cad7de3d1aad1",
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "프로필 Skills 디렉터리",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "메타데이터·설명 추출",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Prompt의 작은 Skills 인덱스",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "모델이 필요한 Skill 판단",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "skill_view 또는 명시적 로딩",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "SKILL.md 본문과 필요 Reference",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "절차에 따라 Tool 사용",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "11.3 실제 Tool Call Dispatch 흐름",
+      "section": "11-1",
+      "rawHash": "16e573711b309ea871dfefeecd5a555a0bb738473af0199a3ff38817377395e5",
+      "type": "sequence",
+      "actors": {
+        "M": "Model",
+        "L": "Agent Loop",
+        "V": "Tool Validation",
+        "H": "Tool Middleware/Approval",
+        "R": "Registry or Inline Tool",
+        "S": "Session DB"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "M",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "tool_calls(name,args,id)"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "V",
+          "arrow": "->>",
+          "text": "이름·인자·ID 검증"
+        },
+        {
+          "type": "message",
+          "from": "V",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "정상 / 오류 결과"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "S",
+          "arrow": "->>",
+          "text": "Tool Call 먼저 저장"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "H",
+          "arrow": "->>",
+          "text": "pre-tool 검사·승인"
+        },
+        {
+          "type": "control",
+          "text": "alt 허용"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "R",
+          "arrow": "->>",
+          "text": "실행"
+        },
+        {
+          "type": "message",
+          "from": "R",
+          "to": "H",
+          "arrow": "-->>",
+          "text": "결과/예외"
+        },
+        {
+          "type": "control",
+          "text": "else 거절"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "차단 결과"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "message",
+          "from": "H",
+          "to": "L",
+          "arrow": "-->>",
+          "text": "Tool Result"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "S",
+          "arrow": "->>",
+          "text": "결과 저장"
+        },
+        {
+          "type": "message",
+          "from": "L",
+          "to": "M",
+          "arrow": "->>",
+          "text": "결과를 포함해 재호출"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "12.6 발표 시 Guardrail 순서를 어떻게 표현할까?",
+      "section": "12-1",
+      "rawHash": "68fa3f37afc2f2e4fb33acdcfdfa1a10ace112bba5ff336cd0fcbd7c48abf20a",
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "인증된 사용자 요청",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Prompt 구성·컨텍스트 검사",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "모델이 Tool Call 선택",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "Tool 이름·인자 유효성",
+          "shape": "box"
+        },
+        {
+          "id": "E",
+          "label": "Tool Call 영속 기록",
+          "shape": "box"
+        },
+        {
+          "id": "F",
+          "label": "Pre-tool Middleware/Hook",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "정책 / Approval",
+          "shape": "diamond"
+        },
+        {
+          "id": "H",
+          "label": "차단 결과를 Tool Result로 반환",
+          "shape": "box"
+        },
+        {
+          "id": "I",
+          "label": "Sandbox/OS 권한 하 실제 Tool 실행",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "Post-tool Hook / 결과 정규화",
+          "shape": "box"
+        },
+        {
+          "id": "K",
+          "label": "저장·모델 재호출",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "E",
+          "to": "F",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "F",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "H",
+          "label": "거절",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "I",
+          "label": "허용",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "I",
+          "to": "J",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "J",
+          "to": "K",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "H",
+          "to": "K",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "title": "14.1 Subagent는 단순 함수 호출과 다르다",
+      "section": "14-1",
+      "rawHash": "339e17dac34c50dc7085b22a6a09f7843a8a9c1eb7f3cc4e2f3f1224b37e6efd",
+      "type": "flow",
+      "file": "assets/diagram-10.svg",
+      "nodes": [
+        {
+          "id": "P",
+          "label": "Parent Agent",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "delegate_task",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "Child A: independent AIAgent",
+          "shape": "box"
+        },
+        {
+          "id": "B",
+          "label": "Child B: independent AIAgent",
+          "shape": "box"
+        },
+        {
+          "id": "C",
+          "label": "Child C: independent AIAgent",
+          "shape": "box"
+        },
+        {
+          "id": "RA",
+          "label": "요약 / 상태 A",
+          "shape": "box"
+        },
+        {
+          "id": "RB",
+          "label": "요약 / 상태 B",
+          "shape": "box"
+        },
+        {
+          "id": "RC",
+          "label": "요약 / 상태 C",
+          "shape": "box"
+        },
+        {
+          "id": "R",
+          "label": "Fan-in: 결과 검증·집계",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "P",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "B",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "RA",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "B",
+          "to": "RB",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "C",
+          "to": "RC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "RA",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "RB",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "RC",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "P",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "title": "15.2 계층적 Serving 구성",
+      "section": "15-1",
+      "rawHash": "9b1b0b73173ef6be2df72c88af910e78e641568ee2e9fdc0bb287ad1d77c3893",
+      "type": "flow",
+      "file": "assets/diagram-11.svg",
+      "nodes": [
+        {
+          "id": "C",
+          "label": "External Client",
+          "shape": "box"
+        },
+        {
+          "id": "API",
+          "label": "API / ACP / WS / Messaging",
+          "shape": "box"
+        },
+        {
+          "id": "AUTH",
+          "label": "Auth + Session Routing",
+          "shape": "box"
+        },
+        {
+          "id": "Q",
+          "label": "Turn Admission / Busy Guard",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "AIAgent Turn Runner",
+          "shape": "box"
+        },
+        {
+          "id": "M",
+          "label": "Model Provider / Tool Runtime",
+          "shape": "box"
+        },
+        {
+          "id": "DB",
+          "label": "Session DB",
+          "shape": "cylinder"
+        },
+        {
+          "id": "EVENTS",
+          "label": "Progress/Result Events",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "C",
+          "to": "API",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "API",
+          "to": "AUTH",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AUTH",
+          "to": "Q",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "M",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "DB",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "EVENTS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "EVENTS",
+          "to": "API",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "API",
+          "to": "C",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "title": "16.2 Cron Scheduler의 핵심 구조",
+      "section": "16-1",
+      "rawHash": "fa7c9e60dd92aa54bd2ea57538d8940fde24c93b89aa8131cf185e9bc05c07b7",
+      "type": "flow",
+      "file": "assets/diagram-12.svg",
+      "nodes": [
+        {
+          "id": "T",
+          "label": "Gateway 주기 Tick 또는 관리형 Trigger",
+          "shape": "box"
+        },
+        {
+          "id": "L",
+          "label": "Scheduler Lock / Ownership 검사",
+          "shape": "box"
+        },
+        {
+          "id": "J",
+          "label": "Jobs Store jobs.json 읽기",
+          "shape": "box"
+        },
+        {
+          "id": "D",
+          "label": "실행 시각 도래?",
+          "shape": "diamond"
+        },
+        {
+          "id": "Z",
+          "label": "다음 검사 대기",
+          "shape": "box"
+        },
+        {
+          "id": "K",
+          "label": "실행 슬롯 Claim / Next Run 조정",
+          "shape": "box"
+        },
+        {
+          "id": "N",
+          "label": "새 Agent Session 구성",
+          "shape": "box"
+        },
+        {
+          "id": "S",
+          "label": "첨부 Skills / Script 결과 주입",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "Agent Loop 실행",
+          "shape": "box"
+        },
+        {
+          "id": "O",
+          "label": "Output 저장·전달",
+          "shape": "box"
+        },
+        {
+          "id": "U",
+          "label": "실행 횟수·State·다음 스케줄 갱신",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "T",
+          "to": "L",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "L",
+          "to": "J",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "J",
+          "to": "D",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "Z",
+          "label": "No",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "D",
+          "to": "K",
+          "label": "Yes",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "K",
+          "to": "N",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "N",
+          "to": "S",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "S",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "O",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "O",
+          "to": "U",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "title": "18.1 'Hermes 같은 Framework를 직접 만든다면?' 구성 제안",
+      "section": "18-1",
+      "rawHash": "3fd11b4b1ad47a44f22ce6f81f646e8934cfb2c206c4e304d139eed5b43c9a05",
+      "type": "flow",
+      "file": "assets/diagram-13.svg",
+      "nodes": [
+        {
+          "id": "E",
+          "label": "Client / API Adapter",
+          "shape": "box"
+        },
+        {
+          "id": "AUTH",
+          "label": "Auth, Session Router",
+          "shape": "box"
+        },
+        {
+          "id": "R",
+          "label": "TurnRunner / AgentLoop",
+          "shape": "box"
+        },
+        {
+          "id": "PR",
+          "label": "PromptSnapshotBuilder",
+          "shape": "box"
+        },
+        {
+          "id": "P",
+          "label": "ModelProviderAdapter",
+          "shape": "box"
+        },
+        {
+          "id": "X",
+          "label": "ToolExecutor",
+          "shape": "box"
+        },
+        {
+          "id": "TX",
+          "label": "Session Authority / Event Log",
+          "shape": "box"
+        },
+        {
+          "id": "MEM",
+          "label": "Memory Store",
+          "shape": "box"
+        },
+        {
+          "id": "SK",
+          "label": "Skill Index",
+          "shape": "box"
+        },
+        {
+          "id": "G",
+          "label": "Policy / Approval / Execution Sandbox",
+          "shape": "box"
+        },
+        {
+          "id": "REG",
+          "label": "ToolRegistry / MCP / Plugin",
+          "shape": "box"
+        },
+        {
+          "id": "CT",
+          "label": "Context Engine / Cache Planner",
+          "shape": "box"
+        },
+        {
+          "id": "S",
+          "label": "Scheduler / Queue",
+          "shape": "box"
+        },
+        {
+          "id": "OBS",
+          "label": "Observability / Trace",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "E",
+          "to": "AUTH",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AUTH",
+          "to": "R",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "PR",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "P",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "X",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "TX",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PR",
+          "to": "MEM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PR",
+          "to": "SK",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "X",
+          "to": "G",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "G",
+          "to": "REG",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "CT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "S",
+          "to": "AUTH",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "R",
+          "to": "OBS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    }
+  ]
+}

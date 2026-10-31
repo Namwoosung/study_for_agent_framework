@@ -128,3 +128,6 @@ fs.writeFileSync(path.join(root,'assets/favicon.svg'),`<svg xmlns="http://www.w3
 const report={name:config.name,source:'../'+config.source,sourceSha256:createHash('sha256').update(source).digest('hex'),sourceSections:expected,sourceCodes:expectedCodes,sourceDiagrams:expectedDiagrams,pages:pages.map(p=>p.slug+'.html'),mapping:[...config.units,...config.referencesPages].map(p=>({page:p.slug+'.html',chapters:p.chapters.map(String)})),references:Object.fromEntries(refs),codeBlocks:codeRecords,diagrams};
 fs.writeFileSync(path.join(root,'content-map.json'),JSON.stringify(report,null,2)+'\n');
 console.log(`Built ${pages.length} pages, ${expected.length} source sections, ${codeCount} code blocks, ${diagramCount} diagrams.`);
+
+// 기본 교재를 재생성해도 2차 과정 탐색을 유지한다.
+await import('./link-courses.mjs');

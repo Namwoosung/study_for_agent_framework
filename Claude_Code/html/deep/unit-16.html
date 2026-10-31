@@ -1,0 +1,178 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" ><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" aria-current="page" class="current"><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 발표와 학습 점검</p><h1>발표와 학습 점검</h1><div class="chapter-meta">단원 16 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 7분 · 원문 1334–1440행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>발표 구성과 40문항으로 핵심 실행 경계를 설명해 봅니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>기능 이름을 넘어 로딩·승인·저장·종료 시점의 조건을 설명하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1336">49. 발표 구성안 — 본문 15장 + 선택적 심화 부록</a><a href="#line-1356">49.1 발표에서 가급적 피할 단정</a><a href="#line-1368">50. 핵심 학습 질문 40개</a><a href="#line-1370">A. 아키텍처·Loop</a><a href="#line-1378">B. Prompt·Cache·Context</a><a href="#line-1389">C. Instructions·Memory·Skills</a><a href="#line-1401">D. Tool·MCP·Guardrails</a><a href="#line-1412">E. 병렬성·Serving·복구</a><a href="#line-1425">51. 학습 완료 체크리스트</a></nav></details><section class="source-section" data-source-section="49-1"><p class="part-divider" id="line-1334">Part XI. 학습·발표 구성과 복습</p><h2 id="line-1336">49. 발표 구성안 — 본문 15장 + 선택적 심화 부록<a class="anchor" href="#line-1336" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>슬라이드</th>
+<th>주요 메시지</th>
+<th>추천 시각자료</th>
+<th>코드/근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>01</td>
+<td>Claude Code는 모델이 아니라 Agent Harness다</td>
+<td>Model/Runtime/Host 계층도</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/how-claude-code-works">R02</a>]</td>
+</tr>
+<tr>
+<td>02</td>
+<td>Claude Code와 Agent SDK는 같은 Loop를 다른 방식으로 사용</td>
+<td>CLI/SDK/CLI Process 경계도</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/headless">R22</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py">R25</a>]</td>
+</tr>
+<tr>
+<td>03</td>
+<td>한 Prompt는 여러 Tool/Model Cycle</td>
+<td>Sequence Diagram</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/how-claude-code-works">R02</a>]</td>
+</tr>
+<tr>
+<td>04</td>
+<td>세 가지 Prompt Layer와 Prefix Cache</td>
+<td>누적 Prefix Bar Diagram</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/prompt-caching">R03</a>]</td>
+</tr>
+<tr>
+<td>05</td>
+<td>Cache Break 원인과 비용</td>
+<td>모델·MCP·Compaction 비교표</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/prompt-caching">R03</a>]</td>
+</tr>
+<tr>
+<td>06</td>
+<td>Memory는 Session이나 Cache가 아니다</td>
+<td>4종 상태 비교표</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">R05</a>]</td>
+</tr>
+<tr>
+<td>07</td>
+<td>CLAUDE.md·AGENTS.md의 실제 선택 규칙</td>
+<td>로딩 분기 다이어그램</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/memory">R05</a>]</td>
+</tr>
+<tr>
+<td>08</td>
+<td>Skill은 Discover/Invoke/Inject/Execute 과정</td>
+<td>Skill Lifecycle</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">R10</a>]</td>
+</tr>
+<tr>
+<td>09</td>
+<td>MCP·Plugin·Hook·Tool은 다른 계층</td>
+<td>5열 구조 비교</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/skills">R10</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/mcp">R11</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/plugins">R12</a>]</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Guardrail은 여러 실행 전·후 경계의 조합</td>
+<td>Permission/Hook/Sandbox Flow</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/permissions">R07</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/hooks">R08</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sandboxing">R14</a>]</td>
+</tr>
+<tr>
+<td>11</td>
+<td>병렬 Tool과 Subagent는 다른 병렬성</td>
+<td>Tool vs Agent 세션 비교</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/sub-agents">R16</a>]</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Agent Teams는 Task/Message 공유가 핵심</td>
+<td>Team Communication Graph</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/agent-teams">R17</a>]</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>claude -p</code> 자체가 Agent 서버는 아니다</td>
+<td>API·Queue·Worker 구조</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/cli-reference">R21</a>][<a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/headless">R22</a>]</td>
+</tr>
+<tr>
+<td>14</td>
+<td>공개 소스로 추적되는 범위·비공개 경계</td>
+<td>SDK Query→Transport→CLI 코드 경로</td>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/query.py">R25</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py">R27</a>]</td>
+</tr>
+<tr>
+<td>15</td>
+<td>자체 Framework를 만들 때 중요한 결정</td>
+<td>8개 설계 결정 지도</td>
+<td>Part X</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1356">49.1 발표에서 가급적 피할 단정<a class="anchor" href="#line-1356" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>“Claude Code 내부는 <code>asyncio.gather</code>로 모든 Tool을 병렬 실행한다.” → 코어 소스 증거 없음.</li>
+<li>“<code>CLAUDE.md</code>를 바꾸면 다음 Tool 호출부터 즉시 바뀐다.” → Context 재조립 시점에 따라 다름.</li>
+<li>“AGENTS.md와 CLAUDE.md는 항상 동시에 읽는다.” → 기본 로딩 정책과 다름.</li>
+<li>“Skill이 생성됐으면 작업을 정확하게 할 수 있다.” → 지식 검증·평가 별개.</li>
+<li>“PreToolUse가 읽기 작업을 모두 검사한다.” → <code>@file</code>과 임의 프로그램 경계 존재.</li>
+<li>“Sandbox가 켜졌으니 모든 MCP 서버 권한도 제한된다.” → 서버 측 권한 별도.</li>
+<li>“Subagent 4개 = 동일 코드 4배 속도 향상.” → 비용/독립성/병목 고려.</li>
+<li>“Session Resume = 외부 부작용 복구.” → 작업 상태 재조정 필요.</li>
+<li>“Claude Agent SDK를 쓰면 내부 Loop Python 코드가 전부 공개된다.” → CLI Runtime 경계 유지.</li>
+</ul>
+</section>
+<section class="source-section" data-source-section="50-1"><h2 id="line-1368">50. 핵심 학습 질문 40개<a class="anchor" href="#line-1368" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1370">A. 아키텍처·Loop<a class="anchor" href="#line-1370" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li>Claude Code와 Claude 모델의 책임을 분리해 설명할 수 있는가?</li>
+<li>일반적인 Agent Loop에서 모델의 선택과 Harness의 제어는 어디서 갈라지는가?</li>
+<li>한 번의 사용자 요청과 한 번의 모델 API 호출이 왜 다른가?</li>
+<li>완료·중단·도구 거부·오류·호스트 종료는 각각 어떤 상태를 남기는가?</li>
+<li>모델이 여러 Tool을 요청했다고 항상 병렬 실행되는 것은 아닌 이유는?</li>
+</ol>
+<h3 id="line-1378">B. Prompt·Cache·Context<a class="anchor" href="#line-1378" aria-label="이 절의 고유 링크">#</a></h3><ol start="6">
+<li>Prefix Cache는 무엇을 기준으로 적중하는가?</li>
+<li>입력을 매번 보내는데 Cache Read가 비용을 낮출 수 있는 이유는?</li>
+<li>System Prompt 변경과 Conversation Compaction의 캐시 영향 차이는?</li>
+<li>MCP 연결이 늘어도 Tool Search를 사용하면 캐시 영향을 줄일 수 있는 이유는?</li>
+<li><code>cache_creation_input_tokens</code>와 <code>cache_read_input_tokens</code>는 무엇을 의미하는가?</li>
+<li>Cache TTL과 Session 저장이 어떻게 다른가?</li>
+<li>Compaction 후 정확한 숫자·Tool 근거를 어떻게 보존할 것인가?</li>
+<li>프로젝트 지침을 너무 자주 바꾸면 어떤 문제가 생기는가?</li>
+</ol>
+<h3 id="line-1389">C. Instructions·Memory·Skills<a class="anchor" href="#line-1389" aria-label="이 절의 고유 링크">#</a></h3><ol start="14">
+<li><code>CLAUDE.md</code>를 정책 파일이 아니라 Instruction 파일이라고 부르는 이유는?</li>
+<li>기본 설정에서 <code>AGENTS.md</code>와 <code>CLAUDE.md</code>는 어떻게 선택되는가?</li>
+<li>Path-scoped Rule과 Root Rule을 언제 각각 선택해야 하는가?</li>
+<li>Auto Memory의 Index와 Topic 파일은 각각 어떤 역할을 갖는가?</li>
+<li>Auto Memory에 저장된 정보가 항상 다음 모델 호출에 들어가는가?</li>
+<li>Session과 Memory의 소유권·삭제·검색은 어떻게 다른가?</li>
+<li>Skill의 Description과 본문은 어느 시점에 로딩되는가?</li>
+<li><code>allowed-tools</code>의 승인 범위는 어떻게 제한되며 Tool allowlist와 무엇이 다른가?</li>
+<li>Skill 자동 생성과 Skill 품질 평가의 차이는 무엇인가?</li>
+</ol>
+<h3 id="line-1401">D. Tool·MCP·Guardrails<a class="anchor" href="#line-1401" aria-label="이 절의 고유 링크">#</a></h3><ol start="23">
+<li>MCP Server와 Plugin의 차이를 예로 설명할 수 있는가?</li>
+<li>외부 Tool Schema가 제공돼도 Backend 인가가 필요한 이유는?</li>
+<li><code>PreToolUse</code>로는 감지하지 못하는 파일 내용 삽입 경로는?</li>
+<li>Permission deny·ask와 Hook allow가 충돌할 때 무엇을 확인해야 하는가?</li>
+<li>Sandbox FS 제한과 Tool 문자열 검사 중 무엇이 더 강한가?</li>
+<li>비공개 Tool Call 인자 변경 후 승인 재평가가 중요한 이유는?</li>
+<li><code>PostToolUse</code>는 Tool의 실행 전 차단을 대신할 수 있는가?</li>
+<li>Prompt Injection이 Subagent Report에서 발생할 수 있는 이유는?</li>
+</ol>
+<h3 id="line-1412">E. 병렬성·Serving·복구<a class="anchor" href="#line-1412" aria-label="이 절의 고유 링크">#</a></h3><ol start="31">
+<li>Background Bash와 Background Subagent의 차이는?</li>
+<li>Subagent의 독립 Context가 Token 비용을 낮추는 경우와 높이는 경우는?</li>
+<li>Agent Teams에서 Task 소유권과 완료 장벽이 필요한 이유는?</li>
+<li>Git Worktree 격리와 DB 권한 격리가 다른 이유는?</li>
+<li><code>claude -p</code>를 HTTP API 뒤에 붙일 때 필수 호스트 컴포넌트는?</li>
+<li>Client Disconnect와 Tool Cancel은 왜 다르게 다뤄야 하는가?</li>
+<li>Session에 같은 Turn을 두 번 실행하면 어떤 충돌이 가능한가?</li>
+<li>Cron과 Agent Loop의 반복이 다른 이유는?</li>
+<li>외부 API의 Exactly-once를 대화 복원만으로 보장하지 못하는 이유는?</li>
+<li>공개 SDK 코드를 따라가도 Claude Code의 내부 <code>Runner</code>를 소스 수준에서 설명할 수 없는 이유는?</li>
+</ol>
+</section>
+<section class="source-section" data-source-section="51-1"><h2 id="line-1425">51. 학습 완료 체크리스트<a class="anchor" href="#line-1425" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li><input disabled="" type="checkbox"> 최종 Prompt의 System/Project/Conversation Layer를 구분한다.</li>
+<li><input disabled="" type="checkbox"> Prefix Cache Break의 원인을 우선순위로 설명한다.</li>
+<li><input disabled="" type="checkbox"> Compaction과 Memory가 다른 문제를 해결한다는 것을 설명한다.</li>
+<li><input disabled="" type="checkbox"> AGENTS.md와 CLAUDE.md의 기본·선택 로딩 정책을 설명한다.</li>
+<li><input disabled="" type="checkbox"> Skill Metadata/Body/Permission 수명주기를 각각 설명한다.</li>
+<li><input disabled="" type="checkbox"> MCP/Plugin/Tool/Hook/Subagent의 실행 주체와 신뢰 경계를 설명한다.</li>
+<li><input disabled="" type="checkbox"> Permission·Hook·Sandbox·Backend ACL을 구분한다.</li>
+<li><input disabled="" type="checkbox"> Subagent와 Agent Teams의 메시지·동시성·비용 모델을 설명한다.</li>
+<li><input disabled="" type="checkbox"> CLI를 서버에 연결할 때 필요한 추가 컴포넌트를 설명한다.</li>
+<li><input disabled="" type="checkbox"> 코드로 검증 가능한 SDK 경로와 비공개 CLI 코어를 분리한다.</li>
+<li><input disabled="" type="checkbox"> 7개 기술의 차이를 기능 체크박스가 아니라 아키텍처로 비교한다.</li>
+</ul>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-15.html"><small>이전 단원</small>← Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</a><a class="next" href="unit-17.html"><small>다음 단원</small>핵심 공식 출처 인덱스 외 2개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1336">49. 발표 구성안 — 본문 15장 + 선택적 심화 부록</a><a class="toc-depth-3" href="#line-1356">49.1 발표에서 가급적 피할 단정</a><a class="toc-depth-2" href="#line-1368">50. 핵심 학습 질문 40개</a><a class="toc-depth-3" href="#line-1370">A. 아키텍처·Loop</a><a class="toc-depth-3" href="#line-1378">B. Prompt·Cache·Context</a><a class="toc-depth-3" href="#line-1389">C. Instructions·Memory·Skills</a><a class="toc-depth-3" href="#line-1401">D. Tool·MCP·Guardrails</a><a class="toc-depth-3" href="#line-1412">E. 병렬성·Serving·복구</a><a class="toc-depth-2" href="#line-1425">51. 학습 완료 체크리스트</a></nav></aside></div></body></html>

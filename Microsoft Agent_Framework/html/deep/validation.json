@@ -1,0 +1,13 @@
+{
+  "name": "Microsoft Agent Framework",
+  "pages": 20,
+  "chapters": 30,
+  "sourceLines": 1370,
+  "textBlocks": 526,
+  "tableRows": 203,
+  "fencedBlocks": 20,
+  "diagrams": 9,
+  "localLinks": 1215,
+  "sourceHash": "829f3efd3495c5d9b937b0b2dfefcd4b40aeddeb7316a7d0038a46f2d08bf572",
+  "passed": true
+}

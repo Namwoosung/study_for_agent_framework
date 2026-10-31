@@ -1,0 +1,148 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework의 원리·구현·한계를 배우는 개인 학습 교재"><title>Executor와 Edge로 경로 명시하기 — Microsoft Agent Framework</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script src="site.js" defer></script><link rel="stylesheet" href="course-links.css"></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework</a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark" aria-hidden="true">M.</span><span>Microsoft Agent Framework<small>개인 학습 교재</small></span></a><nav aria-label="교재 목차"><a class="nav-intro "  href="index.html">학습 안내</a><p class="nav-group">큰 그림</p><a href="foundations.html" ><span class="nav-number">01</span><span>큰 그림과 첫 Agent</span></a><p class="nav-group">핵심 원리</p><a href="runtime.html" ><span class="nav-number">02</span><span>Python 실행 계층</span></a><a href="tools.html" ><span class="nav-number">03</span><span>Tool과 Middleware</span></a><a href="context.html" ><span class="nav-number">04</span><span>Session·Memory·RAG</span></a><p class="nav-group">흐름과 복구</p><a href="workflows.html" class="current" aria-current="page"><span class="nav-number">05</span><span>Workflow와 협업</span></a><a href="recovery.html" ><span class="nav-number">06</span><span>승인과 Checkpoint</span></a><p class="nav-group">확장과 운영</p><a href="harness.html" ><span class="nav-number">07</span><span>Harness와 확장</span></a><a href="operations.html" ><span class="nav-number">08</span><span>보안·관측·평가</span></a><p class="nav-group">코드와 적용</p><a href="source-code.html" ><span class="nav-number">09</span><span>공개 코드 추적</span></a><a href="semiconductor.html" ><span class="nav-number">10</span><span>반도체 적용 설계</span></a><a href="selection.html" ><span class="nav-number">11</span><span>비교와 후속 실험</span></a><p class="nav-group">참고 자료</p><a href="review.html" >핵심 복습과 문답</a><a href="sources.html" >출처와 검증 범위</a></nav><div class="book-meta"><span>원문 2026.10.31 · Python SDK python-1.24.0 · 커밋 43d767c</span><a href="../Microsoft_Agent_Framework.md">학습 원문 ↗</a></div></aside><div class="reading-layout"><main id="main" tabindex="-1"><!-- deep-course-link --><nav class="course-switch" aria-label="학습 과정"><span>학습 과정</span><a href="index.html" aria-current="true">1차 기본 교재</a><a href="deep/index.html">2차 심층 교재 →</a></nav><!-- /deep-course-link --><div class="breadcrumb"><a href="index.html">Microsoft Agent Framework</a><span aria-hidden="true">/</span><span>Workflow와 협업</span></div><header class="chapter-header"><p class="eyebrow">흐름과 복구 / 단원 05</p><h1>Executor와 Edge로 경로 명시하기</h1><p class="lead">Superstep·Graph/Functional·멀티에이전트 패턴</p><div class="chapter-meta">원문 12–14장</div></header><section class="unit-intro" id="overview"><h2>먼저 연결해 보기</h2><p>Workflow는 Executor가 메시지를 처리하고 Edge가 다음 대상으로 전달하는 그래프 실행 체계입니다. Agent를 Executor 안에 넣어 정해진 절차와 모델 판단을 결합할 수 있습니다.</p><p>Superstep의 동기화, Graph와 실험적 Functional 표현, Sequential·Concurrent·Handoff 등의 차이를 순서대로 확인하세요. Group Chat의 각 Agent가 같은 Session 객체를 공유한다고 가정하지 않는 것도 중요합니다.</p><p class="reading-question"><strong>읽는 관점</strong>병렬 결과를 어디서 합치고, 다음 단계를 어떤 조건으로 실행하는지 확인하세요.</p></section><section class="source-section" data-source-chapter="12"><h2 id="s-12-1">12. Workflow: Agent Loop와 완전히 다른 실행 개념<a class="anchor" href="#s-12-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Workflow는 단순히 Agent를 여러 개 붙인 것이 아니다. <strong>Executor가 메시지를 받아 실행하고, Edge가 다음 실행 대상으로 전달하는 그래프 런타임</strong>이다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">[D09]</a></p>
+<h3 id="s-12-2">12.1 세 핵심 객체<a class="anchor" href="#s-12-2" aria-label="이 절의 고유 링크">#</a></h3>
+<ul>
+<li><strong>Executor:</strong> 함수 또는 Agent를 포함한 일 수행 단위. 입력과 출력의 타입을 가질 수 있다.</li>
+<li><strong>Edge:</strong> 한 Executor의 출력을 다른 Executor의 입력으로 보내는 연결.</li>
+<li><strong>Workflow:</strong> 그래프 정의, 상태·스케줄·이벤트·완료 조건을 관리.</li>
+</ul>
+<figure class="diagram" data-source-diagram="4"><figcaption><span>그림 4</span> 검증 결과에 따라 분기하는 Workflow</figcaption><p class="scroll-hint">넓은 도식은 가로로 이동하며 읽을 수 있습니다. <a href="assets/diagram-4.svg" target="_blank" rel="noopener">도식 크게 보기 ↗</a></p><div class="diagram-scroll" tabindex="0" role="region" aria-label="검증 결과에 따라 분기하는 Workflow"><img src="assets/diagram-4.svg" alt="검증 결과에 따라 분기하는 Workflow. 연결 방향과 분기 조건은 아래 원문에도 보존되어 있습니다."></div><p class="figure-note">원문에 수록된 학습용 도식입니다. 노드·화살표·분기 라벨을 보존해 다시 배치했습니다. 세부 조건과 예시·구현의 구분은 앞뒤 본문을 함께 읽으세요.</p><details class="diagram-original"><summary>도식 원문 보기 (Mermaid)</summary><pre><code>flowchart LR
+  X[Load Dataset] --&gt; Y[Compute Statistics]
+  Y --&gt; Z[Validate]
+  Z --&gt;|valid| R[Report]
+  Z --&gt;|invalid| E[Error/Review]</code></pre></details></figure><h3 id="s-12-3">12.2 Superstep이란?<a class="anchor" href="#s-12-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>공식 문서는 Python Workflow 엔진을 Pregel-like 실행으로 소개한다. 간단히 말하면 <strong>현재 단계에서 실행 가능한 Executor들이 작업을 수행하고, 생성된 메시지가 다음 단계에 전달되는 동기화 단위</strong>다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">[D09]</a><a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution" target="_blank" rel="noopener noreferrer">[D13]</a></p>
+<p>예를 들어:</p>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>text</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>Superstep 0: Start → Executor A에 데이터 준비
+Superstep 1: Executor A 실행, B/C에 결과 전달 예약
+Superstep 2: Executor B, C가 처리
+Superstep 3: Join Executor가 결과 수집
+Superstep 4: Report Executor 실행</code></pre></div><p>체크포인트는 일반적으로 각 Superstep의 작업이 완료된 시점에 저장된다. 따라서 <strong>Workflow Checkpoint가 SQL 트랜잭션처럼 모든 외부 부작용을 원자적으로 되돌리는 것은 아니다.</strong> <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints/" target="_blank" rel="noopener noreferrer">[D10]</a></p>
+<h3 id="s-12-4">12.3 장점과 비용<a class="anchor" href="#s-12-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>장점은 실행 경로, 상태 변화, 승인 위치, 재시도 조건을 코드로 명시할 수 있다는 것. 단점은 그래프·상태·타입·이벤트 관리 비용이 생긴다는 것이다. 단순 Q&amp;A라면 일반 Agent가 더 적합할 수 있다.</p>
+</section>
+<section class="source-section" data-source-chapter="13"><h2 id="s-13-1">13. Graph Workflow와 Functional Workflow 비교<a class="anchor" href="#s-13-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Python에는 두 가지 주요 표현 방식이 있다. 공식 문서는 <strong>Functional Workflow가 실험적</strong>이라고 설명한다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/" target="_blank" rel="noopener noreferrer">[D09]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Graph (<code>WorkflowBuilder</code>)</th>
+<th>Functional (<code>@workflow</code>/<code>@step</code>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>제어 흐름</td>
+<td>명시적 Edge와 Executor</td>
+<td>Python의 <code>if</code>, <code>for</code>, <code>asyncio.gather</code> 등</td>
+</tr>
+<tr>
+<td>주요 장점</td>
+<td>타입 검증·가시성·분기 경로</td>
+<td>기존 Python 함수 구조와 친숙</td>
+</tr>
+<tr>
+<td>병렬</td>
+<td>Fan-out/Fan-in · Superstep</td>
+<td><code>asyncio.gather()</code> 등</td>
+</tr>
+<tr>
+<td>이벤트</td>
+<td>Executor / Workflow 이벤트</td>
+<td>Decorated step 이벤트</td>
+</tr>
+<tr>
+<td>HITL</td>
+<td><code>RequestInfoExecutor</code> 등</td>
+<td><code>ctx.request_info()</code></td>
+</tr>
+<tr>
+<td>복구</td>
+<td>Superstep 단위</td>
+<td><code>@step</code> 결과 캐싱 등</td>
+</tr>
+<tr>
+<td>성숙도</td>
+<td>기본 Graph API</td>
+<td>실험적 기능 포함</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-13-2">13.1 <code>WorkflowBuilder</code> 최소 예시 — 공식 문서의 구성 패턴<a class="anchor" href="#s-13-2" aria-label="이 절의 고유 링크">#</a></h3>
+<div class="code-block"><div class="code-caption"><span>원문 수록 코드 · 구분과 제약은 본문 참조</span><span>python</span></div><pre tabindex="0" aria-label="원문 수록 코드 · 구분과 제약은 본문 참조"><code>from agent_framework import WorkflowBuilder
+
+# DataProcessor, Validator, Formatter는 개발자가 작성한 Executor라고 가정
+processor = DataProcessor()
+validator = Validator()
+formatter = Formatter()
+
+builder = WorkflowBuilder(start_executor=processor)
+builder.add_edge(processor, validator)
+builder.add_edge(validator, formatter)
+workflow = builder.build()</code></pre></div><p>위는 <strong>공식 사용 패턴을 보여 주기 위한 코드 조각</strong>이며, <code>DataProcessor</code> 등 실제 클래스 구현은 생략했다. 즉 복사해서 곧바로 실행 가능한 완결 예제가 아니다. <a href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution" target="_blank" rel="noopener noreferrer">[D13]</a></p>
+<h3 id="s-13-3">13.2 타입과 Edge 조건<a class="anchor" href="#s-13-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Builder는 Executor의 입력/출력 타입 호환성을 검사하는 기능을 제공한다. Python 타입 힌트는 정적 계약을 명확하게 할 뿐 <strong>도메인 데이터의 정확성</strong>까지 보장하지 않는다.</p>
+<ul>
+<li>타입 체크: <code>dict</code>가 와야 할 자리에 <code>list</code>가 전달되었는가?</li>
+<li>도메인 검증: <code>yield_pct=150</code>가 불가능한 값인가?</li>
+<li>보안 검증: 이 사용자가 해당 라인 데이터를 볼 수 있는가?</li>
+</ul>
+<p>세 가지는 독립적으로 검증해야 한다.</p>
+<h3 id="s-13-4">13.3 병렬 처리 시 주의<a class="anchor" href="#s-13-4" aria-label="이 절의 고유 링크">#</a></h3>
+<p>두 Executor가 같은 메모리 상태, 임시 파일, DB 행을 변경한다면 동시성 충돌이 발생할 수 있다. 병렬 분석에서는 <strong>읽기 전용 입력, 독립 결과, Join에서 명시적 병합</strong>을 기본값으로 설계하는 것이 유리하다.</p>
+</section>
+<section class="source-section" data-source-chapter="14"><h2 id="s-14-1">14. Multi-Agent Orchestration<a class="anchor" href="#s-14-1" aria-label="이 절의 고유 링크">#</a></h2>
+<p>Agent Framework는 Sequential, Concurrent, Handoff, Group Chat, Magentic 패턴을 지원한다. <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/" target="_blank" rel="noopener noreferrer">[D14]</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 및 설명 표"><table>
+<thead>
+<tr>
+<th>패턴</th>
+<th>실행 방식</th>
+<th>적합한 사례</th>
+<th>주의할 점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sequential</td>
+<td>차례로 실행</td>
+<td>조회 → 요약 → 검토</td>
+<td>앞 단계 오류 전파</td>
+</tr>
+<tr>
+<td>Concurrent</td>
+<td>여러 Agent 병렬</td>
+<td>각 공정 가설 독립 검토</td>
+<td>비용·중복 결과·Join</td>
+</tr>
+<tr>
+<td>Handoff</td>
+<td>Agent 간 통제 이관</td>
+<td>장비 전문가 → 소재 전문가</td>
+<td>종료 규칙과 순환</td>
+</tr>
+<tr>
+<td>Group Chat</td>
+<td>공통 대화를 번갈아 진행</td>
+<td>작성자·검토자·분석가 협업</td>
+<td>반복 대화로 비용 증가</td>
+</tr>
+<tr>
+<td>Magentic</td>
+<td>관리자 Agent가 동적으로 배정</td>
+<td>탐색적 복합 원인 분석</td>
+<td>통제와 재현성 낮아질 수 있음</td>
+</tr>
+</tbody></table>
+</div><h3 id="s-14-2">14.1 Graph 기반 Multi-Agent가 유리할 때<a class="anchor" href="#s-14-2" aria-label="이 절의 고유 링크">#</a></h3>
+<p>각 Agent의 역할과 데이터 접근 범위를 분리할 수 있다. 예를 들어 <code>DataAgent</code>에게는 사내 데이터 조회 Tool, <code>ExpertAgent</code>에게는 기술 문서 검색 Tool, <code>ReviewerAgent</code>에게는 규칙 검사 Tool을 제공한다.</p>
+<h3 id="s-14-3">14.2 Group Chat의 세션 오해<a class="anchor" href="#s-14-3" aria-label="이 절의 고유 링크">#</a></h3>
+<p>Group Chat에서 참여자들이 <strong>같은 Session 인스턴스를 공유하는 것은 아니다.</strong> 공식 문서는 각 Agent가 별도 세션을 유지하고 오케스트레이터가 발화를 전파해 문맥을 동기화한다고 설명한다. 서로 다른 Agent 유형이 같은 Session을 무조건 공유하면 상태 처리 불일치가 생길 수 있기 때문이다. <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat" target="_blank" rel="noopener noreferrer">[D15]</a></p>
+<h3 id="s-14-4">14.3 멀티에이전트로 만들기 전에 물어볼 질문<a class="anchor" href="#s-14-4" aria-label="이 절의 고유 링크">#</a></h3>
+<ol>
+<li>전문가별로 서로 다른 Tool·보안 권한·프롬프트가 필요한가?</li>
+<li>병렬 수행이 실제 지연 시간을 줄이는가?</li>
+<li>분업 후 결과를 일관되게 검증할 수 있는가?</li>
+<li>하나의 Agent에 서브루틴/Tool을 추가하는 것으로 해결되지 않는가?</li>
+<li>서로 다른 모델이 만든 근거와 데이터 범위를 어떻게 합치는가?</li>
+</ol>
+<p><strong>권장:</strong> 단일 Agent로 기준선 평가 → 역할 분리가 효과적임을 확인한 뒤 Multi-Agent 확장.</p>
+</section><div class="next-bridge"><p>핵심 개념을 정리한 뒤 다음 단원에서 실행·저장·검증의 경계를 이어 확인하세요.</p></div><nav class="page-nav" aria-label="이전 다음 단원"><a href="context.html"><small>이전 단원</small>← Session·Memory·RAG</a><a class="next" href="recovery.html"><small>다음 단원</small>승인과 Checkpoint →</a></nav><footer>Microsoft Agent Framework 개인 학습 교재<span>원문 기반 편집 / 프레임워크 설치·실행 미검증</span><a href="sources.html">출처와 검증 범위</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a href="#overview">먼저 연결해 보기</a><a href="#s-12-1">12. Workflow: Agent Loop와 완전히 다른 실행 개념</a><a href="#s-13-1">13. Graph Workflow와 Functional Workflow 비교</a><a href="#s-14-1">14. Multi-Agent Orchestration</a></nav></aside></div></body></html>

@@ -1,0 +1,314 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Claude Code 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제 — Claude Code 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Claude Code<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">C.</span><span>Claude Code<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Model·Harness·Host</p><a href="unit-02.html" ><span class="nav-number">02</span><span>모델·Harness·SDK·플랫폼의 층위 외 3개 주제</span></a><a href="unit-03.html" ><span class="nav-number">03</span><span>사용자가 보는 상태와 내부 상태의 차이</span></a><p class="nav-group">모델 입력·Cache·압축</p><a href="unit-04.html" ><span class="nav-number">04</span><span>최종 LLM 요청은 무엇으로 구성되는가? 외 3개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Context를 코드 수준에서 추적하는 관찰 가능한 경계</span></a><p class="nav-group">Instructions·Memory·Session</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Instruction은 파일을 읽는 것과 정책 강제가 다르다 외 4개 주제</span></a><p class="nav-group">Skills·MCP·Plugin·Tool</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Skill은 단순 Prompt가 아니라 선택·로딩·실행 수명주기를 가진다 외 4개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Hook을 정확히 분석하려면 어디를 봐야 하나?</span></a><p class="nav-group">권한·Sandbox·실패</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Guardrails를 하나의 검증 함수로 생각하면 안 된다 외 4개 주제</span></a><p class="nav-group">동시성·Subagent·Teams</p><a href="unit-10.html" ><span class="nav-number">10</span><span>병렬 Tool, Background Process, Subagent, Agent Team은 서로 다르다 외 5개 주제</span></a><p class="nav-group">Serving·예약·관측</p><a href="unit-11.html" ><span class="nav-number">11</span><span>Claude Code는 모델 서버가 아니라 Agent Runtime이다 외 5개 주제</span></a><a href="unit-12.html" ><span class="nav-number">12</span><span>Cron과 Scheduler — Claude Code에도 있는가? 외 1개 주제</span></a><p class="nav-group">소스·인터페이스 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>요청 한 건의 제어 경계 외 14개 주제</span></a><p class="nav-group">부작용 복구와 설계 비교</p><a href="unit-14.html" aria-current="page" class="current"><span class="nav-number">14</span><span>정확히 한 번 실행(Exactly-once)의 함정 외 5개 주제</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제</span></a><p class="nav-group">발표와 학습 점검</p><a href="unit-16.html" ><span class="nav-number">16</span><span>발표 구성안 — 본문 15장 + 선택적 심화 부록 외 2개 주제</span></a><p class="nav-group">출처·공개·검증 범위</p><a href="unit-17.html" ><span class="nav-number">17</span><span>핵심 공식 출처 인덱스 외 2개 주제</span></a><p class="nav-group">최종 정리</p><a href="unit-18.html" ><span class="nav-number">18</span><span>최종 요약 — 발표자가 기억할 15문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 부작용 복구와 설계 비교</p><h1>부작용 복구와 설계 비교</h1><div class="chapter-meta">단원 14 · 원문 2026.10.31 · Claude Code v2.1.314 · 참조 SDK v0.2.174 · 약 10분 · 원문 1170–1277행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>실패 분석 표와 취소·정책 변경·Exactly-once 문제를 연결하고 자체 Harness의 설계 선택을 비교합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>분석 시나리오는 실제 장애 실측이 아니며 중립 설계 인터페이스는 제품 API가 아닙니다.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1201">41. 정확히 한 번 실행(Exactly-once)의 함정</a><a href="#line-1218">42. 취소는 Undo와 다르다</a><a href="#line-1229">43. 정책 변경 중 실행 중인 Tool 처리</a><a href="#line-1237">44. 같은 기능, 다른 구현 방식</a><a href="#line-1253">45. Claude Code vs Hermes — 두 완성형 Harness</a><a href="#line-1263">46. Claude Code vs Claude Agent SDK</a></nav></details><section class="source-section" data-source-section="41-1"><p class="part-divider" id="line-1170">Part IX. 실패·경계 사례로 읽는 Claude Code 설계</p><p>다음은 <strong>문서상 기능과 일반적인 Agent 시스템의 실패 원리</strong>로 구성한 분석 시나리오다. Claude Code 실제 테스트를 수행한 관찰 결과가 아니다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>상황</th>
+<th>예상해야 할 위험</th>
+<th>확인할 경계</th>
+<th>설계상 대안</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F01</td>
+<td>모델 도중 변경</td>
+<td>Prompt cache full/partial miss</td>
+<td>Model/cache identity</td>
+<td>모델 변경을 시작 단계에서 고정</td>
+</tr>
+<tr>
+<td>F02</td>
+<td>MCP 서버 추가</td>
+<td>Tool definitions 변화·Cache miss</td>
+<td>Tool Search / MCP discovery</td>
+<td>지연 로드와 스키마 버전 관리</td>
+</tr>
+<tr>
+<td>F03</td>
+<td>MCP 서버 종료</td>
+<td>Tool 정의는 보이나 호출 실패</td>
+<td>Connection vs exposed schema</td>
+<td>재연결·Fail result 분리</td>
+</tr>
+<tr>
+<td>F04</td>
+<td><code>CLAUDE.md</code> 수정</td>
+<td>현재 턴에 새 규칙 미반영</td>
+<td>Project context reload</td>
+<td>재구성 경계 확인</td>
+</tr>
+<tr>
+<td>F05</td>
+<td>Compaction 발생</td>
+<td>세부 로그·결정 근거 유실</td>
+<td>Summary / artifacts</td>
+<td>외부 정형 Evidence Store</td>
+</tr>
+<tr>
+<td>F06</td>
+<td>오래된 Auto Memory</td>
+<td>이전 규칙이 오류 유도</td>
+<td>Memory provenance</td>
+<td>검토·갱신·삭제 정책</td>
+</tr>
+<tr>
+<td>F07</td>
+<td>Skill 오용</td>
+<td>권한이 예상보다 넓어짐</td>
+<td><code>allowed-tools</code> and permission policy</td>
+<td>Skill 검토·관리형 정책</td>
+</tr>
+<tr>
+<td>F08</td>
+<td>Skill 본문 너무 큼</td>
+<td>압축 후 일부 규칙 누락</td>
+<td>Per-skill budget</td>
+<td>첫 부분에 필수 규칙 배치</td>
+</tr>
+<tr>
+<td>F09</td>
+<td><code>@file</code> 첨부</td>
+<td>Read Hook 우회</td>
+<td>Prompt assembly</td>
+<td>File deny 및 Host ACL</td>
+</tr>
+<tr>
+<td>F10</td>
+<td>Hook timeout</td>
+<td>보안 정책 미실행 또는 중단</td>
+<td>Handler failure behavior</td>
+<td>Fail-closed 설계 검토</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>Mod 승인</td>
+<td>예상과 다른 우선순위</td>
+<td>Auth/managed policy</td>
+<td>운영 모드별 정책 검증</td>
+</tr>
+<tr>
+<td>F12</td>
+<td>Sandbox 미적용 Tool</td>
+<td>외부 API 접근 가능</td>
+<td>Tool backend boundary</td>
+<td>서버 ACL/별도 Credentials</td>
+</tr>
+<tr>
+<td>F13</td>
+<td>부모·자식 동시 파일 수정</td>
+<td>덮어쓰기·충돌</td>
+<td>Worktree / file ownership</td>
+<td>파일 범위 분리·Lock</td>
+</tr>
+<tr>
+<td>F14</td>
+<td>Background Agent 완료 알림 늦음</td>
+<td>부모가 불완전한 결과 사용</td>
+<td>Notification / join</td>
+<td>완료 장벽·시간 제한</td>
+</tr>
+<tr>
+<td>F15</td>
+<td>Subagent Report Injection</td>
+<td>부모가 지시처럼 해석</td>
+<td>Untrusted tool output</td>
+<td>결과 출처·정책 격리</td>
+</tr>
+<tr>
+<td>F16</td>
+<td>Session 재개</td>
+<td>원격 상태 불일치</td>
+<td>Session vs external state</td>
+<td>Run ID·외부 조회</td>
+</tr>
+<tr>
+<td>F17</td>
+<td>API Rate Limit</td>
+<td>재시도로 비용 증가</td>
+<td>Model API retry</td>
+<td>Backoff / max retries</td>
+</tr>
+<tr>
+<td>F18</td>
+<td>CLI Worker 종료</td>
+<td>Tool 부작용 결과 미확정</td>
+<td>Process lifecycle</td>
+<td>Idempotency / reconciliation</td>
+</tr>
+<tr>
+<td>F19</td>
+<td>HTTP client 연결 종료</td>
+<td>서버 작업 계속 실행</td>
+<td>Client vs worker cancel</td>
+<td>명시적 Cancel API</td>
+</tr>
+<tr>
+<td>F20</td>
+<td>여러 요청이 같은 세션 편집</td>
+<td>History 순서 충돌</td>
+<td>Session writer</td>
+<td>단일 writer, optimistic lock</td>
+</tr>
+<tr>
+<td>F21</td>
+<td>반복 예약 작업 중복</td>
+<td>외부 부작용 중복</td>
+<td>Scheduler concurrency</td>
+<td>Job lease / idempotency key</td>
+</tr>
+<tr>
+<td>F22</td>
+<td>Gateway cache marker 제거</td>
+<td>토큰 비용 상승</td>
+<td>Provider boundary</td>
+<td>Header 검증·모니터링</td>
+</tr>
+<tr>
+<td>F23</td>
+<td>원격 Tool이 느림</td>
+<td>전체 Turn 지연</td>
+<td>Tool timeout vs run timeout</td>
+<td>별도 Timeout·circuit breaker</td>
+</tr>
+<tr>
+<td>F24</td>
+<td>개인정보가 Memory에 자동 저장</td>
+<td>지속적 노출 가능</td>
+<td>Memory retention</td>
+<td>삭제·민감정보 필터링</td>
+</tr>
+</tbody></table>
+</div><h2 id="line-1201">41. 정확히 한 번 실행(Exactly-once)의 함정<a class="anchor" href="#line-1201" aria-label="이 절의 고유 링크">#</a></h2><p><code>Tool 실행 성공</code> 메시지를 세션에 남기기 전에 Worker가 죽었다고 하자. 재개한 Agent는 그 Tool이 실행되지 않았다고 판단해 같은 요청을 다시 보낼 수 있다. 이때 외부 DB나 배포 API가 이미 처리했다면 부작용이 중복될 수 있다. <strong>대화 복원이나 File Checkpoint만으로 외부 작업의 Exactly-once 실행을 보장하지 않는다.</strong></p>
+<p>자체 Framework를 설계한다면 다음 순서가 중요하다. <code>[INF]</code></p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>1. Prepare tool call and assign idempotency key
+2. Validate authorization and arguments
+3. Record intent / pending status
+4. Execute backend with idempotency key
+5. Record result or &#39;outcome unknown&#39;
+6. On restart: reconcile backend status before re-execution</code></pre></div><p>실제 Claude Code 코어가 내부적으로 정확히 위 순서로 구현되어 있다는 뜻은 아니다.</p>
+</section>
+<section class="source-section" data-source-section="42-1"><h2 id="line-1218">42. 취소는 Undo와 다르다<a class="anchor" href="#line-1218" aria-label="이 절의 고유 링크">#</a></h2><ul>
+<li>모델 스트림 Cancel: 현재 생성 중단 요청.</li>
+<li>SDK Control Cancel: 외부 CLI에 취소 의사 전달.</li>
+<li>Tool Cancel: Tool 작업 중단 요청.</li>
+<li>OS Process Kill: 해당 프로세스 종료.</li>
+<li>외부 Job Cancel: DB·클러스터·CI·Cloud 작업 API로 별도 요청.</li>
+<li>Rollback: 이전 변경을 의미적으로 복구.</li>
+</ul>
+<p>각 단계가 연결되어 있지 않다면 사용자에게 Cancel을 보여주면서도 실제 외부 작업은 계속될 수 있다. 특히 장기 실행 Tool을 사용하는 Agent에는 <strong>작업 핸들·취소 가능 여부·상태 조회 API</strong>가 필요하다.</p>
+</section>
+<section class="source-section" data-source-section="43-1"><h2 id="line-1229">43. 정책 변경 중 실행 중인 Tool 처리<a class="anchor" href="#line-1229" aria-label="이 절의 고유 링크">#</a></h2><p>중간에 Permission deny를 추가해도 이미 Backend에 전달된 명령을 소급하여 없앨 수 없다. 완전한 정책 강제를 위해서는 <strong>실행 전 인가</strong>뿐 아니라 <strong>실행 중 토큰 만료/회수, 외부 권한의 TTL, 결과 검증</strong>도 필요할 수 있다. 다만 Claude Code가 모든 경우에 자동으로 중간 취소를 해준다는 보장은 공개 문서만으로 단정할 수 없다. <code>[INF][UNV]</code></p>
+<hr>
+</section>
+<section class="source-section" data-source-section="44-1"><p class="part-divider" id="line-1235">Part X. 7개 기술을 비교하기 위한 아키텍처 해석</p><h2 id="line-1237">44. 같은 기능, 다른 구현 방식<a class="anchor" href="#line-1237" aria-label="이 절의 고유 링크">#</a></h2><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>설계 문제</th>
+<th>Claude Code 접근(공개 계약)</th>
+<th>다른 프레임워크와 비교할 질문</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>반복 루프</td>
+<td>CLI/Harness가 Loop 전체 제공</td>
+<td>OpenAI Runner·PydanticAI Graph처럼 내부 코드를 고칠 수 있나?</td>
+</tr>
+<tr>
+<td>Context</td>
+<td>시스템·프로젝트·대화 계층 및 자동 Compaction</td>
+<td>Hermes의 stable/context/volatile와 실제 차이?</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>파일 기반 Auto Memory, 인덱스·토픽</td>
+<td>Hermes의 SQLite/FTS5와 검색·저장 단위가 어떻게 다른가?</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>파일 정의·점진 로딩·권한 Frontmatter</td>
+<td>Framework Core에 Skills가 내장인가, 외부 확장인가?</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>Built-in + MCP, Permission·Hook</td>
+<td>도구 실행기를 개발자가 바꿀 수 있는가?</td>
+</tr>
+<tr>
+<td>Guardrails</td>
+<td>Rules/Hook/Mods/Sandbox/Managed policies</td>
+<td>Guardrail 적용 범위가 Function/MCP/OS 전반에 걸치는가?</td>
+</tr>
+<tr>
+<td>Multi-Agent</td>
+<td>Subagents, Forks, Agent Teams</td>
+<td>Handoff / Agent-as-Tool / Workflow node와 어느 차원에서 동등한가?</td>
+</tr>
+<tr>
+<td>Serving</td>
+<td>CLI·Agent SDK·원격/Cloud 표면</td>
+<td>각 Framework에 작업 큐·Server가 기본 포함되는가?</td>
+</tr>
+<tr>
+<td>Checkpoint</td>
+<td>Session·파일 checkpoint 등 일부 사용자 기능</td>
+<td>Workflow의 Event Sourcing·Superstep Checkpoint와 같은 보장을 주는가?</td>
+</tr>
+<tr>
+<td>Cron</td>
+<td>Session <code>/loop</code>, Desktop/Cloud scheduled</td>
+<td>Hermes 자체 Scheduler 및 외부 오케스트레이터와 무엇이 다른가?</td>
+</tr>
+<tr>
+<td>관찰성</td>
+<td>CLI/SDK 이벤트, 통계·OTel 문서</td>
+<td>내부 Run 단계 이벤트가 얼마나 세밀하게 노출되는가?</td>
+</tr>
+</tbody></table>
+</div></section>
+<section class="source-section" data-source-section="45-1"><h2 id="line-1253">45. Claude Code vs Hermes — 두 완성형 Harness<a class="anchor" href="#line-1253" aria-label="이 절의 고유 링크">#</a></h2><p><strong>공통:</strong> 모델과 도구 사이에서 Session, Tool Calling, Instructions, Memory, Skills, Subagents, 운영 기능을 제공한다.</p>
+<p><strong>중요 차이:</strong> Hermes는 핵심 Agent Loop/Tool Dispatch 코드가 공개되어 직접 추적·수정 가능하지만, Claude Code는 내부 엔진의 구조적 핵심을 공개된 SDK/Hook 인터페이스로 우회해 파악해야 한다. 따라서 <strong>소스 단위 분석의 가능성</strong>과 <strong>이미 갖춰진 기능을 재사용하는 편의성</strong>은 다른 평가 축이다.</p>
+<p><strong>캐시 비교:</strong> Hermes에서 Prefix 구성 전략을 실제 Prompt Builder 소스에 연결해 추적할 수 있다면, Claude Code는 공식 문서가 세 Layer, Cache Break 조건과 재사용 원리를 더 상세히 공개한다. 내부 함수 호출과 정확한 Token 조립은 여전히 별도 문제다.</p>
+<p><strong>Memory 비교:</strong> Hermes의 Session SQLite·FTS5 인덱스와 Claude Code의 Auto Memory <code>MEMORY.md</code> Index는 같은 역할이 아니다. FTS5는 대화 기록을 검색하는 기술이고, Auto Memory Index는 모델이 저장한 선택적 정보의 탐색을 돕는다. RAG 여부도 외부 검색 결과를 생성에 넣는가와 벡터 DB 사용 여부를 구분해야 한다.</p>
+</section>
+<section class="source-section" data-source-section="46-1"><h2 id="line-1263">46. Claude Code vs Claude Agent SDK<a class="anchor" href="#line-1263" aria-label="이 절의 고유 링크">#</a></h2><p>두 개를 서로 다른 Agent Loop 구현처럼 비교하면 안 된다. <strong>Claude Agent SDK는 동일한 Claude Code 기반 실행 능력을 프로그래밍 방식으로 제어하기 위한 인터페이스</strong>다. Claude Code의 기능을 SDK를 통해 호출하면서 승인 Callback, 메시지 파서, Transport, 세션 API 등 <strong>프로그램 통합 계층</strong>을 추가한다. <a target="_blank" rel="noopener noreferrer" href="https://code.claude.com/docs/en/headless">DOC</a>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/anthropics/claude-code/blob/v2.1.314/README.md">R24</a>]</p>
+<p>자체 Agent를 만들 때의 차이는 다음과 같다.</p>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>질문</th>
+<th>Claude Code 단독</th>
+<th>Claude Agent SDK 사용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CLI에서 작업</td>
+<td>직접</td>
+<td>가능하지만 앱 코드 목적</td>
+</tr>
+<tr>
+<td>앱 내부에서 Agent 호출</td>
+<td>Shell/CLI wrapping</td>
+<td>Python/TS API</td>
+</tr>
+<tr>
+<td>메시지 이벤트 타입화</td>
+<td>CLI 출력 처리</td>
+<td>SDK Message 객체 제공</td>
+</tr>
+<tr>
+<td>승인 Callback</td>
+<td>CLI 상호작용/설정</td>
+<td><code>canUseTool</code> 등 프로그래밍 인터페이스</td>
+</tr>
+<tr>
+<td>내부 Agent Loop 소스 수정</td>
+<td>어려움</td>
+<td>SDK를 써도 같음</td>
+</tr>
+<tr>
+<td>Host 서비스 관리</td>
+<td>별도</td>
+<td>별도(단, SDK 통합 편리)</td>
+</tr>
+</tbody></table>
+</div></section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-13.html"><small>이전 단원</small>← 요청 한 건의 제어 경계 외 14개 주제</a><a class="next" href="unit-15.html"><small>다음 단원</small>Claude Code vs OpenAI Agents SDK/PydanticAI/ADK/MAF 외 1개 주제 →</a></nav><footer>Claude Code · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Claude_Code_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1201">41. 정확히 한 번 실행(Exactly-once)의 함정</a><a class="toc-depth-2" href="#line-1218">42. 취소는 Undo와 다르다</a><a class="toc-depth-2" href="#line-1229">43. 정책 변경 중 실행 중인 Tool 처리</a><a class="toc-depth-2" href="#line-1237">44. 같은 기능, 다른 구현 방식</a><a class="toc-depth-2" href="#line-1253">45. Claude Code vs Hermes — 두 완성형 Harness</a><a class="toc-depth-2" href="#line-1263">46. Claude Code vs Claude Agent SDK</a></nav></aside></div></body></html>

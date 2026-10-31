@@ -1,0 +1,2351 @@
+{
+  "name": "Microsoft Agent Framework",
+  "source": "../../Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+  "sourceHash": "829f3efd3495c5d9b937b0b2dfefcd4b40aeddeb7316a7d0038a46f2d08bf572",
+  "normalizedHash": "829f3efd3495c5d9b937b0b2dfefcd4b40aeddeb7316a7d0038a46f2d08bf572",
+  "lineCount": 1370,
+  "chapterCount": 30,
+  "headings": [
+    {
+      "line": 1,
+      "depth": 1,
+      "text": "Microsoft Agent Framework — 2차 심층 학습 및 내부 소스코드 분석",
+      "id": "line-1"
+    },
+    {
+      "line": 12,
+      "depth": 2,
+      "text": "이 문서가 1차 자료와 다른 점",
+      "id": "line-12"
+    },
+    {
+      "line": 26,
+      "depth": 2,
+      "text": "목차",
+      "id": "line-26"
+    },
+    {
+      "line": 61,
+      "depth": 1,
+      "text": "Part I. 구조를 정확히 나누기",
+      "id": "line-61"
+    },
+    {
+      "line": 63,
+      "depth": 2,
+      "text": "1. 분석 목표와 증거 수준",
+      "id": "line-63"
+    },
+    {
+      "line": 65,
+      "depth": 3,
+      "text": "1.1 학습 후 할 수 있어야 하는 설명",
+      "id": "line-65"
+    },
+    {
+      "line": 74,
+      "depth": 3,
+      "text": "1.2 증거 등급",
+      "id": "line-74"
+    },
+    {
+      "line": 86,
+      "depth": 2,
+      "text": "2. SDK인가, Framework인가, Harness인가?",
+      "id": "line-86"
+    },
+    {
+      "line": 97,
+      "depth": 2,
+      "text": "3. 코드 지도: ‘어디에 무엇이 있는가?’",
+      "id": "line-97"
+    },
+    {
+      "line": 117,
+      "depth": 2,
+      "text": "4. 요청 하나의 전체 실행 시퀀스",
+      "id": "line-117"
+    },
+    {
+      "line": 147,
+      "depth": 3,
+      "text": "4.1 ‘Loop’가 최소 세 개 있는 이유",
+      "id": "line-147"
+    },
+    {
+      "line": 157,
+      "depth": 1,
+      "text": "Part II. Agent 파이프라인 내부",
+      "id": "line-157"
+    },
+    {
+      "line": 159,
+      "depth": 2,
+      "text": "5. Agent 클래스의 다층 합성",
+      "id": "line-159"
+    },
+    {
+      "line": 179,
+      "depth": 3,
+      "text": "5.1 `BaseAgent`와 `RawAgent`",
+      "id": "line-179"
+    },
+    {
+      "line": 196,
+      "depth": 3,
+      "text": "5.2 Agent가 모델을 직접 반복 호출하는가?",
+      "id": "line-196"
+    },
+    {
+      "line": 202,
+      "depth": 2,
+      "text": "6. Context Provider와 History: 실제 호출 지점",
+      "id": "line-202"
+    },
+    {
+      "line": 206,
+      "depth": 3,
+      "text": "6.1 단계별 상태",
+      "id": "line-206"
+    },
+    {
+      "line": 217,
+      "depth": 3,
+      "text": "6.2 ‘Memory’를 모델에 넣을 때 주의",
+      "id": "line-217"
+    },
+    {
+      "line": 221,
+      "depth": 2,
+      "text": "7. ChatClient / Function Invocation: 실제 Tool Loop",
+      "id": "line-221"
+    },
+    {
+      "line": 223,
+      "depth": 3,
+      "text": "7.1 모델이 함수를 실행한다는 표현의 오류",
+      "id": "line-223"
+    },
+    {
+      "line": 243,
+      "depth": 3,
+      "text": "7.2 코드 추적에서 꼭 확인할 다섯 단계",
+      "id": "line-243"
+    },
+    {
+      "line": 253,
+      "depth": 2,
+      "text": "8. Tool Schema, Validation, Execution, Result Conversion",
+      "id": "line-253"
+    },
+    {
+      "line": 255,
+      "depth": 3,
+      "text": "8.1 `FunctionTool`의 책임",
+      "id": "line-255"
+    },
+    {
+      "line": 272,
+      "depth": 3,
+      "text": "8.2 타입 검증과 보안 검증은 다르다",
+      "id": "line-272"
+    },
+    {
+      "line": 285,
+      "depth": 3,
+      "text": "8.3 Middleware가 Arguments를 수정할 수 있다는 점",
+      "id": "line-285"
+    },
+    {
+      "line": 291,
+      "depth": 3,
+      "text": "8.4 반환값의 정규화",
+      "id": "line-291"
+    },
+    {
+      "line": 297,
+      "depth": 2,
+      "text": "9. Tool 병렬 처리: ‘여러 호출’과 ‘동시 실행’은 다르다",
+      "id": "line-297"
+    },
+    {
+      "line": 299,
+      "depth": 3,
+      "text": "9.1 동시성의 네 층",
+      "id": "line-299"
+    },
+    {
+      "line": 310,
+      "depth": 3,
+      "text": "9.2 병렬 처리에서 필요한 계약",
+      "id": "line-310"
+    },
+    {
+      "line": 337,
+      "depth": 3,
+      "text": "9.3 리소스 소유권 원칙",
+      "id": "line-337"
+    },
+    {
+      "line": 341,
+      "depth": 2,
+      "text": "10. Middleware: Agent / Chat / Function이 실제로 언제 도나?",
+      "id": "line-341"
+    },
+    {
+      "line": 351,
+      "depth": 3,
+      "text": "10.1 `call_next()`의 의미",
+      "id": "line-351"
+    },
+    {
+      "line": 368,
+      "depth": 3,
+      "text": "10.2 정책을 어디에 놓아야 하는가?",
+      "id": "line-368"
+    },
+    {
+      "line": 377,
+      "depth": 2,
+      "text": "11. Guardrails가 실패했을 때 어떤 일이 생기는가?",
+      "id": "line-377"
+    },
+    {
+      "line": 379,
+      "depth": 3,
+      "text": "11.1 일반 오류와 보안 중단의 차이",
+      "id": "line-379"
+    },
+    {
+      "line": 409,
+      "depth": 3,
+      "text": "11.2 인자 변경과 Guardrail 우회",
+      "id": "line-409"
+    },
+    {
+      "line": 417,
+      "depth": 3,
+      "text": "11.3 우회하기 어려운 경계는 어디인가?",
+      "id": "line-417"
+    },
+    {
+      "line": 421,
+      "depth": 2,
+      "text": "12. Human Approval: 상태, 바인딩, 중단과 재개",
+      "id": "line-421"
+    },
+    {
+      "line": 423,
+      "depth": 3,
+      "text": "12.1 일어나는 일의 정확한 순서",
+      "id": "line-423"
+    },
+    {
+      "line": 450,
+      "depth": 3,
+      "text": "12.2 권한 상태의 수명",
+      "id": "line-450"
+    },
+    {
+      "line": 456,
+      "depth": 3,
+      "text": "12.3 Tool Approval ≠ Workflow HITL",
+      "id": "line-456"
+    },
+    {
+      "line": 467,
+      "depth": 2,
+      "text": "13. Session, History, Memory, Checkpoint가 어떻게 다른가?",
+      "id": "line-467"
+    },
+    {
+      "line": 479,
+      "depth": 3,
+      "text": "13.1 History 저장 시점의 미묘함",
+      "id": "line-479"
+    },
+    {
+      "line": 485,
+      "depth": 2,
+      "text": "14. Context Assembly, Compaction, Cache의 책임 분리",
+      "id": "line-485"
+    },
+    {
+      "line": 487,
+      "depth": 3,
+      "text": "14.1 실제 모델에 무엇이 들어가는가?",
+      "id": "line-487"
+    },
+    {
+      "line": 504,
+      "depth": 3,
+      "text": "14.2 세 개념의 차이",
+      "id": "line-504"
+    },
+    {
+      "line": 512,
+      "depth": 3,
+      "text": "14.3 모델이 보는 입력을 재구성하는 조사 방법",
+      "id": "line-512"
+    },
+    {
+      "line": 522,
+      "depth": 1,
+      "text": "Part III. Harness와 명시적 Workflow 엔진",
+      "id": "line-522"
+    },
+    {
+      "line": 524,
+      "depth": 2,
+      "text": "15. Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나?",
+      "id": "line-524"
+    },
+    {
+      "line": 526,
+      "depth": 3,
+      "text": "15.1 `AgentLoopMiddleware`의 기능",
+      "id": "line-526"
+    },
+    {
+      "line": 543,
+      "depth": 3,
+      "text": "15.2 코드에서 확인한 종료 조건",
+      "id": "line-543"
+    },
+    {
+      "line": 559,
+      "depth": 3,
+      "text": "15.3 추가로 분해할 질문",
+      "id": "line-559"
+    },
+    {
+      "line": 567,
+      "depth": 3,
+      "text": "15.4 두 Loop의 조합 비용",
+      "id": "line-567"
+    },
+    {
+      "line": 571,
+      "depth": 2,
+      "text": "16. Harness의 기본/옵션 기능과 확장 컴포넌트",
+      "id": "line-571"
+    },
+    {
+      "line": 590,
+      "depth": 3,
+      "text": "16.1 Skills는 MCP와 다르다",
+      "id": "line-590"
+    },
+    {
+      "line": 594,
+      "depth": 3,
+      "text": "16.2 Skills 로딩과 보안",
+      "id": "line-594"
+    },
+    {
+      "line": 607,
+      "depth": 2,
+      "text": "17. Graph Workflow: Agent Loop가 아닌 결정적 실행 그래프",
+      "id": "line-607"
+    },
+    {
+      "line": 630,
+      "depth": 3,
+      "text": "17.1 모델이 경로를 결정하는가?",
+      "id": "line-630"
+    },
+    {
+      "line": 634,
+      "depth": 3,
+      "text": "17.2 왜 Workflow가 필요한가?",
+      "id": "line-634"
+    },
+    {
+      "line": 643,
+      "depth": 2,
+      "text": "18. Superstep: 실제 상태 commit와 메시지 전달",
+      "id": "line-643"
+    },
+    {
+      "line": 645,
+      "depth": 3,
+      "text": "18.1 Superstep의 직관적 이해",
+      "id": "line-645"
+    },
+    {
+      "line": 659,
+      "depth": 3,
+      "text": "18.2 고정 코드 `run_until_convergence()`의 구조",
+      "id": "line-659"
+    },
+    {
+      "line": 692,
+      "depth": 3,
+      "text": "18.3 Superstep 병렬성의 정확한 계약",
+      "id": "line-692"
+    },
+    {
+      "line": 703,
+      "depth": 3,
+      "text": "18.4 State Commit의 의미",
+      "id": "line-703"
+    },
+    {
+      "line": 719,
+      "depth": 2,
+      "text": "19. Checkpoint와 Resume: 직렬화보다 중요한 것은 경계",
+      "id": "line-719"
+    },
+    {
+      "line": 721,
+      "depth": 3,
+      "text": "19.1 무엇이 저장되는가?",
+      "id": "line-721"
+    },
+    {
+      "line": 737,
+      "depth": 3,
+      "text": "19.2 Checkpoint 생성 시점",
+      "id": "line-737"
+    },
+    {
+      "line": 741,
+      "depth": 3,
+      "text": "19.3 복구 코드의 실제 분기",
+      "id": "line-741"
+    },
+    {
+      "line": 758,
+      "depth": 3,
+      "text": "19.4 Checkpoint가 보장하는 것과 보장하지 않는 것",
+      "id": "line-758"
+    },
+    {
+      "line": 769,
+      "depth": 2,
+      "text": "20. Functional Workflow vs Graph Workflow",
+      "id": "line-769"
+    },
+    {
+      "line": 785,
+      "depth": 2,
+      "text": "21. Multi-Agent: 단순 위임과 Workflow 협업 분리",
+      "id": "line-785"
+    },
+    {
+      "line": 787,
+      "depth": 3,
+      "text": "21.1 Subagent-as-Tool",
+      "id": "line-787"
+    },
+    {
+      "line": 793,
+      "depth": 3,
+      "text": "21.2 Workflow 기반 협업",
+      "id": "line-793"
+    },
+    {
+      "line": 805,
+      "depth": 3,
+      "text": "21.3 병렬 Multi-Agent의 실질적인 대가",
+      "id": "line-805"
+    },
+    {
+      "line": 815,
+      "depth": 1,
+      "text": "Part IV. 외부 시스템·보안·운영 경계",
+      "id": "line-815"
+    },
+    {
+      "line": 817,
+      "depth": 2,
+      "text": "22. Model Provider, MCP, Serving, Cron의 실제 책임",
+      "id": "line-817"
+    },
+    {
+      "line": 819,
+      "depth": 3,
+      "text": "22.1 OpenAI 모델에만 종속되는가?",
+      "id": "line-819"
+    },
+    {
+      "line": 833,
+      "depth": 3,
+      "text": "22.2 MCP와 Plugin은 같은 개념인가?",
+      "id": "line-833"
+    },
+    {
+      "line": 839,
+      "depth": 3,
+      "text": "22.3 ‘SDK에서 Agent를 만들었다’와 ‘Agent를 서버로 서빙한다’의 차이",
+      "id": "line-839"
+    },
+    {
+      "line": 866,
+      "depth": 3,
+      "text": "22.4 Cron은 내장 Agent Loop인가?",
+      "id": "line-866"
+    },
+    {
+      "line": 877,
+      "depth": 2,
+      "text": "23. 보안 계층과 FIDES",
+      "id": "line-877"
+    },
+    {
+      "line": 879,
+      "depth": 3,
+      "text": "23.1 Guardrail의 네 영역을 분리",
+      "id": "line-879"
+    },
+    {
+      "line": 888,
+      "depth": 3,
+      "text": "23.2 FIDES가 해결하려는 문제",
+      "id": "line-888"
+    },
+    {
+      "line": 894,
+      "depth": 3,
+      "text": "23.3 FIDES를 만능 방어책으로 설명하면 안 되는 이유",
+      "id": "line-894"
+    },
+    {
+      "line": 906,
+      "depth": 3,
+      "text": "23.4 읽기·쓰기 Tool의 분리",
+      "id": "line-906"
+    },
+    {
+      "line": 912,
+      "depth": 1,
+      "text": "Part V. 실패·복구·상태 일관성 분석",
+      "id": "line-912"
+    },
+    {
+      "line": 914,
+      "depth": 2,
+      "text": "24. 설계자가 반드시 이해해야 할 실패 모드",
+      "id": "line-914"
+    },
+    {
+      "line": 943,
+      "depth": 3,
+      "text": "24.1 실패를 평가할 5가지 질문",
+      "id": "line-943"
+    },
+    {
+      "line": 951,
+      "depth": 3,
+      "text": "24.2 Exactly-once와 At-least-once",
+      "id": "line-951"
+    },
+    {
+      "line": 963,
+      "depth": 3,
+      "text": "24.3 동시성 검증 관점",
+      "id": "line-963"
+    },
+    {
+      "line": 972,
+      "depth": 1,
+      "text": "Part VI. 소스코드 추적 워크북 — 실제 학습 및 발표용",
+      "id": "line-972"
+    },
+    {
+      "line": 974,
+      "depth": 2,
+      "text": "25. 코드 추적 워크북 15개",
+      "id": "line-974"
+    },
+    {
+      "line": 978,
+      "depth": 3,
+      "text": "W01. `Agent.run()` 한 번의 호출 그래프",
+      "id": "line-978"
+    },
+    {
+      "line": 986,
+      "depth": 3,
+      "text": "W02. `ContextProvider`가 Prompt를 바꾸는 실제 시점",
+      "id": "line-986"
+    },
+    {
+      "line": 994,
+      "depth": 3,
+      "text": "W03. `FunctionTool` 생성과 JSON Schema",
+      "id": "line-994"
+    },
+    {
+      "line": 1002,
+      "depth": 3,
+      "text": "W04. Function Invocation Loop의 마지막 단계",
+      "id": "line-1002"
+    },
+    {
+      "line": 1010,
+      "depth": 3,
+      "text": "W05. Function Middleware 인자 수정과 Policy Gate",
+      "id": "line-1010"
+    },
+    {
+      "line": 1018,
+      "depth": 3,
+      "text": "W06. `MiddlewareFailure` vs Tool Error",
+      "id": "line-1018"
+    },
+    {
+      "line": 1026,
+      "depth": 3,
+      "text": "W07. Approval 생명주기와 Session 바인딩",
+      "id": "line-1026"
+    },
+    {
+      "line": 1034,
+      "depth": 3,
+      "text": "W08. `AgentLoopMiddleware`의 2중 반복",
+      "id": "line-1034"
+    },
+    {
+      "line": 1042,
+      "depth": 3,
+      "text": "W09. Compaction 적용과 메모리 보존",
+      "id": "line-1042"
+    },
+    {
+      "line": 1050,
+      "depth": 3,
+      "text": "W10. Workflow의 새 입력 vs Resume 분기",
+      "id": "line-1050"
+    },
+    {
+      "line": 1058,
+      "depth": 3,
+      "text": "W11. Superstep의 `commit()`과 `discard()`",
+      "id": "line-1058"
+    },
+    {
+      "line": 1066,
+      "depth": 3,
+      "text": "W12. Fan-out/Fan-in 메시지 순서",
+      "id": "line-1066"
+    },
+    {
+      "line": 1074,
+      "depth": 3,
+      "text": "W13. Checkpoint 메타데이터와 복원 호환성",
+      "id": "line-1074"
+    },
+    {
+      "line": 1082,
+      "depth": 3,
+      "text": "W14. Workflow HITL와 Agent Tool Approval 비교",
+      "id": "line-1082"
+    },
+    {
+      "line": 1089,
+      "depth": 3,
+      "text": "W15. 보안 정보 흐름과 FIDES 한계",
+      "id": "line-1089"
+    },
+    {
+      "line": 1099,
+      "depth": 2,
+      "text": "26. Framework를 직접 설계한다면 어떤 선택이 필요한가?",
+      "id": "line-1099"
+    },
+    {
+      "line": 1119,
+      "depth": 2,
+      "text": "27. 학습 대상 7개 기술과 설계 차이 비교",
+      "id": "line-1119"
+    },
+    {
+      "line": 1132,
+      "depth": 3,
+      "text": "27.1 반드시 비교할 다섯 가지 ‘같은 문제, 다른 해법’",
+      "id": "line-1132"
+    },
+    {
+      "line": 1144,
+      "depth": 3,
+      "text": "27.2 장점과 한계 — 기능 나열이 아닌 구조 평가",
+      "id": "line-1144"
+    },
+    {
+      "line": 1162,
+      "depth": 1,
+      "text": "Part VII. 발표와 최종 정리",
+      "id": "line-1162"
+    },
+    {
+      "line": 1164,
+      "depth": 2,
+      "text": "28. 발표 구성안 — 15장 + 심층 부록",
+      "id": "line-1164"
+    },
+    {
+      "line": 1188,
+      "depth": 2,
+      "text": "29. 학습 완료 점검 문제",
+      "id": "line-1188"
+    },
+    {
+      "line": 1190,
+      "depth": 3,
+      "text": "A. 핵심 개념 (답을 설명할 수 있는가?)",
+      "id": "line-1190"
+    },
+    {
+      "line": 1203,
+      "depth": 3,
+      "text": "B. 상태·보안 (실제 실패 상황을 설명할 수 있는가?)",
+      "id": "line-1203"
+    },
+    {
+      "line": 1216,
+      "depth": 3,
+      "text": "C. Workflow와 복구 (시퀀스로 설명할 수 있는가?)",
+      "id": "line-1216"
+    },
+    {
+      "line": 1229,
+      "depth": 3,
+      "text": "D. 프레임워크 설계 관점",
+      "id": "line-1229"
+    },
+    {
+      "line": 1242,
+      "depth": 3,
+      "text": "핵심 질문 8개에 대한 한 줄 답",
+      "id": "line-1242"
+    },
+    {
+      "line": 1257,
+      "depth": 2,
+      "text": "30. 공식 참고자료·소스코드 인덱스",
+      "id": "line-1257"
+    },
+    {
+      "line": 1259,
+      "depth": 3,
+      "text": "릴리스와 버전",
+      "id": "line-1259"
+    },
+    {
+      "line": 1266,
+      "depth": 3,
+      "text": "Microsoft Learn — 공식 개념·계약",
+      "id": "line-1266"
+    },
+    {
+      "line": 1287,
+      "depth": 3,
+      "text": "버전 고정 공개 Python 소스",
+      "id": "line-1287"
+    },
+    {
+      "line": 1306,
+      "depth": 3,
+      "text": "버전별 주의 사항",
+      "id": "line-1306"
+    },
+    {
+      "line": 1314,
+      "depth": 3,
+      "text": "검증 범위·한계",
+      "id": "line-1314"
+    },
+    {
+      "line": 1323,
+      "depth": 2,
+      "text": "최종 요약 — 반드시 기억해야 할 12개 문장",
+      "id": "line-1323"
+    }
+  ],
+  "pages": [
+    "index.html",
+    "unit-01.html",
+    "unit-02.html",
+    "unit-03.html",
+    "unit-04.html",
+    "unit-05.html",
+    "unit-06.html",
+    "unit-07.html",
+    "unit-08.html",
+    "unit-09.html",
+    "unit-10.html",
+    "unit-11.html",
+    "unit-12.html",
+    "unit-13.html",
+    "unit-14.html",
+    "unit-15.html",
+    "unit-16.html",
+    "unit-17.html",
+    "unit-18.html",
+    "unit-19.html"
+  ],
+  "sections": [
+    {
+      "key": "intro-1",
+      "chapter": "intro",
+      "startLine": 1,
+      "endLine": 60,
+      "rawHash": "37fe9028bd281823f5e1d174468735cf90f9f0e6060da6a79cee17841f6fe30a",
+      "htmlHash": "0d35454ca56e1a774d6a1edf87617e7aebf81e5af73b380c2e6ce8a03870c76d"
+    },
+    {
+      "key": "1-1",
+      "chapter": "1",
+      "startLine": 61,
+      "endLine": 85,
+      "rawHash": "acf5f2251ae503229873b5c7b21c302da6e11180b02916ef190540df3d00437d",
+      "htmlHash": "df913c7ebf9c2bae76934264c127e983336cfda4bd320cd00ad8e149b70b1e98"
+    },
+    {
+      "key": "2-1",
+      "chapter": "2",
+      "startLine": 86,
+      "endLine": 96,
+      "rawHash": "aa28d3fb43850ba46e14ec32e28f338b807bfca8aa7f7c3dab57bbe44aeeb819",
+      "htmlHash": "989165dfedfdfa94f5e6594785bbe56b92c1dc113aee7a9fb32c55e336fa0184"
+    },
+    {
+      "key": "3-1",
+      "chapter": "3",
+      "startLine": 97,
+      "endLine": 116,
+      "rawHash": "9aac6ff3a7ed75e0969b2fff4ca013cf6df0500768c4a4b1cf01d94052d71fdc",
+      "htmlHash": "f6721424ab1f1b445dbdf5024151e259782458bc42baee6e41fd1e6607e58836"
+    },
+    {
+      "key": "4-1",
+      "chapter": "4",
+      "startLine": 117,
+      "endLine": 156,
+      "rawHash": "af7f0af56d721d441aeb851e4a57bb97b0e51448b0291a2763a9351fee712ab3",
+      "htmlHash": "d6deacd97955a3d92cde977cd6ca6784a885cd688abe8d820b425c2c0677ca2f"
+    },
+    {
+      "key": "5-1",
+      "chapter": "5",
+      "startLine": 157,
+      "endLine": 201,
+      "rawHash": "373c28d4980a8cbda8ccdca2ae5ba2a13ee4648cd7e4c9f7b20f59b9ba5235a2",
+      "htmlHash": "9a8b54e88441d2c941ea50dab3ad1d9c0f88bedec6891ac2d4e974162133c7a3"
+    },
+    {
+      "key": "6-1",
+      "chapter": "6",
+      "startLine": 202,
+      "endLine": 220,
+      "rawHash": "24aede4fedd6c79b483fbc6a2b909509fa9e1b7bf0364e25b4db0a67fd794f10",
+      "htmlHash": "90c5182650017be45bfa515e18ab9c15fa84bf5c9c39f577cfaf894ef54ce417"
+    },
+    {
+      "key": "7-1",
+      "chapter": "7",
+      "startLine": 221,
+      "endLine": 252,
+      "rawHash": "81ac5c87839b065488371a5f2bd11b1a1e2267b1fc99426884fc351a0cf5bb2f",
+      "htmlHash": "14fa0e702c2b7096d70e4e5dc5678b3b6064116a25699d230b61cc17649be3b9"
+    },
+    {
+      "key": "8-1",
+      "chapter": "8",
+      "startLine": 253,
+      "endLine": 296,
+      "rawHash": "3e32fd8860e53f959117f42500f6c99c63c7ed3e069cb594f97b4b5d3c63c189",
+      "htmlHash": "0a893fa8a954b5fc408a09d341c2e956c532b361e2c2ca94855fa66e53ea7116"
+    },
+    {
+      "key": "9-1",
+      "chapter": "9",
+      "startLine": 297,
+      "endLine": 340,
+      "rawHash": "9983a7ba544dc2ffa58a8d8de110dab010ba0f32ade177fe67c28a6c6a2aefb1",
+      "htmlHash": "51547f48268f9c6e2d0eb9a04232f8e03c093ada1e2a2189bad3d9f36f409f1f"
+    },
+    {
+      "key": "10-1",
+      "chapter": "10",
+      "startLine": 341,
+      "endLine": 376,
+      "rawHash": "aa8f064033c31bf86ea4651b531fe8961e17441935a8f22984b26bee05685da1",
+      "htmlHash": "2d6f09561f5953621624660457f5a25e170dfde4f46af5aa3aca4d04897bf903"
+    },
+    {
+      "key": "11-1",
+      "chapter": "11",
+      "startLine": 377,
+      "endLine": 420,
+      "rawHash": "80c2c0b5eabd7ca92fd1c926515fade8f13388fbe12cc81cd06cbedcf60aa2aa",
+      "htmlHash": "84884fa6687da787eee810b2447b215ab92daa5cd86aac3e9871b6493f39c6d2"
+    },
+    {
+      "key": "12-1",
+      "chapter": "12",
+      "startLine": 421,
+      "endLine": 466,
+      "rawHash": "3aa0f69b77971ea39ce874a5c168734cbe1c983c3e0e8ed8c585fb2d46137bd4",
+      "htmlHash": "3b14ad4c80b14b8cd3b9663f9e107af2669095a5a4319fccf6d8795ab1851f2b"
+    },
+    {
+      "key": "13-1",
+      "chapter": "13",
+      "startLine": 467,
+      "endLine": 484,
+      "rawHash": "c0f2a425f3d52f18d1fc488146a19a56fbb87afd264ca9b4191900552bc92b08",
+      "htmlHash": "911033502c7598b64792108f105e785d5443ce70af0b75875f2d889390a1e7ee"
+    },
+    {
+      "key": "14-1",
+      "chapter": "14",
+      "startLine": 485,
+      "endLine": 521,
+      "rawHash": "6772de0dac9c7d12c588383b436749d7c0fb24a5f774ce0eb84ca2bf8458b0ba",
+      "htmlHash": "5cd1958c0ecb240ddd4e0d0d10b2ddf50ea0b2778b93452c6d97e7cb6633e6f9"
+    },
+    {
+      "key": "15-1",
+      "chapter": "15",
+      "startLine": 522,
+      "endLine": 570,
+      "rawHash": "e37f911d56d14c84d63bee303d84bccd4360af63579773e967b014938359f3a1",
+      "htmlHash": "bf76bae2b83efa11d275823c405ff519360483acc43e9221c6e1c73b0651e005"
+    },
+    {
+      "key": "16-1",
+      "chapter": "16",
+      "startLine": 571,
+      "endLine": 606,
+      "rawHash": "8cccf697577f68fe0a22fbf9900cd9537aea110861b3920a47e7a171e2594baf",
+      "htmlHash": "480f8a17b7fcc167d99c9a393ea1e73591664af7f7b13aafc689b76052c489e3"
+    },
+    {
+      "key": "17-1",
+      "chapter": "17",
+      "startLine": 607,
+      "endLine": 642,
+      "rawHash": "4d67bc9c6117b4bd9572a1358b4a874b16bf1f11db156a2622be0b58e01231b2",
+      "htmlHash": "c3d3a9b17903f0e0902afd970c754389bea11b8edb91e9f01c8f83ea578616a8"
+    },
+    {
+      "key": "18-1",
+      "chapter": "18",
+      "startLine": 643,
+      "endLine": 718,
+      "rawHash": "799da51b183309ca6d8f32f5a453f695c3b811aaf5f256de817270056c2c15bb",
+      "htmlHash": "8e1a9615bde30a1e6dcaf9173dfd6d6c4ea808651002475cb6342bcb07113497"
+    },
+    {
+      "key": "19-1",
+      "chapter": "19",
+      "startLine": 719,
+      "endLine": 768,
+      "rawHash": "ade44e7abd56be74965defc0c644de10337edfc33c0a4e719ad1be2192bf9284",
+      "htmlHash": "0fa360c6ec935400467924879ef9390619d39eff9416d9de3810db050eb499a1"
+    },
+    {
+      "key": "20-1",
+      "chapter": "20",
+      "startLine": 769,
+      "endLine": 784,
+      "rawHash": "8328d7433f6fcb1c03a3b15728306455f2f8cc68da975df795780b1e159ac14e",
+      "htmlHash": "882e5274112141a4a54c851cd8864cc79e6ccf12adbd0ae625c1bb95e83c9049"
+    },
+    {
+      "key": "21-1",
+      "chapter": "21",
+      "startLine": 785,
+      "endLine": 814,
+      "rawHash": "c288bfb2000fcc048e50abfc61d99840b8f697a26713568f2cd12ad9aefcf93b",
+      "htmlHash": "b928d17c61ad9168b49a162b6d647339f5d8ad8f991922da2a793eb1d806992a"
+    },
+    {
+      "key": "22-1",
+      "chapter": "22",
+      "startLine": 815,
+      "endLine": 876,
+      "rawHash": "2cfb0763fb09c0c57e4ef1709cf2a26bf43bc8e84c7fe639666fffbc7383463f",
+      "htmlHash": "c0efc78f03117d7e3ec75d5a5ab85bc9c59014b9facef56ab1c036b348b4832e"
+    },
+    {
+      "key": "23-1",
+      "chapter": "23",
+      "startLine": 877,
+      "endLine": 911,
+      "rawHash": "087ac690d2241932a7a81851d058c7e3b66b9ede6c4f923aceaea5ed846beb4f",
+      "htmlHash": "e45abc04de55510a5b593881bb4acbb6a1df97b12168caf2e0df8f88066ab8b0"
+    },
+    {
+      "key": "24-1",
+      "chapter": "24",
+      "startLine": 912,
+      "endLine": 971,
+      "rawHash": "03909db153bedf5e0cec77ed1a2121e243e10bf3a1f17d9e847abc821a4f21a7",
+      "htmlHash": "79187f232bd1ae0222593ba22ece87df39d2967449031d3027d4af9d065c1d62"
+    },
+    {
+      "key": "25-1",
+      "chapter": "25",
+      "startLine": 972,
+      "endLine": 1009,
+      "rawHash": "3ec7781a41703775b9926c3c71c5ece989ab9445bc260e18db8f49acf8a8ff43",
+      "htmlHash": "39fb5b3f9fa4fa7518c44f7deb5dfe02883fa99e8c8b27c495d1c193e5c2e268"
+    },
+    {
+      "key": "25-2",
+      "chapter": "25",
+      "startLine": 1010,
+      "endLine": 1041,
+      "rawHash": "b6b7756bc38e7434c2ba0547932b8786ff095342b0c9fc90308128dc4236c759",
+      "htmlHash": "b1e9efbb6d30f40282d12ec7be5834dc04f3cde78838b871126e1db23ead6548"
+    },
+    {
+      "key": "25-3",
+      "chapter": "25",
+      "startLine": 1042,
+      "endLine": 1073,
+      "rawHash": "fc7ffba5536f83237ea33f7d9900e9da00556b6fc3b01883d025efca81e8cd8a",
+      "htmlHash": "9f49af3f5b04b1e95190d63c5e0866f3083063a24f2c7f411e36d0e6286af9a8"
+    },
+    {
+      "key": "25-4",
+      "chapter": "25",
+      "startLine": 1074,
+      "endLine": 1098,
+      "rawHash": "a3ef7d0b5db684cd000e399cc88eb2a394c320024f5438d5c127e2bf1fa16cf5",
+      "htmlHash": "0d340f65dd1c4ec02688e6c06ab4db5cb299e108b2b690a3a59b21d1aeab1b36"
+    },
+    {
+      "key": "26-1",
+      "chapter": "26",
+      "startLine": 1099,
+      "endLine": 1118,
+      "rawHash": "b3246704e3571b009dbd50619c794e5f5c1de279ac8f6eb6a07074b1858b1712",
+      "htmlHash": "90020be0f70b25c230bcb1af70c24bb3b445d4b313d10e2b403a1232dc0d7d28"
+    },
+    {
+      "key": "27-1",
+      "chapter": "27",
+      "startLine": 1119,
+      "endLine": 1161,
+      "rawHash": "67504941dcf6377202b7b09714bd61b48910efe53b031262c7a49bc9cca85900",
+      "htmlHash": "3d2cc30040327fbd4c23c19b990f708d30e76a0d5938b10237facd63f8e91acd"
+    },
+    {
+      "key": "28-1",
+      "chapter": "28",
+      "startLine": 1162,
+      "endLine": 1187,
+      "rawHash": "10bb193700468705be3f9842fbffe9f77968d4502e44abbde9376aacc611b7e9",
+      "htmlHash": "271c5d91ef80c31fda963e2949daf5ee09270ae58943004a4356f747fe768e0e"
+    },
+    {
+      "key": "29-1",
+      "chapter": "29",
+      "startLine": 1188,
+      "endLine": 1256,
+      "rawHash": "19e9b55d24e4ae22c70c4cb5f666a8adf671ba95a88869a1e80ded0067edbd4d",
+      "htmlHash": "a64771ece42304737181347f84837f185c53091ef1ba0660109b117aa038756d"
+    },
+    {
+      "key": "30-1",
+      "chapter": "30",
+      "startLine": 1257,
+      "endLine": 1322,
+      "rawHash": "cdda41310c2139044666ec40517748f707cac2d9db231a044c5fb358b5f61867",
+      "htmlHash": "4ddeba78bcc6843309b1e63b7d2081eed1f3a68425558115aaffabea4257df23"
+    },
+    {
+      "key": "final-1",
+      "chapter": "final",
+      "startLine": 1323,
+      "endLine": 1370,
+      "rawHash": "64077d60975eeec82299683bee9dfc0a710da2c2f312903d6d82312899bd69d5",
+      "htmlHash": "a7e5e3fdee8ae53c817639012e0daeb0f6b30f9f5a29fa076a378b837d945101"
+    }
+  ],
+  "mapping": [
+    {
+      "page": "unit-01.html",
+      "sections": [
+        "intro-1"
+      ]
+    },
+    {
+      "page": "unit-02.html",
+      "sections": [
+        "1-1",
+        "2-1",
+        "3-1",
+        "4-1"
+      ]
+    },
+    {
+      "page": "unit-03.html",
+      "sections": [
+        "5-1",
+        "6-1",
+        "7-1"
+      ]
+    },
+    {
+      "page": "unit-04.html",
+      "sections": [
+        "8-1",
+        "9-1",
+        "10-1"
+      ]
+    },
+    {
+      "page": "unit-05.html",
+      "sections": [
+        "11-1",
+        "12-1"
+      ]
+    },
+    {
+      "page": "unit-06.html",
+      "sections": [
+        "13-1",
+        "14-1"
+      ]
+    },
+    {
+      "page": "unit-07.html",
+      "sections": [
+        "15-1",
+        "16-1",
+        "17-1"
+      ]
+    },
+    {
+      "page": "unit-08.html",
+      "sections": [
+        "18-1"
+      ]
+    },
+    {
+      "page": "unit-09.html",
+      "sections": [
+        "19-1",
+        "20-1",
+        "21-1"
+      ]
+    },
+    {
+      "page": "unit-10.html",
+      "sections": [
+        "22-1",
+        "23-1"
+      ]
+    },
+    {
+      "page": "unit-11.html",
+      "sections": [
+        "24-1"
+      ]
+    },
+    {
+      "page": "unit-12.html",
+      "sections": [
+        "25-1"
+      ]
+    },
+    {
+      "page": "unit-13.html",
+      "sections": [
+        "25-2"
+      ]
+    },
+    {
+      "page": "unit-14.html",
+      "sections": [
+        "25-3"
+      ]
+    },
+    {
+      "page": "unit-15.html",
+      "sections": [
+        "25-4"
+      ]
+    },
+    {
+      "page": "unit-16.html",
+      "sections": [
+        "26-1",
+        "27-1",
+        "28-1"
+      ]
+    },
+    {
+      "page": "unit-17.html",
+      "sections": [
+        "29-1"
+      ]
+    },
+    {
+      "page": "unit-18.html",
+      "sections": [
+        "30-1"
+      ]
+    },
+    {
+      "page": "unit-19.html",
+      "sections": [
+        "final-1"
+      ]
+    }
+  ],
+  "references": {
+    "R01": "https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0",
+    "R02": "https://github.com/microsoft/agent-framework/tree/python-1.24.0/python",
+    "D01": "https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline",
+    "D02": "https://learn.microsoft.com/en-us/agent-framework/concepts/harness",
+    "D03": "https://learn.microsoft.com/en-us/agent-framework/agents/tools/",
+    "D04": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers",
+    "D05": "https://learn.microsoft.com/en-us/agent-framework/agents/tools/tool-approval?pivots=programming-language-python",
+    "D06": "https://learn.microsoft.com/en-us/agent-framework/agents/safety",
+    "D07": "https://learn.microsoft.com/en-us/agent-framework/agents/security",
+    "D08": "https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/",
+    "D09": "https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints",
+    "D10": "https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/",
+    "D11": "https://learn.microsoft.com/en-us/agent-framework/agents/skills",
+    "D12": "https://learn.microsoft.com/en-us/agent-framework/integrations/",
+    "D13": "https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/",
+    "D14": "https://learn.microsoft.com/en-us/agent-framework/hosting/",
+    "D15": "https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop",
+    "D16": "https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution",
+    "S01": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py",
+    "S02": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py",
+    "S03": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py",
+    "S04": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py",
+    "S05": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py",
+    "S06": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_compaction.py",
+    "S07": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py",
+    "S08": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py",
+    "S09": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_runner.py",
+    "S10": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_checkpoint.py",
+    "S11": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/security.py",
+    "S12": "https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md"
+  },
+  "codeBlocks": [
+    {
+      "section": "4-1",
+      "language": "mermaid",
+      "hash": "61ff480e76dfc419d2136a2a5aa79951cf719d433baf769e23347e7018a5da5e"
+    },
+    {
+      "section": "5-1",
+      "language": "mermaid",
+      "hash": "87b9f3565d2564bc68bed3d60ce3cd39818967d32160e82426c9c14ce819e876"
+    },
+    {
+      "section": "5-1",
+      "language": "python",
+      "hash": "00b4ce79f82782531b14c07a6175f63cdeb660bb7d43fe20b7b371ed16a00615"
+    },
+    {
+      "section": "7-1",
+      "language": "python",
+      "hash": "a81b04d3a67315e18dc589e3b0bf2514edee90eea9cb2cc1ea91f406cb5488b1"
+    },
+    {
+      "section": "8-1",
+      "language": "mermaid",
+      "hash": "9ca98c36990ba2cfa9d5934c7d995fa48d030561b3252aae1f8d7813bb6427a8"
+    },
+    {
+      "section": "9-1",
+      "language": "python",
+      "hash": "1c96dce62c474f03ea69036e75d8c3fe7d98c8cce6877d6e6e364316424940a0"
+    },
+    {
+      "section": "10-1",
+      "language": "python",
+      "hash": "cdeb20e253ae273440897155be399320e1b27a85718b44f82a96d4d8aa72d79b"
+    },
+    {
+      "section": "11-1",
+      "language": "python",
+      "hash": "58631e66e2647cc944e49323af30f412fd08123c656eb52b2b1a7b5dfcb7ce0d"
+    },
+    {
+      "section": "12-1",
+      "language": "mermaid",
+      "hash": "b3a2fb7065d256e9e143538913ee623a3256c082be60be88ae1d2abae89d634b"
+    },
+    {
+      "section": "14-1",
+      "language": "mermaid",
+      "hash": "7b6acd2166fad00ea3c7021e81028169b4029835c2f2e190098fe092f0212950"
+    },
+    {
+      "section": "15-1",
+      "language": "mermaid",
+      "hash": "6f7ff5601000d52dc8204c5606e9f7e6ce76f9ed93ff32ff245ac14c066c06c9"
+    },
+    {
+      "section": "15-1",
+      "language": "python",
+      "hash": "3485aab3bbbc21cc8ff9149330bedbf8cc0b38f5bff513391f44380a4cda66b1"
+    },
+    {
+      "section": "17-1",
+      "language": "mermaid",
+      "hash": "1f45ac5fa4e37f6cc9b24d40fe413807a85d03d6f590dc38f669082abb20df3e"
+    },
+    {
+      "section": "18-1",
+      "language": "text",
+      "hash": "73c980be1773b6191e1394b8767eae05d07dbe8f1a7f5ad373f8e78190736172"
+    },
+    {
+      "section": "18-1",
+      "language": "python",
+      "hash": "0274fa472882311038a6c8e54a2e21af5820426a7bc47786aee82673ca2a88ff"
+    },
+    {
+      "section": "18-1",
+      "language": "text",
+      "hash": "8fa8be7e5fa0339668d4cccb53bb58e0c3be0f62965929ac1d23dbd9b6c4e464"
+    },
+    {
+      "section": "19-1",
+      "language": "mermaid",
+      "hash": "3947d53568e296d5fec949762d424bd47ba82407deaa3d1e2cdaedc26fe3b192"
+    },
+    {
+      "section": "22-1",
+      "language": "mermaid",
+      "hash": "a18eee68ce6585088b164b1cbbcd3b42872e542a712b2533bda151ca5a9117c9"
+    },
+    {
+      "section": "22-1",
+      "language": "text",
+      "hash": "c0ca7eecd896b36088da4d770f4f500353b99db3c248a745687b10ed0c31796e"
+    },
+    {
+      "section": "24-1",
+      "language": "text",
+      "hash": "a4e9b3ee886b47fbdfe00546c8dbd00be0b04347182d8711b9d90ae916b1f376"
+    }
+  ],
+  "diagrams": [
+    {
+      "number": 1,
+      "title": "4. 요청 하나의 전체 실행 시퀀스",
+      "section": "4-1",
+      "rawHash": "61ff480e76dfc419d2136a2a5aa79951cf719d433baf769e23347e7018a5da5e",
+      "type": "sequence",
+      "actors": {
+        "User": "Caller / HTTP",
+        "Agent": "Agent + Agent Middleware",
+        "CP": "Context/History Providers",
+        "Chat": "ChatClient + Chat Middleware",
+        "Model": "Model Provider",
+        "Inv": "Function Invocation + Function Middleware",
+        "Tool": "FunctionTool / External API"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "User",
+          "to": "Agent",
+          "arrow": "->>",
+          "text": "run(messages, session)"
+        },
+        {
+          "type": "message",
+          "from": "Agent",
+          "to": "CP",
+          "arrow": "->>",
+          "text": "before_run / history load / inject context"
+        },
+        {
+          "type": "message",
+          "from": "Agent",
+          "to": "Chat",
+          "arrow": "->>",
+          "text": "get_response(prepared messages, tools)"
+        },
+        {
+          "type": "message",
+          "from": "Chat",
+          "to": "Model",
+          "arrow": "->>",
+          "text": "model request"
+        },
+        {
+          "type": "message",
+          "from": "Model",
+          "to": "Chat",
+          "arrow": "-->>",
+          "text": "function call(s)"
+        },
+        {
+          "type": "message",
+          "from": "Chat",
+          "to": "Inv",
+          "arrow": "->>",
+          "text": "dispatch and normalize calls"
+        },
+        {
+          "type": "message",
+          "from": "Inv",
+          "to": "Tool",
+          "arrow": "->>",
+          "text": "validated invocation"
+        },
+        {
+          "type": "message",
+          "from": "Tool",
+          "to": "Inv",
+          "arrow": "-->>",
+          "text": "tool result / error"
+        },
+        {
+          "type": "message",
+          "from": "Inv",
+          "to": "Chat",
+          "arrow": "-->>",
+          "text": "function response content"
+        },
+        {
+          "type": "message",
+          "from": "Chat",
+          "to": "Model",
+          "arrow": "->>",
+          "text": "follow-up with results"
+        },
+        {
+          "type": "message",
+          "from": "Model",
+          "to": "Chat",
+          "arrow": "-->>",
+          "text": "final response or more calls"
+        },
+        {
+          "type": "message",
+          "from": "Chat",
+          "to": "Agent",
+          "arrow": "-->>",
+          "text": "ChatResponse"
+        },
+        {
+          "type": "message",
+          "from": "Agent",
+          "to": "CP",
+          "arrow": "->>",
+          "text": "after_run / persist history"
+        },
+        {
+          "type": "message",
+          "from": "Agent",
+          "to": "User",
+          "arrow": "-->>",
+          "text": "AgentResponse"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "5. Agent 클래스의 다층 합성",
+      "section": "5-1",
+      "rawHash": "87b9f3565d2564bc68bed3d60ce3cd39818967d32160e82426c9c14ce819e876",
+      "type": "flow",
+      "file": "assets/diagram-2.svg",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Caller",
+          "shape": "box"
+        },
+        {
+          "id": "AM",
+          "label": "Agent Middleware",
+          "shape": "box"
+        },
+        {
+          "id": "OT",
+          "label": "Agent Telemetry",
+          "shape": "box"
+        },
+        {
+          "id": "RA",
+          "label": "RawAgent",
+          "shape": "box"
+        },
+        {
+          "id": "CP",
+          "label": "Context Providers",
+          "shape": "box"
+        },
+        {
+          "id": "FI",
+          "label": "Function Invocation",
+          "shape": "box"
+        },
+        {
+          "id": "CM",
+          "label": "Chat Middleware",
+          "shape": "box"
+        },
+        {
+          "id": "PC",
+          "label": "Provider ChatClient",
+          "shape": "box"
+        },
+        {
+          "id": "LLM",
+          "label": "LLM",
+          "shape": "cylinder"
+        },
+        {
+          "id": "FT",
+          "label": "FunctionTool",
+          "shape": "box"
+        },
+        {
+          "id": "FM",
+          "label": "Function Middleware",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A",
+          "to": "AM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AM",
+          "to": "OT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "OT",
+          "to": "RA",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "RA",
+          "to": "CP",
+          "label": "",
+          "both": true,
+          "dashed": false
+        },
+        {
+          "from": "RA",
+          "to": "FI",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "FI",
+          "to": "CM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CM",
+          "to": "PC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PC",
+          "to": "LLM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "FI",
+          "to": "FT",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "FT",
+          "to": "FM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "8.1 FunctionTool의 책임",
+      "section": "8-1",
+      "rawHash": "9ca98c36990ba2cfa9d5934c7d995fa48d030561b3252aae1f8d7813bb6427a8",
+      "type": "flow",
+      "file": "assets/diagram-3.svg",
+      "nodes": [
+        {
+          "id": "P",
+          "label": "Python function + signature",
+          "shape": "box"
+        },
+        {
+          "id": "SC",
+          "label": "Schema generation",
+          "shape": "box"
+        },
+        {
+          "id": "API",
+          "label": "Tool specification to LLM",
+          "shape": "box"
+        },
+        {
+          "id": "CALL",
+          "label": "Model function-call JSON",
+          "shape": "box"
+        },
+        {
+          "id": "N",
+          "label": "Argument normalization",
+          "shape": "box"
+        },
+        {
+          "id": "PM",
+          "label": "Function Middleware / policy",
+          "shape": "box"
+        },
+        {
+          "id": "V",
+          "label": "Final schema validation",
+          "shape": "box"
+        },
+        {
+          "id": "EX",
+          "label": "FunctionTool.invoke",
+          "shape": "box"
+        },
+        {
+          "id": "RES",
+          "label": "Result parse or error",
+          "shape": "box"
+        },
+        {
+          "id": "MSG",
+          "label": "Model-facing function-result message",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "P",
+          "to": "SC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "SC",
+          "to": "API",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "API",
+          "to": "CALL",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CALL",
+          "to": "N",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "N",
+          "to": "PM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PM",
+          "to": "V",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "V",
+          "to": "EX",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "EX",
+          "to": "RES",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "RES",
+          "to": "MSG",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "12.1 일어나는 일의 정확한 순서",
+      "section": "12-1",
+      "rawHash": "b3a2fb7065d256e9e143538913ee623a3256c082be60be88ae1d2abae89d634b",
+      "type": "sequence",
+      "actors": {
+        "U": "User",
+        "Host": "Host App",
+        "A": "Agent/Function Invocation",
+        "T": "Sensitive Tool"
+      },
+      "events": [
+        {
+          "type": "message",
+          "from": "U",
+          "to": "Host",
+          "arrow": "->>",
+          "text": "Request"
+        },
+        {
+          "type": "message",
+          "from": "Host",
+          "to": "A",
+          "arrow": "->>",
+          "text": "run(request, session)"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "Host",
+          "arrow": "-->>",
+          "text": "user_input_requests(approval needed)"
+        },
+        {
+          "type": "message",
+          "from": "Host",
+          "to": "U",
+          "arrow": "->>",
+          "text": "Approve named tool + exact arguments?"
+        },
+        {
+          "type": "message",
+          "from": "U",
+          "to": "Host",
+          "arrow": "-->>",
+          "text": "approve/reject"
+        },
+        {
+          "type": "message",
+          "from": "Host",
+          "to": "A",
+          "arrow": "->>",
+          "text": "run(bound approval response, same session)"
+        },
+        {
+          "type": "control",
+          "text": "alt approved and binding valid"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "T",
+          "arrow": "->>",
+          "text": "Execute Tool"
+        },
+        {
+          "type": "message",
+          "from": "T",
+          "to": "A",
+          "arrow": "-->>",
+          "text": "Result"
+        },
+        {
+          "type": "control",
+          "text": "else denied or invalid binding"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "Host",
+          "arrow": "-->>",
+          "text": "Rejection/error/no execution"
+        },
+        {
+          "type": "control",
+          "text": "end"
+        },
+        {
+          "type": "message",
+          "from": "A",
+          "to": "Host",
+          "arrow": "-->>",
+          "text": "result or another approval request"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "14.1 실제 모델에 무엇이 들어가는가?",
+      "section": "14-1",
+      "rawHash": "7b6acd2166fad00ea3c7021e81028169b4029835c2f2e190098fe092f0212950",
+      "type": "flow",
+      "file": "assets/diagram-5.svg",
+      "nodes": [
+        {
+          "id": "IN",
+          "label": "현재 사용자 입력",
+          "shape": "box"
+        },
+        {
+          "id": "PRE",
+          "label": "Agent / Context Providers",
+          "shape": "box"
+        },
+        {
+          "id": "SS",
+          "label": "History / Memory / RAG",
+          "shape": "cylinder"
+        },
+        {
+          "id": "CC",
+          "label": "Chat Middleware",
+          "shape": "box"
+        },
+        {
+          "id": "CMP",
+          "label": "Optional Compaction",
+          "shape": "box"
+        },
+        {
+          "id": "SCHEMA",
+          "label": "Tool schema + model options",
+          "shape": "box"
+        },
+        {
+          "id": "PROV",
+          "label": "Provider adapter",
+          "shape": "box"
+        },
+        {
+          "id": "LLM",
+          "label": "Model request",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "IN",
+          "to": "PRE",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "SS",
+          "to": "PRE",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PRE",
+          "to": "CC",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CC",
+          "to": "CMP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CMP",
+          "to": "SCHEMA",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "SCHEMA",
+          "to": "PROV",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "PROV",
+          "to": "LLM",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "15.1 AgentLoopMiddleware의 기능",
+      "section": "15-1",
+      "rawHash": "6f7ff5601000d52dc8204c5606e9f7e6ce76f9ed93ff32ff245ac14c066c06c9",
+      "type": "flow",
+      "file": "assets/diagram-6.svg",
+      "nodes": [
+        {
+          "id": "U",
+          "label": "원래 사용자 요청",
+          "shape": "box"
+        },
+        {
+          "id": "A",
+          "label": "Agent run",
+          "shape": "box"
+        },
+        {
+          "id": "INNER",
+          "label": "ChatClient Tool Loop: 0..N calls",
+          "shape": "box"
+        },
+        {
+          "id": "ANS",
+          "label": "AgentResponse",
+          "shape": "box"
+        },
+        {
+          "id": "CR",
+          "label": "should_continue?",
+          "shape": "diamond"
+        },
+        {
+          "id": "NEXT",
+          "label": "후속 사용자/피드백 메시지 생성",
+          "shape": "box"
+        },
+        {
+          "id": "END",
+          "label": "최종 종료",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "U",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "A",
+          "to": "INNER",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "INNER",
+          "to": "ANS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ANS",
+          "to": "CR",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CR",
+          "to": "NEXT",
+          "label": "yes, within budget",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "NEXT",
+          "to": "A",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "CR",
+          "to": "END",
+          "label": "no or max iterations",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "17. Graph Workflow: Agent Loop가 아닌 결정적 실행 그래프",
+      "section": "17-1",
+      "rawHash": "1f45ac5fa4e37f6cc9b24d40fe413807a85d03d6f590dc38f669082abb20df3e",
+      "type": "flow",
+      "file": "assets/diagram-7.svg",
+      "nodes": [
+        {
+          "id": "START",
+          "label": "Input",
+          "shape": "ellipse"
+        },
+        {
+          "id": "LOAD",
+          "label": "Executor A",
+          "shape": "box"
+        },
+        {
+          "id": "VALID",
+          "label": "Executor B",
+          "shape": "box"
+        },
+        {
+          "id": "META",
+          "label": "Executor C",
+          "shape": "box"
+        },
+        {
+          "id": "JOIN",
+          "label": "Fan-in",
+          "shape": "box"
+        },
+        {
+          "id": "REVIEW",
+          "label": "Optional Agent",
+          "shape": "box"
+        },
+        {
+          "id": "END",
+          "label": "Output",
+          "shape": "ellipse"
+        }
+      ],
+      "edges": [
+        {
+          "from": "START",
+          "to": "LOAD",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "LOAD",
+          "to": "VALID",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "LOAD",
+          "to": "META",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "VALID",
+          "to": "JOIN",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "META",
+          "to": "JOIN",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "JOIN",
+          "to": "REVIEW",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "REVIEW",
+          "to": "END",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "19.3 복구 코드의 실제 분기",
+      "section": "19-1",
+      "rawHash": "3947d53568e296d5fec949762d424bd47ba82407deaa3d1e2cdaedc26fe3b192",
+      "type": "flow",
+      "file": "assets/diagram-8.svg",
+      "nodes": [
+        {
+          "id": "R",
+          "label": "Workflow.run",
+          "shape": "box"
+        },
+        {
+          "id": "Q",
+          "label": "new input or checkpoint id?",
+          "shape": "diamond"
+        },
+        {
+          "id": "V",
+          "label": "Validate checkpoint storage",
+          "shape": "box"
+        },
+        {
+          "id": "LOAD",
+          "label": "Runner.restore_from_checkpoint",
+          "shape": "box"
+        },
+        {
+          "id": "START",
+          "label": "Wrap input as WorkflowMessage",
+          "shape": "box"
+        },
+        {
+          "id": "TYPE",
+          "label": "Validate start executor input",
+          "shape": "box"
+        },
+        {
+          "id": "ENQUEUE",
+          "label": "Enqueue to start executor",
+          "shape": "box"
+        },
+        {
+          "id": "STEP",
+          "label": "Runner.run_until_convergence",
+          "shape": "box"
+        },
+        {
+          "id": "ENTRY",
+          "label": "Optional entry checkpoint",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "R",
+          "to": "Q",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "V",
+          "label": "checkpoint",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "V",
+          "to": "LOAD",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "Q",
+          "to": "START",
+          "label": "new input",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "START",
+          "to": "TYPE",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "TYPE",
+          "to": "ENQUEUE",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "LOAD",
+          "to": "STEP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ENQUEUE",
+          "to": "ENTRY",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "ENTRY",
+          "to": "STEP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "22.3 ‘SDK에서 Agent를 만들었다’와 ‘Agent를 서버로 서빙한다’의 차이",
+      "section": "22-1",
+      "rawHash": "a18eee68ce6585088b164b1cbbcd3b42872e542a712b2533bda151ca5a9117c9",
+      "type": "flow",
+      "file": "assets/diagram-9.svg",
+      "nodes": [
+        {
+          "id": "CLIENT",
+          "label": "Web / CLI / App",
+          "shape": "box"
+        },
+        {
+          "id": "HTTP",
+          "label": "API / Auth",
+          "shape": "box"
+        },
+        {
+          "id": "QUEUE",
+          "label": "Request routing / optional queue",
+          "shape": "box"
+        },
+        {
+          "id": "WORKERS",
+          "label": "Worker pool",
+          "shape": "box"
+        },
+        {
+          "id": "AG",
+          "label": "Agent Framework runtime",
+          "shape": "box"
+        },
+        {
+          "id": "MODEL",
+          "label": "LLM Provider / Gateway",
+          "shape": "box"
+        },
+        {
+          "id": "TOOLS",
+          "label": "Internal Tools/MCP",
+          "shape": "box"
+        },
+        {
+          "id": "SS",
+          "label": "Session / State store",
+          "shape": "cylinder"
+        },
+        {
+          "id": "OBS",
+          "label": "Telemetry",
+          "shape": "cylinder"
+        },
+        {
+          "id": "RESP",
+          "label": "Streaming/Result",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        {
+          "from": "CLIENT",
+          "to": "HTTP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "HTTP",
+          "to": "QUEUE",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "QUEUE",
+          "to": "WORKERS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "WORKERS",
+          "to": "AG",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AG",
+          "to": "MODEL",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AG",
+          "to": "TOOLS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "AG",
+          "to": "SS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "WORKERS",
+          "to": "OBS",
+          "label": "",
+          "both": false,
+          "dashed": false
+        },
+        {
+          "from": "HTTP",
+          "to": "RESP",
+          "label": "",
+          "both": false,
+          "dashed": false
+        }
+      ]
+    }
+  ]
+}

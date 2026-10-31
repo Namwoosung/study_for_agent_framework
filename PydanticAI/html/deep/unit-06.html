@@ -1,0 +1,64 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="PydanticAI 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>Tool 병렬 실행, 장벽, 순서와 취소 — PydanticAI 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">PydanticAI<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">P.</span><span>PydanticAI<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">Core·Graph·Harness 경계</p><a href="unit-02.html" ><span class="nav-number">02</span><span>학습 목표와 설계 질문 외 2개 주제</span></a><p class="nav-group">Node와 Run 수명</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 실행을 하나의 상태기계로 이해하기 외 2개 주제</span></a><p class="nav-group">모델 입력과 Provider</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Prompt Assembly 및 최종 모델 요청 외 1개 주제</span></a><p class="nav-group">Tool 정의·검증·동시성</p><a href="unit-05.html" ><span class="nav-number">05</span><span>Tool 정의와 JSON Schema 변환 외 1개 주제</span></a><a href="unit-06.html" aria-current="page" class="current"><span class="nav-number">06</span><span>Tool 병렬 실행, 장벽, 순서와 취소</span></a><p class="nav-group">Output와 Retry</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Structured Output 및 EndStrategy 상세 외 1개 주제</span></a><p class="nav-group">Dependencies·Capabilities·승인</p><a href="unit-08.html" ><span class="nav-number">08</span><span>Dependencies와 RunContext의 데이터 흐름 외 1개 주제</span></a><a href="unit-09.html" ><span class="nav-number">09</span><span>Human-in-the-loop·Deferred Tool·복원</span></a><p class="nav-group">History·Context·외부 확장</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Message History·State·Persistence·Memory 외 2개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>Multi-Agent·Graph·오케스트레이션</span></a><p class="nav-group">Serving·보안·장애</p><a href="unit-12.html" ><span class="nav-number">12</span><span>Streaming·Serving·동시 요청·취소 외 2개 주제</span></a><p class="nav-group">코드 추적 워크북</p><a href="unit-13.html" ><span class="nav-number">13</span><span>핵심 코드 추적 워크북</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>핵심 코드 추적 워크북 / W3. ToolDefinition → ToolManager → 검증</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>핵심 코드 추적 워크북 / W5. 병렬 Tool의 실행·기록·중복 방지</span></a><a href="unit-16.html" ><span class="nav-number">16</span><span>핵심 코드 추적 워크북 / W8. Capability Lifecycle + Tool 노출 정책</span></a><p class="nav-group">비교·발표·복습</p><a href="unit-17.html" ><span class="nav-number">17</span><span>다른 Agent Framework와 설계 비교</span></a><a href="unit-18.html" ><span class="nav-number">18</span><span>발표용 정리와 학습 점검 질문</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-19.html" ><span class="nav-number">19</span><span>공식 출처·코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-20.html" ><span class="nav-number">20</span><span>최종 요약: PydanticAI의 진짜 설계적 특징</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python Core v2.61.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / Tool 정의·검증·동시성</p><h1>Tool 정의·검증·동시성</h1><div class="chapter-meta">단원 06 · 원문 2026.10.31 · Python Core v2.61.0 · 약 5분 · 원문 526–618행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>함수에서 스키마·ToolManager·검증·승인·실행으로 이어지는 경로와 병렬 배리어를 연결합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>ModelRetry의 피드백과 즉시 함수 재실행, Batch 순차화와 시스템 격리를 구분하세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-526">11. Tool 병렬 실행, 장벽, 순서와 취소</a><a href="#line-528">11.1 &#39;모델이 여러 Tool을 요청&#39;과 &#39;실제 병렬 실행&#39;은 별개</a><a href="#line-539">11.2 실제 Barrier 분할 코드의 의미</a><a href="#line-576">11.3 실행 순서와 결과 순서</a><a href="#line-587">11.4 async와 Thread가 같은 것은 아니다</a><a href="#line-596">11.5 취소의 진짜 의미</a><a href="#line-606">11.6 도구를 모두 sequential=True로 만들면 안전할까?</a></nav></details><section class="source-section" data-source-section="11-1"><h2 id="line-526">11. Tool 병렬 실행, 장벽, 순서와 취소<a class="anchor" href="#line-526" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-528">11.1 &#39;모델이 여러 Tool을 요청&#39;과 &#39;실제 병렬 실행&#39;은 별개<a class="anchor" href="#line-528" aria-label="이 절의 고유 링크">#</a></h3><p>모델 응답에 두 개 이상의 ToolCallPart가 포함될 수 있다. 그러나 Runtime이 다음을 결정한다.</p>
+<ul>
+<li>동시에 시작해도 되는지</li>
+<li>어디서 순차 실행해야 하는지</li>
+<li>결과를 어떤 순서로 기록할지</li>
+<li>실패가 나면 나머지 Task를 어떻게 처리할지</li>
+</ul>
+<p><code>[DOC]</code> PydanticAI는 기본적으로 <code>asyncio.create_task</code>로 여러 Tool 실행을 동시에 스케줄하며, <code>sequential=True</code>가 있으면 앞뒤 실행을 분리하는 <strong>장벽(Barrier)</strong> 으로 사용한다. 동기 함수는 Worker Thread로 오프로딩할 수 있다. <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/tools-toolsets/tools-advanced/">Advanced Tool Features</a>.</p>
+<h3 id="line-539">11.2 실제 Barrier 분할 코드의 의미<a class="anchor" href="#line-539" aria-label="이 절의 고유 링크">#</a></h3><p><code>[SRC]</code> <code>_tool_execution.py</code>의 <code>_segment_by_barriers</code>가 순서를 유지하면서 다음과 같은 세그먼트를 만든다.</p>
+<div class="code-block"><div class="code-caption"><span>원문 흐름·데이터 예시</span><span>text</span></div><pre tabindex="0" aria-label="원문 흐름·데이터 예시"><code>Model emitted:
+  A(read), B(read), C(write: sequential), D(read), E(read), F(sequential)
+
+Execution segments:
+  [A, B] → [C] → [D, E] → [F]
+
+[A,B] concurrent
+[C] alone
+[D,E] concurrent
+[F] alone</code></pre></div><p>장벽은 단순한 Lock과 다르다. Lock은 공유 자원의 동시 접근만 제어하지만, 여기서는 <strong>요청 순서 자체를 일련의 실행 구간으로 분할</strong>한다.</p>
+<div class="code-block"><div class="code-caption"><span>학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인</span><span>python</span></div><pre tabindex="0" aria-label="학습용 의사코드·구조 예시 · 본문에서 실제 코드 여부 확인"><code># [PSEUDO] Barrier partition 논리의 축약
+segments = []
+current_parallel = []
+for call in model_emission_order:
+    if call.sequential:
+        if current_parallel:
+            segments.append(current_parallel)
+            current_parallel = []
+        segments.append([call])
+    else:
+        current_parallel.append(call)
+if current_parallel:
+    segments.append(current_parallel)</code></pre></div><p>실제 함수·입력·출력은 <a target="_blank" rel="noopener noreferrer" href="https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py">소스 <code>_segment_by_barriers</code></a>에서 확인 가능하다.</p>
+<h3 id="line-576">11.3 실행 순서와 결과 순서<a class="anchor" href="#line-576" aria-label="이 절의 고유 링크">#</a></h3><p>병렬 Task는 스케줄한 순서대로 <strong>완료되지 않는다</strong>. <code>A</code>가 먼저 요청됐어도 <code>B</code>가 먼저 끝날 수 있다. 따라서 다음을 구분해야 한다.</p>
+<ol>
+<li><strong>Emission order:</strong> 모델이 Tool Call을 생성한 순서.</li>
+<li><strong>Start order:</strong> Runtime이 Task를 만든 순서.</li>
+<li><strong>Completion order:</strong> 네트워크·디스크 등 실제 작업 완료 순서.</li>
+<li><strong>History assembly order:</strong> Tool 결과를 모델 히스토리에 넣는 순서.</li>
+</ol>
+<p><code>[SRC]</code> v2.61.0 <code>_tool_execution.py</code>의 ToolAvailabilityDelta 중복 제거 코멘트는 완료 시점의 경쟁에 의존하지 않고 <strong>모델 호출의 인덱스 순서</strong>로 선택해야 결정적 결과를 얻는다고 명시한다. 이는 병렬성에서 &#39;실행은 병렬, 기록은 결정적&#39; 패턴의 예시다.</p>
+<h3 id="line-587">11.4 <code>async</code>와 Thread가 같은 것은 아니다<a class="anchor" href="#line-587" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li>비동기 I/O Tool: 이벤트 루프에서 기다리는 동안 다른 Task가 진행.</li>
+<li>동기 Tool: 별도 Thread에서 실행돼 다른 Task를 방해하지 않게 할 수 있음.</li>
+<li>CPU 집중 Tool: Python Thread가 CPU 작업의 실질적인 병렬 속도 향상을 항상 보장하지 않음. 별도 Process/외부 Worker가 필요할 수 있음.</li>
+<li>외부 REST Tool: 요청이 취소되어도 원격 서버에서 이미 수행했을 가능성이 있음.</li>
+</ul>
+<p><code>[DOC]</code> 동기 Tool에 있는 <code>contextvars</code>의 쓰기 변경이 밖으로 전달되지 않는 제약에 주의해야 한다. <a target="_blank" rel="noopener noreferrer" href="https://pydantic.dev/docs/ai/tools-toolsets/tools-advanced/">Advanced Tool Features</a>.</p>
+<h3 id="line-596">11.5 취소의 진짜 의미<a class="anchor" href="#line-596" aria-label="이 절의 고유 링크">#</a></h3><p>취소에는 최소 세 단계가 있다.</p>
+<ol>
+<li>Python Task 취소 신호 수신.</li>
+<li>로컬 Tool/HTTP Client가 취소를 처리.</li>
+<li>원격 시스템이 실제 비즈니스 작업을 중단.</li>
+</ol>
+<p><strong>보장 범위는 1→3으로 자동 전파되지 않는다.</strong> 따라서 중요한 작업에는 Timeout, Idempotency Key, 중복 요청 탐지, 작업 상태 조회, 보상 트랜잭션이 필요하다.</p>
+<h3 id="line-606">11.6 도구를 모두 <code>sequential=True</code>로 만들면 안전할까?<a class="anchor" href="#line-606" aria-label="이 절의 고유 링크">#</a></h3><p>아니다. 동시 실행이 사라질 뿐 다음 문제는 여전히 남는다.</p>
+<ul>
+<li>두 Run이 동일한 Tool을 동시에 호출할 수 있음.</li>
+<li>외부 DB가 트랜잭션 격리를 보장하지 않을 수 있음.</li>
+<li>재시도로 이미 처리한 작업이 중복 수행될 수 있음.</li>
+<li>Tool 함수 자체가 잘못된 권한 범위를 사용할 수 있음.</li>
+</ul>
+<p><strong>설계 결론:</strong> 병렬 제어는 <em>한 Run의 Call Batch</em> 경계에서 작동하는 부분과 <em>전체 시스템의 리소스 동기화</em>를 분리해야 한다.</p>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-05.html"><small>이전 단원</small>← Tool 정의와 JSON Schema 변환 외 1개 주제</a><a class="next" href="unit-07.html"><small>다음 단원</small>Structured Output 및 EndStrategy 상세 외 1개 주제 →</a></nav><footer>PydanticAI · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../PydanticAI_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-1" href="#line-526">11. Tool 병렬 실행, 장벽, 순서와 취소</a><a class="toc-depth-2" href="#line-528">11.1 &#39;모델이 여러 Tool을 요청&#39;과 &#39;실제 병렬 실행&#39;은 별개</a><a class="toc-depth-2" href="#line-539">11.2 실제 Barrier 분할 코드의 의미</a><a class="toc-depth-2" href="#line-576">11.3 실행 순서와 결과 순서</a><a class="toc-depth-2" href="#line-587">11.4 async와 Thread가 같은 것은 아니다</a><a class="toc-depth-2" href="#line-596">11.5 취소의 진짜 의미</a><a class="toc-depth-2" href="#line-606">11.6 도구를 모두 sequential=True로 만들면 안전할까?</a></nav></aside></div></body></html>

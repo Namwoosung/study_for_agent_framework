@@ -1,0 +1,83 @@
+{
+  "viewports": [
+    {
+      "folder": "hermes",
+      "page": "index.html",
+      "size": "desktop-1440",
+      "bodyWidth": 1425,
+      "brokenImages": 0,
+      "documentWidth": 1425,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 696.4625244140625,
+      "nestedAnchors": 0,
+      "sidebarVisible": true,
+      "title": "2차 심층 학습 안내 — Hermes Agent 심층 학습",
+      "width": 1440
+    },
+    {
+      "folder": "hermes",
+      "page": "unit-03.html",
+      "size": "desktop-1440",
+      "bodyWidth": 1425,
+      "brokenImages": 0,
+      "documentWidth": 1425,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 696.4625244140625,
+      "nestedAnchors": 0,
+      "sidebarVisible": true,
+      "title": "사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제 — Hermes Agent 심층 학습",
+      "width": 1440
+    },
+    {
+      "folder": "hermes",
+      "page": "index.html",
+      "size": "mobile-375",
+      "bodyWidth": 360,
+      "brokenImages": 0,
+      "codeRegions": 0,
+      "documentWidth": 360,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 318,
+      "menuExpanded": "false",
+      "tableRegions": 0,
+      "title": "2차 심층 학습 안내 — Hermes Agent 심층 학습",
+      "width": 375
+    },
+    {
+      "folder": "hermes",
+      "page": "unit-03.html",
+      "size": "mobile-375",
+      "bodyWidth": 360,
+      "brokenImages": 0,
+      "codeRegions": 3,
+      "documentWidth": 360,
+      "font": "17px",
+      "headingCount": 1,
+      "lineHeight": "30.6px",
+      "mainWidth": 318,
+      "menuExpanded": "false",
+      "tableRegions": 2,
+      "title": "사용자 요청 한 건의 End-to-End Call Graph 외 1개 주제 — Hermes Agent 심층 학습",
+      "width": 375
+    }
+  ],
+  "interaction": {
+    "folder": "hermes",
+    "open": "true",
+    "closed": "false",
+    "anchor": "#line-115",
+    "hash": "#line-115",
+    "targetVisible": true
+  },
+  "notes": [
+    "데스크톱 1440×1000, 모바일 375×812 뷰포트 검사",
+    "각 교재의 안내 페이지와 도식·표가 포함된 대표 단원 검사",
+    "실물 기기·실제 SDK 실행·성능 테스트는 수행하지 않음"
+  ]
+}

@@ -1,0 +1,195 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Microsoft Agent Framework 2차 심층 학습: 실행·상태·실패·소스코드 분석"><title>공식 참고자료·소스코드 인덱스 — Microsoft Agent Framework 심층 학습</title><link rel="icon" href="../assets/favicon.svg"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="deep.css"><script src="../site.js" defer></script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="mobile-header"><a href="index.html">Microsoft Agent Framework<small>2차 심층 학습</small></a><button id="menu-button" aria-controls="book-nav" aria-expanded="false">목차 열기</button></header><aside class="sidebar" id="book-nav"><a class="book-title" href="index.html"><span class="book-mark">M.</span><span>Microsoft Agent Framework<small>2차 심층 학습 교재</small></span></a><nav aria-label="심층 교재 목차"><a href="index.html" >심층 학습 안내</a><p class="nav-group">읽기 안내</p><a href="unit-01.html" ><span class="nav-number">01</span><span>원문 읽기 안내와 증거 기준</span></a><p class="nav-group">계층과 호출 지도</p><a href="unit-02.html" ><span class="nav-number">02</span><span>분석 목표와 증거 수준 외 3개 주제</span></a><p class="nav-group">Agent·Context·Tool Loop</p><a href="unit-03.html" ><span class="nav-number">03</span><span>Agent 클래스의 다층 합성 외 2개 주제</span></a><p class="nav-group">Tool·정책·승인</p><a href="unit-04.html" ><span class="nav-number">04</span><span>Tool Schema, Validation, Execution, Result Conversion 외 2개 주제</span></a><a href="unit-05.html" ><span class="nav-number">05</span><span>Guardrails가 실패했을 때 어떤 일이 생기는가? 외 1개 주제</span></a><p class="nav-group">상태와 모델 입력</p><a href="unit-06.html" ><span class="nav-number">06</span><span>Session, History, Memory, Checkpoint가 어떻게 다른가? 외 1개 주제</span></a><p class="nav-group">Harness와 명시적 Workflow</p><a href="unit-07.html" ><span class="nav-number">07</span><span>Harness의 별도 Agent Loop: 왜 Tool Loop와 구분해야 하나? 외 2개 주제</span></a><a href="unit-08.html" ><span class="nav-number">08</span><span>Superstep: 실제 상태 commit와 메시지 전달</span></a><p class="nav-group">복구와 협업 모델</p><a href="unit-09.html" ><span class="nav-number">09</span><span>Checkpoint와 Resume: 직렬화보다 중요한 것은 경계 외 2개 주제</span></a><p class="nav-group">외부 연결·보안·실패</p><a href="unit-10.html" ><span class="nav-number">10</span><span>Model Provider, MCP, Serving, Cron의 실제 책임 외 1개 주제</span></a><a href="unit-11.html" ><span class="nav-number">11</span><span>설계자가 반드시 이해해야 할 실패 모드</span></a><p class="nav-group">소스코드 추적 워크북</p><a href="unit-12.html" ><span class="nav-number">12</span><span>코드 추적 워크북 15개</span></a><a href="unit-13.html" ><span class="nav-number">13</span><span>코드 추적 워크북 15개 / W05. Function Middleware 인자 수정과 Policy Gate</span></a><a href="unit-14.html" ><span class="nav-number">14</span><span>코드 추적 워크북 15개 / W09. Compaction 적용과 메모리 보존</span></a><a href="unit-15.html" ><span class="nav-number">15</span><span>코드 추적 워크북 15개 / W13. Checkpoint 메타데이터와 복원 호환성</span></a><p class="nav-group">설계 비교와 복습</p><a href="unit-16.html" ><span class="nav-number">16</span><span>Framework를 직접 설계한다면 어떤 선택이 필요한가? 외 2개 주제</span></a><a href="unit-17.html" ><span class="nav-number">17</span><span>학습 완료 점검 문제</span></a><p class="nav-group">출처·검증 한계</p><a href="unit-18.html" aria-current="page" class="current"><span class="nav-number">18</span><span>공식 참고자료·소스코드 인덱스</span></a><p class="nav-group">최종 정리</p><a href="unit-19.html" ><span class="nav-number">19</span><span>최종 요약 — 반드시 기억해야 할 12개 문장</span></a></nav><div class="book-meta"><a href="../index.html">← 1차 기본 교재</a><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">2차 원문 Markdown ↗</a><span>원문 2026.10.31 · Python SDK python-1.24.0</span></div><nav class="other-books" aria-label="다른 주제의 심층 교재"><p class="nav-group">7개 심층 교재</p><a href="../../../hermes/html/deep/index.html">Hermes Agent</a><a href="../../../OpenAI_Agents_SDK/html/deep/index.html">OpenAI Agents SDK</a><a href="../../../PydanticAI/html/deep/index.html">PydanticAI</a><a href="../../../Google_ADK/html/deep/index.html">Google ADK</a><a href="../../../Claude_Agent_SDK/html/deep/index.html">Claude Agent SDK</a><a href="../../../Claude_Code/html/deep/index.html">Claude Code</a><a href="../../../Microsoft%20Agent_Framework/html/deep/index.html">Microsoft Agent Framework</a></nav></aside><div class="reading-layout"><main id="main" tabindex="-1"><nav class="breadcrumb" aria-label="과정 위치"><a href="../index.html">1차 기본 교재</a><span>/</span><a href="index.html">2차 심층 교재</a></nav><header class="chapter-header"><p class="eyebrow">SECOND STUDY / 출처·검증 한계</p><h1>출처·검증 한계</h1><div class="chapter-meta">단원 18 · 원문 2026.10.31 · Python SDK python-1.24.0 · 약 10분 · 원문 1257–1322행</div></header><section class="unit-intro"><h2>이번 단원의 읽는 관점</h2><p>Python 고정 버전과 공식 문서, 실험 기능·변경 포맷·미실행 범위를 확인합니다.</p><p class="reading-question"><strong>살펴볼 경계</strong>Python·.NET·Go의 기능 동등성을 가정하지 마세요.</p></section><details class="inline-toc"><summary>이 페이지의 세부 목차</summary><nav aria-label="본문 세부 목차"><a href="#line-1257">30. 공식 참고자료·소스코드 인덱스</a><a href="#line-1259">릴리스와 버전</a><a href="#line-1266">Microsoft Learn — 공식 개념·계약</a><a href="#line-1287">버전 고정 공개 Python 소스</a><a href="#line-1306">버전별 주의 사항</a><a href="#line-1314">검증 범위·한계</a></nav></details><section class="source-section" data-source-section="30-1"><h2 id="line-1257">30. 공식 참고자료·소스코드 인덱스<a class="anchor" href="#line-1257" aria-label="이 절의 고유 링크">#</a></h2><h3 id="line-1259">릴리스와 버전<a class="anchor" href="#line-1259" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>고정 자료</th>
+<th>검증하려는 사항</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0">R01</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0">Python 1.24.0 릴리스</a></td>
+<td>2026-10-30, 커밋 <code>43d767c</code>, Python 지원 범위, 새 기능·주의 사항</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/tree/python-1.24.0/python">R02</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/tree/python-1.24.0/python">전체 Python 태그 루트</a></td>
+<td>패키지 구조·예제·테스트 탐색</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1266">Microsoft Learn — 공식 개념·계약<a class="anchor" href="#line-1266" aria-label="이 절의 고유 링크">#</a></h3><div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>공식 문서</th>
+<th>확인 대상</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">D01</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/agent-pipeline">Agent Pipeline Architecture</a></td>
+<td>Agent / ChatClient 계층과 함수 호출 위치</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness">D02</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/harness">Agent Harness</a></td>
+<td>Harness 기본·선택 구성, 반복/History/Skills</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/">D03</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/">Tools Overview</a></td>
+<td>Function/Hosted/MCP Tool의 구분</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers">D04</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/context-providers">Context Providers</a></td>
+<td>Session Context/History/Memory Provider</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/tool-approval?pivots=programming-language-python">D05</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/tool-approval?pivots=programming-language-python">Function Tool Approval (Python)</a></td>
+<td>승인 요청·응답·세션 바인딩</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/safety">D06</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/safety">Agent Safety</a></td>
+<td>신뢰 경계, Tool 승인, 입력 정책</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/security">D07</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/security">Agent Security with FIDES</a></td>
+<td>정보 흐름 제어와 CodeAct 호환성 한계</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/">D08</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/">Workflow Concepts</a></td>
+<td>Graph / Functional API 비교</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints">D09</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints">Workflow Checkpoints</a></td>
+<td>Superstep·Entry Checkpoint·복원</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/">D10</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/agents/conversations/">Conversations &amp; Memory</a></td>
+<td>AgentSession/서비스 관리 ID/Memory</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/skills">D11</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/skills">Agent Skills</a></td>
+<td>SkillsProvider, 로딩·스크립트 승인</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/integrations/">D12</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/integrations/">Integrations</a></td>
+<td>Provider/MCP/기타 외부 연동</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/">D13</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/">Workflow Orchestrations</a></td>
+<td>Sequential/Concurrent/Handoff/GroupChat/Magentic</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/hosting/">D14</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/hosting/">Hosting</a></td>
+<td>Self-hosting vs Foundry-managed hosting</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop">D15</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop">Workflow Human-in-the-loop</a></td>
+<td>Request/Response Event, 외부 승인</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution">D16</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/builder-and-execution">Workflow Builder &amp; Execution</a></td>
+<td>Executor/Edge/WorkflowBuilder 구성</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1287">버전 고정 공개 Python 소스<a class="anchor" href="#line-1287" aria-label="이 절의 고유 링크">#</a></h3><blockquote>
+<p>링크는 모두 <code>python-1.24.0</code> 태그로 고정돼 있다. 실제 로직 분석에서는 <code>main</code>이 아니라 <strong>이 링크의 파일을 기준으로</strong> 메서드를 찾는다.</p>
+</blockquote>
+<div class="table-scroll" role="region" aria-label="비교·분석 표" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>소스 파일</th>
+<th>핵심 추적 지점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py">S01</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_agents.py"><code>_agents.py</code></a></td>
+<td><code>BaseAgent</code>, <code>RawAgent</code>, <code>Agent</code>, <code>as_tool()</code>, Context Lifecycle</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py">S02</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_clients.py"><code>_clients.py</code></a></td>
+<td><code>BaseChatClient</code>, <code>_prepare_messages_for_model_call</code></td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py">S03</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_tools.py"><code>_tools.py</code></a></td>
+<td><code>FunctionTool</code>, 입력/결과 변환·검증</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py">S04</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_middleware.py"><code>_middleware.py</code></a></td>
+<td><code>AgentContext</code>, <code>ChatContext</code>, <code>FunctionInvocationContext</code>, <code>MiddlewareFailure</code></td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py">S05</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py"><code>_sessions.py</code></a></td>
+<td><code>AgentSession</code>, HistoryProvider, Run Persistence</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_compaction.py">S06</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_compaction.py"><code>_compaction.py</code></a></td>
+<td>Compaction Strategy, message/token 관리</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py">S07</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_harness/_loop.py"><code>_harness/_loop.py</code></a></td>
+<td><code>AgentLoopMiddleware</code>, <code>_evaluate_stop</code></td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py">S08</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_workflow.py"><code>_workflows/_workflow.py</code></a></td>
+<td><code>Workflow.run</code>, <code>_execute_with_message_or_checkpoint</code></td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_runner.py">S09</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_runner.py"><code>_workflows/_runner.py</code></a></td>
+<td><code>run_until_convergence</code>, <code>_run_iteration</code>, Commit/Discard</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_checkpoint.py">S10</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_checkpoint.py"><code>_workflows/_checkpoint.py</code></a></td>
+<td><code>WorkflowCheckpoint</code>, 리니지·호환성·pending state</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/security.py">S11</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/security.py"><code>security.py</code></a></td>
+<td>보안 기능 공개 진입점·FIDES 확장</td>
+</tr>
+<tr>
+<td>[<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md">S12</a>]</td>
+<td><a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/AGENTS.md">Core <code>AGENTS.md</code></a></td>
+<td>모듈 구조와 구현 가이드</td>
+</tr>
+</tbody></table>
+</div><h3 id="line-1306">버전별 주의 사항<a class="anchor" href="#line-1306" aria-label="이 절의 고유 링크">#</a></h3><ol>
+<li><code>python-1.24.0</code>은 2026년 10월 30일 릴리스이며 Python <strong>3.11 이상을 지원 기준선</strong>으로 공지했다. Python 3.10 설치가 허용되더라도 호환성 보장은 아니다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0">R01</a>]</li>
+<li><code>RedisContextProvider</code> 관련 인덱스 마이그레이션 주의 사항이 존재한다. 기존 raw-scope 인덱스를 새 릴리스와 그대로 혼용하는 것을 피한다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0">R01</a>]</li>
+<li><code>AgentTriggeredCompactionStrategy</code>, <code>UnloadSkillsCompactionStrategy</code> 같은 기능은 릴리스에서 <strong>experimental</strong>로 소개된다. 일반 Core 안정 API처럼 평가하지 않는다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/releases/tag/python-1.24.0">R01</a>]</li>
+<li>.NET/Go/Python 기능은 완전히 같지 않다. 특히 Python FIDES와 Functional Workflow의 지원 범위·미지원 제약을 구분한다. [<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/agents/security">D07</a>][<a target="_blank" rel="noopener noreferrer" href="https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/">D08</a>]</li>
+<li>Tool/Session/Checkpoint 내부 데이터 모델은 바뀔 수 있으므로 장기 저장 데이터의 버전 변환을 검토해야 한다. [<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_sessions.py">S05</a>][<a target="_blank" rel="noopener noreferrer" href="https://github.com/microsoft/agent-framework/blob/python-1.24.0/python/packages/core/agent_framework/_workflows/_checkpoint.py">S10</a>]</li>
+</ol>
+<h3 id="line-1314">검증 범위·한계<a class="anchor" href="#line-1314" aria-label="이 절의 고유 링크">#</a></h3><ul>
+<li><strong>확인한 것:</strong> Microsoft Learn 공식 자료, <code>python-1.24.0</code>의 핵심 클래스·문서화된 조건·상태 필드·중요 메서드 경로.</li>
+<li><strong>확인하지 않은 것:</strong> 코드의 모든 내부 분기·테스트를 실제 Python 런타임에서 디버거로 실행하는 동적 추적; 실제 Provider API의 요청/응답 페이로드; 성능·정확도·보안 침투·장애 복구 실측.</li>
+<li><strong>소스 구분:</strong> 의사코드와 다이어그램은 구조 학습용이며, 정확한 복제 코드가 아니다. 성능 우열 및 기업용 준비 완료 여부는 이 문서만으로 단정하지 않는다.</li>
+<li><strong>데모 제외:</strong> 이 문서에는 반도체 공정/설비를 대상으로 한 Agent 실행 구현이나 사용자 데이터가 포함되지 않는다. 후속 개발의 기술 판단에 필요한 원리만 다룬다.</li>
+</ul>
+<hr>
+</section><nav class="page-nav" aria-label="이전 다음 단원"><a href="unit-17.html"><small>이전 단원</small>← 학습 완료 점검 문제</a><a class="next" href="unit-19.html"><small>다음 단원</small>최종 요약 — 반드시 기억해야 할 12개 문장 →</a></nav><footer>Microsoft Agent Framework · 2차 심층 학습<span>제공된 원문 전체를 분할·편집한 로컬 교재 / 실제 SDK 실행·성능 검증 미수행</span><a href="../../Microsoft_Agent_Framework_2%EC%B0%A8_%EC%8B%AC%EC%B8%B5_%ED%95%99%EC%8A%B5_%EB%B6%84%EC%84%9D.md">원문과 검증 한계 확인</a></footer></main><aside class="local-toc"><nav aria-label="이 페이지의 내용"><p>이 페이지에서</p><a class="toc-depth-2" href="#line-1257">30. 공식 참고자료·소스코드 인덱스</a><a class="toc-depth-3" href="#line-1259">릴리스와 버전</a><a class="toc-depth-3" href="#line-1266">Microsoft Learn — 공식 개념·계약</a><a class="toc-depth-3" href="#line-1287">버전 고정 공개 Python 소스</a><a class="toc-depth-3" href="#line-1306">버전별 주의 사항</a><a class="toc-depth-3" href="#line-1314">검증 범위·한계</a></nav></aside></div></body></html>
