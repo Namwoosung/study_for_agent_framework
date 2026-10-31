@@ -1,0 +1,106 @@
+{
+  "desktop": {
+    "width": 1440,
+    "height": 1000,
+    "columns": 2,
+    "noHorizontalOverflow": true
+  },
+  "mobile": {
+    "columns": "318px",
+    "courses": 14,
+    "documentWidth": 360,
+    "pages": 227,
+    "topics": 7,
+    "viewport": 375
+  },
+  "roundTrips": [
+    {
+      "course": "1차 기본 교재",
+      "topic": "Hermes Agent",
+      "url": "http://127.0.0.1:8772/hermes/html/execution.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "Hermes Agent",
+      "url": "http://127.0.0.1:8772/hermes/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "OpenAI Agents SDK",
+      "url": "http://127.0.0.1:8772/OpenAI_Agents_SDK/html/execution.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "OpenAI Agents SDK",
+      "url": "http://127.0.0.1:8772/OpenAI_Agents_SDK/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "PydanticAI",
+      "url": "http://127.0.0.1:8772/PydanticAI/html/core.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "PydanticAI",
+      "url": "http://127.0.0.1:8772/PydanticAI/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "Google ADK",
+      "url": "http://127.0.0.1:8772/Google_ADK/html/getting-started.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "Google ADK",
+      "url": "http://127.0.0.1:8772/Google_ADK/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "Claude Agent SDK",
+      "url": "http://127.0.0.1:8772/Claude_Agent_SDK/html/runtime.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "Claude Agent SDK",
+      "url": "http://127.0.0.1:8772/Claude_Agent_SDK/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "Claude Code",
+      "url": "http://127.0.0.1:8772/Claude_Code/html/execution.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "Claude Code",
+      "url": "http://127.0.0.1:8772/Claude_Code/html/deep/unit-02.html",
+      "returned": true
+    },
+    {
+      "course": "1차 기본 교재",
+      "topic": "Microsoft Agent Framework",
+      "url": "http://127.0.0.1:8772/Microsoft%20Agent_Framework/html/runtime.html",
+      "returned": true
+    },
+    {
+      "course": "2차 심층 교재",
+      "topic": "Microsoft Agent Framework",
+      "url": "http://127.0.0.1:8772/Microsoft%20Agent_Framework/html/deep/unit-02.html",
+      "returned": true
+    }
+  ],
+  "notes": [
+    "14개 기본·심층 교재의 대표 단원에서 전체 홈 버튼으로 복귀 확인",
+    "전체 227개 페이지의 홈 연결은 정적 검사로 전수 확인"
+  ]
+}
