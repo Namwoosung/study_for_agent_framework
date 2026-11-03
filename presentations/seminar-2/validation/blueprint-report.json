@@ -1,0 +1,32 @@
+{
+  "artifact": "blueprint.md",
+  "date": "2026-11-03",
+  "sha256": "aae02ef79155958a73e8a7aeb507c7509138c26a45c87854c04b603f4766093d",
+  "slide_specifications": 46,
+  "audience_slides": 42,
+  "reserved_slides": [
+    "S39",
+    "S40",
+    "S41",
+    "S42"
+  ],
+  "sections": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G"
+  ],
+  "source_references": 47,
+  "python_blocks_syntax_checked": 6,
+  "local_links_checked": 7,
+  "errors": [],
+  "result": "pass",
+  "limitations": [
+    "No API imports or model requests executed",
+    "No HTML/browser rendering created or checked",
+    "No runtime/proxy/target-PC verification"
+  ]
+}

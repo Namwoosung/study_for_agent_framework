@@ -1,0 +1,232 @@
+{
+  "checkedAt": "2026-11-03",
+  "localStudyBaseline": "Claude Code v2.1.314 (not asserted latest)",
+  "currentDocs": "Official live docs checked separately; not every live feature attributed to v2.1.314",
+  "localSources": [
+    {
+      "path": "study/Claude_Code/Claude_Code.md",
+      "sha256": "7074c2276f571e44c7bf93ee55834e460f5dd297ed1d971593208ebab193527c"
+    },
+    {
+      "path": "study/Claude_Code/Claude_Code_2차_심층_학습_분석.md",
+      "sha256": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728"
+    },
+    {
+      "path": "study/Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+      "sha256": "be44dc5735f4b0e9ed9c4926d5027de8b68d1091a62ea46d57689cbed967097a"
+    }
+  ],
+  "references": [
+    {
+      "id": "D01",
+      "links": [
+        {
+          "title": "How Claude Code works",
+          "url": "https://code.claude.com/docs/en/how-claude-code-works"
+        }
+      ],
+      "reviewedScope": "공통 loop·Tool·Harness 역할"
+    },
+    {
+      "id": "D02",
+      "links": [
+        {
+          "title": "Prompt caching",
+          "url": "https://code.claude.com/docs/en/prompt-caching"
+        }
+      ],
+      "reviewedScope": "계층·변경 영향·캐시/메모리 차이"
+    },
+    {
+      "id": "D03",
+      "links": [
+        {
+          "title": "Context window",
+          "url": "https://code.claude.com/docs/en/context-window"
+        }
+      ],
+      "reviewedScope": "시작 입력·압축 후 재주입"
+    },
+    {
+      "id": "D04",
+      "links": [
+        {
+          "title": "Memory",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ],
+      "reviewedScope": "지침 선택·Rules·Auto Memory"
+    },
+    {
+      "id": "D05",
+      "links": [
+        {
+          "title": "Sessions",
+          "url": "https://code.claude.com/docs/en/sessions"
+        }
+      ],
+      "reviewedScope": "Session 재개·분기와 외부 파일 상태의 구별"
+    },
+    {
+      "id": "D06",
+      "links": [
+        {
+          "title": "MCP",
+          "url": "https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search"
+        }
+      ],
+      "reviewedScope": "지연 명세·기본값·fallback"
+    },
+    {
+      "id": "D07",
+      "links": [
+        {
+          "title": "Skills",
+          "url": "https://code.claude.com/docs/en/skills"
+        }
+      ],
+      "reviewedScope": "invocation·권한 수명·fork·compaction"
+    },
+    {
+      "id": "D08",
+      "links": [
+        {
+          "title": "Subagents",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
+      ],
+      "reviewedScope": "시작 Context·설정·fork·중첩·반환"
+    },
+    {
+      "id": "D09",
+      "links": [
+        {
+          "title": "Plugin manifest reference",
+          "url": "https://code.claude.com/docs/en/plugins-reference"
+        }
+      ],
+      "reviewedScope": "패키징·구성요소와 Mods 구별"
+    },
+    {
+      "id": "D10",
+      "links": [
+        {
+          "title": "Permissions",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
+      ],
+      "reviewedScope": "Rules/Hook/Mod·Plan·관리형 정책"
+    },
+    {
+      "id": "D11",
+      "links": [
+        {
+          "title": "Hooks",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
+      ],
+      "reviewedScope": "이벤트 계약·결정·오류·onFailure·timeout"
+    },
+    {
+      "id": "D12",
+      "links": [
+        {
+          "title": "Sandboxing",
+          "url": "https://code.claude.com/docs/en/sandboxing"
+        }
+      ],
+      "reviewedScope": "Bash 적용 경계·제품의 OS 조건"
+    },
+    {
+      "id": "D13",
+      "links": [
+        {
+          "title": "Monitoring",
+          "url": "https://code.claude.com/docs/en/monitoring-usage"
+        }
+      ],
+      "reviewedScope": "metrics/events·beta tracing·활성화·상관 ID"
+    },
+    {
+      "id": "D14",
+      "links": [
+        {
+          "title": "Agent Teams",
+          "url": "https://code.claude.com/docs/en/agent-teams"
+        }
+      ],
+      "reviewedScope": "공유 작업·통신·기본 off·실험 상태"
+    },
+    {
+      "id": "D15",
+      "links": [
+        {
+          "title": "Checkpointing",
+          "url": "https://code.claude.com/docs/en/checkpointing"
+        }
+      ],
+      "reviewedScope": "파일 추적·rewind·대화/코드 복구"
+    },
+    {
+      "id": "D16",
+      "links": [
+        {
+          "title": "Scheduled tasks",
+          "url": "https://code.claude.com/docs/en/scheduled-tasks"
+        }
+      ],
+      "reviewedScope": "Session/Desktop/Cloud·resume 복원"
+    },
+    {
+      "id": "S01",
+      "links": [
+        {
+          "title": "Claude Code README @v2.1.314",
+          "url": "https://github.com/anthropics/claude-code/blob/v2.1.314/README.md"
+        },
+        {
+          "title": "동일 릴리스",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314"
+        }
+      ],
+      "reviewedScope": "공개 자료 범위·로컬 교재의 기준 릴리스 확인"
+    },
+    {
+      "id": "S02",
+      "links": [
+        {
+          "title": "Sandbox Runtime 공식 저장소",
+          "url": "https://github.com/anthropics/sandbox-runtime"
+        }
+      ],
+      "reviewedScope": "공개 API와 제품 통합 경계. 코드 발췌 전 commit 고정 필요"
+    },
+    {
+      "id": "S03",
+      "links": [
+        {
+          "title": "Anthropic Sandbox 기술 글",
+          "url": "https://www.anthropic.com/research/claude-code-sandboxing"
+        }
+      ],
+      "reviewedScope": "파일·네트워크 격리 설계의 배경. 과거 수치를 이번 환경의 성능으로 사용하지 않음"
+    },
+    {
+      "id": "S04",
+      "links": [
+        {
+          "title": "Python SDK subprocess transport @v0.2.174",
+          "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/v0.2.174/src/claude_agent_sdk/_internal/transport/subprocess_cli.py"
+        }
+      ],
+      "reviewedScope": "공개 SDK/CLI 경계. SDK 상세는 후속 범위와 분리"
+    }
+  ],
+  "plannedSlides": 29,
+  "topicOpener": 1,
+  "contentSlides": 23,
+  "categoryDividers": 5,
+  "deckChanged": false,
+  "runtimeTested": false,
+  "relocationNote": "2026-11-03: Local source paths moved under study/. Original research-time hashes are retained; companion navigation links were updated separately."
+}

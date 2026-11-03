@@ -1,0 +1,40 @@
+{
+  "blueprintCoverage": 42,
+  "audienceSlides": 146,
+  "speakerSpecCoverage": 42,
+  "sourcesExplanations": 146,
+  "reservedExcluded": [
+    "S39",
+    "S40",
+    "S41",
+    "S42"
+  ],
+  "pydanticPages": [
+    83,
+    143
+  ],
+  "pydanticSlides": 61,
+  "hermesPages": [
+    6,
+    53
+  ],
+  "hermesSlides": 48,
+  "claudePages": [
+    54,
+    82
+  ],
+  "claudeSlides": 29,
+  "otherSlidesContentPreserved": 8,
+  "limitedIntroChanges": [
+    "S01 builds removed",
+    "S03H official icon added"
+  ],
+  "originalSourceReferencesPreservedExceptRewrittenClaudeCommands": true,
+  "explicitlyDeleted": [
+    "S14B"
+  ],
+  "pythonSnippetsSyntaxChecked": 6,
+  "pdfPages": 146,
+  "blankPdfPages": 0,
+  "result": "pass"
+}

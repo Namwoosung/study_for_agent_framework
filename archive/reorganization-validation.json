@@ -1,0 +1,12 @@
+{
+  "result": "pass",
+  "rootDirectories": [
+    "archive",
+    "presentations",
+    "study"
+  ],
+  "originalFilesPresent": 722,
+  "activeLocalLinksChecked": 9038,
+  "presentationSlides": 146,
+  "errors": []
+}

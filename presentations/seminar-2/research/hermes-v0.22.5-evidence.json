@@ -1,0 +1,330 @@
+{
+  "tag": "v0.22.5",
+  "treeSha": "bf0203a794a07aac3ff764972ab9087baa4e4f4e",
+  "verifiedAt": "2026-11-03",
+  "method": "Official tagged source retrieved and inspected; no Hermes execution/performance measurement.",
+  "sources": {
+    "loop": {
+      "path": "agent/conversation_loop.py",
+      "sha256": "36dd6f02b169a544a95598dee74cb775914420dc700cc88cc946effd103b72bc",
+      "line": 1724,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/conversation_loop.py#L1724",
+      "excerpt": "    while _prelude_action != \"break\" and (\n        (s.api_call_count < agent.max_iterations and agent.iteration_budget.remaining > 0) or agent._budget_grace_call\n    ):\n        if _run_phase(begin_iteration, agent, s).action == \"break\":\n            break\n        _run_phase(prepare_iteration, agent, s)\n        _run_phase(assemble_api_request, agent, s)\n        _pg = _run_phase(run_preflight_gate, agent, s)\n        if _pg.action == \"return\":\n            return _pg.result\n        if _pg.action == \"break\":\n            break"
+    },
+    "prep": {
+      "path": "agent/turn_iteration_prep.py",
+      "sha256": "73ceb91f917a682665845360557a8a45c0623e257ff9fee4995ae786ce2a441a",
+      "line": 352,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_iteration_prep.py#L352",
+      "excerpt": "def begin_iteration(\n    agent: Any, *, messages: Any, conversation_history: Any, original_user_message: Any,\n    api_call_count: Any, interrupted: Any, _turn_exit_reason: Any,\n) -> IterationStart:\n    \"\"\"Iteration entry in the original order: apply a pending redirect, reset the checkpoint\n    dedup, then the interrupt / review-budget / iteration-budget exits. ``api_call_count`` is\n    incremented here (the grace call consumes its flag instead of the budget).\"\"\"\n    from agent.conversation_loop import (\n        _apply_active_turn_redirect, _review_input_budget_exhausted\n    )\n\n    def _verdict(action: str) -> IterationStart:"
+    },
+    "final": {
+      "path": "agent/turn_finalizer.py",
+      "sha256": "4c1e83c6a23bcb7fc10f942306459b54b130975fdce3d76d8fd7f2432698632e",
+      "line": 525,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_finalizer.py#L525",
+      "excerpt": "def finalize_turn(\n    agent, *, final_response, api_call_count, interrupted, failed, messages, conversation_history,\n    effective_task_id, turn_id, user_message, original_user_message, _should_review_memory,\n    _turn_exit_reason, _pending_verification_response=None,\n    _pending_verification_response_previewed=False,\n):\n    \"\"\"Run the post-loop finalization and return the turn ``result`` dict.\"\"\"\n    from agent.conversation_loop import logger\n\n    final_response, _turn_exit_reason, preserved_verification_fallback, interrupted = _resolve_budget_fallback(\n        agent, final_response=final_response, api_call_count=api_call_count,\n        interrupted=interrupted, failed=failed, messages=messages,"
+    },
+    "retry": {
+      "path": "agent/conversation_loop.py",
+      "sha256": "36dd6f02b169a544a95598dee74cb775914420dc700cc88cc946effd103b72bc",
+      "line": 1573,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/conversation_loop.py#L1573",
+      "excerpt": "def _run_api_retry_loop(agent, s: _LoopState) -> Optional[dict[str, Any]]:\n    \"\"\"One API call with its retry/recovery loop (guard → build → call → check, error handlers).\n\n    Returns a turn result dict when a phase ends the turn, else None once the loop is left\n    (success, a restart armed on ``s._retry``, interrupt, or retries exhausted).\"\"\"\n    while s.retry_count < s.max_retries:\n        _ng = _run_phase(nous_rate_limit_guard, agent, s)\n        if _ng.action == \"return\":\n            return _ng.result\n        if _ng.action == \"break\":\n            return None\n        try:"
+    },
+    "defaults": {
+      "path": "hermes_cli/config_defaults.py",
+      "sha256": "64890345b7b4d6601bd0dd4c8caac95ba1eaf793ae8b9236c0ccf149e6b2b3bf",
+      "line": 1,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/config_defaults.py#L1",
+      "excerpt": "\"\"\"Default configuration data for Hermes Agent: DEFAULT_CONFIG and OPTIONAL_ENV_VARS.\n\nPure-data leaf module — must not import from hermes_cli.config. Comments are the user-facing\ndocs of config.yaml.\n\"\"\"\n\n\n#: Image every container terminal backend (docker/modal/daytona, the singularity plugin) uses unless the\n#: user pins one. LEGACY_SANDBOX_IMAGES are the plain defaults that preceded the desktop stack\n#: (the 3.14 pin shipped between the two without a migration); a saved config still holding one\n#: is the template copied, and the config migration unsets it, never a user's own pin.\nDEFAULT_SANDBOX_IMAGE = \"nousresearch/hermes-sandbox:desktop\""
+    },
+    "prompt": {
+      "path": "agent/system_prompt.py",
+      "sha256": "fd8d23565f5eb17b304b0443fa19e3729a69cd699b4217acb27e7eb1503db500",
+      "line": 753,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/system_prompt.py#L753",
+      "excerpt": "    stable_parts.append(HERMES_AGENT_HELP_GUIDANCE_NO_SKILLS)\n    stable_parts.extend(_guidance_parts(agent))\n    skills_prompt = _skills_prompt(agent)\n    # Skill-pointer variant requires BOTH skill_view AND the hermes-agent skill\n    # in the rendered index (pure string check — inherits the index's stability).\n    if \"skill_view\" in (agent.valid_tool_names or set()) and \"- hermes-agent:\" in skills_prompt:\n        stable_parts[_help_guidance_slot] = HERMES_AGENT_HELP_GUIDANCE\n    stable_parts.extend(_alibaba_identity_part(agent))\n    # Pinned skills are per-agent constants (resolved once), so they live in the stable prefix.\n    stable_parts.extend(_auto_load_parts(agent))\n    # Coding posture: the operating brief stays in the stable prefix. The\n    # environment block contains the current cwd/backend and belongs after"
+    },
+    "registry": {
+      "path": "tools/registry.py",
+      "sha256": "48c3875138ac9e1875349ed2900d6940f51dfff050d655d6fb17a1dafe30f5e7",
+      "line": 896,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/registry.py#L896",
+      "excerpt": "    def get_definitions(self, tool_names: set[str], quiet: bool = False) -> list[dict]:\n        \"\"\"OpenAI-format schemas for the requested tools whose ``check_fn`` passes (or is\n        absent). Probes use the ~30 s TTL cache so ``hermes tools enable`` lands quickly.\"\"\"\n        result = []\n        check_results: dict[Callable, bool] = {}\n        entries_by_name = {entry.name: entry for entry in self._snapshot_entries()}\n        for name in sorted(tool_names):\n            entry = entries_by_name.get(name)\n            if not entry:\n                continue\n            if entry.check_fn and not _memo_check(entry.check_fn, check_results):\n                if not quiet:"
+    },
+    "native": {
+      "path": "tools/skills_tool.py",
+      "sha256": "f75e1047efba2640daefa2f03b897db12ac74890792621151ed9fbfd974176b8",
+      "line": 731,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/skills_tool.py#L731",
+      "excerpt": "registry.register(\n    name=\"skills_list\", toolset=\"skills\", schema=SKILLS_LIST_SCHEMA,\n    handler=lambda args, **kw: skills_list(category=args.get(\"category\"), task_id=kw.get(\"task_id\")),\n    check_fn=check_skills_requirements, emoji=\"📚\")\n\n\ndef _skill_view_with_bump(args, **kw):\n    \"\"\"Invoke skill_view, then bump view_count/use on success (best-effort). Repeat-view dedup\n    mirrors read_file's unchanged-stub: a result byte-identical to one already served for the\n    same skill file in this session returns a short stub (cache cleared on context compression).\"\"\"\n    name = args.get(\"name\", \"\")\n    task_id = kw.get(\"task_id\")"
+    },
+    "validation": {
+      "path": "agent/turn_tool_validation.py",
+      "sha256": "cd5e412e4311bc12238f7774b084d5440c91e40710eafdeaac7c1bfa2ddb0ac4",
+      "line": 72,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_tool_validation.py#L72",
+      "excerpt": "def validate_tool_calls(\n    agent: Any, assistant_message: Any, finish_reason: str, *, messages: list[dict[str, Any]],\n    conversation_history: Any, api_call_count: int, effective_task_id: Any,\n) -> ToolValidationVerdict:\n    \"\"\"Validate ``assistant_message.tool_calls`` in place (ids uniquified, names\n    repaired, dict/empty args normalized to JSON strings). Strikes for invalid names\n    advance only when a turn has NO valid call, so a degenerate model still halts at\n    3; args cut off mid-stream (routers rewrite ``length`` → ``tool_calls``) are refused\n    outright rather than retried.\"\"\"\n    from agent.conversation_loop import _invalid_tool_name_error_content\n\n    tool_calls = assistant_message.tool_calls"
+    },
+    "persist": {
+      "path": "agent/turn_tool_round.py",
+      "sha256": "1ccd3574528597f5c3a5589729849f8a10e422f0d970af3bb03b1fbd277f1f29",
+      "line": 49,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_tool_round.py#L49",
+      "excerpt": "def run_tool_round(\n    agent: Any, *, assistant_message: Any, finish_reason: Any, messages: Any,\n    conversation_history: Any, api_call_count: Any, effective_task_id: Any, user_message: Any,\n    system_message: Any, active_system_prompt: Any, compression_attempts: Any,\n    max_compression_attempts: Any, final_response: Any, failed: Any, _turn_exit_reason: Any,\n    truncated_tool_call_retries: Any, current_turn_user_idx: Any,\n) -> ToolRoundVerdict:\n    \"\"\"Execute one tool round in the exact original order. Persist-before-execute is a\n    durability invariant: resume must see the executed block if a destructive tool restarts\n    Hermes; a failed canonical append ends the turn rather than running tools from\n    process-only state.\"\"\"\n    from agent.conversation_loop import _invalid_tool_name_error_content"
+    },
+    "approval": {
+      "path": "tools/approval.py",
+      "sha256": "6f19d962993e563e527a6310f481c38d131ad34ab422e540db5c3f949ffa742d",
+      "line": 1151,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/approval.py#L1151",
+      "excerpt": "def check_all_command_guards(command: str, env_type: str,\n                             approval_callback=None,\n                             has_host_access: bool = False) -> dict:\n    \"\"\"Run all pre-exec security checks and return a single approval decision. Plugins that\n    want to veto or escalate a command do it from ``pre_tool_call``.\n    ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow.\"\"\"\n    if _should_skip_container_guards(env_type, has_host_access=has_host_access):\n        return _user_deny_block(command) or _approved()\n\n    blocked = _floor_block(command, sudo_guard=True)\n    if blocked is not None:\n        return blocked"
+    },
+    "smart": {
+      "path": "tools/approval_smart.py",
+      "sha256": "46a30d5cd8bd930c30faaa3ca53cf52ac4369639d0fa92d7f0995fc2c1dc9190",
+      "line": 88,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/approval_smart.py#L88",
+      "excerpt": "def _smart_approve(command: str, description: str) -> str:\n    \"\"\"Ask the auxiliary LLM; return 'approve', 'deny', or 'escalate' (uncertain/failed).\n\n    Inspired by OpenAI Codex's Smart Approvals guardian subagent (openai/codex#13860).\n    \"\"\"\n    _smart_t0 = time.monotonic()\n    try:\n        from agent.auxiliary_client import _get_task_timeout, call_llm\n\n        # Pass the timeout explicitly AND log call + duration: this synchronous call gates EVERY flagged command, and\n        # a stalled provider once froze turns for tens of minutes with zero log output.\n        # Pass the same configured value explicitly (belt) and log the call + duration (suspenders) so a"
+    },
+    "write": {
+      "path": "tools/write_approval.py",
+      "sha256": "8d8a15d29a73dceb2e8cf76f613d59d91115314c908a8086ffe1c72572382c7f",
+      "line": 44,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/write_approval.py#L44",
+      "excerpt": "def write_approval_enabled(subsystem: str) -> bool:\n    \"\"\"Read ``<subsystem>.write_approval``; any unset/invalid value means gate off.\"\"\"\n    if subsystem not in _SUBSYSTEMS:\n        return False\n    try:\n        from hermes_cli.config import load_config, cfg_get\n        return _normalize_enabled(cfg_get(load_config(), subsystem, CONFIG_KEY, default=False))\n    except Exception:\n        return False\n\n\ndef _normalize_enabled(value: Any) -> bool:"
+    },
+    "memory": {
+      "path": "tools/memory_tool.py",
+      "sha256": "3ac1975d5d34a8e0fd20ea538aa084fc48c5ba21e8b2da4f97f58a7bf3cafaab",
+      "line": 222,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/memory_tool.py#L222",
+      "excerpt": "def memory_tool(action: str | None = None, target: str = \"memory\", content: str | None = None, old_text: str | None = None,\n                new_text: str | None = None, operations: Optional[list[dict[str, Any]]] = None,\n                store: Optional[MemoryStore] = None) -> str:\n    \"\"\"Tool entry point; returns a JSON string. Single op (action + content/old_text)\n    or batch (``operations``, atomic against the final budget). ``new_text``\n    aliases ``content``.\"\"\"\n    if store is None:\n        return tool_error(\"Memory is not available. It may be disabled in config or this environment.\", success=False)\n    token = FAILURE_CLASS.set(\"other\")\n    try:\n        outcome, result = _memory_tool(action, target, content, old_text, new_text, operations, store)\n        failure_class = \"none\" if outcome == \"success\" else FAILURE_CLASS.get()"
+    },
+    "store": {
+      "path": "tools/memory_tool_store.py",
+      "sha256": "3280e2294928815ab2dd52479c5616aee805e27819b901f9af40831a293728c6",
+      "line": 175,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/memory_tool_store.py#L175",
+      "excerpt": "class MemoryStore:\n    \"\"\"Bounded curated memory with file persistence; one instance per AIAgent.\n    ``_system_prompt_snapshot`` is frozen at load time (prefix-cache stable);\n    ``memory_entries`` / ``user_entries`` are live state persisted to disk.\"\"\"\n\n    # Failed consolidation attempts (overflow / zero-match) allowed per turn before\n    # a TERMINAL \"save skipped\" result, so a fragile replace/add can't loop the turn\n    # to budget exhaustion and suppress the user's reply.\n    # See #42405.\n    _MAX_CONSOLIDATION_FAILURES_PER_TURN = 3\n\n    def __init__(self, memory_char_limit: int = 2200, user_char_limit: int = 1375, *,"
+    },
+    "search": {
+      "path": "tools/session_search_tool.py",
+      "sha256": "8ed4f3e49c70cc0723254f8dc81eaf8ea69733a22c32c1a45740717ab8cc6ee8",
+      "line": 577,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/session_search_tool.py#L577",
+      "excerpt": "def _dispatch(query, role_filter, limit, db, current_session_id, session_id,\n              around_message_id, window, sort, profile, detail,\n              after=None, before=None, exclude_session_ids=None) -> str:\n    \"\"\"Mode dispatch (see module docstring); scroll wins when an anchor is set.\"\"\"\n    if isinstance(session_id, str) and session_id.strip():\n        if around_message_id is not None:\n            return _scroll(db, session_id.strip(), around_message_id, window, current_session_id)\n        return _read_scoped(db, session_id.strip(), profile)\n    limit = _clamp_int(limit, 3, 1, 10)\n    if not query or not isinstance(query, str) or not query.strip():\n        return _list_recent_sessions(db, limit, current_session_id, link_profile=profile)\n    sort_norm = sort.strip().lower() if isinstance(sort, str) else None"
+    },
+    "sql": {
+      "path": "hermes_state_search.py",
+      "sha256": "6e8f67ee7ee569adbf7d16bb116f37837e1d8589e2b6410d90a4c13e7079dfcc",
+      "line": 825,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_state_search.py#L825",
+      "excerpt": "    def _sanitize_fts5_query(query: str) -> str:\n        \"\"\"Sanitize user input for FTS5 MATCH (raw special characters raise): preserve paired\n        quoted phrases, strip unmatched special characters, and quote hyphenated/dotted\n        terms so FTS5 matches them as phrases (``chat-send``, ``P2.2``, ``my-app.config.ts``).\"\"\"\n        # Cap before any regex processing so adversarial input stays bounded.\n        query = query[:MAX_FTS5_QUERY_CHARS]\n\n        # 1. Protect balanced quoted phrases via numbered placeholders (``\"[^\"]*\"`` pairs\n        # left-to-right without backtracking); a leftover unmatched quote becomes whitespace.\n        _quoted_parts: list = []\n\n        def _hold(m: re.Match[str]) -> str:"
+    },
+    "skill": {
+      "path": "tools/skill_manager_tool.py",
+      "sha256": "131d3720957659c37addd27430693d5d0b7dec0b5176a83b2bedad783b7edcd7",
+      "line": 925,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/skill_manager_tool.py#L925",
+      "excerpt": "registry.register(\n    name=\"skill_manage\", toolset=\"skills\", schema=SKILL_MANAGE_SCHEMA, emoji=\"📝\",\n    handler=lambda args, **kw: _skill_manage_from(\n        args, task_id=kw.get(\"task_id\"), session_id=kw.get(\"session_id\")))"
+    },
+    "curator": {
+      "path": "agent/curator.py",
+      "sha256": "fde73780c9b72336b0d6e67fb984f9b1506c624037376902972a7c4d3d1e9a6b",
+      "line": 40,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/curator.py#L40",
+      "excerpt": "def _state_file() -> Path:\n    return get_hermes_home() / \"skills\" / \".curator_state\"\n\n\ndef load_state() -> dict[str, Any]:\n    base: dict[str, Any] = {\n        \"last_run_at\": None, \"last_run_duration_seconds\": None, \"last_run_summary\": None,\n        \"last_run_summary_shown_at\": None, \"last_report_path\": None, \"paused\": False, \"run_count\": 0,\n    }\n    path = _state_file()\n    try:\n        data = json.loads(path.read_text(encoding=\"utf-8-sig\")) if path.exists() else {}"
+    },
+    "parallel": {
+      "path": "agent/tool_executor.py",
+      "sha256": "1b1b67d4b88f73c51dc147d0e0383b36c561d921d278d801326de5ba24b29702",
+      "line": 1417,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_executor.py#L1417",
+      "excerpt": "    def submit_all(self, executor, runnable: list[int]) -> tuple[list, dict]:\n        \"\"\"Submit every runnable slot; on interpreter shutdown, synthesize error results\n        for the unsubmitted remainder instead of raising. ``propagate_context_to_thread``\n        carries turn ContextVars and thread-local approval/sudo callbacks into the worker.\"\"\"\n        futures = []\n        future_to_index = {}\n        for submit_index, i in enumerate(runnable):\n            try:\n                f = executor.submit(propagate_context_to_thread(self.run_worker), i, submit_index)\n            except RuntimeError as submit_error:\n                if not _is_interpreter_shutdown_submit_error(submit_error):\n                    raise"
+    },
+    "planner": {
+      "path": "agent/tool_dispatch_helpers.py",
+      "sha256": "bf4c6e4af26ba8a93ece9dfa6afa9a2e4d96bfe27ae854bd483a6613306c2cfc",
+      "line": 212,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_dispatch_helpers.py#L212",
+      "excerpt": "def _plan_tool_batch_segments(tool_calls, *, execution_cwd: Optional[Path] = None) -> list[tuple]:\n    \"\"\"Split a tool-call batch into ordered ``(\"parallel\"|\"sequential\", calls)`` segments.\n\n    Call order is preserved exactly (a later call never crosses an earlier barrier), so\n    result order and side-effect boundaries match fully-sequential execution. Barriers:\n    ``_NEVER_PARALLEL_TOOLS``, unparseable/non-dict args, anything not parallel-safe.\n    Path-scoped tools join a run only if they don't conflict with its reservations:\n    reader↔reader overlap stays parallel; any overlap involving a writer closes the run so\n    the call starts a NEW run after the conflicting one lands. Runs shorter than two calls\n    demote to sequential (it owns the richer inline dispatch); adjacent sequential merge.\n    \"\"\"\n    segments: list[tuple] = []"
+    },
+    "delegate": {
+      "path": "tools/delegate_tool.py",
+      "sha256": "e10851b169053b5de90700185edaab943f33b74edae92b0175c5c89b8bbd8922",
+      "line": 64,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool.py#L64",
+      "excerpt": "def _parent_live_home(parent_agent: Any) -> Optional[Path]:\n    \"\"\"Resolve the live transcripts' profile home from parent-owned state.\n\n    The parent's per-profile SessionDB sits directly under its profile home\n    (``<home>/state.db``), so the db path's parent IS the home. Returns None\n    when the parent exposes no usable SessionDB — the caller then falls back\n    to the ambient resolve, which is exactly the #91996 failure mode, so the\n    skip is logged rather than silent.\n    \"\"\"\n    parent_db = getattr(getattr(parent_agent, \"_session_db\", None), \"db_path\", None)\n    # Concrete str/Path only — NOT the os.PathLike protocol: MagicMock (and any\n    # duck-typed test double) registers __fspath__ and so IS PathLike, which is"
+    },
+    "child": {
+      "path": "tools/delegate_tool_child_run.py",
+      "sha256": "cad9e57d5e46bb5005ed274eb21365baddf2e6962cd6f271eaf1bf3350f83866",
+      "line": 1,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool_child_run.py#L1",
+      "excerpt": "\"\"\"Running ONE pre-built child agent: heartbeat, registry entry, workspace seeding,\ntimeout/failure handling, result-entry assembly and cleanup (``_ChildRun``).\"\"\"\n\nfrom __future__ import annotations\n\nimport logging\nimport contextvars\nimport json\nimport os\nimport threading\nimport time\nfrom tools.delegation_redaction import redact_child_result, redact_child_text"
+    },
+    "dispatch": {
+      "path": "tools/delegate_tool_dispatch.py",
+      "sha256": "09bde43d67b503f96e45f86664b358162edba2c79ba168c1312ccc59a4e606c1",
+      "line": 480,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool_dispatch.py#L480",
+      "excerpt": "def _run_batch(batch: _Batch, background: bool) -> str:\n    \"\"\"Tool result JSON: a dispatch handle (background) or the joined combined results.\"\"\"\n    # Every unit of this call shares task_list, so its last joined unit emits the call's one row.\n    begin_delegation_run(\n        batch.task_list, subagents=len(batch.children), depth=getattr(batch.parent_agent, \"_delegate_depth\", 0) + 1,\n    )\n    if background:\n        return _dispatch_background(batch)\n    return json.dumps(_execute_and_aggregate(batch), ensure_ascii=False)"
+    },
+    "cron": {
+      "path": "website/docs/user-guide/features/cron.md",
+      "sha256": "9601293aa1ce93dc83f963f3624a0745c9ab85170c4cebb04f8e05193af074f6",
+      "line": 58,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/features/cron.md#L58",
+      "excerpt": "## Creating scheduled tasks\n\n### In chat with `/cron`\n\n```bash\n/cron add \"in 30m\" \"Remind me to check the build\"\n/cron add \"every 2h\" \"Check server status\"\n/cron add \"every 1h\" \"Summarize new feed items\" --skill blogwatcher\n/cron add \"every 1h\" \"Use both skills and combine the result\" --skill blogwatcher --skill maps\n```\n\n### From the standalone CLI"
+    },
+    "skillsdoc": {
+      "path": "website/docs/user-guide/features/skills.md",
+      "sha256": "fb06e67d35c7aa6b11fd4587395cd3665ee9245d499416fe7928b5fa4c8772f5",
+      "line": 20,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/features/skills.md#L20",
+      "excerpt": "## Install from the website\n\nEach installable card on the public [Skills Hub](/skills) has an **Install in Hermes**\nbutton. It opens Hermes Desktop with a URL-encoded, source-qualified skill target:\n`official/...` for optional skills, `clawhub/...` for ClawHub, and an explicit\nrepository path for bundled skills rather than an ambiguous bare name. The card's\nCLI command uses the same target:\n\n```text\nhermes://skill/install?identifier=official%2Fsecurity%2F1password\n```\n"
+    },
+    "curatordoc": {
+      "path": "website/docs/user-guide/features/curator.md",
+      "sha256": "8ab82579d40e14b9fe3a471f5a6aaef46ae3299f29bd3cb843a1a2cea71a37fc",
+      "line": 17,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/features/curator.md#L17",
+      "excerpt": "## How it runs\n\nThe curator is triggered by an inactivity check, not a cron job. On CLI session start, during gateway housekeeping (which also covers a local Desktop, since it attaches to the gateway), and on the `hermes serve` maintenance timer, Hermes checks whether:\n\n1. Enough time has passed since the last curator run (`interval_hours`, default **7 days**), and\n2. The agent has been idle long enough (`min_idle_hours`, default **2 hours**).\n\n`hermes serve` / `hermes dashboard` backends (for example a remote Desktop connection) share the existing hourly maintenance timer (first poll after 90 seconds), independently of cron jobs. They measure inactivity from process startup and the most recent chat activity in the same profile, retaining that activity timestamp after a session closes or is reaped, and skip curator while a turn in that profile is running. A connected but inactive window does not block maintenance. A running messaging gateway for the same profile owns these chores instead.\n\nThe timer services its backend's profile. In-flight maintenance runs in a worker thread; closing the backend does not cooperatively interrupt that pass. Starting multiple independent serve processes for the same profile can still race the curator's interval check.\n\nIf both are true, it spawns a background fork of `AIAgent` — the same pattern used by the memory/skill self-improvement nudges. The fork runs in its own prompt cache and never touches the active conversation."
+    },
+    "moa": {
+      "path": "website/docs/user-guide/features/mixture-of-agents.md",
+      "sha256": "42471867bdc7e71f4df6089a319afe64d0e0efab683e770d5fe2d4ab82d4dc31",
+      "line": 7,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/features/mixture-of-agents.md#L7",
+      "excerpt": "# Mixture of Agents\n\nMixture of Agents is a virtual model provider. Each named MoA preset appears as a selectable model under the `moa` provider.\n\nWhen you select a MoA preset, the preset's aggregator is the acting model. It is the model that writes the assistant response and emits tool calls. Reference models run first and provide analysis for the aggregator to use.\n\n:::info Who pays for a MoA run\nThe **aggregator is billed for the whole run**: it runs every step of the tool loop, so almost all of a preset's cost lands on the aggregator's provider. References only advise once per user turn (with the default `fanout`). If your main model is on a subscription provider but the aggregator sits elsewhere, the run is billed to the aggregator's provider, not to your subscription — `hermes moa configure` and `hermes moa list` print a one-line notice whenever the aggregator's provider differs from `model.provider`, and the Desktop editor, `hermes model`, and `/model` mark the aggregator slot as the acting, billed model.\n:::\n\nUse MoA when a hard task benefits from multiple model perspectives but still needs Hermes' normal agent loop: tool calls, follow-up iterations, interrupts, transcript persistence, and the same session context as any other message.\n"
+    },
+    "kanban": {
+      "path": "website/docs/user-guide/features/kanban.md",
+      "sha256": "9a5aa06e7cf5e7f08c12d36454b5594cb3f1aa5518f2e0b7cf8dee816584dffe",
+      "line": 7,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/features/kanban.md#L7",
+      "excerpt": "# Kanban — Multi-Agent Profile Collaboration\n\n> **Want a walkthrough?** Read the [Kanban tutorial](./kanban-tutorial) — four user stories (solo dev, fleet farming, role pipeline with retry, circuit breaker) with dashboard screenshots of each. This page is the reference; the tutorial is the narrative.\n\nHermes Kanban is a durable task board, shared across all your Hermes profiles, that lets multiple named agents collaborate on work without fragile in-process subagent swarms. Every task is a row in `~/.hermes/kanban.db`; every handoff is a row anyone can read and write; every worker is a full OS process with its own identity.\n\n### Completion checkpoints before the iteration cap\n\nDispatcher-owned workers get one checkpoint notice near 90% of their finite iteration\nbudget, attached to a fresh tool result while another tool-capable call remains. Use\n`agent.budget_warning_ratio` to choose an earlier threshold. Tiny budgets warn no later\nthan their penultimate iteration; a one-iteration run has no pre-cap checkpoint window."
+    },
+    "slash": {
+      "path": "website/docs/reference/slash-commands.md",
+      "sha256": "dd6744b1486b22e99b5858963148cbe98640f3b87c99a2fba8a1b2326c629401",
+      "line": 16,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/reference/slash-commands.md#L16",
+      "excerpt": "## Permissions and admin/user split\n\nEvery messaging platform that supports a per-user allowlist (Telegram, Discord, Slack, Matrix, Mattermost, Signal, …) also supports a two-tier slash command split: **admins** get every registered command, **regular users** only get the names you list in `user_allowed_commands` (plus the always-allowed floor `/help` and `/whoami`). Configure `allow_admin_from` and `user_allowed_commands` (and the per-group equivalents `group_allow_admin_from` / `group_user_allowed_commands`) inside the platform's `extra:` block in `~/.hermes/config.yaml`.\n\nSee the per-platform docs for examples — the structure is identical across platforms:\n\n- [Telegram](../user-guide/messaging/telegram.md#slash-command-access-control)\n- [Discord](../user-guide/messaging/discord.md)\n- [Slack](../user-guide/messaging/slack.md)\n- [Matrix](../user-guide/messaging/matrix.md)\n- [Mattermost](../user-guide/messaging/mattermost.md)\n- [Signal](../user-guide/messaging/signal.md)"
+    },
+    "guard": {
+      "path": "agent/tool_guardrails.py",
+      "sha256": "a3573d7bbea58536453d0486b03e7ed275c9c3e1d1e550ad1c585ac47dd55dbb",
+      "line": 118,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_guardrails.py#L118",
+      "excerpt": "class ToolCallGuardrailConfig:\n    \"\"\"Thresholds for per-turn tool-call loop detection. Warnings never prevent execution; hard\n    stops are opt-in on interactive platforms, default on for unattended gateway/cron platforms.\"\"\"\n\n    warnings_enabled: bool = True\n    hard_stop_enabled: bool = False\n    non_interactive_hard_stop_enabled: bool = True\n    exact_failure_warn_after: int = 2\n    exact_failure_block_after: int = 5\n    same_tool_failure_warn_after: int = 3\n    same_tool_failure_halt_after: int = 8\n    no_progress_warn_after: int = 2"
+    },
+    "fileguard": {
+      "path": "tools/file_tools_write_guards.py",
+      "sha256": "da864eadeccbeb7d1ba1d9190a606343db70ddedef9f42eca8820eb6d3f8eefa",
+      "line": 147,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/file_tools_write_guards.py#L147",
+      "excerpt": "def _check_sensitive_path(filepath: str, task_id: str = \"default\") -> str | None:\n    \"\"\"Return an error message if the path targets a sensitive system location.\"\"\"\n    # NT/device-namespace guard on the RAW string, BEFORE the task-base join:\n    # on POSIX a leading \"\\??\\\" reads as a relative segment and gets anchored\n    # under the base dir, hiding the prefix from the resolved-path checks,\n    # while the same string relayed to a Windows host (remote backend, desktop\n    # bridge) triggers the NTLM-leak vector. See agent/file_safety.py.\n    nt_err = get_nt_namespace_error(filepath, verb=\"Write\")\n    if nt_err:\n        return nt_err\n    candidates = (_resolved_or_raw(filepath, task_id), os.path.normpath(_expand_tilde(filepath)))\n    if _ssh_path_escapes_home(candidates[0]) and _terminal_env_type_for_task(task_id) == \"ssh\":"
+    },
+    "hookdispatch": {
+      "path": "hermes_cli/plugins_dispatch.py",
+      "sha256": "a3960ec7a3c4ebfa4053f3019dcb67b73de5df384bfa4c0a8484a7815972833c",
+      "line": 256,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/plugins_dispatch.py#L256",
+      "excerpt": "    def invoke_hook(self, hook_name: str, **kwargs: Any) -> list[Any]:\n        \"\"\"Call all callbacks for *hook_name*; return their non-``None`` results.\n\n        Payloads evolve additively: ``**kwargs`` callbacks get everything, narrow signatures only\n        what they declare. Each callback is isolated. Bounded hooks and ``pre_tool_call`` run under\n        ``plugins.hook_callback_timeout`` (worker abandoned, never joined); ``pre_tool_call`` fails\n        closed with a block directive, others skip. ``_HOOK_CALLER_THREAD_HOOKS`` always run on the\n        caller thread. ``pre_llm_call`` may return ``{\"context\": \"...\"}`` (or a str) to inject.\n        \"\"\"\n        from agent.safe_worker_policy import safe_worker_enabled\n\n        if safe_worker_enabled():"
+    },
+    "pluginreg": {
+      "path": "hermes_cli/plugins.py",
+      "sha256": "a1ae6586cb5d968cb1fb6a499960c6a75e078f355ef328b5c906f73ec64aff20",
+      "line": 943,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/plugins.py#L943",
+      "excerpt": "    def register_hook(self, hook_name: str, callback: Callable) -> PluginRegistration:\n        \"\"\"Register a lifecycle hook callback (unknown names warn but are still stored).\"\"\"\n        return self._track_callback(\"hook\", hook_name, callback, self._manager._hooks, VALID_HOOKS)\n\n    def register_middleware(self, kind: str, callback: Callable) -> PluginRegistration:\n        \"\"\"Register behavior-changing middleware (request kinds rewrite the payload, execution kinds\n        wrap the callback). Unknown kinds warn but are stored.\"\"\"\n        return self._track_callback(\n            \"middleware\", kind, callback, self._manager._middleware, VALID_MIDDLEWARE\n        )\n\n    def _track_callback("
+    },
+    "apihooks": {
+      "path": "agent/api_request_hooks.py",
+      "sha256": "6d320559f3df689cb24a93c9b110124abc7c32f4dcce88ea5aead5f59bdee2a7",
+      "line": 32,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/api_request_hooks.py#L32",
+      "excerpt": "class ApiRequestHooksMixin:\n    \"\"\"Hook payload sanitising + ``api_request_error`` dispatch (see module docstring).\"\"\"\n\n    def _usage_summary_for_api_request_hook(self, response: Any) -> Optional[dict[str, Any]]:\n        \"\"\"Token buckets for ``post_api_request`` plugins (no raw ``response`` object).\"\"\"\n        if response is None:\n            return None\n        raw_usage = getattr(response, \"usage\", None)\n        if not raw_usage:\n            return None\n        from dataclasses import asdict\n"
+    },
+    "apirequest": {
+      "path": "agent/turn_api_request.py",
+      "sha256": "fae43abf285e6f2b82d1820b7bd62ee10214676a48d6af552b8d62530e59dd15",
+      "line": 43,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_api_request.py#L43",
+      "excerpt": "def _fire_pre_api_request_hook(\n    agent: Any, api_kwargs: Any, api_messages: Any, _llm_middleware_trace: Any, *, messages: Any,\n    original_user_message: Any, approx_tokens: Any, total_chars: Any, retry_count: Any,\n    api_call_count: Any, api_request_id: Any, api_start_time: Any, effective_task_id: Any,\n    turn_id: Any,\n) -> None:\n    from agent.conversation_loop import _system_prompt_for_hooks\n\n    try:\n        from hermes_cli.lifecycle import has_hook, invoke_hook as _invoke_hook\n        if has_hook(\"pre_api_request\"):\n            request_messages = api_kwargs.get(\"messages\")"
+    },
+    "apiresponse": {
+      "path": "agent/turn_response_check.py",
+      "sha256": "bc67386b27bb125247a428a489a6f88929cb739ee9479bb841e798c6cf9fa54a",
+      "line": 92,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/turn_response_check.py#L92",
+      "excerpt": "def check_api_response(\n    agent: Any, *, response: Any, _retry: Any, thinking_spinner: Any, messages: Any,\n    api_messages: Any, api_kwargs: Any, active_system_prompt: Any, conversation_history: Any,\n    finish_reason: Any, retry_count: Any, max_retries: Any, compression_attempts: Any,\n    max_compression_attempts: Any, length_continue_retries: Any, truncated_response_parts: Any,\n    truncated_tool_call_retries: Any, current_turn_user_idx: Any, api_call_count: Any,\n    api_request_id: Any, api_start_time: Any, effective_task_id: Any, turn_id: Any,\n    _preflight_compression_blocked: Any, _last_preflight_pressure: Any,\n) -> ResponseCheckVerdict:\n    \"\"\"Verify ``response`` in the original order. The retry buffer is NOT cleared on success\n    (bytes back != usable content); ``_preflight_compression_blocked``/``_last_preflight_pressure``\n    reset only when the usage fold re-arms the compression budget.\"\"\""
+    },
+    "lifecycle": {
+      "path": "hermes_cli/lifecycle.py",
+      "sha256": "86fe6336a6c887bc874b9e801ad67fc3612422feb5996c6453cd75b18d7b5769",
+      "line": 30,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_cli/lifecycle.py#L30",
+      "excerpt": "def invoke_hook(hook_name: str, **kwargs: Any) -> list[Any]:\n    \"\"\"Notify first-party observers, then invoke compatibility plugin hooks.\"\"\"\n    from agent.safe_worker_policy import safe_worker_enabled\n\n    if safe_worker_enabled():\n        return []\n    _observe(hook_name, **kwargs)\n    return _plugin_hooks(hook_name, **kwargs)\n\n\nasync def ainvoke_hook(hook_name: str, **kwargs: Any) -> list[Any]:\n    \"\"\":func:`invoke_hook` for callers on an event loop: same observers-then-plugins"
+    },
+    "traceshare": {
+      "path": "agent/trace_upload.py",
+      "sha256": "0bbc2c23edbdad5d9b7aa266a6fe343d7f4133318bcaacfad33fd468e203b98c",
+      "line": 145,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/trace_upload.py#L145",
+      "excerpt": "def build_trace_jsonl(messages: list[dict[str, Any]], *, session_id: str, model: str = \"\", cwd: str = \"\", redact: bool = True) -> str:\n    \"\"\"One JSONL line per non-system message: ``user``/``tool`` -> type user (tool results ride on user turns as\n    ``tool_result`` keyed by ``tool_call_id``), ``assistant`` -> text + ``tool_use`` blocks; turns link via ``parentUuid``.\"\"\"\n    lines: list[str] = []\n    parent: Optional[str] = None\n    base_ts = _now_iso()\n    git_branch = _git_branch(cwd)\n    for msg in messages:\n        role = msg.get(\"role\")\n        if role == \"system\":\n            continue\n        turn_uuid = str(uuid.uuid4())"
+    },
+    "trajectory": {
+      "path": "agent/trajectory.py",
+      "sha256": "4adc50ec7de937cc68dd88843ca6e60cda244f26d6b95c2880d547a9108568b6",
+      "line": 37,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/trajectory.py#L37",
+      "excerpt": "def save_trajectory(trajectory: list[dict[str, Any]], model: str, completed: bool, filename: str | None = None):\n    \"\"\"Append a ShareGPT-format entry to a JSONL file (default trajectory_samples.jsonl / failed_trajectories.jsonl by ``completed``).\"\"\"\n    if filename is None:\n        filename = \"trajectory_samples.jsonl\" if completed else \"failed_trajectories.jsonl\"\n    entry = {\"conversations\": trajectory, \"timestamp\": datetime.now().isoformat(), \"model\": model, \"completed\": completed}\n    try:\n        line = json.dumps(entry, ensure_ascii=False) + \"\\n\"  # serialize before taking the lock\n        with open(filename, \"a\", encoding=\"utf-8\") as f:\n            # Gateway sessions and batch workers append to the SAME default file; without an\n            # exclusive lock around write+flush, entries larger than one write() interleave and the\n            # JSONL stops parsing (#12684).\n            _lock_append_handle(f, True)"
+    },
+    "logging": {
+      "path": "hermes_logging.py",
+      "sha256": "2b9c9f89455d1fe4b5a337ce1e2b64700b1fe70cbf6e93750054efbaaf2fb62a",
+      "line": 351,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/hermes_logging.py#L351",
+      "excerpt": "def setup_logging(\n    *,\n    hermes_home: Optional[Path] = None,\n    log_level: Optional[str] = None,\n    max_size_mb: Optional[int] = None,\n    backup_count: Optional[int] = None,\n    mode: Optional[str] = None,\n    force: bool = False,\n) -> Path:\n    \"\"\"Configure the Hermes logging subsystem; returns the ``logs/`` directory.\n\n    Safe to call multiple times; the second call is a no-op unless *force*. Level and"
+    },
+    "observerdoc": {
+      "path": "website/docs/developer-guide/observer-hooks.md",
+      "sha256": "f211cee9a1b52a88390b8e7b8bd000c5be31c42a601c3da165aee7739e11f5ad",
+      "line": 6,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/developer-guide/observer-hooks.md#L6",
+      "excerpt": "# Hermes Observer Hooks\n\nHermes observer hooks are the read-only telemetry contract for plugins that\nneed to reconstruct agent execution without changing runtime behavior. This\ncontract supports trace, metrics, audit, replay, and export integrations such\nas Langfuse, OpenTelemetry-style collectors, and NeMo Relay.\n\nObserver hooks are intentionally backend-neutral. They expose stable lifecycle\nevents, correlation IDs, sanitized payloads, timing, status, and error fields.\nThey do not replace Hermes' planner, model providers, memory, tool registry,\napproval UX, CLI, gateway behavior, or execution semantics.\n"
+    },
+    "middlewaredoc": {
+      "path": "website/docs/developer-guide/middleware.md",
+      "sha256": "afb67b9f1e3a4c35263ee8ad7b9a8e1d9d4c05ba906bf16ee82e64b8fefb80a8",
+      "line": 6,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/developer-guide/middleware.md#L6",
+      "excerpt": "# Hermes Middleware\n\nHermes middleware is the behavior-changing companion to observer hooks.\nObserver hooks report what happened. Middleware can change what happens by\nrewriting a request before execution or by wrapping the execution callback\nitself.\n\nThis contract is intentionally backend-neutral. A plugin can use it for local\npolicy, request shaping, tracing, adaptive routing, cache control, sandbox\nselection, or handoff to runtimes such as NeMo Relay without changing Hermes'\nplanner, model provider adapters, tool registry, memory, or CLI UX.\n"
+    },
+    "securitydoc": {
+      "path": "website/docs/user-guide/security.md",
+      "sha256": "6cef6af585c5bf3073289066a28ae09911130bcf2324b755bbec4e738ac58591",
+      "line": 7,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/website/docs/user-guide/security.md#L7",
+      "excerpt": "# Security\n\nHermes Agent is designed with a defense-in-depth security model. This page covers every security boundary — from command approval to container isolation to user authorization on messaging platforms.\n\n## Overview\n\nThe security model has eight layers:\n\n1. **User authorization** — who can talk to the agent (allowlists, DM pairing)\n2. **Dangerous command approval** — human-in-the-loop for destructive operations\n3. **File write safety** — denylist and optional write sandbox for `write_file`/`patch`\n4. **Container isolation** — Docker/Modal (and the Singularity plugin) sandboxing with hardened settings"
+    },
+    "shellhook": {
+      "path": "agent/shell_hooks.py",
+      "sha256": "73db949f7c222b42c3fc220044621b7125212e7833fda47212d03c684836f2ec",
+      "line": 24,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/shell_hooks.py#L24",
+      "excerpt": "# split_command_line, not shlex: shlex eats Windows path backslashes.\nfrom hermes_cli._subprocess_compat import IS_WINDOWS, kill_process_tree, split_command_line, windows_hide_flags\n\ntry:\n    import fcntl  # POSIX only; Windows falls back to best-effort without flock.\nexcept ImportError:  # pragma: no cover\n    fcntl = None  # type: ignore[assignment]\n\nfrom hermes_constants import get_hermes_home\nfrom utils import atomic_json_write\n\nlogger = logging.getLogger(__name__)"
+    },
+    "agentinit": {
+      "path": "run_agent.py",
+      "sha256": "33c7195fc6efa9122f1a6700d416fd283f9634712189af3fd72feb01bcea054f",
+      "line": 206,
+      "url": "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/run_agent.py#L206",
+      "excerpt": "    def __init__(self, message: str, *, code: Optional[str] = None, param: Optional[str] = None,\n                 status_code: Optional[int] = None) -> None:\n        super().__init__(message)\n        self.message, self.code, self.param, self.status_code = message, code, param, status_code\n        # OpenAI SDK-shaped body so _extract_api_error_context / _summarize_api_error / classify_api_error pick it up.\n        self.body: dict[str, Any] = {\"error\": {\"message\": message, \"code\": code, \"param\": param, \"type\": \"error\"}}\n\n\nclass AIAgent(\n    ClientLifecycleMixin, StreamDeliveryMixin, StatusOutputMixin, ApiRequestHooksMixin, ApiErrorSummaryMixin,\n    InterruptControlMixin, TurnExplainersMixin, ActivityTrackingMixin, RateLimitCreditsMixin,\n    SessionPersistenceMixin, CompressionFacadeMixin, TurnFacadeMixin, VisionMessagePrepMixin, ReasoningParamsMixin,"
+    }
+  }
+}

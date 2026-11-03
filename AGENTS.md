@@ -71,22 +71,32 @@
 - [ ] 출처와 불확실성이 적절히 표시되어 있다.
 
 ## 9. 디렉터리 구조
-- 프로젝트 전체 홈은 루트의 `index.html`이다. 모든 주제의 기본·심층 교재와 각 단원으로 연결하며, 각 학습 페이지의 `전체 학습 홈` 링크는 이 파일로 돌아온다.
-- 전체 홈의 생성·검증 스크립트와 안내 자료는 루트의 `html/` 아래에 둔다. 전체 홈은 `node html/build-home.mjs`, 연결 검사는 `node html/validate-home.mjs`로 갱신한다.
-- 각 프레임워크 폴더 바로 아래에는 학습용 원본 문서 파일을 둔다.
-- HTML, CSS, JavaScript, 빌드·검증 스크립트, 웹페이지용 assets와 안내 문서는 해당 폴더의 `html/` 아래에 모은다.
-- Hermes의 기본 폴더는 `hermes/`이며, 메인 학습 페이지는 `hermes/html/index.html`이다. 기존 v1은 제거하고 v2 기반 교재를 메인으로 사용한다.
-- 아직 웹페이지를 만들지 않은 프레임워크도 `html/` 폴더를 유지한다. Git에 빈 폴더를 남겨야 할 때는 `.gitkeep`을 사용한다.
+- 사용자가 요청한 분류에 따라 루트는 `study/`, `presentations/`, `archive/`로 나눈다.
+- 루트 `index.html`은 프로젝트 안내이며, 전체 학습 목차는 `study/index.html`이다. 교재의 `전체 학습 홈` 링크는 `study/index.html`로 연결한다.
+- 학습 원문·교재·학습용 스크립트는 모두 `study/`에 둔다. 프레임워크별 원문은 해당 폴더 바로 아래, 웹 자산은 그 아래 `html/`에 둔다.
+- 학습 홈은 `node study/html/build-home.mjs`, 링크 검증은 `node study/html/validate-home.mjs`로 실행한다.
+- 현재 발표자료는 `presentations/seminar-2/`다. 현재 참고하는 blueprint·발표 흐름·데모 계획은 `docs/`, 개정 목차·검토·다음 작성 계획은 `reviews/`에 둔다. Sources 근거는 `research/`, 현재 검수 자료는 `validation/`이다.
+- 발표는 `python presentations/seminar-2/build.py`로 재생성한다. 기준 문서는 `presentations/seminar-2/docs/blueprint.md`다.
+- 과거 blueprint·초기 계획·5장 예시·이전 검수 결과는 `archive/`에 둔다. 현재 수정할 문서와 과거 기록을 복제해 혼용하지 않는다.
+- Hermes 메인 교재는 `study/hermes/html/index.html`이다. v2 기반 교재를 유지한다.
+- 이동 시 상대 링크·빌드 경로·Sources의 로컬 근거·홈 링크를 함께 수정하고 검증한다. 학습 내용과 발표 내용의 임의 변경은 하지 않는다.
 
 ```text
-hermes/
-├── Hermes_Agent.md       # 학습 원문
-└── html/
-    ├── index.html       # 메인 학습 페이지
-    ├── *.html           # 단원별 페이지
-    ├── style.css
-    ├── site.js
-    ├── build.mjs
-    ├── validate.mjs
-    └── assets/
+study/
+├── index.html
+├── html/                     # 학습 홈·공통 코멘트 생성/검증
+├── hermes/                   # 원문 + html/ 교재
+├── Claude_Code/
+└── ...                       # 나머지 프레임워크
+presentations/
+└── seminar-2/
+    ├── index.html
+    ├── agent-framework-seminar-2.pdf
+    ├── docs/                 # 현재 설계·흐름·데모 계획
+    ├── reviews/              # 현재 검토·다음 작업 계획
+    ├── research/
+    └── validation/
+archive/
+├── presentations/
+└── study/
 ```

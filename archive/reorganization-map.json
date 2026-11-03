@@ -1,0 +1,4616 @@
+{
+  "date": "2026-11-03",
+  "filesPreservedBeforeLinkUpdates": 722,
+  "moves": [
+    {
+      "source": "html/seminar-2/reviews/hermes-coverage-audit.md",
+      "destination": "archive/presentations/seminar-2/reviews/hermes-coverage-audit.md"
+    },
+    {
+      "source": "html/seminar-2/validation/screenshots",
+      "destination": "archive/presentations/seminar-2/validation/screenshots"
+    },
+    {
+      "source": "html/seminar-2/validation/design-content-report.json",
+      "destination": "archive/presentations/seminar-2/validation/design-content-report.json"
+    },
+    {
+      "source": "html/seminar-2/validation/hermes-report.json",
+      "destination": "archive/presentations/seminar-2/validation/hermes-report.json"
+    },
+    {
+      "source": "html/seminar-2/validation/revision-screenshots/S14B.png",
+      "destination": "archive/presentations/seminar-2/validation/S14B.png"
+    },
+    {
+      "source": "html/seminar-2",
+      "destination": "presentations/seminar-2"
+    },
+    {
+      "source": "html/seminar-2-examples",
+      "destination": "archive/presentations/seminar-2-examples"
+    },
+    {
+      "source": "html/2_2차_세미나_진짜최종_slide_blueprint.md",
+      "destination": "presentations/seminar-2/docs/blueprint.md"
+    },
+    {
+      "source": "0_2차_세미나_발표_흐름.md",
+      "destination": "presentations/seminar-2/docs/flow.md"
+    },
+    {
+      "source": "2차_세미나_최종_발표_블루프린트_데모_제작계획.md",
+      "destination": "presentations/seminar-2/docs/demo-plan.md"
+    },
+    {
+      "source": "1_agent_framework_seminar_2_planning_handoff.md",
+      "destination": "archive/presentations/seminar-2/planning/handoff.md"
+    },
+    {
+      "source": "agent_framework_seminar_2_slide_blueprint_초기버전.md",
+      "destination": "archive/presentations/seminar-2/blueprint-initial.md"
+    },
+    {
+      "source": "agent_framework_seminar_1_slide_blueprint.md",
+      "destination": "archive/presentations/seminar-1/blueprint.md"
+    },
+    {
+      "source": "html/seminar-2-execution-plan.md",
+      "destination": "archive/presentations/seminar-2/planning/execution-plan.md"
+    },
+    {
+      "source": "html/seminar-2-blueprint-validation.json",
+      "destination": "archive/presentations/seminar-2/validation/blueprint-validation-before-reorganization.json"
+    },
+    {
+      "source": "html/validate-seminar-2-blueprint.py",
+      "destination": "presentations/seminar-2/validate-blueprint.py"
+    },
+    {
+      "source": "html/seminar-baseline.json",
+      "destination": "archive/study/seminar-baseline-before-reorganization.json"
+    },
+    {
+      "source": "html/seminar-browser-qa.json",
+      "destination": "archive/study/seminar-browser-qa.json"
+    },
+    {
+      "source": "html/seminar-preview.png",
+      "destination": "archive/study/seminar-preview.png"
+    },
+    {
+      "source": "html/browser-qa.json",
+      "destination": "archive/study/home-browser-qa.json"
+    },
+    {
+      "source": "html",
+      "destination": "study/html"
+    },
+    {
+      "source": "Agent_Framework_7종_최종_종합_비교_분석.md",
+      "destination": "study/Agent_Framework_7종_최종_종합_비교_분석.md"
+    },
+    {
+      "source": "index.html",
+      "destination": "study/index.html"
+    },
+    {
+      "source": "hermes",
+      "destination": "study/hermes"
+    },
+    {
+      "source": "Claude_Code",
+      "destination": "study/Claude_Code"
+    },
+    {
+      "source": "Claude_Agent_SDK",
+      "destination": "study/Claude_Agent_SDK"
+    },
+    {
+      "source": "PydanticAI",
+      "destination": "study/PydanticAI"
+    },
+    {
+      "source": "OpenAI_Agents_SDK",
+      "destination": "study/OpenAI_Agents_SDK"
+    },
+    {
+      "source": "Google_ADK",
+      "destination": "study/Google_ADK"
+    },
+    {
+      "source": "Microsoft Agent_Framework",
+      "destination": "study/Microsoft Agent_Framework"
+    }
+  ],
+  "fileMap": [
+    {
+      "old": "0_2차_세미나_발표_흐름.md",
+      "new": "presentations/seminar-2/docs/flow.md",
+      "sha256": "300c73aa5d1eedaf531c5c82b1f10cb6168fc485d826dd8d5543b7f814e23a91",
+      "size": 84153
+    },
+    {
+      "old": "1_agent_framework_seminar_2_planning_handoff.md",
+      "new": "archive/presentations/seminar-2/planning/handoff.md",
+      "sha256": "ae950ab86ae4ce55b74b517dead94c4929506490b15344572de90514d08f78bd",
+      "size": 85248
+    },
+    {
+      "old": "2차_세미나_최종_발표_블루프린트_데모_제작계획.md",
+      "new": "presentations/seminar-2/docs/demo-plan.md",
+      "sha256": "43e21969b28ba14a383b05bf2e719c1c1f1e0e36e1a5b2d782a3e8eb2e8d08c6",
+      "size": 136932
+    },
+    {
+      "old": "AGENTS.md",
+      "new": "AGENTS.md",
+      "sha256": "f9e4504e70349d3623eff8cd6950bf67d68555f6d1f2b3550a574bf607cb6350",
+      "size": 10931
+    },
+    {
+      "old": "Agent_Framework_7종_최종_종합_비교_분석.md",
+      "new": "study/Agent_Framework_7종_최종_종합_비교_분석.md",
+      "sha256": "4c4888837c5b8ef9dd7ca39b9701d9615f1589bcd344476436e344fef9b476d5",
+      "size": 112747
+    },
+    {
+      "old": "agent_framework_seminar_1_slide_blueprint.md",
+      "new": "archive/presentations/seminar-1/blueprint.md",
+      "sha256": "65e6375c4a634c55f900afcf08b302dba7e88649ae2a6cf83470f7ad5a9ef855",
+      "size": 104375
+    },
+    {
+      "old": "agent_framework_seminar_2_slide_blueprint_초기버전.md",
+      "new": "archive/presentations/seminar-2/blueprint-initial.md",
+      "sha256": "17e76b4009dca42f8949a560d80dc096fd50c757db849742618216e01965c388",
+      "size": 101167
+    },
+    {
+      "old": "index.html",
+      "new": "study/index.html",
+      "sha256": "880f9c34024f854ebb0fdba90e03fed3a165a2ea5d20e4194d9408f1772b7647",
+      "size": 55824
+    },
+    {
+      "old": "Claude_Agent_SDK/Claude_Agent_SDK.md",
+      "new": "study/Claude_Agent_SDK/Claude_Agent_SDK.md",
+      "sha256": "4adeb792689b2ee23d6694e5a2e1224b73ea82cb8d55e9feeab503f117bb3ad2",
+      "size": 94805
+    },
+    {
+      "old": "Claude_Agent_SDK/Claude_Agent_SDK_2차_심층_학습_분석.md",
+      "new": "study/Claude_Agent_SDK/Claude_Agent_SDK_2차_심층_학습_분석.md",
+      "sha256": "669d6c49a4ee0b0e0fac571cdc63230e622df1bb141eef29e0ecad022089dee3",
+      "size": 85700
+    },
+    {
+      "old": "Claude_Agent_SDK/Claude_Agent_SDK_발표_실무_시사점_코멘트.md",
+      "new": "study/Claude_Agent_SDK/Claude_Agent_SDK_발표_실무_시사점_코멘트.md",
+      "sha256": "638ba9a0d19417c2335ed3855b14a0631292646368554e642103f028c6379135",
+      "size": 4094
+    },
+    {
+      "old": "Claude_Code/Claude_Code.md",
+      "new": "study/Claude_Code/Claude_Code.md",
+      "sha256": "7074c2276f571e44c7bf93ee55834e460f5dd297ed1d971593208ebab193527c",
+      "size": 98664
+    },
+    {
+      "old": "Claude_Code/Claude_Code_2차_심층_학습_분석.md",
+      "new": "study/Claude_Code/Claude_Code_2차_심층_학습_분석.md",
+      "sha256": "6d7fbc3d62df54de9bd6e7a5545578a6431921024aa1494e312495ee264eb728",
+      "size": 110490
+    },
+    {
+      "old": "Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+      "new": "study/Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+      "sha256": "be44dc5735f4b0e9ed9c4926d5027de8b68d1091a62ea46d57689cbed967097a",
+      "size": 4226
+    },
+    {
+      "old": "Google_ADK/Google_ADK.md",
+      "new": "study/Google_ADK/Google_ADK.md",
+      "sha256": "12b402c03f3c896e9e52f5bcfd698044e4c1cd4528184d9667870cedadd89460",
+      "size": 104321
+    },
+    {
+      "old": "Google_ADK/Google_ADK_2차_심층_학습_분석.md",
+      "new": "study/Google_ADK/Google_ADK_2차_심층_학습_분석.md",
+      "sha256": "1698e284a28d753ed0ef64b6e09dc4e8d6ef69260eb02615efb357c4613ffaf2",
+      "size": 92761
+    },
+    {
+      "old": "Google_ADK/Google_ADK_발표_실무_시사점_코멘트.md",
+      "new": "study/Google_ADK/Google_ADK_발표_실무_시사점_코멘트.md",
+      "sha256": "10759d2bc9ac8093634187b18ba45d244e9e1fbc68bcadd281295c6bab5ab396",
+      "size": 3726
+    },
+    {
+      "old": "hermes/Hermes_Agent.md",
+      "new": "study/hermes/Hermes_Agent.md",
+      "sha256": "d552b3008e3fc3542ebcb60f3a94129e07d47fe4de564734163e72a3071480d8",
+      "size": 90259
+    },
+    {
+      "old": "hermes/Hermes_Agent_2차_심층_학습_분석.md",
+      "new": "study/hermes/Hermes_Agent_2차_심층_학습_분석.md",
+      "sha256": "d45b9860784cb0aa9a98238f02bb4e1f864358d184d987aa4b451ce5ec8654f3",
+      "size": 110382
+    },
+    {
+      "old": "hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+      "new": "study/hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+      "sha256": "8f7aa3d5af8721c527ccf3a71adffa7c897488e5f054871e8d672d8c46566466",
+      "size": 5708
+    },
+    {
+      "old": "html/2_2차_세미나_진짜최종_slide_blueprint.md",
+      "new": "presentations/seminar-2/docs/blueprint.md",
+      "sha256": "b9caa3b82a7d933ff6d136f327ed5ff3aa94fe11661918f38778ee8817d79f56",
+      "size": 97654
+    },
+    {
+      "old": "html/apply-seminar-comments.mjs",
+      "new": "study/html/apply-seminar-comments.mjs",
+      "sha256": "dfaa62371adcfd2570a55822218b1b00bb397ac53af89756e37b23d1eb2f87a5",
+      "size": 8811
+    },
+    {
+      "old": "html/browser-qa.json",
+      "new": "archive/study/home-browser-qa.json",
+      "sha256": "e2da4213e594987c1d3f32241cee49c2c36f06fd5fa7858e13c2e8dc8be5aaca",
+      "size": 3011
+    },
+    {
+      "old": "html/build-home.mjs",
+      "new": "study/html/build-home.mjs",
+      "sha256": "ff32869808cae877be51c5018b93a011eaec18120a2c5098efd6a7c9da96b68c",
+      "size": 9205
+    },
+    {
+      "old": "html/home-map.json",
+      "new": "study/html/home-map.json",
+      "sha256": "7d82c52067d6cb6c53ca07eed52ef4224435b23bbc1311fffce3b95d6c5f4184",
+      "size": 54674
+    },
+    {
+      "old": "html/home-preview.png",
+      "new": "study/html/home-preview.png",
+      "sha256": "a3649b92737b28ff929fdcba5de20f4d40cd2e9050ad76e14dbce232c25462ed",
+      "size": 33040
+    },
+    {
+      "old": "html/README.md",
+      "new": "study/html/README.md",
+      "sha256": "0f4170380f62c20ad4f6621dfcb6a50a5908656061fed95584091d738fe8f69a",
+      "size": 1558
+    },
+    {
+      "old": "html/seminar-2-blueprint-validation.json",
+      "new": "archive/presentations/seminar-2/validation/blueprint-validation-before-reorganization.json",
+      "sha256": "cf6b876bf4f50f61acf5540a26e4a243385586b970a50be7e65fe7276b7ee256",
+      "size": 707
+    },
+    {
+      "old": "html/seminar-2-execution-plan.md",
+      "new": "archive/presentations/seminar-2/planning/execution-plan.md",
+      "sha256": "938978e3aee1df5ae49b5d94837980ab28101cf33c5e1922327653993a001929",
+      "size": 2864
+    },
+    {
+      "old": "html/seminar-baseline.json",
+      "new": "archive/study/seminar-baseline-before-reorganization.json",
+      "sha256": "ffd720bc1151effab0931ba7cce30a8f2ce7236a5464f4ba5a5281cc3e34b97f",
+      "size": 38567
+    },
+    {
+      "old": "html/seminar-browser-qa.json",
+      "new": "archive/study/seminar-browser-qa.json",
+      "sha256": "adab3149a220943e0b6525f6f6ef2a639c27039b9c35db7ecaa51873ea90da8d",
+      "size": 9754
+    },
+    {
+      "old": "html/seminar-comment-map.json",
+      "new": "study/html/seminar-comment-map.json",
+      "sha256": "abd23dcda99af47b3eedcf14a51666ce988980efee5bc85d4a810f5705036e79",
+      "size": 15565
+    },
+    {
+      "old": "html/seminar-comments.css",
+      "new": "study/html/seminar-comments.css",
+      "sha256": "42d99b969461cfbdcd7a7f106242054c4894463e39d1afd5eba2bd3a69472fb0",
+      "size": 1620
+    },
+    {
+      "old": "html/seminar-comments.json",
+      "new": "study/html/seminar-comments.json",
+      "sha256": "0320aa09c231e74b77e99b20fe343d4b9fd05b46175acb26bcda1b1677250358",
+      "size": 29749
+    },
+    {
+      "old": "html/seminar-preview.png",
+      "new": "archive/study/seminar-preview.png",
+      "sha256": "59178a8685b278fdbcaa4af7cf2fb01b7e34cfe69d47eb9248e622466309c8cd",
+      "size": 44902
+    },
+    {
+      "old": "html/seminar-validation.json",
+      "new": "study/html/seminar-validation.json",
+      "sha256": "abcd39b521e39e690d8f31f6c05873a75f6a30b89641751d28576dcc3f7f22bb",
+      "size": 257
+    },
+    {
+      "old": "html/validate-home.mjs",
+      "new": "study/html/validate-home.mjs",
+      "sha256": "bad756fbc37cd695869c341390fd072b45736121792eb8641625bd62a874c03e",
+      "size": 2527
+    },
+    {
+      "old": "html/validate-seminar-2-blueprint.py",
+      "new": "presentations/seminar-2/validate-blueprint.py",
+      "sha256": "c0fd030808276d5d3c5a31d3a45e740ab9681e34d24b224101dfe5712d26c5f2",
+      "size": 3434
+    },
+    {
+      "old": "html/validate-seminar-comments.mjs",
+      "new": "study/html/validate-seminar-comments.mjs",
+      "sha256": "f034ffde604eadeb1d710ff846e5918beb0db9bccf2a71c585eaee401a7eb084",
+      "size": 3176
+    },
+    {
+      "old": "html/세미나_코멘트_안내.md",
+      "new": "study/html/세미나_코멘트_안내.md",
+      "sha256": "4127cd56a729bc54922b02fb5c01a75693390d9d4810f0811518e904a6bf6aaa",
+      "size": 4174
+    },
+    {
+      "old": "Microsoft Agent_Framework/Microsoft_Agent_Framework.md",
+      "new": "study/Microsoft Agent_Framework/Microsoft_Agent_Framework.md",
+      "sha256": "4dcf2431b5aeed18f86141c4ec4487b02354dc3e67d98a5e8a548b3c485e5b7a",
+      "size": 94387
+    },
+    {
+      "old": "Microsoft Agent_Framework/Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+      "new": "study/Microsoft Agent_Framework/Microsoft_Agent_Framework_2차_심층_학습_분석.md",
+      "sha256": "829f3efd3495c5d9b937b0b2dfefcd4b40aeddeb7316a7d0038a46f2d08bf572",
+      "size": 101827
+    },
+    {
+      "old": "Microsoft Agent_Framework/Microsoft_Agent_Framework_발표_실무_시사점_코멘트.md",
+      "new": "study/Microsoft Agent_Framework/Microsoft_Agent_Framework_발표_실무_시사점_코멘트.md",
+      "sha256": "50366f4395d647fe014a6e367635ba44d1f72a269caa168987b69a26809ee54e",
+      "size": 3996
+    },
+    {
+      "old": "OpenAI_Agents_SDK/OpenAI_Agents_SDK.md",
+      "new": "study/OpenAI_Agents_SDK/OpenAI_Agents_SDK.md",
+      "sha256": "a3da164340ff2daf411b7c23aa123a93ff722a30cd8b70d2e692430b63fc6e51",
+      "size": 99724
+    },
+    {
+      "old": "OpenAI_Agents_SDK/OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+      "new": "study/OpenAI_Agents_SDK/OpenAI_Agents_SDK_2차_심층_학습_분석.md",
+      "sha256": "5bb69cf78c39a05edf1de72a08bbb2a5a0cd3aa5d214da4dbc110a220f9d643a",
+      "size": 99162
+    },
+    {
+      "old": "OpenAI_Agents_SDK/OpenAI_Agents_SDK_발표_실무_시사점_코멘트.md",
+      "new": "study/OpenAI_Agents_SDK/OpenAI_Agents_SDK_발표_실무_시사점_코멘트.md",
+      "sha256": "ed0af2cda0dda0b42d1d527f1c2a059e0c64f2732fe952292df7fc14f8842764",
+      "size": 4187
+    },
+    {
+      "old": "PydanticAI/PydanticAI.md",
+      "new": "study/PydanticAI/PydanticAI.md",
+      "sha256": "947a9d20cca2f28ca19bd0bf150f0e3b174620ed21877abf5bc82ef29cb97a78",
+      "size": 107222
+    },
+    {
+      "old": "PydanticAI/PydanticAI_2차_심층_학습_분석.md",
+      "new": "study/PydanticAI/PydanticAI_2차_심층_학습_분석.md",
+      "sha256": "8d934c8675db2d18e66e239c33d4248a5fdfcfedd6c38d1539682cb1449045e7",
+      "size": 99822
+    },
+    {
+      "old": "PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "new": "study/PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+      "sha256": "268c4a9c7ecbd1268dc22f17542a2e89afd201a1c5519ebfe6a506bf9bdd63f5",
+      "size": 7000
+    },
+    {
+      "old": "PydanticAI/html/architecture.html",
+      "new": "study/PydanticAI/html/architecture.html",
+      "sha256": "413daf804bd2eff44b5edb64891e48a9970305101ac9cb24b6f41c5ba4fe13b9",
+      "size": 21565
+    },
+    {
+      "old": "PydanticAI/html/build.mjs",
+      "new": "study/PydanticAI/html/build.mjs",
+      "sha256": "f7f88998aa0453d6383921a1a38eb25460dd1329f8cddca839f28d12f84525d0",
+      "size": 20153
+    },
+    {
+      "old": "PydanticAI/html/code.html",
+      "new": "study/PydanticAI/html/code.html",
+      "sha256": "58cdac9872ef9f926565578707bbc21c3d41bcced36769845567206d8da104a8",
+      "size": 37621
+    },
+    {
+      "old": "PydanticAI/html/content-map.json",
+      "new": "study/PydanticAI/html/content-map.json",
+      "sha256": "9d9bcf77eda4befecf31b9b37482ffcd93cd6ab252d7d07de2d8593e72ec26c6",
+      "size": 11371
+    },
+    {
+      "old": "PydanticAI/html/core.html",
+      "new": "study/PydanticAI/html/core.html",
+      "sha256": "d40ee8ed2404352daa102682cfc8ea9f2403cbda3efd49ecd1a57c690096020c",
+      "size": 19793
+    },
+    {
+      "old": "PydanticAI/html/course-links.css",
+      "new": "study/PydanticAI/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "PydanticAI/html/foundations.html",
+      "new": "study/PydanticAI/html/foundations.html",
+      "sha256": "d61987a1f46c41d22962ba11ade9d6224b4c98146302c08d3402825ba02c454a",
+      "size": 21010
+    },
+    {
+      "old": "PydanticAI/html/history.html",
+      "new": "study/PydanticAI/html/history.html",
+      "sha256": "7463fbad4ab18d8ed0c5245b7032038a5629b7a13bf474636924541ad2e397a4",
+      "size": 9477
+    },
+    {
+      "old": "PydanticAI/html/index.html",
+      "new": "study/PydanticAI/html/index.html",
+      "sha256": "2b4be7441e83b6da7d3a60bda2d6493547bb2e3c4ad7f29f9750571ef00b58fb",
+      "size": 9297
+    },
+    {
+      "old": "PydanticAI/html/link-courses.mjs",
+      "new": "study/PydanticAI/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "PydanticAI/html/memory.html",
+      "new": "study/PydanticAI/html/memory.html",
+      "sha256": "42b4b46b54b0de1c1eac2187744d2645a209ad57e93e7c7d996b902e58c5682f",
+      "size": 14707
+    },
+    {
+      "old": "PydanticAI/html/operations.html",
+      "new": "study/PydanticAI/html/operations.html",
+      "sha256": "5206b2b7b94d591e7fb8d3ed9b9d1b063ced0c89d8cc3426d5f70c5fe9e8206c",
+      "size": 18716
+    },
+    {
+      "old": "PydanticAI/html/orchestration.html",
+      "new": "study/PydanticAI/html/orchestration.html",
+      "sha256": "fd8d73f0ef6cc029a899d8e57bb19c7f258cbb41fe2e5edeaf9811352ecef8f6",
+      "size": 14417
+    },
+    {
+      "old": "PydanticAI/html/preview.png",
+      "new": "study/PydanticAI/html/preview.png",
+      "sha256": "06fcb3cf3237b5abbefd57cd75264c39229f10e57ab9f6389051682989646975",
+      "size": 19970
+    },
+    {
+      "old": "PydanticAI/html/README.md",
+      "new": "study/PydanticAI/html/README.md",
+      "sha256": "43debe2f078d26b7e69acc4f9d5d725816e16071d37ff42023863f8a89502cea",
+      "size": 2825
+    },
+    {
+      "old": "PydanticAI/html/review.html",
+      "new": "study/PydanticAI/html/review.html",
+      "sha256": "07e34be119e6f365dccb39e868902f378a8be478d232530eaa9ec38b35a11ae5",
+      "size": 14400
+    },
+    {
+      "old": "PydanticAI/html/semiconductor.html",
+      "new": "study/PydanticAI/html/semiconductor.html",
+      "sha256": "cf83b44e28c3f25448ec0fedd9c9ea0e914f289492b8495734e8ab7ead8c227d",
+      "size": 25989
+    },
+    {
+      "old": "PydanticAI/html/site.config.mjs",
+      "new": "study/PydanticAI/html/site.config.mjs",
+      "sha256": "1d215f33559bf8b32558f2fa06169ffac5fffebd4fa1623fb09694f18fc128d3",
+      "size": 11502
+    },
+    {
+      "old": "PydanticAI/html/site.js",
+      "new": "study/PydanticAI/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "PydanticAI/html/sources.html",
+      "new": "study/PydanticAI/html/sources.html",
+      "sha256": "5fbbb25403c5ea8007c18b2d160d5e1e0d39829c895b8ab606adb75ae91e7673",
+      "size": 27283
+    },
+    {
+      "old": "PydanticAI/html/style.css",
+      "new": "study/PydanticAI/html/style.css",
+      "sha256": "d7a65d31ba15216df03e316ea23abb681512a6bc6d3d347fb012ae151f47ca6e",
+      "size": 13440
+    },
+    {
+      "old": "PydanticAI/html/validate.mjs",
+      "new": "study/PydanticAI/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "PydanticAI/html/validation.html",
+      "new": "study/PydanticAI/html/validation.html",
+      "sha256": "4a59a19aec592bc36b8de05a0593f4ae046317046d4b56e1df09c020fbd8a9aa",
+      "size": 14554
+    },
+    {
+      "old": "PydanticAI/html/assets/diagram-1.svg",
+      "new": "study/PydanticAI/html/assets/diagram-1.svg",
+      "sha256": "1a46c872dc4207a503dcccdf4da8ac8df06add9618c3d0b30d38d6ac8e32926d",
+      "size": 20245
+    },
+    {
+      "old": "PydanticAI/html/assets/diagram-2.svg",
+      "new": "study/PydanticAI/html/assets/diagram-2.svg",
+      "sha256": "92327de0ced8b68d0121ede0f2cab5833024e0bd14fc39014b6e0ee420c3986f",
+      "size": 13850
+    },
+    {
+      "old": "PydanticAI/html/assets/diagram-4.svg",
+      "new": "study/PydanticAI/html/assets/diagram-4.svg",
+      "sha256": "6580fbed08df34e3656fa27a81df38410f2aa7bd83ce7a73bd74b7f5b1fd9d78",
+      "size": 8268
+    },
+    {
+      "old": "PydanticAI/html/assets/diagram-5.svg",
+      "new": "study/PydanticAI/html/assets/diagram-5.svg",
+      "sha256": "c5df02db74ff5974d4fbd650e14e76b690e3107812cd486e21a335091a691739",
+      "size": 13610
+    },
+    {
+      "old": "PydanticAI/html/assets/diagram-6.svg",
+      "new": "study/PydanticAI/html/assets/diagram-6.svg",
+      "sha256": "4deb28235fc5f2308fa020661a8e1ce7072999aa2a36f5cb2f4c96e32c3b4e3c",
+      "size": 8942
+    },
+    {
+      "old": "PydanticAI/html/assets/favicon.svg",
+      "new": "study/PydanticAI/html/assets/favicon.svg",
+      "sha256": "284847139110fc912d17f24d93867805bab7c509645c4e3adecea014a0b1e7b6",
+      "size": 204
+    },
+    {
+      "old": "PydanticAI/html/deep/browser-qa.json",
+      "new": "study/PydanticAI/html/deep/browser-qa.json",
+      "sha256": "4d11eb57eebf71b26df3521c9ae534e23bba76e38d30a31b64cce41ecee0d078",
+      "size": 2329
+    },
+    {
+      "old": "PydanticAI/html/deep/build.mjs",
+      "new": "study/PydanticAI/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "PydanticAI/html/deep/content-map.json",
+      "new": "study/PydanticAI/html/deep/content-map.json",
+      "sha256": "cac5940d57416089be642d07564f37a43798015f539a5522808f5509c7d7fe37",
+      "size": 49766
+    },
+    {
+      "old": "PydanticAI/html/deep/deep.css",
+      "new": "study/PydanticAI/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "PydanticAI/html/deep/index.html",
+      "new": "study/PydanticAI/html/deep/index.html",
+      "sha256": "035b3377e7d949eee8fa0c8ee9679a3b99e470b635815e633002f7d62996eba1",
+      "size": 15818
+    },
+    {
+      "old": "PydanticAI/html/deep/preview-mobile.png",
+      "new": "study/PydanticAI/html/deep/preview-mobile.png",
+      "sha256": "a52fa92562f6ebe8458f28d8ebc6a0e8bc92728158df77ddc3df5828fc7f7ac4",
+      "size": 37750
+    },
+    {
+      "old": "PydanticAI/html/deep/README.md",
+      "new": "study/PydanticAI/html/deep/README.md",
+      "sha256": "0fb909d66c1c94bb7ac31299e7db1f7b26aaa08c6daad65d85f6d13a3469d0bd",
+      "size": 3972
+    },
+    {
+      "old": "PydanticAI/html/deep/site.config.mjs",
+      "new": "study/PydanticAI/html/deep/site.config.mjs",
+      "sha256": "9fe8e6936a135efedb8760b35d36519eea5a508dcd47e86b77e411263e2c04fb",
+      "size": 5071
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-01.html",
+      "new": "study/PydanticAI/html/deep/unit-01.html",
+      "sha256": "245608cbca1d999bb47913e71487905e604ed77fac40850f63d292e7501cf194",
+      "size": 10385
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-02.html",
+      "new": "study/PydanticAI/html/deep/unit-02.html",
+      "sha256": "8882f10d5bf9881371de38d341bde45425b73390a6874afa599cbe3a044eaa03",
+      "size": 20869
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-03.html",
+      "new": "study/PydanticAI/html/deep/unit-03.html",
+      "sha256": "53152531d52cb9b212b07835261d7ce492b1907cebcec93dcc41b7f7172b2b59",
+      "size": 25104
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-04.html",
+      "new": "study/PydanticAI/html/deep/unit-04.html",
+      "sha256": "ef2ed48d35fb79ff4a2995c38baa67d30d85300f8825c81716bd923c2d137770",
+      "size": 16304
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-05.html",
+      "new": "study/PydanticAI/html/deep/unit-05.html",
+      "sha256": "bd495572524b7e98247b98cbf97e3289e9ea779bd703e472fba68db957fdc49b",
+      "size": 19596
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-06.html",
+      "new": "study/PydanticAI/html/deep/unit-06.html",
+      "sha256": "26a2f64438d0013663801b1b3b96bdc3a4f1f1e250655205ae534ce7abe3e372",
+      "size": 17082
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-07.html",
+      "new": "study/PydanticAI/html/deep/unit-07.html",
+      "sha256": "0c9f6d3dadfd0c428fad76e34c077573d1e10a099c98a210fed925c7ac45c738",
+      "size": 22278
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-08.html",
+      "new": "study/PydanticAI/html/deep/unit-08.html",
+      "sha256": "574088fa611aa3c3204033b370140fa9d98c9affd0f027ce080497cd24bdd52e",
+      "size": 18481
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-09.html",
+      "new": "study/PydanticAI/html/deep/unit-09.html",
+      "sha256": "1bbc4fca841f24eefa035b46078f66d1bc23ccae308ce5fea136f435e87fed6c",
+      "size": 17296
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-10.html",
+      "new": "study/PydanticAI/html/deep/unit-10.html",
+      "sha256": "bef84289139429e99097297b35dfe0b0e583b1215950d7e87072868a903cd919",
+      "size": 22008
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-11.html",
+      "new": "study/PydanticAI/html/deep/unit-11.html",
+      "sha256": "1ec67f6677911c38967d438fa11545e5a08697979fbcc8c9a431e8f4dda5f8b3",
+      "size": 12079
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-12.html",
+      "new": "study/PydanticAI/html/deep/unit-12.html",
+      "sha256": "e261da950cc84244064dd038ab25b7ccfc1385d0ceba5eb10fc64bc2a3a94dfd",
+      "size": 19799
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-13.html",
+      "new": "study/PydanticAI/html/deep/unit-13.html",
+      "sha256": "8349c8daba3cb60e0c171d8817bc488fd27a994c14c79914135737865b4c6de2",
+      "size": 11053
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-14.html",
+      "new": "study/PydanticAI/html/deep/unit-14.html",
+      "sha256": "21d2f954e96a39ffdd2e5c6fa0bbc63569f245697dc1a58853bd1081be82e5fb",
+      "size": 10964
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-15.html",
+      "new": "study/PydanticAI/html/deep/unit-15.html",
+      "sha256": "d95437aaec36326d4a8e99c711b20592a31ecaba6c094d968dc1086f33b03831",
+      "size": 11547
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-16.html",
+      "new": "study/PydanticAI/html/deep/unit-16.html",
+      "sha256": "d4ea0362886405a0b4b44a78b9405364ef5651b2a7c077c3fe73bc18647c5795",
+      "size": 10331
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-17.html",
+      "new": "study/PydanticAI/html/deep/unit-17.html",
+      "sha256": "89e0091a5c4f6d7731ab053a468737df2c707c15fec1544fb04180b38ed08525",
+      "size": 15044
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-18.html",
+      "new": "study/PydanticAI/html/deep/unit-18.html",
+      "sha256": "5657bcc19111ef033452a7e6fce1f6a9f558d4eaf696c3f5701fb21a926cdc2e",
+      "size": 16971
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-19.html",
+      "new": "study/PydanticAI/html/deep/unit-19.html",
+      "sha256": "3cd47ed3f3f555c0af1d28fde862b99adcacc5dc3a21846182ed38e8a37fcf13",
+      "size": 16098
+    },
+    {
+      "old": "PydanticAI/html/deep/unit-20.html",
+      "new": "study/PydanticAI/html/deep/unit-20.html",
+      "sha256": "1c941b8afcbb2a52f744c06b5f9898a86b47ddeb557cc842716bb00365be54e7",
+      "size": 9404
+    },
+    {
+      "old": "PydanticAI/html/deep/validate.mjs",
+      "new": "study/PydanticAI/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "PydanticAI/html/deep/validation.json",
+      "new": "study/PydanticAI/html/deep/validation.json",
+      "sha256": "cde0f55515af17f0b825c51a8137e0b744494c9dd5d161afba6ccbe1f5e217fa",
+      "size": 287
+    },
+    {
+      "old": "PydanticAI/html/deep/assets/diagram-1.svg",
+      "new": "study/PydanticAI/html/deep/assets/diagram-1.svg",
+      "sha256": "40467f29987ac54adbc7516889b0d9bdb9541e9e928d83d686082c5b08287982",
+      "size": 12397
+    },
+    {
+      "old": "PydanticAI/html/deep/assets/diagram-2.svg",
+      "new": "study/PydanticAI/html/deep/assets/diagram-2.svg",
+      "sha256": "109bad1d6ba43e4b48f6eea19199d430c02bab1f0779f4d8b3ff692a43d16372",
+      "size": 7602
+    },
+    {
+      "old": "PydanticAI/html/deep/assets/diagram-4.svg",
+      "new": "study/PydanticAI/html/deep/assets/diagram-4.svg",
+      "sha256": "d6af4c670ae1e171cb4b9220c60b557cfab7fb4d90678942c16a714ae986da67",
+      "size": 6726
+    },
+    {
+      "old": "PydanticAI/html/deep/assets/diagram-5.svg",
+      "new": "study/PydanticAI/html/deep/assets/diagram-5.svg",
+      "sha256": "7657c5600309060dae20c8c46bab4fedb34ea1b4180a40d424fcc4f820dcc16b",
+      "size": 11067
+    },
+    {
+      "old": "PydanticAI/html/deep/assets/diagram-7.svg",
+      "new": "study/PydanticAI/html/deep/assets/diagram-7.svg",
+      "sha256": "59265429fcf110941114ce3adbbcfccb77e3eacd7c8de6f7740b2219fbbd9e52",
+      "size": 5598
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/build.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/build.mjs",
+      "sha256": "be0843a369a86cbf63baad16df9673f976ac249e4d3b313ced452ec4f16eaa36",
+      "size": 19878
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/code.html",
+      "new": "study/OpenAI_Agents_SDK/html/code.html",
+      "sha256": "b1f4c846f483c0782bd8a74243c4d9aa9c66f9e2609ac904a05f3ecb0087567c",
+      "size": 28794
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/comparison.html",
+      "new": "study/OpenAI_Agents_SDK/html/comparison.html",
+      "sha256": "a2d30fcc95f6f6654b56388524849b477bdd558299ca554bab79a71c7abb2ca4",
+      "size": 13618
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/content-map.json",
+      "new": "study/OpenAI_Agents_SDK/html/content-map.json",
+      "sha256": "76da3b6c8db98a381bffbfe80fd9270aa3cf8cf4ffd14bc045605ff3d6805410",
+      "size": 13122
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/course-links.css",
+      "new": "study/OpenAI_Agents_SDK/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/execution.html",
+      "new": "study/OpenAI_Agents_SDK/html/execution.html",
+      "sha256": "d3e6ce6417fa81859ea6853a07e2d76219ef519a17119c8c3a9f1fa933132960",
+      "size": 24332
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/foundations.html",
+      "new": "study/OpenAI_Agents_SDK/html/foundations.html",
+      "sha256": "3fc55f486d92284689cd2b72594f96c9144f73566513ecb85922c8ed721e03d7",
+      "size": 19856
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/guardrails.html",
+      "new": "study/OpenAI_Agents_SDK/html/guardrails.html",
+      "sha256": "9666f911a70402caf47dcc434203f693438073861d33300154264cb380016a85",
+      "size": 10450
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/index.html",
+      "new": "study/OpenAI_Agents_SDK/html/index.html",
+      "sha256": "0cf549b3e48d0009d67ce7a95990933b10e0b07362760b8ccfb4fd35bf69751d",
+      "size": 9387
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/link-courses.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/operations.html",
+      "new": "study/OpenAI_Agents_SDK/html/operations.html",
+      "sha256": "38f48e57a8d5e33c36e8dbbe3d6a54a00483141fbcbfdc93abd4e6436e799d47",
+      "size": 18790
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/orchestration.html",
+      "new": "study/OpenAI_Agents_SDK/html/orchestration.html",
+      "sha256": "a747dbd45242bf130d799946e91a7f7aaaecf38d9179102db45f673647de2f2a",
+      "size": 11182
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/preview.png",
+      "new": "study/OpenAI_Agents_SDK/html/preview.png",
+      "sha256": "8599dd5b50a6787a650bf8e3c8aa0927dfa30397b6de86de5f6ad53661e6dbb8",
+      "size": 21029
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/README.md",
+      "new": "study/OpenAI_Agents_SDK/html/README.md",
+      "sha256": "1bd078d7fb64760305bb97d2389f3ffd23dce9f5454e491a4f118ab4548ce737",
+      "size": 2702
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/review.html",
+      "new": "study/OpenAI_Agents_SDK/html/review.html",
+      "sha256": "a1af5ed19f5864964d72700a3693537ed65aca34cf8e05fa61fcd1d729d7575b",
+      "size": 13032
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/semiconductor.html",
+      "new": "study/OpenAI_Agents_SDK/html/semiconductor.html",
+      "sha256": "5e3627765ba2ce416b76ca031ab66fc6490ba68e44ae1464bd3cd93b4cfc05b3",
+      "size": 19902
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/site.config.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/site.config.mjs",
+      "sha256": "67f4932f1b648ec0b993042b474fdfaa4771ae51e65f4c9a68734ff730764763",
+      "size": 11623
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/site.js",
+      "new": "study/OpenAI_Agents_SDK/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/sources.html",
+      "new": "study/OpenAI_Agents_SDK/html/sources.html",
+      "sha256": "4ab4607231462b34eb6b6521eae8e40380e42bb1b85a1380c3aa00fd9162a67e",
+      "size": 22323
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/state.html",
+      "new": "study/OpenAI_Agents_SDK/html/state.html",
+      "sha256": "e1dce814c8ff7d853c2badb9723635ff2c930fc3c5c08016246495ba173cc6f2",
+      "size": 24352
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/style.css",
+      "new": "study/OpenAI_Agents_SDK/html/style.css",
+      "sha256": "d7a65d31ba15216df03e316ea23abb681512a6bc6d3d347fb012ae151f47ca6e",
+      "size": 13440
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/tools.html",
+      "new": "study/OpenAI_Agents_SDK/html/tools.html",
+      "sha256": "d4577eb7108965a922a39ee889c65ce9d32bc918b5f3ca64b4fe9e93dd3a0d88",
+      "size": 16816
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/validate.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-1.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-1.svg",
+      "sha256": "dac256606c4d96d7d55b7e88e448079cf7fa1560bed38f42563805dce83b27ef",
+      "size": 11608
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-10.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-10.svg",
+      "sha256": "15ea38c924efb241b86a226084cda81e52e5c1bf1d817720dd032d68b2318a46",
+      "size": 7050
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-11.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-11.svg",
+      "sha256": "f25e471830533c089d4775a09134c2fbc7e5c591385a855cf9bed0155a2dde2e",
+      "size": 9425
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-2.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-2.svg",
+      "sha256": "44a4db016ab828f01365160df15bb8f3da09f0b38465d0d947c0fc8cb673f3f2",
+      "size": 14204
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-3.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-3.svg",
+      "sha256": "03eb288f2fd49804808587ccbceaf43ea14f4f5cc39ad58e1b879343dde205ea",
+      "size": 7593
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-4.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-4.svg",
+      "sha256": "79532cc9c90a85a1d86387cf617d81ed4ea8dab1fa4e47d70e419b1b331c223a",
+      "size": 11333
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-5.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-5.svg",
+      "sha256": "b93c7dd9da08dc6d701a27396445d31346fd31fe1475fc06b311122c2616811b",
+      "size": 5117
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-7.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-7.svg",
+      "sha256": "df749452e729d40280bb0d3a9c0933c83500844424c69b47e553f377b0d8b98e",
+      "size": 6540
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-8.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-8.svg",
+      "sha256": "520c3cdd47df4e7cde2a9b9fb89046d29a23a374ad6351876f3d0e91e221f369",
+      "size": 14890
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/diagram-9.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/diagram-9.svg",
+      "sha256": "407620d6695a1e8870794f1009ce3cf73790b1aa52ba90b299334ceec719e2a8",
+      "size": 8572
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/assets/favicon.svg",
+      "new": "study/OpenAI_Agents_SDK/html/assets/favicon.svg",
+      "sha256": "e1bc6e8db3f704990ffaefa3d7aec55ca9c18deb643000867615321b0f4e6749",
+      "size": 204
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/browser-qa.json",
+      "new": "study/OpenAI_Agents_SDK/html/deep/browser-qa.json",
+      "sha256": "3e5f758365d9fc186a46e36919f288c1454c0585da8611602ddaeed34519a031",
+      "size": 2382
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/build.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/content-map.json",
+      "new": "study/OpenAI_Agents_SDK/html/deep/content-map.json",
+      "sha256": "9b7f1b2019fd49d250a57058f2881ad512afdee498d5e3ab0c3453402c67a985",
+      "size": 71929
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/deep.css",
+      "new": "study/OpenAI_Agents_SDK/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/index.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/index.html",
+      "sha256": "270a66c269debd911febff61ec18466a3ab78fc4934847ee36244fc371fc9e81",
+      "size": 14671
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/preview-mobile.png",
+      "new": "study/OpenAI_Agents_SDK/html/deep/preview-mobile.png",
+      "sha256": "056f5e947c07d75b5a567437af2ebec760e544f53f5252617bdc63ad004de0cf",
+      "size": 40067
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/README.md",
+      "new": "study/OpenAI_Agents_SDK/html/deep/README.md",
+      "sha256": "61b7cd8fce5f2d7f55e626b3472d481587c2512a737ea1c89871d9777dca7ecc",
+      "size": 3987
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/site.config.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/deep/site.config.mjs",
+      "sha256": "b9cd3ac44d3f302abf319e563ed4cb408f359a7ed94acedd3236e021bacea28d",
+      "size": 5487
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-01.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-01.html",
+      "sha256": "1fa96968dd79a69c045fcf24339a0234a5e7b5979fccb055b9ecc3a41dda5f77",
+      "size": 12099
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-02.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-02.html",
+      "sha256": "d4add46346497f191b588849356501b4a9d9e3355e7fae277e7cefdc6e82e027",
+      "size": 21050
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-03.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-03.html",
+      "sha256": "bcdf693d4b29571f3019e9d060c04aea971720101eb1a20a119a91b3745188c5",
+      "size": 12814
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-04.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-04.html",
+      "sha256": "c255e936178226a88de9063f48571bc4a11ee823d9bc25789aa1f466210b09b6",
+      "size": 21043
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-05.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-05.html",
+      "sha256": "4bb7cc7f0732993da7200736ff96a28447bdc0cc97fb5576410420f508bb9a44",
+      "size": 26599
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-06.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-06.html",
+      "sha256": "1e7fc2d9d6845bb283e1c4bd9c536a890b38ecd73c7fe616aac56af8876764bc",
+      "size": 21884
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-07.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-07.html",
+      "sha256": "4c5d4ec750e9bc5c2b7c768eb7a26d85c93b86fce2045bca3b12d8b5e1488513",
+      "size": 19660
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-08.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-08.html",
+      "sha256": "3ad89ccda57c510d87a6b27d72f11accaf07b4b2a5cebf6a3147490344a4e38c",
+      "size": 23061
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-09.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-09.html",
+      "sha256": "0807153f9dd58d4a4a69e205c662c1958c8055be922e02eecfd22087bcbc1adf",
+      "size": 24855
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-10.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-10.html",
+      "sha256": "593c1d14e2731906181358607c16bbbe11c338e4aa0f40968948a8129fc29ef1",
+      "size": 8791
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-11.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-11.html",
+      "sha256": "ea571a41724fa8f61cbcabda1c36a27254ace65e1b6574dbfc71e73f0fd4490a",
+      "size": 20472
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-12.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-12.html",
+      "sha256": "0deaa033d9fefed8dc1980b89741f7b071cee4ce6391534c0caa09150213ee5a",
+      "size": 12399
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-13.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-13.html",
+      "sha256": "0151c8d04f00a97f212bf83ae73619bcc0a5bfca4bafaa64f5f61805c06546f3",
+      "size": 17146
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-14.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-14.html",
+      "sha256": "7fce54133fffd8caee9f07a474bfca8cfe53c4793448ea93622705e1e0516113",
+      "size": 24207
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-15.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-15.html",
+      "sha256": "6c9c9f1e309c0c46df3035922aedff13dd327313fee2d6c5c6fc2784a4f1b81d",
+      "size": 14614
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-16.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-16.html",
+      "sha256": "1f87e7abf3ad398c1f7f16491c6edffe13f26ddc5f6c97e772d4fe1a14d6ffc3",
+      "size": 21102
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/unit-17.html",
+      "new": "study/OpenAI_Agents_SDK/html/deep/unit-17.html",
+      "sha256": "24b138dfc5ae4e02e7aebdec0d9b09b5ba63d7b093ad7e4e852886176fd264fd",
+      "size": 8951
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/validate.mjs",
+      "new": "study/OpenAI_Agents_SDK/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/validation.json",
+      "new": "study/OpenAI_Agents_SDK/html/deep/validation.json",
+      "sha256": "af5d0d9a44bff373db53044d10a8bf169a7ed787355867b196f101ce240986f5",
+      "size": 295
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-10.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-10.svg",
+      "sha256": "2a69c136f21c31c2c0ca81a8a2f9650204544972e1ef2d33826e6caeb1638b11",
+      "size": 7631
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-11.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-11.svg",
+      "sha256": "a0b3a2e56c5b1a586083a6cc5c3e0be871749a10d38e823112132053943792c7",
+      "size": 12260
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-2.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-2.svg",
+      "sha256": "0a2ecd2b283c643f7c3ab9f3853d3c554a6f0979c0ec115c4d8346d7ea6dc9f3",
+      "size": 13758
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-3.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-3.svg",
+      "sha256": "d5af0a040e0c101ba6d2666a9f176d86686ec48958ccd0f22bc353088db74431",
+      "size": 9165
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-4.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-4.svg",
+      "sha256": "e0af78fdadc39014fc6f2bb671334c8b4ac5f353113bcdab85d0851f1e71dc56",
+      "size": 7276
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-7.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-7.svg",
+      "sha256": "a00fd07534dbe5ae297fa8ef53611766a619d2a377724bf93beeea27ad4f4c7d",
+      "size": 7869
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-8.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-8.svg",
+      "sha256": "afcf58943449c8064211adfc1fbab49e6ae1561851710ba6cce3f4563c8d506f",
+      "size": 5154
+    },
+    {
+      "old": "OpenAI_Agents_SDK/html/deep/assets/diagram-9.svg",
+      "new": "study/OpenAI_Agents_SDK/html/deep/assets/diagram-9.svg",
+      "sha256": "043ac38b613a5880980c05eb1d5041f0f6b7e7d1e96bea88c72a3c0f2303c1f4",
+      "size": 10289
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/.gitkeep",
+      "new": "study/Microsoft Agent_Framework/html/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/build.mjs",
+      "new": "study/Microsoft Agent_Framework/html/build.mjs",
+      "sha256": "28bb2987ce081fb3d1cdd51701ff8553e69ae16e345772fc4e0683e7c87b48d6",
+      "size": 20139
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/content-map.json",
+      "new": "study/Microsoft Agent_Framework/html/content-map.json",
+      "sha256": "f83d51df758e8ebffb58e8f75288865dbdeeb240699613cf63daa2cf89a775f3",
+      "size": 12739
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/context.html",
+      "new": "study/Microsoft Agent_Framework/html/context.html",
+      "sha256": "3b88ff32b1fa59fbbeeb5116d430a43a90340cfe4443200468fa59bdf787694c",
+      "size": 15232
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/course-links.css",
+      "new": "study/Microsoft Agent_Framework/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/foundations.html",
+      "new": "study/Microsoft Agent_Framework/html/foundations.html",
+      "sha256": "33d4fe4dae7d2583ac838027b0bcb10cf0739537da262f5b856cc27b42db8148",
+      "size": 23576
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/harness.html",
+      "new": "study/Microsoft Agent_Framework/html/harness.html",
+      "sha256": "4a713e17abe8fa802be178dfbf703566b04620a0048b8a6bdb4b93fe3160b3bf",
+      "size": 18269
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/index.html",
+      "new": "study/Microsoft Agent_Framework/html/index.html",
+      "sha256": "2ba6ed6aca08bf1826b43e7d568517a1c26180fb43b82a59d188adf418802e1d",
+      "size": 10000
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/link-courses.mjs",
+      "new": "study/Microsoft Agent_Framework/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/operations.html",
+      "new": "study/Microsoft Agent_Framework/html/operations.html",
+      "sha256": "4b4cd776fdf700b9e8675b5f15178c51bcb8feea2ee68ec65786a90faba53c81",
+      "size": 12324
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/preview.png",
+      "new": "study/Microsoft Agent_Framework/html/preview.png",
+      "sha256": "bb595f6897a2bb8b0b71841ba67e86411b2854759d487ebea7ebd591dc1d2db4",
+      "size": 21291
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/README.md",
+      "new": "study/Microsoft Agent_Framework/html/README.md",
+      "sha256": "497568d2133781a49bdb019d239756c82888922e5f15232dd6de1703bb240743",
+      "size": 2782
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/recovery.html",
+      "new": "study/Microsoft Agent_Framework/html/recovery.html",
+      "sha256": "612925cfda55cb096f45031a9c8748e4d84834c19623bebb91ba44ba44a1286c",
+      "size": 14783
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/review.html",
+      "new": "study/Microsoft Agent_Framework/html/review.html",
+      "sha256": "aeca1ac5985309b765879c6233e0ce33d345138ece2c74f3905dbdb18f36084e",
+      "size": 8434
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/runtime.html",
+      "new": "study/Microsoft Agent_Framework/html/runtime.html",
+      "sha256": "df1c0c857cce547585ba86ef8143f8fdea11db849447c8190d00159b2315fd53",
+      "size": 13929
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/selection.html",
+      "new": "study/Microsoft Agent_Framework/html/selection.html",
+      "sha256": "76f9ffea181902d6298790cb6d7be2491488d43a4da67e765c10cd85a49e4caf",
+      "size": 15233
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/semiconductor.html",
+      "new": "study/Microsoft Agent_Framework/html/semiconductor.html",
+      "sha256": "6f3ecbac3bb41e86d715ac5494de03f0e3b5f3931e243f404a6b1210e05532c9",
+      "size": 19758
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/site.config.mjs",
+      "new": "study/Microsoft Agent_Framework/html/site.config.mjs",
+      "sha256": "61b74a763584c8fedfae79791b7a3d18932f64f10e5fd73801d96c9233eb80aa",
+      "size": 11939
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/site.js",
+      "new": "study/Microsoft Agent_Framework/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/source-code.html",
+      "new": "study/Microsoft Agent_Framework/html/source-code.html",
+      "sha256": "e566207c737f5d8ec3b27ac5a5c017301c081d616852010cde6bfc91d39e7c6f",
+      "size": 31648
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/sources.html",
+      "new": "study/Microsoft Agent_Framework/html/sources.html",
+      "sha256": "4f580272e59ede0ba6534d4ebe56875a4d69fb72c8767f43579a8eebe192fc50",
+      "size": 29775
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/style.css",
+      "new": "study/Microsoft Agent_Framework/html/style.css",
+      "sha256": "d44ce568df6805a048f4b0fb4a0531847461ee96e6d0052e89b8c1750e4a7566",
+      "size": 13572
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/tools.html",
+      "new": "study/Microsoft Agent_Framework/html/tools.html",
+      "sha256": "6996bf2ba8e67467524cb7358572cf8b5d5c23669be5a0b6d216bd700cd24e33",
+      "size": 12400
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/validate.mjs",
+      "new": "study/Microsoft Agent_Framework/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/workflows.html",
+      "new": "study/Microsoft Agent_Framework/html/workflows.html",
+      "sha256": "7992690c5e4a5846644940b5f78dafe83d91f1d3cf451398645ec195d41c6926",
+      "size": 16450
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-1.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-1.svg",
+      "sha256": "a9a8ce4615ab496b2dc22503c468d1a363976781e4291e9e6b7d6d11382c6a19",
+      "size": 13372
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-3.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-3.svg",
+      "sha256": "46a890647d2b4a8ac68d55b42cf3277e67cb3c4a25386749cde5084eeabe056f",
+      "size": 7726
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-4.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-4.svg",
+      "sha256": "ab1071234c8db108c11d0e4f9ab1f45d4dcfeaddf3632f3ccb010414ba144015",
+      "size": 4825
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-6.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-6.svg",
+      "sha256": "aa68e630651db1349b396e42d03ac5ddcd1567bd4be66f4b80f6b1be898a1c3c",
+      "size": 11815
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-7.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-7.svg",
+      "sha256": "9c5e6baaf16321d28a1efa1e135e46bb11863d1b2c858171dd48aff3dcd13621",
+      "size": 9739
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-8.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-8.svg",
+      "sha256": "7a7ad9938c27a12ab83d22e302b3834251d874bad0c5094e95da444487acea66",
+      "size": 10237
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/diagram-9.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/diagram-9.svg",
+      "sha256": "9145b35805cf4ffc51cbaca6dfd3bf007d484962bdc0b77cad15c26c5bf69530",
+      "size": 11117
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/assets/favicon.svg",
+      "new": "study/Microsoft Agent_Framework/html/assets/favicon.svg",
+      "sha256": "37725886e7798081245ae9207afa3a69784b296162d5cd6ac4b96cfc3c96c3d0",
+      "size": 204
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/browser-qa.json",
+      "new": "study/Microsoft Agent_Framework/html/deep/browser-qa.json",
+      "sha256": "c722a9ff533b07f8a9d4db23580777281664f9b805b8a035d3cc1898f6fa56c6",
+      "size": 2490
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/build.mjs",
+      "new": "study/Microsoft Agent_Framework/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/content-map.json",
+      "new": "study/Microsoft Agent_Framework/html/deep/content-map.json",
+      "sha256": "7bcf4d0b59cb145932fa46f406f47a6d9b7c2543c5e6dc2f1d64fb13efba400f",
+      "size": 58313
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/deep.css",
+      "new": "study/Microsoft Agent_Framework/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/index.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/index.html",
+      "sha256": "5bcbaad1443b12cdce12af86b488b9a19693ebd48dc685ba5f1daa2336604eec",
+      "size": 15666
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/preview-mobile.png",
+      "new": "study/Microsoft Agent_Framework/html/deep/preview-mobile.png",
+      "sha256": "83c89effd48dbbbca5e754bd09f509f45fc80708900f55e3c0d5bbc9d4e65c20",
+      "size": 35876
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/README.md",
+      "new": "study/Microsoft Agent_Framework/html/deep/README.md",
+      "sha256": "edda836e06b68d02818293aadc1ff927edfd33901892262805c60327aa9acbf5",
+      "size": 4002
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/site.config.mjs",
+      "new": "study/Microsoft Agent_Framework/html/deep/site.config.mjs",
+      "sha256": "434b47cd000e473508e3ab85d70067a304ba92df486d58b15a1827762b2c05ae",
+      "size": 4786
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-01.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-01.html",
+      "sha256": "cfbe6e8df179bc09aad965927e76b7ed928b89a2889b6d6bcf7ba4086abcc76f",
+      "size": 13240
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-02.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-02.html",
+      "sha256": "761cf806abe63179fb6c0a111fdcfdc5f8621bbdede132a6c733ee571670acaf",
+      "size": 22703
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-03.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-03.html",
+      "sha256": "b491e742697a69f140028266dbb3e2004ba1bfe1843d1954d5a015a6695deba7",
+      "size": 21324
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-04.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-04.html",
+      "sha256": "d4bb34434bca2c49f72da50f4c8823997b244d954c29c4526cc40c0d62b3f86b",
+      "size": 22959
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-05.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-05.html",
+      "sha256": "116415aba0e38be620149939caa8565bfb93e83ce35dea39577f329bbae463ca",
+      "size": 22187
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-06.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-06.html",
+      "sha256": "5487971bbf69ee095d63acd04500a79acf42f304e54d305e9061528de9130812",
+      "size": 16467
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-07.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-07.html",
+      "sha256": "321670d593af78f5d26ff62da76f6f583f45ef164cca1c45d9f9593014d16e32",
+      "size": 24018
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-08.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-08.html",
+      "sha256": "104a443ca780979f990a9932945e78210809f5df1b1db5bbcf3546875cab2687",
+      "size": 16680
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-09.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-09.html",
+      "sha256": "aa92340fdee60229b106e76979e6bdc527e4492dbdead2ac6b9d6fb3034699f9",
+      "size": 20637
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-10.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-10.html",
+      "sha256": "85d59e5b5dadd3d15104af0e895c6380b2b5dc94dcdcf7dcfe8a462fec88ec56",
+      "size": 20746
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-11.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-11.html",
+      "sha256": "a4dc5a072cec53c68602ab9747bec62e3afe4ed67a0b517d6f713040319a7fb4",
+      "size": 14597
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-12.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-12.html",
+      "sha256": "7d8df5f65c2d09feb3ea379073a75fecd0092105c7e0e266726d4eb32959c612",
+      "size": 13209
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-13.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-13.html",
+      "sha256": "d339b7ea74e42b8bfcd7196733da0569cd39a895585e88b113f88cef9ffdfe93",
+      "size": 12586
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-14.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-14.html",
+      "sha256": "ec65b3b9ee83bbc1dcf70a8d4210ca4c06aa7c80db31df46230f8f7e5cd8cdfb",
+      "size": 12453
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-15.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-15.html",
+      "sha256": "a5768c44b2157a3b50b4baffcd13f419ddfa7d089c2a775e241e65b3e9284d46",
+      "size": 11125
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-16.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-16.html",
+      "sha256": "f2a7b8d2fee199c0f1412bb6975a4a749626747d0226b9d225fe77b91928c1e7",
+      "size": 19496
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-17.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-17.html",
+      "sha256": "4d100c4f82f74faa7dbb873ebf294fbba9ec7f2ffd4379f29201cb394052cd9e",
+      "size": 14412
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-18.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-18.html",
+      "sha256": "38a16721a325698dc26f13452989923888574c39f347e303c4cff0c945af52db",
+      "size": 25083
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/unit-19.html",
+      "new": "study/Microsoft Agent_Framework/html/deep/unit-19.html",
+      "sha256": "cf8f629ca50b6b865899b6ae60fe1fd2150fbf6246e6ed57b4284b6011ca10e5",
+      "size": 9185
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/validate.mjs",
+      "new": "study/Microsoft Agent_Framework/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/validation.json",
+      "new": "study/Microsoft Agent_Framework/html/deep/validation.json",
+      "sha256": "c2268a8b448cf05aa31957390041be2063ae59d92d4a79207950cd8df1ca87b6",
+      "size": 302
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-2.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-2.svg",
+      "sha256": "dfbcd8f00d7f455b11e0102d51aefd70252711cc610a6c0b12e8d6ebaedc53c4",
+      "size": 10784
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-3.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-3.svg",
+      "sha256": "ebece0f61d30f7e217926a3f8fd3204536598a30b31f691a241832b695a50acf",
+      "size": 9957
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-5.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-5.svg",
+      "sha256": "b425087f57dba913d013d8bdbcb6ca1d4334149b0bdf622a18334e707f62fdf9",
+      "size": 7945
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-6.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-6.svg",
+      "sha256": "9d6809d99cac92976c5b605427b4064e2c47c29b854135d7fe50e7df607eddbf",
+      "size": 7675
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-7.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-7.svg",
+      "sha256": "67c5224f14ff85dcce2374c200322dae9a4c1a3d511d744291fc806eb8ccdf95",
+      "size": 6284
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-8.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-8.svg",
+      "sha256": "43da9c1239da2d3b1f1e85389f924135a165e58ddebbe8aca71f0149e3075c29",
+      "size": 10277
+    },
+    {
+      "old": "Microsoft Agent_Framework/html/deep/assets/diagram-9.svg",
+      "new": "study/Microsoft Agent_Framework/html/deep/assets/diagram-9.svg",
+      "sha256": "13be28b01451fd21b0eba9c42d56a517789ddac0781280bf736b2e680cb6cd0f",
+      "size": 9980
+    },
+    {
+      "old": "html/seminar-2/agent-framework-seminar-2.pdf",
+      "new": "presentations/seminar-2/agent-framework-seminar-2.pdf",
+      "sha256": "3d2838a37275ba018dd284e841bc86808c57cb28529bbc5cabb9891d0ebf3367",
+      "size": 699183
+    },
+    {
+      "old": "html/seminar-2/artwork.py",
+      "new": "presentations/seminar-2/artwork.py",
+      "sha256": "422f5d02d3f65546e6e89af10edd0f9c6b5eaafe3b8a49bc7bbef6b287c7f638",
+      "size": 18484
+    },
+    {
+      "old": "html/seminar-2/build.py",
+      "new": "presentations/seminar-2/build.py",
+      "sha256": "9d39a5c72759866cc51c07858bd85505cb66f84ec94c727c56ccfcf9d0684842",
+      "size": 50617
+    },
+    {
+      "old": "html/seminar-2/contact-sheet.py",
+      "new": "presentations/seminar-2/contact-sheet.py",
+      "sha256": "f0b68c31bd7026b8ec1d71dc1feb9430304676c50c1b8c4e6d446a870fe177fb",
+      "size": 1108
+    },
+    {
+      "old": "html/seminar-2/controller.js",
+      "new": "presentations/seminar-2/controller.js",
+      "sha256": "ddfe524d4a1c05a0f38ec5d3c6729aa195a14b196cdcefa48e80029249fc4cd5",
+      "size": 11692
+    },
+    {
+      "old": "html/seminar-2/demo-handoff.html",
+      "new": "presentations/seminar-2/demo-handoff.html",
+      "sha256": "60bb76e3e900346eb7e485b614da6eeefe8d962c169414e64adf0dbe0b8097ec",
+      "size": 2610
+    },
+    {
+      "old": "html/seminar-2/design.py",
+      "new": "presentations/seminar-2/design.py",
+      "sha256": "7281631e6158bbb89f48c1c61e2e7233f9ba9edfa63f343685423301ffe64b88",
+      "size": 10066
+    },
+    {
+      "old": "html/seminar-2/hermes_deep.py",
+      "new": "presentations/seminar-2/hermes_deep.py",
+      "sha256": "b22e9ea733ca3ac1147fd16bbec6a7d7f346d767a8139dd73e2e03e94ef985c6",
+      "size": 72656
+    },
+    {
+      "old": "html/seminar-2/hermes_observability.py",
+      "new": "presentations/seminar-2/hermes_observability.py",
+      "sha256": "cedf7cc4e731eab23ce03269153301695bdc0aa47699bc66f744ad425eede7dd",
+      "size": 23400
+    },
+    {
+      "old": "html/seminar-2/hermes_revision.py",
+      "new": "presentations/seminar-2/hermes_revision.py",
+      "sha256": "5708fe756a62ffadaf027254a23cb7b07485bf75400a4a3b78fd204abebccafd",
+      "size": 40448
+    },
+    {
+      "old": "html/seminar-2/index.html",
+      "new": "presentations/seminar-2/index.html",
+      "sha256": "f571d3b8e647539c36c3d9b023cd119e7b35d61d673621145a4b786cea914a60",
+      "size": 3116917
+    },
+    {
+      "old": "html/seminar-2/manifest.json",
+      "new": "presentations/seminar-2/manifest.json",
+      "sha256": "be92735c7dc30c7dc152bb5bd3ab6f86591abbd8bc5906f99de99d32bc0c320e",
+      "size": 17595
+    },
+    {
+      "old": "html/seminar-2/notes.json",
+      "new": "presentations/seminar-2/notes.json",
+      "sha256": "d5f8b915cb78425202822aaad9834daf10bd2ec1a668021f16c116c9eff3da4a",
+      "size": 315242
+    },
+    {
+      "old": "html/seminar-2/presenter-notes.md",
+      "new": "presentations/seminar-2/presenter-notes.md",
+      "sha256": "de8423da7be3cdff708eb319e00381d869c65cb03d38b248214e232dd80c6951",
+      "size": 121744
+    },
+    {
+      "old": "html/seminar-2/README.md",
+      "new": "presentations/seminar-2/README.md",
+      "sha256": "5732864d34259e664554d7e103c05663332f35bcc3138e0d1cc63b24d71b2590",
+      "size": 6400
+    },
+    {
+      "old": "html/seminar-2/revision.py",
+      "new": "presentations/seminar-2/revision.py",
+      "sha256": "bc098abbfa4f422317a9a029eed511c0f684a3c2e0a49493992c1dc45b7a8683",
+      "size": 49415
+    },
+    {
+      "old": "html/seminar-2/validate.cjs",
+      "new": "presentations/seminar-2/validate.cjs",
+      "sha256": "67419f8b01dcbce9a62cce664c85e903d6421af1c828c851611292490f6e3c49",
+      "size": 10493
+    },
+    {
+      "old": "html/seminar-2/verify-content.py",
+      "new": "presentations/seminar-2/verify-content.py",
+      "sha256": "5a69cb2530e139c50eb1dc53a750662114111f05afa524fceda414850f4ddfe4",
+      "size": 4138
+    },
+    {
+      "old": "html/seminar-2-examples/build.py",
+      "new": "archive/presentations/seminar-2-examples/build.py",
+      "sha256": "d2315a4205f72715c5f081e733c4ae67beeda7d09d9383d9d701b438ea7012b6",
+      "size": 25245
+    },
+    {
+      "old": "html/seminar-2-examples/five-slide-examples.pdf",
+      "new": "archive/presentations/seminar-2-examples/five-slide-examples.pdf",
+      "sha256": "6f7c42512292e51af8c47904811e4de1e9ef6fe8ca0a902823fa2ecac86f083c",
+      "size": 684920
+    },
+    {
+      "old": "html/seminar-2-examples/index.html",
+      "new": "archive/presentations/seminar-2-examples/index.html",
+      "sha256": "b80e4cd79b6db1745950c5ad656cf484d18a697c35ebc5ed11299ac03f83f8c9",
+      "size": 2804058
+    },
+    {
+      "old": "html/seminar-2-examples/qa.cjs",
+      "new": "archive/presentations/seminar-2-examples/qa.cjs",
+      "sha256": "2bb158792a56d365df6ed201216cb4a6114ade3f1cfc7b0f3ed9e11c3ef6eeb9",
+      "size": 3561
+    },
+    {
+      "old": "html/seminar-2-examples/README.md",
+      "new": "archive/presentations/seminar-2-examples/README.md",
+      "sha256": "6d61ecfc1c7fe5b25a0097435148dbe5a32dd6a2884a9aabf260bd7469331df5",
+      "size": 2451
+    },
+    {
+      "old": "html/seminar-2-examples/slides-manifest.json",
+      "new": "archive/presentations/seminar-2-examples/slides-manifest.json",
+      "sha256": "9cdaae4a75a89fecc1c03c1b481ffe69367430ed5bab1766edc451a7093a5f41",
+      "size": 6313
+    },
+    {
+      "old": "html/seminar-2-examples/validation.json",
+      "new": "archive/presentations/seminar-2-examples/validation.json",
+      "sha256": "b2d9f833b4713aa8a0ef7db6df074d725ed8347b364b98da22eb6e54dcbaa6ec",
+      "size": 851
+    },
+    {
+      "old": "html/seminar-2-examples/assets/NanumGothic-Regular.ttf",
+      "new": "archive/presentations/seminar-2-examples/assets/NanumGothic-Regular.ttf",
+      "sha256": "76f45ef4a6bcff344c837c95a7dcc26e017e38b5846d5ae0cdcb5b86be2e2d31",
+      "size": 2054744
+    },
+    {
+      "old": "html/seminar-2-examples/assets/OFL.txt",
+      "new": "archive/presentations/seminar-2-examples/assets/OFL.txt",
+      "sha256": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
+      "size": 4534
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/mobile.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/mobile.png",
+      "sha256": "26213f1995f2a6ccad3b82851ee154898c9f001d616b1dc2da27dc7cba6f8b2e",
+      "size": 26379
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/slide-1.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/slide-1.png",
+      "sha256": "c67502da9ad3335ddcabbc7e2d63fc385dda32fd1b170ce901f90acf37810081",
+      "size": 101558
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/slide-2.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/slide-2.png",
+      "sha256": "9c146125ec818f8bc0b594bb53af65aaae33d312c08ec153f9e4b9793801e0d2",
+      "size": 97582
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/slide-3.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/slide-3.png",
+      "sha256": "1e53d2546ffd46d7424486ce78c00f8971867025f0e68f2037aee236b4260e94",
+      "size": 97862
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/slide-4.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/slide-4.png",
+      "sha256": "87afbfc9b488e07d6edb1c647777395c178a0c9d934ea5560f0f56a8eee73a0f",
+      "size": 91235
+    },
+    {
+      "old": "html/seminar-2-examples/screenshots/slide-5.png",
+      "new": "archive/presentations/seminar-2-examples/screenshots/slide-5.png",
+      "sha256": "926ae8fca003335bbfe89e32256c5b4e48b7b1c006a389545672c9c1158a8f6e",
+      "size": 100147
+    },
+    {
+      "old": "html/seminar-2/assets/hermes-official.svg",
+      "new": "presentations/seminar-2/assets/hermes-official.svg",
+      "sha256": "6c4968c1a46f104559684826ed8061fad6052711ff0af9c6b36a6ce674536684",
+      "size": 116350
+    },
+    {
+      "old": "html/seminar-2/assets/NanumGothic-Regular.ttf",
+      "new": "presentations/seminar-2/assets/NanumGothic-Regular.ttf",
+      "sha256": "76f45ef4a6bcff344c837c95a7dcc26e017e38b5846d5ae0cdcb5b86be2e2d31",
+      "size": 2054744
+    },
+    {
+      "old": "html/seminar-2/assets/OFL.txt",
+      "new": "presentations/seminar-2/assets/OFL.txt",
+      "sha256": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
+      "size": 4534
+    },
+    {
+      "old": "html/seminar-2/assets/Pretendard-Bold.woff2",
+      "new": "presentations/seminar-2/assets/Pretendard-Bold.woff2",
+      "sha256": "4609c3356e536fafe38f4add0daeceb3d8595d3057bce13c428c33ddbd43d362",
+      "size": 791156
+    },
+    {
+      "old": "html/seminar-2/assets/Pretendard-OFL.txt",
+      "new": "presentations/seminar-2/assets/Pretendard-OFL.txt",
+      "sha256": "d31ddd9f2bed32fd7e302a205cf2380ba0de6529152d239ef99cfb6f261bfc04",
+      "size": 4418
+    },
+    {
+      "old": "html/seminar-2/assets/Pretendard-Regular.woff2",
+      "new": "presentations/seminar-2/assets/Pretendard-Regular.woff2",
+      "sha256": "fad853f7f47c6c8b103171e7193fa095708cdcd70850a71d93aa5379e8a61d63",
+      "size": 765892
+    },
+    {
+      "old": "html/seminar-2/assets/pydanticai-official.svg",
+      "new": "presentations/seminar-2/assets/pydanticai-official.svg",
+      "sha256": "296ccca4c2a08d9e9cd2c2cfcc8e03c5ee33ec212dd2988ce0a85f19feccd25b",
+      "size": 773
+    },
+    {
+      "old": "html/seminar-2/assets/viewport-base.css",
+      "new": "presentations/seminar-2/assets/viewport-base.css",
+      "sha256": "7424eb3fca809d85eedb3019a7b5bff571dc553c7b73b02120d068e12b2a6a03",
+      "size": 2742
+    },
+    {
+      "old": "html/seminar-2/research/claude-code-plan-sources.json",
+      "new": "presentations/seminar-2/research/claude-code-plan-sources.json",
+      "sha256": "32e442b2a904d21afafe92aff6e4ae19a1d2d92d03075cd7dcbec7c3eca1a2eb",
+      "size": 6486
+    },
+    {
+      "old": "html/seminar-2/research/Hermes-source-LICENSE.txt",
+      "new": "presentations/seminar-2/research/Hermes-source-LICENSE.txt",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6",
+      "size": 1070
+    },
+    {
+      "old": "html/seminar-2/research/hermes-v0.22.5-evidence.json",
+      "new": "presentations/seminar-2/research/hermes-v0.22.5-evidence.json",
+      "sha256": "e4a6fa2753d7343afb7d7884fa705b46a08f6a22ff396265405a60f9856dbcc8",
+      "size": 46702
+    },
+    {
+      "old": "html/seminar-2/research/official-assets.json",
+      "new": "presentations/seminar-2/research/official-assets.json",
+      "sha256": "cd709d4fb738912471a5115168606e1412673b8e39ca851e260d319e1f12da2a",
+      "size": 297
+    },
+    {
+      "old": "html/seminar-2/reviews/claude-code-revision-plan.md",
+      "new": "presentations/seminar-2/reviews/claude-code-revision-plan.md",
+      "sha256": "51ecf91091619efdae022334d4db692f60322c51a3277ebcc87926b46ff62acc",
+      "size": 23502
+    },
+    {
+      "old": "html/seminar-2/reviews/hermes-code-review.md",
+      "new": "presentations/seminar-2/reviews/hermes-code-review.md",
+      "sha256": "2092f60a7fcb1848d471182edada8b81881c21c81df2ec84070079cf4d20b35b",
+      "size": 6993
+    },
+    {
+      "old": "html/seminar-2/reviews/hermes-coverage-audit.md",
+      "new": "archive/presentations/seminar-2/reviews/hermes-coverage-audit.md",
+      "sha256": "5f018a3f1846ae58625180e931e026a72ecf4c68b7e85bcef9efd62a18eb5ffb",
+      "size": 36884
+    },
+    {
+      "old": "html/seminar-2/reviews/hermes-revision-outline.md",
+      "new": "presentations/seminar-2/reviews/hermes-revision-outline.md",
+      "sha256": "ad9cdf2cb692146314205cdea1bcd85be60d4c1a37ca7827711dd91326272364",
+      "size": 5816
+    },
+    {
+      "old": "html/seminar-2/validation/contact-1.png",
+      "new": "presentations/seminar-2/validation/contact-1.png",
+      "sha256": "c73e5ebb3eef9444d202f7774584c6428b17e2b4dd58c788c1254436cd992edc",
+      "size": 280165
+    },
+    {
+      "old": "html/seminar-2/validation/contact-10.png",
+      "new": "presentations/seminar-2/validation/contact-10.png",
+      "sha256": "99c3bed46c87be52810bb2ee12f775a5b43688011d7a6dc7d15df875bb7454c6",
+      "size": 248077
+    },
+    {
+      "old": "html/seminar-2/validation/contact-11.png",
+      "new": "presentations/seminar-2/validation/contact-11.png",
+      "sha256": "e66b46522b4c03c3bdb076a02ed2a6d8715bf6195d0c349bfb0caa681e8375ea",
+      "size": 300963
+    },
+    {
+      "old": "html/seminar-2/validation/contact-12.png",
+      "new": "presentations/seminar-2/validation/contact-12.png",
+      "sha256": "83a169f8ad70a6c1fd210350510bf372248fad43a2d1625c1f62797563a544c3",
+      "size": 287183
+    },
+    {
+      "old": "html/seminar-2/validation/contact-13.png",
+      "new": "presentations/seminar-2/validation/contact-13.png",
+      "sha256": "f649d50f8ea298cd7333024ef311de7e418b26c9c26685f163c2d9912af3e111",
+      "size": 267588
+    },
+    {
+      "old": "html/seminar-2/validation/contact-14.png",
+      "new": "presentations/seminar-2/validation/contact-14.png",
+      "sha256": "1e32d527a98031c0519f407dcd73142a35f109bdb8db5ed840395e8ee74ac7ca",
+      "size": 135920
+    },
+    {
+      "old": "html/seminar-2/validation/contact-2.png",
+      "new": "presentations/seminar-2/validation/contact-2.png",
+      "sha256": "0217782fc629b3018a154732ae591130a15e806ab60c10229aa648e706fca8de",
+      "size": 303911
+    },
+    {
+      "old": "html/seminar-2/validation/contact-3.png",
+      "new": "presentations/seminar-2/validation/contact-3.png",
+      "sha256": "f7b161674e485f1fd4961fd19e195d76f42a8a64409fee24d66deacdf44a97ae",
+      "size": 284600
+    },
+    {
+      "old": "html/seminar-2/validation/contact-4.png",
+      "new": "presentations/seminar-2/validation/contact-4.png",
+      "sha256": "97b3791c432b980470bc8837764f7ae8d017823ff85db4447ece623ce591b799",
+      "size": 322173
+    },
+    {
+      "old": "html/seminar-2/validation/contact-5.png",
+      "new": "presentations/seminar-2/validation/contact-5.png",
+      "sha256": "4587433b8332d3371ec497c0c29c7c70958d6b3677b0d473ab3475cb5d3e87f8",
+      "size": 300984
+    },
+    {
+      "old": "html/seminar-2/validation/contact-6.png",
+      "new": "presentations/seminar-2/validation/contact-6.png",
+      "sha256": "31b397968aaa6cf4e15759a2a74d180971be7e28b486c66a95a3dd985741280f",
+      "size": 311904
+    },
+    {
+      "old": "html/seminar-2/validation/contact-7.png",
+      "new": "presentations/seminar-2/validation/contact-7.png",
+      "sha256": "023bdf02c668251f6a3ea380d6f019fefd5e98be2ee0a1c036ff0e1443fd5779",
+      "size": 294354
+    },
+    {
+      "old": "html/seminar-2/validation/contact-8.png",
+      "new": "presentations/seminar-2/validation/contact-8.png",
+      "sha256": "5e495480e5676a3dae517592a6a66d41c5a2a763002f3ab1009d447b1b055fc4",
+      "size": 282702
+    },
+    {
+      "old": "html/seminar-2/validation/contact-9.png",
+      "new": "presentations/seminar-2/validation/contact-9.png",
+      "sha256": "48907e1d344193021615ee24e49c5eeeb16490c0b7261e02ae58fbc28bde96eb",
+      "size": 273131
+    },
+    {
+      "old": "html/seminar-2/validation/content-report.json",
+      "new": "presentations/seminar-2/validation/content-report.json",
+      "sha256": "4e025b326fae9d2b1a593b4f238d2dee8056181482b648a9115ddca2273c32d4",
+      "size": 611
+    },
+    {
+      "old": "html/seminar-2/validation/design-content-baseline.json",
+      "new": "presentations/seminar-2/validation/design-content-baseline.json",
+      "sha256": "203465c16849c648bab982918227ef4e7992a4511419a702d01feda2572d1a5c",
+      "size": 86207
+    },
+    {
+      "old": "html/seminar-2/validation/design-content-report.json",
+      "new": "archive/presentations/seminar-2/validation/design-content-report.json",
+      "sha256": "405ddf9f9284ed6af8d27afba08946a12d2be8eb367549ae98c6ba69afdab06b",
+      "size": 261
+    },
+    {
+      "old": "html/seminar-2/validation/hermes-report.json",
+      "new": "archive/presentations/seminar-2/validation/hermes-report.json",
+      "sha256": "f4f4411507df57c9988c1caedcad115f73164d5d2f69a2609283bda5198e38ea",
+      "size": 476
+    },
+    {
+      "old": "html/seminar-2/validation/report.json",
+      "new": "presentations/seminar-2/validation/report.json",
+      "sha256": "9aea57c8356c406557446e5bf68de1af3eca9e46a9219d8c125173f8e903a9ba",
+      "size": 61398
+    },
+    {
+      "old": "html/seminar-2/validation/research-report.json",
+      "new": "presentations/seminar-2/validation/research-report.json",
+      "sha256": "24dea176db722553a76c63b7be8cbfd74a5e177b9b61c9125039b5286c45812a",
+      "size": 8111
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/CLAUDE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/CLAUDE.png",
+      "sha256": "883739f271c6b66b4ea01b1620f0a90b339ce3175b4ce7cf41709478d16f0da6",
+      "size": 27692
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCHILD.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCHILD.png",
+      "sha256": "80006f5e5eed97a701ecac8a66b6951e81dd67df32864d2823b69e7133b15700",
+      "size": 73576
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCOMMAND.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCOMMAND.png",
+      "sha256": "41dab68eeaf9e1d2f12db2e3d47abef2e7387f676bfdc01ff6346173bc7200af",
+      "size": 67499
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCONNECT.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCONNECT.png",
+      "sha256": "6214ae15b32972da34d99a4330d06b7c2fb2e0693fdca70f5abf36f839fcf8d9",
+      "size": 77080
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCONSOLIDATE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCONSOLIDATE.png",
+      "sha256": "9d6e87bf167b6620ffe14abc2b875e4a1f1b118caf2941c946c48648f9a14dc8",
+      "size": 73417
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCRON.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCRON.png",
+      "sha256": "198ee082776a3655995795e630331ff3f933d35706e53f92d3ea01f75e5cb4c9",
+      "size": 33158
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCRONTRADE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCRONTRADE.png",
+      "sha256": "fddcd5f636a03c0b5947a46fdf9adbd43a5d4f9ccca86390732e3f38bd640897",
+      "size": 84602
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCRONUSE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCRONUSE.png",
+      "sha256": "25eddb60174a94194eb84d13b193fd5c4d99de551d6d9f44b83238f9b02544a3",
+      "size": 72541
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCTX.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCTX.png",
+      "sha256": "b687c93cf0ec82471b4398a0cd9526cf5d93cde9be46eff595b5770f99ba5068",
+      "size": 31690
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HCURATOR.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HCURATOR.png",
+      "sha256": "61da4bbaf3d0cf1392ab55632570fe9d0923c4942201bd4f5ed68722b7e402e5",
+      "size": 74736
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HEXIT.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HEXIT.png",
+      "sha256": "6df51cf7948b8792aa0fa7062779402af59d13e7add775f1c16392cb9cd23406",
+      "size": 79802
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HFAIL.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HFAIL.png",
+      "sha256": "d1032e5c8a3eca522777b240062e1417b2f7de7162ff756f81837a9964eed3fe",
+      "size": 75934
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HGUARD.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HGUARD.png",
+      "sha256": "908ce4fa3dccf0397ada97770d2e74efd0cc2ac7d53de4801aa060f0cd65fb43",
+      "size": 72645
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HGUARDCONFIG.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HGUARDCONFIG.png",
+      "sha256": "9e45fbc604f07ff8642227a79bc81c33669e95d27c6995f561dc0b6ae4fe5467",
+      "size": 79453
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HGUARDFLOW.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HGUARDFLOW.png",
+      "sha256": "8b58f4f1cf0bb78f92c8ca983d96d9a9102e5a2e3361a4566e36fc6c02f573aa",
+      "size": 81245
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HHOOK.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HHOOK.png",
+      "sha256": "d0af9fa9473887a483a2a981cfb9ba24bd06efd039bbfbc228cda8cad322b7ed",
+      "size": 81971
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HHUMAN.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HHUMAN.png",
+      "sha256": "92aff960afac8f35897083b196307cbbb69b5df255f04ce812d65feab00b75a6",
+      "size": 79735
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HLEARN.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HLEARN.png",
+      "sha256": "e97fbcf444c2d68d16fe8aa65fd43cc252cb44ee4e8182aac60ec98e9bd11629",
+      "size": 72523
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HLONG.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HLONG.png",
+      "sha256": "bc5972ec321bb6345b05f62a298350209bdb97591cc1e16dc7a8e4fe49efdde9",
+      "size": 30267
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HLOOP.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HLOOP.png",
+      "sha256": "243f9dd2738ff7b2c3deaaef194250c3d9531750559595fc994365089bace377",
+      "size": 76465
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HMEM.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HMEM.png",
+      "sha256": "5e57c6984cbed88e5e24ea600a5a46277b6e28d3c8d340694503753a72f46b30",
+      "size": 79040
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HMULTI.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HMULTI.png",
+      "sha256": "43cb14c3ca70025abc2789a7c2d4643c1b0854a6e6be54b1852544c730200b1f",
+      "size": 70175
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HOBSERVER.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HOBSERVER.png",
+      "sha256": "6a0f2785676c20abb54a2bb395578d59c5b32df0e2076cd5303084e3a91b6442",
+      "size": 69312
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HSAFE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HSAFE.png",
+      "sha256": "05ce13abbb2f6994cb868dc4fb68067cc34d2f57eee58f89d731b04085a6adf2",
+      "size": 35200
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HSCHEMA.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HSCHEMA.png",
+      "sha256": "f600bf6abd1bcecbaabd145b17ffbe4dfb075265cdd2322d5c0d19626cb0dde5",
+      "size": 74556
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HSEARCH.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HSEARCH.png",
+      "sha256": "094a70251986a2415bceffb058fa44bf750b26efe2c1b978b8449fcc45e5d891",
+      "size": 74301
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTOOL.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTOOL.png",
+      "sha256": "cde00984d5b8d015e4d8d761537848582481b4c89c0018a4f362a8a58a180384",
+      "size": 28627
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTRACE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTRACE.png",
+      "sha256": "5dea931b829bb4100a57457ed7318c86b505f53fc405458950548c1ea46045eb",
+      "size": 64159
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTRACEBASE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTRACEBASE.png",
+      "sha256": "00c79a3405b39dfd9e66adc05f807b96c699488674bfae08a2ebae2d03036378",
+      "size": 74348
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTRACECODE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTRACECODE.png",
+      "sha256": "79a7dd893557bff984e077b8c33b15f125b789493e38db52618275e7950ab3dd",
+      "size": 85094
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTRACESHARE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTRACESHARE.png",
+      "sha256": "e701c24fcd7aa1ea0cd79da41e18a76243c016d97104244ee5789ec47c716bd9",
+      "size": 74185
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HTRACEUSE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HTRACEUSE.png",
+      "sha256": "8d6524ecd7c21f1a3c894ef1d77f24fe66e5b6f336743dbd7881fc328b75a0bf",
+      "size": 79251
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HVALID.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HVALID.png",
+      "sha256": "1d5b2ba6c0652ef95b25bbba5afeaab9e796516afef29617b1a0583172772217",
+      "size": 67476
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/HWRITE.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/HWRITE.png",
+      "sha256": "36a7ffc47597e879664385bd09778e18b26476f7da6167739c646f27664b9f78",
+      "size": 78869
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/PYDANTIC.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/PYDANTIC.png",
+      "sha256": "816dc761e1d3ea1f694158d452abc425b6389d02d12c4b638974e60c1901d099",
+      "size": 35487
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S00.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S00.png",
+      "sha256": "b70cf25fd060087bb840fd35d58ecffb57cf2bc643569cf083e7ae6988eb4137",
+      "size": 49434
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S01.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S01.png",
+      "sha256": "22cd0d0b0360ee99ff62b1267e57239c47a32617d82e17ef2155f7af0d139ac3",
+      "size": 76130
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S02-names.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S02-names.png",
+      "sha256": "d92cebff960bc7ae3438830065e456ad029d42b015ae8a205812dc00527ca088",
+      "size": 67956
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S02.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S02.png",
+      "sha256": "ef2a51fb23fafdfa88c9b575bf331caf5360d09bdc61bbdc60323388005b8066",
+      "size": 62914
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S03-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S03-focus.png",
+      "sha256": "9a9972d37da0b09c6879ea381a165f2dc3790b76263b5cda544b82c5e32af64f",
+      "size": 78478
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S03.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S03.png",
+      "sha256": "437b0cecd0955789e51c1f76c99016c6f889024d4f71fd72960186d69937f74f",
+      "size": 77308
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S03H.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S03H.png",
+      "sha256": "58fce4a2879d5717055a15f1d9e6cf65368b5996a7efa486e81800d085870b91",
+      "size": 69059
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S04-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S04-focus.png",
+      "sha256": "4c829eb78c069753a8657cf04e4b771b19297d743ea4527010684837bc0b893d",
+      "size": 85658
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S04-sources.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S04-sources.png",
+      "sha256": "f11a6fa9778e05f68d634a585cc7881828e10889a471b1445d212a553bf36d0e",
+      "size": 94659
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S04.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S04.png",
+      "sha256": "1857015f17b9301ca03d30430d265faa969481007cb3dc967a8dde80962d97f7",
+      "size": 83910
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S05.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S05.png",
+      "sha256": "57b5da7640a6857e44371fc5d849790f20827c0e223fd726972b4ba1bf555a77",
+      "size": 68156
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S06.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S06.png",
+      "sha256": "5ce11ca68b115936e730911c603598c8fac9c14cfc4461b7f0c4f28f80a26fad",
+      "size": 64185
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S07.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S07.png",
+      "sha256": "dfb5cce46bee1afb85c84d6040366036189f571cfd8d8ec0ee6f1f982f60aa58",
+      "size": 102364
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S08.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S08.png",
+      "sha256": "cc143a2bec7fc7980f7128cc241e01ff0f6df66e685400bcc63706bf1a4edf02",
+      "size": 76816
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S09.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S09.png",
+      "sha256": "1203d93ccb90ca5842180438669ebad307388816551dfbd448bae8dc986c0d99",
+      "size": 73050
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S10-hermes-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S10-hermes-focus.png",
+      "sha256": "85392fd980cfff48a396a216fe6f52a0c4f3b624d0a7119c635b37127647cda3",
+      "size": 85278
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S10.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S10.png",
+      "sha256": "840c1fbb382f96d25eae9e2c85bdcf4ef2146b7117d9a032d7f23f0fbf8289c2",
+      "size": 74002
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S11-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S11-focus.png",
+      "sha256": "e33f2bd431ad460edafcfe5dc94538096b518dbe97945c9256998991cc8d4269",
+      "size": 70193
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S11.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S11.png",
+      "sha256": "15c6d26631221e55565e604dded7e04003a9a7a235e0856e165d60f9ad2d03d1",
+      "size": 71710
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S12-hermes-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S12-hermes-focus.png",
+      "sha256": "051c591b0cf9259d197e5661d947c20a8268df0204d63e9bd32afd29e9c07643",
+      "size": 78914
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S12.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S12.png",
+      "sha256": "ef951a748231c30751b118e0e8fad140bbca81501f5fb5235dcbbf8691b49a7e",
+      "size": 63382
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S13.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S13.png",
+      "sha256": "f31158474fc1c68e250e29aeb6e287c54092f3416d16336b0b6adf2035eb0c71",
+      "size": 75796
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S13A-hermes-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S13A-hermes-focus.png",
+      "sha256": "a1c737cfebc3e0dde0dcafe860849540f341ddd342bb209c94958d62c310c181",
+      "size": 83444
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S13A.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S13A.png",
+      "sha256": "bc3421852e385fbeee00b44a6703f97f0ff161887a4c4753838f17b1fed79bf2",
+      "size": 78473
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S13B.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S13B.png",
+      "sha256": "b994cdf650524b115c54adee256977af2472bc5cb553edb0163d3aa5d6091597",
+      "size": 83633
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S14.png",
+      "sha256": "79aa28b9926b6741c51c0c8bccbcb95592eeb335282c7cc1a08e85a500bbd778",
+      "size": 77255
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14A.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S14A.png",
+      "sha256": "376a247c1a875d99b44ab55ebf293cec97ac428ad70dee8caa963a0b823742f5",
+      "size": 79582
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14B-hermes-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S14B-hermes-focus.png",
+      "sha256": "369d33773b9cf1eac0443894b6cdd5bf55b2542613f781c04177e3d01bc86442",
+      "size": 82296
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14B.png",
+      "new": "archive/presentations/seminar-2/validation/S14B.png",
+      "sha256": "7da6046bfab92c3c9db90974ebf217b9102e26c34a9d7a7c22ed8aee96b0796a",
+      "size": 83300
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14C-hermes-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S14C-hermes-focus.png",
+      "sha256": "45544c381028e3c34e1a12ffaeb91c2845db4a630536dc61dfea3fa2e6618c59",
+      "size": 86399
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S14C.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S14C.png",
+      "sha256": "c57430fbec7da3bf6151f0eec0567fe94495b4c36234f0a7d674c82dc007f94c",
+      "size": 82456
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S15.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S15.png",
+      "sha256": "7e7569bc29ebf9a0df4f466384d3131d8ec8081d42b18df480dac11029865999",
+      "size": 77842
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S16.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S16.png",
+      "sha256": "6faf8b8238517d070dc617e3c9413d712f5ec09d8b81531f6efe1f37d0b01342",
+      "size": 68365
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S17.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S17.png",
+      "sha256": "1f4142c6d0234a2c827aef11734657c6acd5f6cd4c16f5c2eaaf9755bd4961d0",
+      "size": 63081
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S18.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S18.png",
+      "sha256": "0289841ff1d8559c255474c2ef66f386e7c20540cbae30c2dcfa247b7b07bc6f",
+      "size": 70367
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S19.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S19.png",
+      "sha256": "90789ce4e1ba7b5005077979cc85f837df2642e9e20c0994b0865191670793cc",
+      "size": 72522
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S20.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S20.png",
+      "sha256": "0f7de4b303b539dfed03e706bca9f0176585e786786a8953c929777e2e365fe7",
+      "size": 71509
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S21.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S21.png",
+      "sha256": "d781d5c2a434bdda3c6a3e54ed58a9b96af0e621a23c26cdd9fba7ef1f77856e",
+      "size": 90708
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S22.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S22.png",
+      "sha256": "259ee00388988421201fc7613d800339b76e092487946f07f4b63d40acf24a14",
+      "size": 69890
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S23-focus.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S23-focus.png",
+      "sha256": "76a68b162cf1674eec5cb5fb889b7f8c21c98327cf8c75f7965cd0db0f38d668",
+      "size": 79660
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S23.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S23.png",
+      "sha256": "db1b865fa7d3c2f3045ed7344304a101e19599a52356765147137f50e0cca2eb",
+      "size": 80245
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S24.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S24.png",
+      "sha256": "1a6bbdac47462ff743dbccd995137259ae2b23627c207689a8114fe25dbf1bb9",
+      "size": 71310
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S25.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S25.png",
+      "sha256": "2a4a8af59cd9208b5b9390cb11a3639c93f2eba0535e286843224e836509d4a6",
+      "size": 64336
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S26.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S26.png",
+      "sha256": "61628865b31dbabee424c765555aa22243dd458c21651ea48c4d548ff90ad93f",
+      "size": 70826
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S27.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S27.png",
+      "sha256": "648c410faf177706bd94c3ea96b93ce3706b7be7740516162b7bc124cfddcabf",
+      "size": 74559
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S28.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S28.png",
+      "sha256": "3794d96f39297a41377e449513033a5835de9dd4af2bca935ebab2ef983dd8e4",
+      "size": 91451
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S29.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S29.png",
+      "sha256": "ca77fb690b2874763c6ebdb63372a067917fd463a5f9004ab59cc2a9d6da17e7",
+      "size": 68355
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S30.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S30.png",
+      "sha256": "bda70ec69d72bdbb47c01ed3f94832dbf5cefdde85360a3f1727a083dd8fcabe",
+      "size": 66346
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S31.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S31.png",
+      "sha256": "a2f02acbbb30872d05706cd4a28c68fefac50b88485dd70e85d45f42fba2949e",
+      "size": 63163
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S32.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S32.png",
+      "sha256": "c5cc5e92d3f91d83cbe118031e46ac0759ac42440f25044a3e64e857a0deb6d9",
+      "size": 65369
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S33.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S33.png",
+      "sha256": "6bf8b61bd0b633d55a027b0a13eb558aa9bf9880456858ff144ecdc28b27a4b7",
+      "size": 69620
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S34.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S34.png",
+      "sha256": "b5f32f6f1a4255c6a2afa2e7fa61c04e8c00cd4a11d84c135651b8cd84cfe3b1",
+      "size": 62131
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S35.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S35.png",
+      "sha256": "c3a75b37785863c25839fe4d677cf8e2d26cefec8e4b1a6c429f1e92da2094b0",
+      "size": 75800
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S36.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S36.png",
+      "sha256": "a5c6877e06cadaeee61f4605598dad009dcec35db7934369feb19e0d56316448",
+      "size": 72757
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S37.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S37.png",
+      "sha256": "6695a02c5ed7b180dd5855bc6e65ab5885fa56ff5b52d8876332f320970d520f",
+      "size": 66680
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S38.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S38.png",
+      "sha256": "ecbeec9674451345d0e9469a639503a10b4dac4060cf1c511f4f2d7e3341fdaf",
+      "size": 64011
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S43.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S43.png",
+      "sha256": "ba4826cf3e8c54b2302b94f07622f991da893d4180b1a74e0ef74bb238266ae6",
+      "size": 75885
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S44.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S44.png",
+      "sha256": "bc05a5ccfe9792bc52d7243808a289946365a6d1cb60c926df0465459e8b11db",
+      "size": 72950
+    },
+    {
+      "old": "html/seminar-2/validation/revision-screenshots/S45.png",
+      "new": "presentations/seminar-2/validation/revision-screenshots/S45.png",
+      "sha256": "37dc7aa40e101442d23ac47026cc0c632c219eb0cc01622cd34890efc8fc5bfc",
+      "size": 51258
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S00.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S00.png",
+      "sha256": "e1145742f95cbda89b3d1b94d57fbfeee022a934f6dc331e39ad172e43291f94",
+      "size": 58369
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S01.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S01.png",
+      "sha256": "48576dff73a7574946f2f054f417c756375dba41459f6c73052e6ad50bdcaf69",
+      "size": 83980
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S02.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S02.png",
+      "sha256": "8d2f9aa5a12eef8d0c495662283f316447015ebd95d9f0864a45f8ced9c38cae",
+      "size": 67043
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S03.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S03.png",
+      "sha256": "7de51bd32d6a17997138a6ebfb23e2c9181124ee217da0a8c853beee051065f0",
+      "size": 81557
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S03H.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S03H.png",
+      "sha256": "314a5b31b51fd1dbb3d75d944a1f728a8b050e5e474c552ed9e9b1c7d5fbf152",
+      "size": 64807
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S04.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S04.png",
+      "sha256": "35f2e696dc779beb41cec1629685e0f55e121f809b6a281e79122d89b8884697",
+      "size": 84522
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S05.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S05.png",
+      "sha256": "fe7807310ae98919dc5f707159086ae32fd4acde0563748ac3425243cd87588a",
+      "size": 55734
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S06.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S06.png",
+      "sha256": "3b497e6192f7b49c36d6c017ba2fc62a5acd20bbf3065bef24467d1891be9458",
+      "size": 68187
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S07.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S07.png",
+      "sha256": "c3225fc48887a75f9d8d0ed3c9a2e1c53ab3ee6ed4c302198384025a45c99119",
+      "size": 94746
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S08.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S08.png",
+      "sha256": "70d4c395f51140327a970cac096e3105e767896190e56a53575001f491ccb11a",
+      "size": 70728
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S09.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S09.png",
+      "sha256": "89c5abc90d45cdb22e08f93d38f191b29d6793b484c4898240232fb9c0d2e6e7",
+      "size": 78733
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S10.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S10.png",
+      "sha256": "677fb8c3947e8cd3d9080445422c8215444da569c32067d3544050f596f084f2",
+      "size": 70710
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S11.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S11.png",
+      "sha256": "92e76297b3799330a35ff4ad8ae31d714e7bea1993aff5c2d46189a90029f7ab",
+      "size": 72544
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S12.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S12.png",
+      "sha256": "9b2b1a4a0d5fed6e0b7b8e2f7f97cffeefbdfb4baa86c52611c01507cefb621c",
+      "size": 65847
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S13.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S13.png",
+      "sha256": "3571afabe62b4c1a5381848b2556929b465474f0326fe501f566f82d71b39172",
+      "size": 66179
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S14.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S14.png",
+      "sha256": "db5b22d5629648b96f80a00ed11225f9931cb9a1c29ca990e5fa63264d11085d",
+      "size": 95373
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S15.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S15.png",
+      "sha256": "6f86922f6fda2f9951eb497e8369a27f3f24304b6407d9e74285cc2a5030f314",
+      "size": 79767
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S16.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S16.png",
+      "sha256": "0a8c405f7aa1e85b4d4687a21a33d4891380c4db5d8a9c858380474f2984d90a",
+      "size": 70079
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S17.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S17.png",
+      "sha256": "33777ea4abca26df87fa98c1fd7cfe6cdac07bae91aa25f8a9e374a7c57a320d",
+      "size": 68929
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S18.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S18.png",
+      "sha256": "04cc6f8dbb9431c91b2d2d0736662579343781436a56e62de5645b0c1f4839c9",
+      "size": 72822
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S19.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S19.png",
+      "sha256": "e612495a6a2593ec8dbcb74adf076694343bb55abbc361e9863ed353b944d67b",
+      "size": 57266
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S20.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S20.png",
+      "sha256": "1e230e16ed4f4d69d2a15b52c2f818b554d03a9e467658cb3a8cb36803b53d1c",
+      "size": 75243
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S21.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S21.png",
+      "sha256": "8b1965379bad411713a7ecdb2c306a28668b659fbfab9468cb775f10ba6af105",
+      "size": 93608
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S22.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S22.png",
+      "sha256": "22889d9c4dd21fd8e2e21b28a9453e9e457188e633b52708f9470519f789b0cb",
+      "size": 72416
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S23.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S23.png",
+      "sha256": "8641e6860dfaecfe662059329fe501fc07945006b563d3b5e1b0cd9794337d3d",
+      "size": 82587
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S24.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S24.png",
+      "sha256": "faf9a258c377ecf7e0fb7f0fb06d30ddf5e02d4dfdf50da1dbe50c7c1de208ad",
+      "size": 74385
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S25.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S25.png",
+      "sha256": "a6d5e15bf3aa34926b477bf4a98bb291335b3f44275768ab9080ddc343ffd5de",
+      "size": 67042
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S26.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S26.png",
+      "sha256": "85b55bd6123e5c635b9b32c07fcd79a4cd12d93e0db04ee334230b843cf90e69",
+      "size": 74301
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S27.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S27.png",
+      "sha256": "f32673e61c90cbba21ac899ffca63f0bc5d2aa0c720f05f60e71805cd911c794",
+      "size": 78999
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S28.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S28.png",
+      "sha256": "b03563263cb38cb69cc432db3e3b38b7f90e49a31b980457773f9bc63b472a56",
+      "size": 97231
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S29.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S29.png",
+      "sha256": "c733d27267417fc24e43cabac1df8add8bbbe4b83597f9f4d6f88a52eea78b75",
+      "size": 70937
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S30.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S30.png",
+      "sha256": "84f4db79447362ca82b3413d07d78a4dc0a29787eeeb24f65e7171b9354130f6",
+      "size": 68896
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S31.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S31.png",
+      "sha256": "a4f22e9056edaea75991238a5717ed4667f42640fb3dca8a17861a024603b663",
+      "size": 67201
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S32.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S32.png",
+      "sha256": "8b0b6e1a308c858a0f7750315f9381ba93dbe3d44f2aedfe98ac6cb97043d987",
+      "size": 68811
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S33.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S33.png",
+      "sha256": "cb1479271bb10216d24e46fe2fe2b4bbf8b1bfa5105515ba59b55b4a144adf77",
+      "size": 73725
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S34.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S34.png",
+      "sha256": "8f75d11d00d4696d82d4df4a544c0a7a4baa3182970d268c88d919b501c9f0d5",
+      "size": 64518
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S35.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S35.png",
+      "sha256": "2e258bf6edb83d5eebda73aeaac90b67ec2a7775b139c8485e909e5d0d6b49ac",
+      "size": 82570
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S36.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S36.png",
+      "sha256": "04f91f9dd3aec783fc0306d48ad31bf1d188a4966ab55c14468344a2f8111aeb",
+      "size": 76354
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S37.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S37.png",
+      "sha256": "037da8b57a79386bbdfa857a8bcba0e4eeb32f0ca68f8bfc4c42c9607e90c732",
+      "size": 66570
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S38.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S38.png",
+      "sha256": "deae66987aceaeecb7b8cee6e2429eb30190622181c219ed903affce96096fd3",
+      "size": 66810
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S43.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S43.png",
+      "sha256": "c02d2dc14cc2c87655887e4012cfe2a25cb4d818537eff7396381ec8ebc83e38",
+      "size": 82379
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S44.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S44.png",
+      "sha256": "f88760577b2d8f64b6bffcb8322cdc499d591998f0c5b17aeb2601ddf0c50867",
+      "size": 76051
+    },
+    {
+      "old": "html/seminar-2/validation/screenshots/S45.png",
+      "new": "archive/presentations/seminar-2/validation/screenshots/S45.png",
+      "sha256": "2b795104a2564016ea3712e80c6199a3bfa1da7444f498759f81da4ad7c641a3",
+      "size": 52946
+    },
+    {
+      "old": "hermes/html/build.mjs",
+      "new": "study/hermes/html/build.mjs",
+      "sha256": "43567dbc2193c3a95575014adffb5acac46b8faac7f9c313dadd40a141ee3c6b",
+      "size": 22127
+    },
+    {
+      "old": "hermes/html/code.html",
+      "new": "study/hermes/html/code.html",
+      "sha256": "79fd98fcb781273f8a37043a4098eb78ec078fa31125503fbf9906df79b3f11b",
+      "size": 26865
+    },
+    {
+      "old": "hermes/html/content-map.json",
+      "new": "study/hermes/html/content-map.json",
+      "sha256": "e4c27bd4e26fcb579c69490e4b4d4482404e1130d7af7c5961e23c49bcaae57c",
+      "size": 2364
+    },
+    {
+      "old": "hermes/html/context.html",
+      "new": "study/hermes/html/context.html",
+      "sha256": "c774bf130a0deb356e29f80a1851950dadad508d997e30ae114e2b0de439eeee",
+      "size": 16029
+    },
+    {
+      "old": "hermes/html/course-links.css",
+      "new": "study/hermes/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "hermes/html/editorial.mjs",
+      "new": "study/hermes/html/editorial.mjs",
+      "sha256": "47f5187a18c62f4ba02424a10996ebbd5dca08b465a789d1637a25faf87ad443",
+      "size": 12437
+    },
+    {
+      "old": "hermes/html/execution.html",
+      "new": "study/hermes/html/execution.html",
+      "sha256": "6e192db6d92017751d49dd4d1982047e460aa88089e73e86f2cec831aea8254a",
+      "size": 21666
+    },
+    {
+      "old": "hermes/html/foundations.html",
+      "new": "study/hermes/html/foundations.html",
+      "sha256": "86514715fa830d06e08aed00d5d4caf92243401cde7cceccb99f3bd83ca3c78c",
+      "size": 16964
+    },
+    {
+      "old": "hermes/html/glossary.html",
+      "new": "study/hermes/html/glossary.html",
+      "sha256": "75e110acb1563a7422b891216732b15ab602a527250bf7ee02dd2673892c3945",
+      "size": 7017
+    },
+    {
+      "old": "hermes/html/index.html",
+      "new": "study/hermes/html/index.html",
+      "sha256": "094de07b76eb5508934b4b6899b7ebedcca37929038280c45549b48434fd1d01",
+      "size": 10396
+    },
+    {
+      "old": "hermes/html/link-courses.mjs",
+      "new": "study/hermes/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "hermes/html/memory.html",
+      "new": "study/hermes/html/memory.html",
+      "sha256": "76734e07bfeeaa5406ad6fc1c1fd0d7daa320cbac223f23440d52dfcc3a2892f",
+      "size": 13519
+    },
+    {
+      "old": "hermes/html/operations.html",
+      "new": "study/hermes/html/operations.html",
+      "sha256": "2e313a183a349cd7d24dcb80b7ec01aed98f5a08558a1fd7d9d53ac027f93b2f",
+      "size": 17039
+    },
+    {
+      "old": "hermes/html/orchestration.html",
+      "new": "study/hermes/html/orchestration.html",
+      "sha256": "dc283dcfe22a0391f5b40ec5283704e8193a329edf5873fe1254bb3aca17f3f2",
+      "size": 12110
+    },
+    {
+      "old": "hermes/html/preview.png",
+      "new": "study/hermes/html/preview.png",
+      "sha256": "dde71b35e9118f425966baee764f6be92f4cf2c37908fbd65f81626cbe3bd3e6",
+      "size": 25644
+    },
+    {
+      "old": "hermes/html/README.md",
+      "new": "study/hermes/html/README.md",
+      "sha256": "1b9b17a5357df76100fa7321d2def6a814e6ff8a0c5cb0812ddb276c727cdcba",
+      "size": 2940
+    },
+    {
+      "old": "hermes/html/semiconductor.html",
+      "new": "study/hermes/html/semiconductor.html",
+      "sha256": "f3ab091b4c74f336d18d0fac5cbab083b464c72610481ce5ba203b8319ccdb8c",
+      "size": 30634
+    },
+    {
+      "old": "hermes/html/site.js",
+      "new": "study/hermes/html/site.js",
+      "sha256": "f1ba55d0996e71cf11560c510b715b7906cdefad6178bbdda3955f0539c38737",
+      "size": 798
+    },
+    {
+      "old": "hermes/html/skills.html",
+      "new": "study/hermes/html/skills.html",
+      "sha256": "7bf059b48726d6d5125e4d4da63d19aa80a13cbb400776eac4694209e5c3d0d5",
+      "size": 12039
+    },
+    {
+      "old": "hermes/html/sources.html",
+      "new": "study/hermes/html/sources.html",
+      "sha256": "ed1414938e3c2ab4da1571300fac4eb78322c46846abfb9bf7a0ab5d9af21a12",
+      "size": 20377
+    },
+    {
+      "old": "hermes/html/style.css",
+      "new": "study/hermes/html/style.css",
+      "sha256": "0a07b74329242cbadd14161dc8c9303efecb378c45965122dd73017d619502b2",
+      "size": 13251
+    },
+    {
+      "old": "hermes/html/tools.html",
+      "new": "study/hermes/html/tools.html",
+      "sha256": "093c3f3b14abe8da7b2dc4029abfbf32ac41635cdda41c5828b5c3eba539c941",
+      "size": 19696
+    },
+    {
+      "old": "hermes/html/validate.mjs",
+      "new": "study/hermes/html/validate.mjs",
+      "sha256": "bd4f1111a3fc40ca6b9e041a3dbd47087ef22cd334d478140db5c3f06407db3f",
+      "size": 2043
+    },
+    {
+      "old": "hermes/html/assets/diagram-1.svg",
+      "new": "study/hermes/html/assets/diagram-1.svg",
+      "sha256": "f81217baec7e0a01892df560ee8311428575e23a7c406042224d1394d99521fa",
+      "size": 6473
+    },
+    {
+      "old": "hermes/html/assets/diagram-2.svg",
+      "new": "study/hermes/html/assets/diagram-2.svg",
+      "sha256": "a74fe574e33a8282251017e53b1fb2137536ac386a6d98edb60c39ea8ed0c08c",
+      "size": 8691
+    },
+    {
+      "old": "hermes/html/assets/diagram-3.svg",
+      "new": "study/hermes/html/assets/diagram-3.svg",
+      "sha256": "74c883d94119ad6725ef8123cc507d4a3f70db4450015b1a4c0b3562fb9f822c",
+      "size": 7136
+    },
+    {
+      "old": "hermes/html/assets/diagram-4.svg",
+      "new": "study/hermes/html/assets/diagram-4.svg",
+      "sha256": "b1d124c64ace10e88fc50d15746d08b2e148319f1754a7086de1093c3ed594d0",
+      "size": 11964
+    },
+    {
+      "old": "hermes/html/assets/diagram-5.svg",
+      "new": "study/hermes/html/assets/diagram-5.svg",
+      "sha256": "91225a993b3163b4bd6c56d3e7c5ec6292bbcbb80c8570eb9003996eec439cd7",
+      "size": 6386
+    },
+    {
+      "old": "hermes/html/assets/diagram-6.svg",
+      "new": "study/hermes/html/assets/diagram-6.svg",
+      "sha256": "731a9ffebe0f1ee5d8cf951f2fa3b1064be36c4f5b22fbba07bcd8ba0b5bb289",
+      "size": 6765
+    },
+    {
+      "old": "hermes/html/assets/diagram-7.svg",
+      "new": "study/hermes/html/assets/diagram-7.svg",
+      "sha256": "cf6b3ceccd679bb2c55780676e097580ceaef4955890ad9c02d73f34299f2f32",
+      "size": 7571
+    },
+    {
+      "old": "hermes/html/assets/favicon.svg",
+      "new": "study/hermes/html/assets/favicon.svg",
+      "sha256": "8848921ab1698b9b810853d44d40a54fbd69df44989ed4f0b52b0f73ad32ff66",
+      "size": 202
+    },
+    {
+      "old": "hermes/html/deep/browser-qa.json",
+      "new": "study/hermes/html/deep/browser-qa.json",
+      "sha256": "db02efbce96e62e9d218e6607e04449b3745cbd45250843c9c3b258f39151d2c",
+      "size": 2307
+    },
+    {
+      "old": "hermes/html/deep/build.mjs",
+      "new": "study/hermes/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "hermes/html/deep/content-map.json",
+      "new": "study/hermes/html/deep/content-map.json",
+      "sha256": "a49f887ad6fb6327cc4013580a9f0dc506b4e3e8443c67a6461f981e031c2057",
+      "size": 71368
+    },
+    {
+      "old": "hermes/html/deep/deep.css",
+      "new": "study/hermes/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "hermes/html/deep/index.html",
+      "new": "study/hermes/html/deep/index.html",
+      "sha256": "6137e4ce5f023e7fa7817a8498dd54a8553b32da20001368d9791c5de1707016",
+      "size": 16168
+    },
+    {
+      "old": "hermes/html/deep/preview-mobile.png",
+      "new": "study/hermes/html/deep/preview-mobile.png",
+      "sha256": "5aa327c880fb347f418e9a9ac28e30a4ac5b03575877617f49b810610bfba84e",
+      "size": 36865
+    },
+    {
+      "old": "hermes/html/deep/README.md",
+      "new": "study/hermes/html/deep/README.md",
+      "sha256": "f9e2c2785aa160404e80fd2af3567e1b2c3e8fa88b1f3e0a1a9d89ec21803d4e",
+      "size": 3977
+    },
+    {
+      "old": "hermes/html/deep/site.config.mjs",
+      "new": "study/hermes/html/deep/site.config.mjs",
+      "sha256": "1ed8e558b029cd2c9a421a0b478c245b77cd8b6e1d28eb92ec4207fd4046d9af",
+      "size": 4372
+    },
+    {
+      "old": "hermes/html/deep/unit-01.html",
+      "new": "study/hermes/html/deep/unit-01.html",
+      "sha256": "fb731993e9eba41060f401b467e97ada7b0f6821335395f937cc4edc7395cee5",
+      "size": 10140
+    },
+    {
+      "old": "hermes/html/deep/unit-02.html",
+      "new": "study/hermes/html/deep/unit-02.html",
+      "sha256": "3074a298a63ed52bcb7964e9b109ed63399fc90ace40a27a1f3ac7886d7a32f0",
+      "size": 17767
+    },
+    {
+      "old": "hermes/html/deep/unit-03.html",
+      "new": "study/hermes/html/deep/unit-03.html",
+      "sha256": "5abab0f71b50cfb8c2325bd3f86e920c60be84d3599f416934e24af824b16f08",
+      "size": 22277
+    },
+    {
+      "old": "hermes/html/deep/unit-04.html",
+      "new": "study/hermes/html/deep/unit-04.html",
+      "sha256": "a16035aeacb208f31fd7033b26c9a7f5f315e5a82a6898c2a176295025ef6f33",
+      "size": 16147
+    },
+    {
+      "old": "hermes/html/deep/unit-05.html",
+      "new": "study/hermes/html/deep/unit-05.html",
+      "sha256": "c9555f241559b7904f62363ff92888ce898fb6edd21f304fd621cac8e9d436f7",
+      "size": 16950
+    },
+    {
+      "old": "hermes/html/deep/unit-06.html",
+      "new": "study/hermes/html/deep/unit-06.html",
+      "sha256": "222c965a31112c6a3013edd2d7d1821891b3ec7682924fc2c719cb41edd8ed32",
+      "size": 15985
+    },
+    {
+      "old": "hermes/html/deep/unit-07.html",
+      "new": "study/hermes/html/deep/unit-07.html",
+      "sha256": "3e99cccba9f693cd585eee16a676e1b8c6bfa9f41caad933c7637186aedcf72a",
+      "size": 21306
+    },
+    {
+      "old": "hermes/html/deep/unit-08.html",
+      "new": "study/hermes/html/deep/unit-08.html",
+      "sha256": "099dca19a19017d6c6b02eac8cb783c742acb52194ad3b67c36ca1ae30d19406",
+      "size": 19574
+    },
+    {
+      "old": "hermes/html/deep/unit-09.html",
+      "new": "study/hermes/html/deep/unit-09.html",
+      "sha256": "4f7a7160eea59b32df532081ce2f06c95d50a16e8bfc058da0cbc6a62cbddc22",
+      "size": 18179
+    },
+    {
+      "old": "hermes/html/deep/unit-10.html",
+      "new": "study/hermes/html/deep/unit-10.html",
+      "sha256": "b2f7f88183d8d02994e33c5670d7140a5dac907f759a40f7e93ec93d88e2df51",
+      "size": 19755
+    },
+    {
+      "old": "hermes/html/deep/unit-11.html",
+      "new": "study/hermes/html/deep/unit-11.html",
+      "sha256": "e5ff7f647c136576c90d36823d796e07b9f02ee1f3fd676019d72460141d809a",
+      "size": 18425
+    },
+    {
+      "old": "hermes/html/deep/unit-12.html",
+      "new": "study/hermes/html/deep/unit-12.html",
+      "sha256": "152dfb54b641b071ed36b1af073f7a0c4759e51fb01a6d4fedc4e1db682cfca7",
+      "size": 15627
+    },
+    {
+      "old": "hermes/html/deep/unit-13.html",
+      "new": "study/hermes/html/deep/unit-13.html",
+      "sha256": "5ce28c71b26494dc342b3a3538ac7df3ad1defc482ce8d945bea0ad01cba6dc4",
+      "size": 18560
+    },
+    {
+      "old": "hermes/html/deep/unit-14.html",
+      "new": "study/hermes/html/deep/unit-14.html",
+      "sha256": "4f2ad94fa064289c4f7597f903bf2362e98ef97b7d5baa0f8da83962f15e1a6f",
+      "size": 20957
+    },
+    {
+      "old": "hermes/html/deep/unit-15.html",
+      "new": "study/hermes/html/deep/unit-15.html",
+      "sha256": "3663e58a6aff2ee45d530e0f5a447bc07cf9c374c4daafb8e3716371937eded6",
+      "size": 17564
+    },
+    {
+      "old": "hermes/html/deep/unit-16.html",
+      "new": "study/hermes/html/deep/unit-16.html",
+      "sha256": "83d6e29ad41b55a9ecadbaefb6d817c4cd512ad30aa415901b24b6fc8caa9221",
+      "size": 14506
+    },
+    {
+      "old": "hermes/html/deep/unit-17.html",
+      "new": "study/hermes/html/deep/unit-17.html",
+      "sha256": "aa2b41b46dd018731976b8db3883adc8f84b7851ad48a6e7251b70127c06caa1",
+      "size": 14418
+    },
+    {
+      "old": "hermes/html/deep/unit-18.html",
+      "new": "study/hermes/html/deep/unit-18.html",
+      "sha256": "593dfe695a8aa6c4b20a3eba32a5532a89c1ce4c726ebf856d4d4aa467b700ef",
+      "size": 17286
+    },
+    {
+      "old": "hermes/html/deep/unit-19.html",
+      "new": "study/hermes/html/deep/unit-19.html",
+      "sha256": "1611b64267f26404dfdd3fa2422a1054e84873fd0f03b90878a92993d0af23bc",
+      "size": 24380
+    },
+    {
+      "old": "hermes/html/deep/unit-20.html",
+      "new": "study/hermes/html/deep/unit-20.html",
+      "sha256": "0757ae4a64794e1e53d8fe79966c9c43a721ff6b5399998559d650cf75f18ca3",
+      "size": 10846
+    },
+    {
+      "old": "hermes/html/deep/unit-21.html",
+      "new": "study/hermes/html/deep/unit-21.html",
+      "sha256": "eff2aae51ea635dc33252cd7a774b0ba3cfd3929307e69be913315b967c08a03",
+      "size": 9176
+    },
+    {
+      "old": "hermes/html/deep/validate.mjs",
+      "new": "study/hermes/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "hermes/html/deep/validation.json",
+      "new": "study/hermes/html/deep/validation.json",
+      "sha256": "e7b8bf38b352d9234e60e115e01cb6f31cb59155881d03b152fc272765959e67",
+      "size": 290
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-1.svg",
+      "new": "study/hermes/html/deep/assets/diagram-1.svg",
+      "sha256": "2f41388b04e14ef5ecb98b936840e89dd579ff80c9a8d462a0836cd11abab2bc",
+      "size": 14033
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-10.svg",
+      "new": "study/hermes/html/deep/assets/diagram-10.svg",
+      "sha256": "6481dbec6c01ca442f8a89fbe3e670756b6dd99d3960ea0520aead47d85911cf",
+      "size": 10182
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-11.svg",
+      "new": "study/hermes/html/deep/assets/diagram-11.svg",
+      "sha256": "6f7e7263db797e52fc5775400513b40f484ac49c182ab03500f2343ff925367a",
+      "size": 8786
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-12.svg",
+      "new": "study/hermes/html/deep/assets/diagram-12.svg",
+      "sha256": "4578da120cd29c68b8e57c59e0b62d35d456a83af5135680dd3a529d65fdbd26",
+      "size": 11318
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-13.svg",
+      "new": "study/hermes/html/deep/assets/diagram-13.svg",
+      "sha256": "431f906373ffc6ff7a7059ac40a18a3d7e56f8aad2a7fdcc310e912aeaa6e084",
+      "size": 14025
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-3.svg",
+      "new": "study/hermes/html/deep/assets/diagram-3.svg",
+      "sha256": "15fb2a1c41c82940d1f4ec0fd894f94d1153d2e435b29ef5fe5c3169b94ac809",
+      "size": 7030
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-4.svg",
+      "new": "study/hermes/html/deep/assets/diagram-4.svg",
+      "sha256": "0e016c8ce36ba950880e7d57290b4a2749cd52e92ad650eada7f696373cdd26a",
+      "size": 10141
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-6.svg",
+      "new": "study/hermes/html/deep/assets/diagram-6.svg",
+      "sha256": "1b6d75622df97ccfc4f095c02a5f257d20a5b4c85ae0ae4207d02d0087c0d583",
+      "size": 6540
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-7.svg",
+      "new": "study/hermes/html/deep/assets/diagram-7.svg",
+      "sha256": "dbc1ffd430d4bf0e9e01d6cf362666c6f2a21c4c6691d73d72642bebd85858d4",
+      "size": 6847
+    },
+    {
+      "old": "hermes/html/deep/assets/diagram-9.svg",
+      "new": "study/hermes/html/deep/assets/diagram-9.svg",
+      "sha256": "8892d2eb3e634fd0acf9b7581d674a7492c2f11420fa5c223cbe682a34dd6df7",
+      "size": 11462
+    },
+    {
+      "old": "Google_ADK/html/build.mjs",
+      "new": "study/Google_ADK/html/build.mjs",
+      "sha256": "d74d74f4edc97b73e2c664e8ee764c07177def1b75c49b579f85a5e6b3f68230",
+      "size": 19004
+    },
+    {
+      "old": "Google_ADK/html/code.html",
+      "new": "study/Google_ADK/html/code.html",
+      "sha256": "aa28c9c251f35030a01d5678641173bbb4e53aec64f6533c1878abfa361a22b7",
+      "size": 22481
+    },
+    {
+      "old": "Google_ADK/html/comparison.html",
+      "new": "study/Google_ADK/html/comparison.html",
+      "sha256": "849f84ea314d1b14d1e650dd54ddb3f2225de30d4206e45cf42f429044522897",
+      "size": 23021
+    },
+    {
+      "old": "Google_ADK/html/content-map.json",
+      "new": "study/Google_ADK/html/content-map.json",
+      "sha256": "1b151454996632ff15a3c4eaedd1622b90b34e04e7d20dd2cf997d6de3f31330",
+      "size": 13983
+    },
+    {
+      "old": "Google_ADK/html/course-links.css",
+      "new": "study/Google_ADK/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "Google_ADK/html/execution.html",
+      "new": "study/Google_ADK/html/execution.html",
+      "sha256": "0c43a8180081acc3acf767281241e687f88da89040ada413f04c2d95c01f682b",
+      "size": 27869
+    },
+    {
+      "old": "Google_ADK/html/foundations.html",
+      "new": "study/Google_ADK/html/foundations.html",
+      "sha256": "1f7b65d061ef9bc9304b4a705d93e74dc96d46622fd093d0ad04cf9ad014c28b",
+      "size": 14389
+    },
+    {
+      "old": "Google_ADK/html/getting-started.html",
+      "new": "study/Google_ADK/html/getting-started.html",
+      "sha256": "c0e220604fae16ae311ecc566b1afe95b06a78bc3b2c98f9252cb3f57687dd4f",
+      "size": 19189
+    },
+    {
+      "old": "Google_ADK/html/glossary.html",
+      "new": "study/Google_ADK/html/glossary.html",
+      "sha256": "17f9756ef9832aeb526adb9fe309c607d9ad53e55b24575b7eb9be804211af34",
+      "size": 7005
+    },
+    {
+      "old": "Google_ADK/html/index.html",
+      "new": "study/Google_ADK/html/index.html",
+      "sha256": "320e2c877b9deb50eabc277f262842e20fd5365367bd4c0f857ae6ba089654c3",
+      "size": 8702
+    },
+    {
+      "old": "Google_ADK/html/link-courses.mjs",
+      "new": "study/Google_ADK/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "Google_ADK/html/operations.html",
+      "new": "study/Google_ADK/html/operations.html",
+      "sha256": "369a27588e659c6ca0522c8285262a243967e6f623a35bff2d82e9045c324f6c",
+      "size": 24182
+    },
+    {
+      "old": "Google_ADK/html/preview.png",
+      "new": "study/Google_ADK/html/preview.png",
+      "sha256": "4290b5da0412e2fe70f16682f1b0cdacb5550ea9f509ff094da4ff6c592233e4",
+      "size": 22560
+    },
+    {
+      "old": "Google_ADK/html/README.md",
+      "new": "study/Google_ADK/html/README.md",
+      "sha256": "d68e6a82a7731aa16470995005099bb71903964db8a0c7ddc7215c664ef2842a",
+      "size": 2916
+    },
+    {
+      "old": "Google_ADK/html/semiconductor.html",
+      "new": "study/Google_ADK/html/semiconductor.html",
+      "sha256": "cc417134d903b863589d871f46eadd14f2172c334c58da1409e4a2f8ef35f08d",
+      "size": 21178
+    },
+    {
+      "old": "Google_ADK/html/site.config.mjs",
+      "new": "study/Google_ADK/html/site.config.mjs",
+      "sha256": "fbcac8cadaec31735b1f706c758f45774aa10becf694955c17def73e419f719c",
+      "size": 10042
+    },
+    {
+      "old": "Google_ADK/html/site.js",
+      "new": "study/Google_ADK/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "Google_ADK/html/sources.html",
+      "new": "study/Google_ADK/html/sources.html",
+      "sha256": "d5e450bcaa523335649a6ae0712262b7f8c3bc6681012392c2568f7f5011c020",
+      "size": 28885
+    },
+    {
+      "old": "Google_ADK/html/state.html",
+      "new": "study/Google_ADK/html/state.html",
+      "sha256": "45b69d3f204a14ab95b193abb87585ec051db0baa0a40f10252ca362e089891a",
+      "size": 22782
+    },
+    {
+      "old": "Google_ADK/html/style.css",
+      "new": "study/Google_ADK/html/style.css",
+      "sha256": "d7a65d31ba15216df03e316ea23abb681512a6bc6d3d347fb012ae151f47ca6e",
+      "size": 13440
+    },
+    {
+      "old": "Google_ADK/html/validate.mjs",
+      "new": "study/Google_ADK/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "Google_ADK/html/workflow.html",
+      "new": "study/Google_ADK/html/workflow.html",
+      "sha256": "e683b0d9db6df6e92caff9757aca4a77ecfda24e8dbd4b4a4814a76036ed5cef",
+      "size": 22559
+    },
+    {
+      "old": "Google_ADK/html/assets/diagram-1.svg",
+      "new": "study/Google_ADK/html/assets/diagram-1.svg",
+      "sha256": "6cdce98c3a721234045280c22c46a14bad6ea1f22d2dcbf01b6c7ff0c5b5682e",
+      "size": 14158
+    },
+    {
+      "old": "Google_ADK/html/assets/diagram-3.svg",
+      "new": "study/Google_ADK/html/assets/diagram-3.svg",
+      "sha256": "8c79c2c222bf4c71753f5d986509d5b734aee465e78671676ab4786ecbe91e92",
+      "size": 10305
+    },
+    {
+      "old": "Google_ADK/html/assets/diagram-4.svg",
+      "new": "study/Google_ADK/html/assets/diagram-4.svg",
+      "sha256": "abcb11fe64bdec3e639ab1191614ba26c82be1f47d549b59ff7960bbc536f6a1",
+      "size": 10110
+    },
+    {
+      "old": "Google_ADK/html/assets/diagram-5.svg",
+      "new": "study/Google_ADK/html/assets/diagram-5.svg",
+      "sha256": "80e60b3fb0d13b297566d5a3d89a69eca54c56851d6076d58d0e29c32405dc1c",
+      "size": 9578
+    },
+    {
+      "old": "Google_ADK/html/assets/diagram-6.svg",
+      "new": "study/Google_ADK/html/assets/diagram-6.svg",
+      "sha256": "98e6b310a73dff7d19f47ecba3f1ffa98a2175e5c9e8a8557f25858085f3ab32",
+      "size": 11126
+    },
+    {
+      "old": "Google_ADK/html/assets/favicon.svg",
+      "new": "study/Google_ADK/html/assets/favicon.svg",
+      "sha256": "3d212b59840474e05bb4918e10c56c0debcda40a72b77d6c4df5a57e3c0f18cc",
+      "size": 204
+    },
+    {
+      "old": "Google_ADK/html/deep/browser-qa.json",
+      "new": "study/Google_ADK/html/deep/browser-qa.json",
+      "sha256": "bf374270d9b3169c4e403f53340564b701f32de3c2ba8cb4cbf9a0f400d3524b",
+      "size": 2317
+    },
+    {
+      "old": "Google_ADK/html/deep/build.mjs",
+      "new": "study/Google_ADK/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "Google_ADK/html/deep/content-map.json",
+      "new": "study/Google_ADK/html/deep/content-map.json",
+      "sha256": "e76647c7ce1f8d6a16395f1607a14dcd2795d1d2ae73a13a46f12b7ae28b1c8e",
+      "size": 53071
+    },
+    {
+      "old": "Google_ADK/html/deep/deep.css",
+      "new": "study/Google_ADK/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "Google_ADK/html/deep/index.html",
+      "new": "study/Google_ADK/html/deep/index.html",
+      "sha256": "5688cedbcd3541990432be00edf5040ce03d12bfaa66b819b9c50220ece329b0",
+      "size": 15002
+    },
+    {
+      "old": "Google_ADK/html/deep/preview-mobile.png",
+      "new": "study/Google_ADK/html/deep/preview-mobile.png",
+      "sha256": "72cb662acdf1f1b8a43dbba68a3a6fddb29ff680d26f82b8198b225bf5dd9da4",
+      "size": 36500
+    },
+    {
+      "old": "Google_ADK/html/deep/README.md",
+      "new": "study/Google_ADK/html/deep/README.md",
+      "sha256": "c8ba7eb2a69c66d89743bae38e776ee620f782a5d57670f3471d5b8344f0fea7",
+      "size": 3972
+    },
+    {
+      "old": "Google_ADK/html/deep/site.config.mjs",
+      "new": "study/Google_ADK/html/deep/site.config.mjs",
+      "sha256": "329ba639d0f2fc658be473faffea7da960a5426d2ea28b0595c6a3c79be55253",
+      "size": 4877
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-01.html",
+      "new": "study/Google_ADK/html/deep/unit-01.html",
+      "sha256": "41bef016dea49fb66e821b081be428f98cce97eb788553e2e27e276ace08e30e",
+      "size": 14702
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-02.html",
+      "new": "study/Google_ADK/html/deep/unit-02.html",
+      "sha256": "c90095b253f9db0be35e6b252eec50cc1e984b998cea12684e6a808670ce3cd2",
+      "size": 21308
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-03.html",
+      "new": "study/Google_ADK/html/deep/unit-03.html",
+      "sha256": "2156302b62869c80765a0f9f030708b16c8f6129ea95e5568446c286c65498c8",
+      "size": 10432
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-04.html",
+      "new": "study/Google_ADK/html/deep/unit-04.html",
+      "sha256": "745864828e4b2bfaa0c6218c3d3c48f7aef9e581f51aff35fdba415af9b6b94c",
+      "size": 21622
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-05.html",
+      "new": "study/Google_ADK/html/deep/unit-05.html",
+      "sha256": "c3aa4a93e9ca89e79c60dd762fe935644b307f476a4093cbebfc431cb82d8e52",
+      "size": 22935
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-06.html",
+      "new": "study/Google_ADK/html/deep/unit-06.html",
+      "sha256": "09bf2e0b76634f42e7c9907a5764655832d2f7c2696b0db1f02f380ee430da3d",
+      "size": 8582
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-07.html",
+      "new": "study/Google_ADK/html/deep/unit-07.html",
+      "sha256": "2da945c216a97d0784d08c80c504498a5b8817f62e28d443b0e3e5d73d3248e4",
+      "size": 21881
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-08.html",
+      "new": "study/Google_ADK/html/deep/unit-08.html",
+      "sha256": "915ca2ead2b62a8c19011cfa923358cab4dcd30deffa8978b37fc67de794b978",
+      "size": 15266
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-09.html",
+      "new": "study/Google_ADK/html/deep/unit-09.html",
+      "sha256": "db557a6b822d995c6326bd74b92d4c877eb003a0ce50ad5a1b28e9dd4b7665b6",
+      "size": 22919
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-10.html",
+      "new": "study/Google_ADK/html/deep/unit-10.html",
+      "sha256": "73e279457ce06966a35423c5822e1cb4f765a56a8a50a285ed08038a6a38567f",
+      "size": 14464
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-11.html",
+      "new": "study/Google_ADK/html/deep/unit-11.html",
+      "sha256": "09f0fbe1bda8a6e1cd3f6b54a70b0d61e11fbbf73bb0c4ee9dd2f42ad40aa3fb",
+      "size": 15528
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-12.html",
+      "new": "study/Google_ADK/html/deep/unit-12.html",
+      "sha256": "65a5bb26b7ec3f2d463fee87df46724c7a5c925af998900ae177c4e06caf0413",
+      "size": 16649
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-13.html",
+      "new": "study/Google_ADK/html/deep/unit-13.html",
+      "sha256": "9ca2c7a54235f54a9fe9315120750a3e713bb9d3f905d7556d0bad4bdb8b04c9",
+      "size": 11625
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-14.html",
+      "new": "study/Google_ADK/html/deep/unit-14.html",
+      "sha256": "4266c93556d152277fd9ffb45be7b012b7a3e71548076ae6ea3593a327dff0fc",
+      "size": 11546
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-15.html",
+      "new": "study/Google_ADK/html/deep/unit-15.html",
+      "sha256": "27d814b84aba2b70307689abb53bd637e4b153cd2ab455f118adc47f21038a92",
+      "size": 11090
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-16.html",
+      "new": "study/Google_ADK/html/deep/unit-16.html",
+      "sha256": "fe113c6b292233c36e97fa35602a52eb092524d606df67eaf68583ffc4ce3425",
+      "size": 20993
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-17.html",
+      "new": "study/Google_ADK/html/deep/unit-17.html",
+      "sha256": "0bc91b88d032c14ad4c5bf844374691de8027b74f918d9d2701eccae7164a68f",
+      "size": 11656
+    },
+    {
+      "old": "Google_ADK/html/deep/unit-18.html",
+      "new": "study/Google_ADK/html/deep/unit-18.html",
+      "sha256": "d876c66557c8ac4a053ffa589a0c114eb9888a1ebb7ec37cc4588805a36601e1",
+      "size": 20890
+    },
+    {
+      "old": "Google_ADK/html/deep/validate.mjs",
+      "new": "study/Google_ADK/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "Google_ADK/html/deep/validation.json",
+      "new": "study/Google_ADK/html/deep/validation.json",
+      "sha256": "8b7d1eb4ee11b34f0c5b0972532c95d0554cde888cd6542084f297b2ea6f427d",
+      "size": 287
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-1.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-1.svg",
+      "sha256": "cbef92b152c7ddd3c87134067e59e974657418fb1238f7b1ff670822eef86233",
+      "size": 15589
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-2.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-2.svg",
+      "sha256": "1981417aab14ef66cedfa66320eb6226816733bc156d29a7cf5e3ee061fdcb71",
+      "size": 11052
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-3.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-3.svg",
+      "sha256": "a1c7c7160de64802f97ba096be6ea4aef404c7a7b96803dc73acb0953c1dff2c",
+      "size": 12069
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-4.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-4.svg",
+      "sha256": "9c3c3434e65ba5be7355eb802dfe803196c40d63dbdd6d617d210191d6b1b28d",
+      "size": 9870
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-5.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-5.svg",
+      "sha256": "78cbb984a347cdaaed84f5b054cedf76976523363283ca4a5f6185e9ee3608a8",
+      "size": 6711
+    },
+    {
+      "old": "Google_ADK/html/deep/assets/diagram-6.svg",
+      "new": "study/Google_ADK/html/deep/assets/diagram-6.svg",
+      "sha256": "a1458d8aed6a24b98c901a7eec02bcaba3486570456f5153bed86f2a8e5e7549",
+      "size": 10703
+    },
+    {
+      "old": "Claude_Code/html/build.mjs",
+      "new": "study/Claude_Code/html/build.mjs",
+      "sha256": "794475e32fc4b79f7375777f9d0ca36a697d46d268fb7a536f08f6e63d552bbb",
+      "size": 20584
+    },
+    {
+      "old": "Claude_Code/html/collaboration.html",
+      "new": "study/Claude_Code/html/collaboration.html",
+      "sha256": "7ec6140b3a195ee538bff43f511942292581486d79fe65a266a2a5a0a85153f5",
+      "size": 19948
+    },
+    {
+      "old": "Claude_Code/html/content-map.json",
+      "new": "study/Claude_Code/html/content-map.json",
+      "sha256": "69de14a26f60e7a66672320271aceae906bab9f0f121ad5a91758bf8ff772d38",
+      "size": 11847
+    },
+    {
+      "old": "Claude_Code/html/course-links.css",
+      "new": "study/Claude_Code/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "Claude_Code/html/evaluation.html",
+      "new": "study/Claude_Code/html/evaluation.html",
+      "sha256": "a0b95a1e35795a1cb44be20b4f10477390254d149380b257dc83b53a694b4a87",
+      "size": 11618
+    },
+    {
+      "old": "Claude_Code/html/execution.html",
+      "new": "study/Claude_Code/html/execution.html",
+      "sha256": "9030cc184ae6d7cb54678f9b092544567329c8968c2d2654a2a48f750ce80d7d",
+      "size": 20180
+    },
+    {
+      "old": "Claude_Code/html/foundations.html",
+      "new": "study/Claude_Code/html/foundations.html",
+      "sha256": "5ecced644e751128979fe7da42ff46056177ebd5549e51786deffeeb10ccc748",
+      "size": 23231
+    },
+    {
+      "old": "Claude_Code/html/index.html",
+      "new": "study/Claude_Code/html/index.html",
+      "sha256": "54cd193c5ab09e198a25d4a4eb1c3675c32456ea1db6b5312deeb056694c48c5",
+      "size": 9267
+    },
+    {
+      "old": "Claude_Code/html/instructions-memory.html",
+      "new": "study/Claude_Code/html/instructions-memory.html",
+      "sha256": "a0f6d0f084b439b2fa063a9d40371612eff256770353c0ca50cbc0921e5c45c3",
+      "size": 23830
+    },
+    {
+      "old": "Claude_Code/html/link-courses.mjs",
+      "new": "study/Claude_Code/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "Claude_Code/html/preview.png",
+      "new": "study/Claude_Code/html/preview.png",
+      "sha256": "6702b3941b7d6dcfa7ff8e1bb216f1b3457cf36eb739dd96090785ba04d8fddb",
+      "size": 21912
+    },
+    {
+      "old": "Claude_Code/html/public-analysis.html",
+      "new": "study/Claude_Code/html/public-analysis.html",
+      "sha256": "f3c8960344f049584255c01d3d7f39f9466a5644932858850deaba84b371503c",
+      "size": 24026
+    },
+    {
+      "old": "Claude_Code/html/README.md",
+      "new": "study/Claude_Code/html/README.md",
+      "sha256": "e2212446748e4d6518c30851303faed469bd80b1d7b10b7e22992da6ecb32f48",
+      "size": 3241
+    },
+    {
+      "old": "Claude_Code/html/review.html",
+      "new": "study/Claude_Code/html/review.html",
+      "sha256": "6bb614c3e47666811350f02f752525ae4115f1adf28e98467558bc8b75f33b80",
+      "size": 13374
+    },
+    {
+      "old": "Claude_Code/html/security-models.html",
+      "new": "study/Claude_Code/html/security-models.html",
+      "sha256": "291540f10c5f369934ead9c7a9a451a538a61ed40e680f4ae40e48804984aff3",
+      "size": 18511
+    },
+    {
+      "old": "Claude_Code/html/semiconductor.html",
+      "new": "study/Claude_Code/html/semiconductor.html",
+      "sha256": "6b0e94c389c4facc7690cbf689df9cbfb266b8ecb62a517d6da709da167169f6",
+      "size": 20232
+    },
+    {
+      "old": "Claude_Code/html/site.config.mjs",
+      "new": "study/Claude_Code/html/site.config.mjs",
+      "sha256": "4124ebda61ae1c9a54a165689c00f012c682c89317397f9cc392b892318e8e84",
+      "size": 11570
+    },
+    {
+      "old": "Claude_Code/html/site.js",
+      "new": "study/Claude_Code/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "Claude_Code/html/skills-mcp.html",
+      "new": "study/Claude_Code/html/skills-mcp.html",
+      "sha256": "0959ee62fdc7bf2ff030979698e05b96e4cf674936dc50f5296ca24aaefb784e",
+      "size": 18345
+    },
+    {
+      "old": "Claude_Code/html/sources.html",
+      "new": "study/Claude_Code/html/sources.html",
+      "sha256": "b4176652c3ecfa6202b4ec3f46a29e14b8e1a23ef3cd02f752bf4e6efe1d8157",
+      "size": 24182
+    },
+    {
+      "old": "Claude_Code/html/style.css",
+      "new": "study/Claude_Code/html/style.css",
+      "sha256": "d7a65d31ba15216df03e316ea23abb681512a6bc6d3d347fb012ae151f47ca6e",
+      "size": 13440
+    },
+    {
+      "old": "Claude_Code/html/validate.mjs",
+      "new": "study/Claude_Code/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-1.svg",
+      "new": "study/Claude_Code/html/assets/diagram-1.svg",
+      "sha256": "ba3fd50b8074a6c4f7cf2febea2f32e83266bfe1ea8a454ed51e64afe686beb8",
+      "size": 7958
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-10.svg",
+      "new": "study/Claude_Code/html/assets/diagram-10.svg",
+      "sha256": "00f926e291adfe31646ba3fb1d03961ab46711ba71e80c2a156bd6083602c36f",
+      "size": 7910
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-11.svg",
+      "new": "study/Claude_Code/html/assets/diagram-11.svg",
+      "sha256": "9b45d9bb9e7e49285fc68220f36215a310667742e6e2347e9871b55d509c7d3c",
+      "size": 5579
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-12.svg",
+      "new": "study/Claude_Code/html/assets/diagram-12.svg",
+      "sha256": "8ef7d1281f6e453bd9b89f7b943df7b483f909d97989e7fc2d1e917ca37ac281",
+      "size": 7907
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-2.svg",
+      "new": "study/Claude_Code/html/assets/diagram-2.svg",
+      "sha256": "5da7476696c27c7ee325e73172a05c0397d82e71437c11b13bcfcbde7de4cffc",
+      "size": 9571
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-3.svg",
+      "new": "study/Claude_Code/html/assets/diagram-3.svg",
+      "sha256": "31fd0bb1331798355861103e1c115893aa5ce444905aec40018263853739c89d",
+      "size": 15064
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-5.svg",
+      "new": "study/Claude_Code/html/assets/diagram-5.svg",
+      "sha256": "a50865df1f910f76af1b336d9cc41abac58a1ad594edfefeefa236258f6dec95",
+      "size": 6140
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-6.svg",
+      "new": "study/Claude_Code/html/assets/diagram-6.svg",
+      "sha256": "cd72c63926c676f00aad7a2a62db73c06468a897e5ad54a84d23e026a80b8d5c",
+      "size": 5814
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-7.svg",
+      "new": "study/Claude_Code/html/assets/diagram-7.svg",
+      "sha256": "92d7d3ef811de99fb5c7669799788aa941f5c5c8ea5b1782579e14816e2ce77c",
+      "size": 5863
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-8.svg",
+      "new": "study/Claude_Code/html/assets/diagram-8.svg",
+      "sha256": "66679f7a0d5e578070da73c5204f4ddafe02517eb3eb74befa84c992da85a350",
+      "size": 7075
+    },
+    {
+      "old": "Claude_Code/html/assets/diagram-9.svg",
+      "new": "study/Claude_Code/html/assets/diagram-9.svg",
+      "sha256": "defb5e744cc01c06a7050b3e9abc58603f59979a5617b132f4d2d96538cb759e",
+      "size": 5793
+    },
+    {
+      "old": "Claude_Code/html/assets/favicon.svg",
+      "new": "study/Claude_Code/html/assets/favicon.svg",
+      "sha256": "8a47a4ca7eab40f199cbadb3640b1378df518fc315e3b3490233e25603c9f9d7",
+      "size": 204
+    },
+    {
+      "old": "Claude_Code/html/deep/browser-qa.json",
+      "new": "study/Claude_Code/html/deep/browser-qa.json",
+      "sha256": "84254c6885582f3b466649e2b20e68278fe5b7ef49153827752b8c408d9643b0",
+      "size": 2398
+    },
+    {
+      "old": "Claude_Code/html/deep/build.mjs",
+      "new": "study/Claude_Code/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "Claude_Code/html/deep/content-map.json",
+      "new": "study/Claude_Code/html/deep/content-map.json",
+      "sha256": "70a73db9245ac8208072ab582f2d955316f8d0b547e0df312a4b4893e2e896bb",
+      "size": 71584
+    },
+    {
+      "old": "Claude_Code/html/deep/deep.css",
+      "new": "study/Claude_Code/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "Claude_Code/html/deep/index.html",
+      "new": "study/Claude_Code/html/deep/index.html",
+      "sha256": "12328177f4e63c5b70db2211efe1253cbc1a772109bccc89d808938b585b5dc9",
+      "size": 15395
+    },
+    {
+      "old": "Claude_Code/html/deep/preview-mobile.png",
+      "new": "study/Claude_Code/html/deep/preview-mobile.png",
+      "sha256": "ab47874a2a2a5bb8580cdc311adcadaadab610f6c81ffc79fdd9ab62f4b3ea32",
+      "size": 38607
+    },
+    {
+      "old": "Claude_Code/html/deep/README.md",
+      "new": "study/Claude_Code/html/deep/README.md",
+      "sha256": "838fdd68ed02402bb6b9a29ff1d8fad1ffd792284499d5c3e7386e52fd7baad8",
+      "size": 3975
+    },
+    {
+      "old": "Claude_Code/html/deep/site.config.mjs",
+      "new": "study/Claude_Code/html/deep/site.config.mjs",
+      "sha256": "6aa1b7e7e997c335b5f00b304b443e19b51a7ae2c2a144cbf26703dec3e3d98d",
+      "size": 5669
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-01.html",
+      "new": "study/Claude_Code/html/deep/unit-01.html",
+      "sha256": "8ab6fb4b11c0dae91be334bff1194022031091a2c3f60d212abaeae321c89229",
+      "size": 14943
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-02.html",
+      "new": "study/Claude_Code/html/deep/unit-02.html",
+      "sha256": "31ad86b0966b5c67083ebd716837b69c9dafc521d9c530361c56585190d41a46",
+      "size": 22503
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-03.html",
+      "new": "study/Claude_Code/html/deep/unit-03.html",
+      "sha256": "2bae17496a1884d42c5df29f5c209525539ee05c0f907f627fb731b16dd2bbab",
+      "size": 9414
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-04.html",
+      "new": "study/Claude_Code/html/deep/unit-04.html",
+      "sha256": "8f697bf6f1f3cb72e5e4b466d55c217d4e88698c6206e7e478271e0289bf353a",
+      "size": 25909
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-05.html",
+      "new": "study/Claude_Code/html/deep/unit-05.html",
+      "sha256": "c5fffb1573429c8e079e3210438698760b8d0a4b49711d754b300984d401c34f",
+      "size": 10007
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-06.html",
+      "new": "study/Claude_Code/html/deep/unit-06.html",
+      "sha256": "8dc87a8dc5cd72c7e859e1bab9bd9546f5f14ae3a7f18f03d5a2e3ceb658b933",
+      "size": 21528
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-07.html",
+      "new": "study/Claude_Code/html/deep/unit-07.html",
+      "sha256": "a070f74a0a6a1dd55dfca67ef394e30afdf415c75a6ffb47c94da1a1361383bb",
+      "size": 25022
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-08.html",
+      "new": "study/Claude_Code/html/deep/unit-08.html",
+      "sha256": "570b22f560f18ad972403425a4e03da5eb7f43f96b655cf4235284c4197b4570",
+      "size": 13347
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-09.html",
+      "new": "study/Claude_Code/html/deep/unit-09.html",
+      "sha256": "2ebe4f004246e6d50e64c24e8042f5fa078a56766adc05c60297cc6a255e0c1c",
+      "size": 22986
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-10.html",
+      "new": "study/Claude_Code/html/deep/unit-10.html",
+      "sha256": "afbad6e242338fbb9fa67a7ae62a80bff801a8f35e7565ff4d7db6970aa89624",
+      "size": 21499
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-11.html",
+      "new": "study/Claude_Code/html/deep/unit-11.html",
+      "sha256": "e03996f64a60456e27ae45b8912e0e51acbadc10d5e801386bb96200898de016",
+      "size": 24699
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-12.html",
+      "new": "study/Claude_Code/html/deep/unit-12.html",
+      "sha256": "443e2d3600e40f745c7a9a46e29e8fe27cba613791b0ff268043eea3f5aa8ac4",
+      "size": 15077
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-13.html",
+      "new": "study/Claude_Code/html/deep/unit-13.html",
+      "sha256": "37c59fb63b3382d26a54c1848e255447c7abb454bc417cad4bc935c38ff2a831",
+      "size": 23275
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-14.html",
+      "new": "study/Claude_Code/html/deep/unit-14.html",
+      "sha256": "ab3c596afe99c4f412764c9d177a87958eff9d797a3458194bf173f9cac58d2c",
+      "size": 24137
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-15.html",
+      "new": "study/Claude_Code/html/deep/unit-15.html",
+      "sha256": "b8c6338165e12a586ec2e1515a72ff5808948011ef8e3fa4074afb4cc6f13afa",
+      "size": 11941
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-16.html",
+      "new": "study/Claude_Code/html/deep/unit-16.html",
+      "sha256": "6414c960c623c9b4bdea624aaf7d3b82ad94f9bda0a412e92a7174cbc645ec94",
+      "size": 20443
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-17.html",
+      "new": "study/Claude_Code/html/deep/unit-17.html",
+      "sha256": "dc473574b26aa506e6096ee232942ccd73d6e8b80b684baf5b317df3b14a256e",
+      "size": 22754
+    },
+    {
+      "old": "Claude_Code/html/deep/unit-18.html",
+      "new": "study/Claude_Code/html/deep/unit-18.html",
+      "sha256": "92c86230a27cf6bbc115f6575280084e5fe88d3c26df950964f66a07fd956891",
+      "size": 9596
+    },
+    {
+      "old": "Claude_Code/html/deep/validate.mjs",
+      "new": "study/Claude_Code/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "Claude_Code/html/deep/validation.json",
+      "new": "study/Claude_Code/html/deep/validation.json",
+      "sha256": "295db8dac94e83ba929d8396eb9ee29cb0e9cae4a3bb8cef29606af890e2d9d1",
+      "size": 289
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-1.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-1.svg",
+      "sha256": "e745b535a56ed6b8230de9a9eac59f81294295482bd07e75665d0bb113398a32",
+      "size": 12803
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-10.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-10.svg",
+      "sha256": "10133bcb070a3076e2a42f86ccf7a214f1e1b0c33ca0988c20e1adbfdfcb7cca",
+      "size": 9062
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-3.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-3.svg",
+      "sha256": "b989f5671d59204b530adcffe4f3343e1eda7ad7cb5a70a6addb86623e7cbbff",
+      "size": 7532
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-4.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-4.svg",
+      "sha256": "0bf66caa4dedd7e55899befc1d27398439a6f022e10b7b6c736bdbf4e51f7710",
+      "size": 12950
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-6.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-6.svg",
+      "sha256": "a77f680562e58bc06d45bcdfe5007a8aa5933bd7115ca7cd063c2dc12c4f43ef",
+      "size": 11381
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-8.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-8.svg",
+      "sha256": "8be43b34f0f36bb683ff0618bc1d5d85b7797533047559d93812e58f68d843f0",
+      "size": 7999
+    },
+    {
+      "old": "Claude_Code/html/deep/assets/diagram-9.svg",
+      "new": "study/Claude_Code/html/deep/assets/diagram-9.svg",
+      "sha256": "527fec46d214c35e9d6af985fc9885efbdf97fb6a62a0256066afdbb9e537e56",
+      "size": 6912
+    },
+    {
+      "old": "Claude_Agent_SDK/html/build.mjs",
+      "new": "study/Claude_Agent_SDK/html/build.mjs",
+      "sha256": "28bb2987ce081fb3d1cdd51701ff8553e69ae16e345772fc4e0683e7c87b48d6",
+      "size": 20139
+    },
+    {
+      "old": "Claude_Agent_SDK/html/code.html",
+      "new": "study/Claude_Agent_SDK/html/code.html",
+      "sha256": "6fcd795da6adcd14ed81c950192f2d36ef137b55ff5f0ca8876ac1d81b4e48ea",
+      "size": 34226
+    },
+    {
+      "old": "Claude_Agent_SDK/html/content-map.json",
+      "new": "study/Claude_Agent_SDK/html/content-map.json",
+      "sha256": "75a35ac0ea4c6ae812efb842a63a4d1a77d7134925c483a744b3cb122c04393e",
+      "size": 10585
+    },
+    {
+      "old": "Claude_Agent_SDK/html/course-links.css",
+      "new": "study/Claude_Agent_SDK/html/course-links.css",
+      "sha256": "1b7642ac0d9c1f15677ca09e8042fb82629658ec200b49b43bfa30164eef8db1",
+      "size": 623
+    },
+    {
+      "old": "Claude_Agent_SDK/html/foundations.html",
+      "new": "study/Claude_Agent_SDK/html/foundations.html",
+      "sha256": "f11f5a7de7d252898b76fc810dd2a33abc7fda86fccbf012798b1a69fef9da26",
+      "size": 22028
+    },
+    {
+      "old": "Claude_Agent_SDK/html/index.html",
+      "new": "study/Claude_Agent_SDK/html/index.html",
+      "sha256": "e0ddbe718a7f7e4757101f4e27708a6ad0554aa996b526b982d3021a4691a37c",
+      "size": 9056
+    },
+    {
+      "old": "Claude_Agent_SDK/html/instructions.html",
+      "new": "study/Claude_Agent_SDK/html/instructions.html",
+      "sha256": "3752365380c4aa00c69c9d75bc1bb3d14329cbc648cdfa3757739c0c23d275f6",
+      "size": 10183
+    },
+    {
+      "old": "Claude_Agent_SDK/html/link-courses.mjs",
+      "new": "study/Claude_Agent_SDK/html/link-courses.mjs",
+      "sha256": "7bf3bb1a1c0c0c4875a5924e07e253137abcb01b706985e6541023c99f511f4e",
+      "size": 1371
+    },
+    {
+      "old": "Claude_Agent_SDK/html/memory.html",
+      "new": "study/Claude_Agent_SDK/html/memory.html",
+      "sha256": "18676ceb112a691b303cdd3923a131e7df3baae4d8d88fb74e0770da03446b78",
+      "size": 21647
+    },
+    {
+      "old": "Claude_Agent_SDK/html/operations.html",
+      "new": "study/Claude_Agent_SDK/html/operations.html",
+      "sha256": "d600d7c44fe346e3a26f6419e9627651665eb57ed73c559ff83d92169bfad682",
+      "size": 18119
+    },
+    {
+      "old": "Claude_Agent_SDK/html/permissions.html",
+      "new": "study/Claude_Agent_SDK/html/permissions.html",
+      "sha256": "f91caae26b12ae402eabff7f2b672bd1050ee7bfda82d6b9ccdc8779949f20e8",
+      "size": 14815
+    },
+    {
+      "old": "Claude_Agent_SDK/html/preview.png",
+      "new": "study/Claude_Agent_SDK/html/preview.png",
+      "sha256": "aad1b18fe580f65f351d00d16c574836b6491489fb97a646fe6fba805f483ad5",
+      "size": 23628
+    },
+    {
+      "old": "Claude_Agent_SDK/html/README.md",
+      "new": "study/Claude_Agent_SDK/html/README.md",
+      "sha256": "9ae6e8b9d8a713d1e82495a59376fbfbf395c6de51bc40256841649eaf87defc",
+      "size": 2963
+    },
+    {
+      "old": "Claude_Agent_SDK/html/review.html",
+      "new": "study/Claude_Agent_SDK/html/review.html",
+      "sha256": "2fb4d5a65447f91f7793a3fde704ea303db901ebe38f75fece96dd1573903a95",
+      "size": 18257
+    },
+    {
+      "old": "Claude_Agent_SDK/html/runtime.html",
+      "new": "study/Claude_Agent_SDK/html/runtime.html",
+      "sha256": "90c27e4b8c8cf9431e8834470177f68643308737fdbbf27299c630f822d06e6e",
+      "size": 25045
+    },
+    {
+      "old": "Claude_Agent_SDK/html/semiconductor.html",
+      "new": "study/Claude_Agent_SDK/html/semiconductor.html",
+      "sha256": "4d48e11d1f9b559bf4b8162fa956de60393e15d04e5e5ce964b418d2f57fcf63",
+      "size": 26561
+    },
+    {
+      "old": "Claude_Agent_SDK/html/site.config.mjs",
+      "new": "study/Claude_Agent_SDK/html/site.config.mjs",
+      "sha256": "6b425b97ead523c98a8a036828eb4c85923baff18e9166354cca9ccbf299e81d",
+      "size": 10578
+    },
+    {
+      "old": "Claude_Agent_SDK/html/site.js",
+      "new": "study/Claude_Agent_SDK/html/site.js",
+      "sha256": "a144299795d2781a84787e4ea2bd2beef427992ea660ec09981aacc3c19038e7",
+      "size": 1222
+    },
+    {
+      "old": "Claude_Agent_SDK/html/sources.html",
+      "new": "study/Claude_Agent_SDK/html/sources.html",
+      "sha256": "f46135a34dfe61923dca22fbc91ec5f73f4b33150c68a5998be25246072c22b2",
+      "size": 20898
+    },
+    {
+      "old": "Claude_Agent_SDK/html/style.css",
+      "new": "study/Claude_Agent_SDK/html/style.css",
+      "sha256": "d7a65d31ba15216df03e316ea23abb681512a6bc6d3d347fb012ae151f47ca6e",
+      "size": 13440
+    },
+    {
+      "old": "Claude_Agent_SDK/html/tools.html",
+      "new": "study/Claude_Agent_SDK/html/tools.html",
+      "sha256": "49850cba37833662b96d62eb7402431d67847f01b84c48b94748afb907a25509",
+      "size": 14916
+    },
+    {
+      "old": "Claude_Agent_SDK/html/validate.mjs",
+      "new": "study/Claude_Agent_SDK/html/validate.mjs",
+      "sha256": "2958f3ece4e90456c0329df2804e3914c9ff798456fc98847d1135742e70368b",
+      "size": 2609
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-1.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-1.svg",
+      "sha256": "7913a5c710fabe4060cecf14aeab676ed60c1f5762c0d496e8af18818f3dc3cd",
+      "size": 10273
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-3.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-3.svg",
+      "sha256": "e1cb03e1a6df479d0afddb982037ba44a6182532571fe80ca4c6fba6cc996808",
+      "size": 12110
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-4.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-4.svg",
+      "sha256": "942362f4578ebd3c7d436c64c5ddf609e6137a03c9250f52fe3555e465589e3c",
+      "size": 6631
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-5.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-5.svg",
+      "sha256": "e61ed8640fdbb36d3c59c19bfc2eee6e265aea3a76475cf3bad3281251c80b90",
+      "size": 8943
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-7.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-7.svg",
+      "sha256": "8274b75f914d2e2a0e50af427220b2f0034fcaa2ec4815bd2f8a14497ee40a1b",
+      "size": 6857
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-8.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-8.svg",
+      "sha256": "a9a094eb55cd1d1f1c2b8de8f484d43d3792bf7b2a9f9edb3e8466a279a9d52e",
+      "size": 6567
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/diagram-9.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/diagram-9.svg",
+      "sha256": "67c4570842ee38bd1c74bcbd96d7a8c7c4fdf6cc858b959ac00b9130aa41d218",
+      "size": 9914
+    },
+    {
+      "old": "Claude_Agent_SDK/html/assets/favicon.svg",
+      "new": "study/Claude_Agent_SDK/html/assets/favicon.svg",
+      "sha256": "8a47a4ca7eab40f199cbadb3640b1378df518fc315e3b3490233e25603c9f9d7",
+      "size": 204
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/browser-qa.json",
+      "new": "study/Claude_Agent_SDK/html/deep/browser-qa.json",
+      "sha256": "e9bf19adc524bd34ce36251e9f08362d02c4f31727848d64d1f745eafa7bfb7c",
+      "size": 2357
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/build.mjs",
+      "new": "study/Claude_Agent_SDK/html/deep/build.mjs",
+      "sha256": "11342b0b0d99831904d2a8078dfb6d240b75b9e8e07266f5871ef8007d5fb20f",
+      "size": 22804
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/content-map.json",
+      "new": "study/Claude_Agent_SDK/html/deep/content-map.json",
+      "sha256": "3ac5b06c536b7be25e2c9cba7aadc9c65e7c509dc188a6095900953f2fa5b0c9",
+      "size": 57356
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/deep.css",
+      "new": "study/Claude_Agent_SDK/html/deep/deep.css",
+      "sha256": "24dc2498c522f0cedd7b78f73916ab28a778fe8377a0e7a8e7eee2aba3533cf6",
+      "size": 1509
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/index.html",
+      "new": "study/Claude_Agent_SDK/html/deep/index.html",
+      "sha256": "5c9d5c2a46f4a6e0f1a5ea803f605c28aa6d7a511f555205141488f9be2bd911",
+      "size": 15522
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/preview-mobile.png",
+      "new": "study/Claude_Agent_SDK/html/deep/preview-mobile.png",
+      "sha256": "86ee7d78ef1881e5f6b93aa84e7fe62e7b0f58b0f7be7cde6331f7f28dc81fe6",
+      "size": 38233
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/README.md",
+      "new": "study/Claude_Agent_SDK/html/deep/README.md",
+      "sha256": "68a412e4300743956bf3db0ceb9045798e8c9bed3b6617330ab75b11852a4f03",
+      "size": 3984
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/site.config.mjs",
+      "new": "study/Claude_Agent_SDK/html/deep/site.config.mjs",
+      "sha256": "3ed6a59e0ce7400d5639609a2bda786fcbb5a2d5de07cd587b496b422cf8057a",
+      "size": 5664
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-01.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-01.html",
+      "sha256": "108683130be5583c96e728280608927e7d94af3afa6fd454d582d2c8d9074111",
+      "size": 11927
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-02.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-02.html",
+      "sha256": "e3e12dfd7473c34cc45ef619172924fd961f39e0d996986aafd6e017457838bd",
+      "size": 19783
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-03.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-03.html",
+      "sha256": "1c1b4c66b23fb5e383639775d482de4230325cb74542751dda4ef120586e12d3",
+      "size": 24231
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-04.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-04.html",
+      "sha256": "16783eb3a4ad7c3e2507d14e43bacd45b589d27718e5c0879263bab4cecaa837",
+      "size": 12295
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-05.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-05.html",
+      "sha256": "97bd2edba1852f2022966703095c732025709305f7302a89363fbd4dfe8e7369",
+      "size": 25358
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-06.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-06.html",
+      "sha256": "ad8ae4c5549f1bc0688828fc0a359671a9ea221dfddcc6f0af8477977aba11fa",
+      "size": 13725
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-07.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-07.html",
+      "sha256": "26fa74d47b360a7aa9e214085222f834b26754bac26f14c7f5d3760976523db4",
+      "size": 23997
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-08.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-08.html",
+      "sha256": "4fe6202f94cac431714bbc5561c1d3f256a9c647dd64fd8c95fc59a62765d38d",
+      "size": 22330
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-09.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-09.html",
+      "sha256": "4230cc5f9dbb5bb84bf608fb9179c5e8846341cb5f506000d13fdc6695abd5bb",
+      "size": 11898
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-10.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-10.html",
+      "sha256": "9a18bb6d3efe431effaadb831a6d6ccd7843483602c9dd4677dcb8464186270f",
+      "size": 12561
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-11.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-11.html",
+      "sha256": "4ddae25c86cf93e7d0f133c3471f9eb299d11bcf023569640b495ee0afe67f76",
+      "size": 11051
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-12.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-12.html",
+      "sha256": "080d34a342ce7c857eea5d89588f04aed42984f76d175a986ba3423cf715a263",
+      "size": 14116
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-13.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-13.html",
+      "sha256": "69dd72d8f3b1ca27f45459309027303e8b126d2ac251dba150169d4eae5929c5",
+      "size": 23422
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-14.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-14.html",
+      "sha256": "20185947a173bdb1fcceab28ded2c02098b6a59387d9a69740c84e9b90f97ac1",
+      "size": 9141
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-15.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-15.html",
+      "sha256": "a765ef99f6e4fd96331fd88a79b99737f8d40e39b0d8f47bde1d2721b02ee2af",
+      "size": 19383
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-16.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-16.html",
+      "sha256": "3418b281d6d407dfefb02df8edea412f372de25ab12d9d89a118e279d466db01",
+      "size": 15292
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-17.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-17.html",
+      "sha256": "df3f0a640762ab610c1ec1e7fbb77d69197a14d0cd2ad87900ca984be16a224b",
+      "size": 21435
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/unit-18.html",
+      "new": "study/Claude_Agent_SDK/html/deep/unit-18.html",
+      "sha256": "0e6660c8ddbf7df02a9fceb0df80f852fcbb3a143415df234d69d3b11f082b92",
+      "size": 9056
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/validate.mjs",
+      "new": "study/Claude_Agent_SDK/html/deep/validate.mjs",
+      "sha256": "fd93c2d03fc5192d5f442bd742b9d555851c6d319ae6db63ff3e4cd8239c76fc",
+      "size": 6296
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/validation.json",
+      "new": "study/Claude_Agent_SDK/html/deep/validation.json",
+      "sha256": "9798fcaf14afe8c9a7268103f5aed426863e04120a5d170ce5264eb5bc2c1737",
+      "size": 293
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/assets/diagram-1.svg",
+      "new": "study/Claude_Agent_SDK/html/deep/assets/diagram-1.svg",
+      "sha256": "0c951393db1d360608fedc8e0d6419b6b03be41d2f73409a4cde0786454c21df",
+      "size": 8197
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/assets/diagram-4.svg",
+      "new": "study/Claude_Agent_SDK/html/deep/assets/diagram-4.svg",
+      "sha256": "a2deea299a68f822f7d4023b275187651866cf37b9210b7279d71f3f81f26ac9",
+      "size": 9976
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/assets/diagram-5.svg",
+      "new": "study/Claude_Agent_SDK/html/deep/assets/diagram-5.svg",
+      "sha256": "36624696ebf9565de96351ea1af1669e3f569d0db12540eb92e7b17b1fb53962",
+      "size": 14679
+    },
+    {
+      "old": "Claude_Agent_SDK/html/deep/assets/diagram-7.svg",
+      "new": "study/Claude_Agent_SDK/html/deep/assets/diagram-7.svg",
+      "sha256": "7cd6a185af9e73187e0023ba1d963907fae65e36e4dfd6304a7adf05eec6f167",
+      "size": 11635
+    }
+  ],
+  "localLinkUpdatedFiles": [
+    "presentations/seminar-2/docs/flow.md",
+    "study/Claude_Agent_SDK/Claude_Agent_SDK_발표_실무_시사점_코멘트.md",
+    "study/Claude_Code/Claude_Code_발표_실무_시사점_코멘트.md",
+    "study/Google_ADK/Google_ADK_발표_실무_시사점_코멘트.md",
+    "study/hermes/Hermes_Agent_발표_실무_시사점_코멘트.md",
+    "presentations/seminar-2/docs/blueprint.md",
+    "archive/presentations/seminar-2/planning/execution-plan.md",
+    "study/html/세미나_코멘트_안내.md",
+    "study/Microsoft Agent_Framework/Microsoft_Agent_Framework_발표_실무_시사점_코멘트.md",
+    "study/OpenAI_Agents_SDK/OpenAI_Agents_SDK_발표_실무_시사점_코멘트.md",
+    "study/PydanticAI/PydanticAI_발표_실무_시사점_코멘트.md",
+    "study/PydanticAI/html/deep/index.html",
+    "study/PydanticAI/html/deep/unit-01.html",
+    "study/PydanticAI/html/deep/unit-02.html",
+    "study/PydanticAI/html/deep/unit-03.html",
+    "study/PydanticAI/html/deep/unit-04.html",
+    "study/PydanticAI/html/deep/unit-05.html",
+    "study/PydanticAI/html/deep/unit-06.html",
+    "study/PydanticAI/html/deep/unit-07.html",
+    "study/PydanticAI/html/deep/unit-08.html",
+    "study/PydanticAI/html/deep/unit-09.html",
+    "study/PydanticAI/html/deep/unit-10.html",
+    "study/PydanticAI/html/deep/unit-11.html",
+    "study/PydanticAI/html/deep/unit-12.html",
+    "study/PydanticAI/html/deep/unit-13.html",
+    "study/PydanticAI/html/deep/unit-14.html",
+    "study/PydanticAI/html/deep/unit-15.html",
+    "study/PydanticAI/html/deep/unit-16.html",
+    "study/PydanticAI/html/deep/unit-17.html",
+    "study/PydanticAI/html/deep/unit-18.html",
+    "study/PydanticAI/html/deep/unit-19.html",
+    "study/PydanticAI/html/deep/unit-20.html",
+    "study/OpenAI_Agents_SDK/html/deep/index.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-01.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-02.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-03.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-04.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-05.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-06.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-07.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-08.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-09.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-10.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-11.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-12.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-13.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-14.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-15.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-16.html",
+    "study/OpenAI_Agents_SDK/html/deep/unit-17.html",
+    "study/Microsoft Agent_Framework/html/deep/index.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-01.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-02.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-03.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-04.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-05.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-06.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-07.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-08.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-09.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-10.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-11.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-12.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-13.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-14.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-15.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-16.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-17.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-18.html",
+    "study/Microsoft Agent_Framework/html/deep/unit-19.html",
+    "presentations/seminar-2/demo-handoff.html",
+    "presentations/seminar-2/reviews/claude-code-revision-plan.md",
+    "archive/presentations/seminar-2/reviews/hermes-coverage-audit.md",
+    "presentations/seminar-2/reviews/hermes-revision-outline.md",
+    "study/hermes/html/deep/index.html",
+    "study/hermes/html/deep/unit-01.html",
+    "study/hermes/html/deep/unit-02.html",
+    "study/hermes/html/deep/unit-03.html",
+    "study/hermes/html/deep/unit-04.html",
+    "study/hermes/html/deep/unit-05.html",
+    "study/hermes/html/deep/unit-06.html",
+    "study/hermes/html/deep/unit-07.html",
+    "study/hermes/html/deep/unit-08.html",
+    "study/hermes/html/deep/unit-09.html",
+    "study/hermes/html/deep/unit-10.html",
+    "study/hermes/html/deep/unit-11.html",
+    "study/hermes/html/deep/unit-12.html",
+    "study/hermes/html/deep/unit-13.html",
+    "study/hermes/html/deep/unit-14.html",
+    "study/hermes/html/deep/unit-15.html",
+    "study/hermes/html/deep/unit-16.html",
+    "study/hermes/html/deep/unit-17.html",
+    "study/hermes/html/deep/unit-18.html",
+    "study/hermes/html/deep/unit-19.html",
+    "study/hermes/html/deep/unit-20.html",
+    "study/hermes/html/deep/unit-21.html",
+    "study/Google_ADK/html/deep/index.html",
+    "study/Google_ADK/html/deep/unit-01.html",
+    "study/Google_ADK/html/deep/unit-02.html",
+    "study/Google_ADK/html/deep/unit-03.html",
+    "study/Google_ADK/html/deep/unit-04.html",
+    "study/Google_ADK/html/deep/unit-05.html",
+    "study/Google_ADK/html/deep/unit-06.html",
+    "study/Google_ADK/html/deep/unit-07.html",
+    "study/Google_ADK/html/deep/unit-08.html",
+    "study/Google_ADK/html/deep/unit-09.html",
+    "study/Google_ADK/html/deep/unit-10.html",
+    "study/Google_ADK/html/deep/unit-11.html",
+    "study/Google_ADK/html/deep/unit-12.html",
+    "study/Google_ADK/html/deep/unit-13.html",
+    "study/Google_ADK/html/deep/unit-14.html",
+    "study/Google_ADK/html/deep/unit-15.html",
+    "study/Google_ADK/html/deep/unit-16.html",
+    "study/Google_ADK/html/deep/unit-17.html",
+    "study/Google_ADK/html/deep/unit-18.html",
+    "study/Claude_Code/html/deep/index.html",
+    "study/Claude_Code/html/deep/unit-01.html",
+    "study/Claude_Code/html/deep/unit-02.html",
+    "study/Claude_Code/html/deep/unit-03.html",
+    "study/Claude_Code/html/deep/unit-04.html",
+    "study/Claude_Code/html/deep/unit-05.html",
+    "study/Claude_Code/html/deep/unit-06.html",
+    "study/Claude_Code/html/deep/unit-07.html",
+    "study/Claude_Code/html/deep/unit-08.html",
+    "study/Claude_Code/html/deep/unit-09.html",
+    "study/Claude_Code/html/deep/unit-10.html",
+    "study/Claude_Code/html/deep/unit-11.html",
+    "study/Claude_Code/html/deep/unit-12.html",
+    "study/Claude_Code/html/deep/unit-13.html",
+    "study/Claude_Code/html/deep/unit-14.html",
+    "study/Claude_Code/html/deep/unit-15.html",
+    "study/Claude_Code/html/deep/unit-16.html",
+    "study/Claude_Code/html/deep/unit-17.html",
+    "study/Claude_Code/html/deep/unit-18.html",
+    "study/Claude_Agent_SDK/html/deep/index.html",
+    "study/Claude_Agent_SDK/html/deep/unit-01.html",
+    "study/Claude_Agent_SDK/html/deep/unit-02.html",
+    "study/Claude_Agent_SDK/html/deep/unit-03.html",
+    "study/Claude_Agent_SDK/html/deep/unit-04.html",
+    "study/Claude_Agent_SDK/html/deep/unit-05.html",
+    "study/Claude_Agent_SDK/html/deep/unit-06.html",
+    "study/Claude_Agent_SDK/html/deep/unit-07.html",
+    "study/Claude_Agent_SDK/html/deep/unit-08.html",
+    "study/Claude_Agent_SDK/html/deep/unit-09.html",
+    "study/Claude_Agent_SDK/html/deep/unit-10.html",
+    "study/Claude_Agent_SDK/html/deep/unit-11.html",
+    "study/Claude_Agent_SDK/html/deep/unit-12.html",
+    "study/Claude_Agent_SDK/html/deep/unit-13.html",
+    "study/Claude_Agent_SDK/html/deep/unit-14.html",
+    "study/Claude_Agent_SDK/html/deep/unit-15.html",
+    "study/Claude_Agent_SDK/html/deep/unit-16.html",
+    "study/Claude_Agent_SDK/html/deep/unit-17.html",
+    "study/Claude_Agent_SDK/html/deep/unit-18.html"
+  ],
+  "method": "Native PowerShell moves; SHA-256 verified before repairing relative links. No source content discarded."
+}
