@@ -7,6 +7,13 @@ const {pathToFileURL}=require('url');
  const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'manifest.json'),'utf8'));
  const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
  const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[],requests=[];
+ async function screenshot(target){
+  const bytes=await page.screenshot();
+  // OneDrive can briefly hold a generated image while syncing it.
+  for(let attempt=0;attempt<6;attempt++){
+   try{fs.writeFileSync(target,bytes);return}catch(error){if(attempt===5)throw error;await new Promise(resolve=>setTimeout(resolve,350))}
+  }
+ }
  page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url())});
  await page.goto(pathToFileURL(path.join(__dirname,'index.html')).href);await page.waitForLoadState('networkidle');await page.evaluate(()=>document.fonts.ready);
  await page.emulateMedia({reducedMotion:'reduce'});
@@ -32,7 +39,7 @@ const {pathToFileURL}=require('url');
     return {id:s.dataset.slideId,ratio:r.width/r.height,overflow,overlaps,headerIntrusion,viewportOverflow};
    });
    reports.push({viewport,...report});
-   if(viewport.width===1280)await page.screenshot({path:path.join(out,`revision-screenshots/${report.id}.png`)});
+   if(viewport.width===1280)await screenshot(path.join(out,`revision-screenshots/${report.id}.png`));
   }
  }
  await page.setViewportSize({width:1280,height:720});
@@ -70,9 +77,9 @@ const {pathToFileURL}=require('url');
  await page.keyboard.press('ArrowLeft');if(await page.locator('.slide.active [data-reveal].revealed').count()!==2)errors.push('Name reverse');
  await page.evaluate(()=>deck.goId('S03'));await page.keyboard.press('Space');
  const focus=await page.locator('.slide.active .highlight').allTextContents();if(focus.length!==2||!focus.some(t=>t.includes('Hermes'))||!focus.some(t=>t.includes('PydanticAI')))errors.push('Harness/SDK simultaneous focus');
- await page.screenshot({path:path.join(out,'revision-screenshots/S03-focus.png')});
- await page.evaluate(()=>deck.goId('S02'));await page.keyboard.press('Space');await page.keyboard.press('Space');await page.keyboard.press('Space');await page.screenshot({path:path.join(out,'revision-screenshots/S02-names.png')});
- await page.evaluate(()=>deck.goId('S04'));await page.locator('.slide.active .sources').click();await page.screenshot({path:path.join(out,'revision-screenshots/S04-sources.png')});await page.keyboard.press('Escape');
+ await screenshot(path.join(out,'revision-screenshots/S03-focus.png'));
+ await page.evaluate(()=>deck.goId('S02'));await page.keyboard.press('Space');await page.keyboard.press('Space');await page.keyboard.press('Space');await screenshot(path.join(out,'revision-screenshots/S02-names.png'));
+ await page.evaluate(()=>deck.goId('S04'));await page.locator('.slide.active .sources').click();await screenshot(path.join(out,'revision-screenshots/S04-sources.png'));await page.keyboard.press('Escape');
  for(const [id,demo] of [['S15','hermes'],['S38','pydanticai']]){
   await page.evaluate(id=>deck.goId(id),id);const popup=page.waitForEvent('popup');await page.locator('.slide.active .demo-link').click();const tab=await popup;await tab.waitForLoadState('networkidle');
   if(!(await tab.locator('.status').innerText()).includes('연결되어 있지'))errors.push(`Demo status ${id}`);

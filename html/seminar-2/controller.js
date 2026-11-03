@@ -9,6 +9,18 @@ let index=0,step=0,notesWindow=null,notesTab='current';
 
 /* === FIXED STAGE AND REPLACEABLE BUILDS === */
 function scale(){const z=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(${(innerWidth-1920*z)/2}px,${(innerHeight-1080*z)/2}px) scale(${z})`}
+// Quiet focus frames for text-only comparisons and feature groups. They do not
+// change layout, text or sequence, and are hidden in the complete/printed view.
+function prepareFocusFrames(){
+ const ns='http://www.w3.org/2000/svg';
+ document.querySelectorAll('svg g[data-focus]').forEach(g=>{
+  if(g.querySelector('.node,[data-focus],.focus-frame'))return;
+  const b=g.getBBox();if(b.width<150||b.height<38)return;
+  const r=document.createElementNS(ns,'rect');r.setAttribute('class','focus-frame');
+  const x=Math.max(-18,b.x-18),y=Math.max(-16,b.y-16);
+  r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',Math.min(1670-x,b.width+36));r.setAttribute('height',Math.min(666-y,b.height+32));r.setAttribute('rx','8');r.setAttribute('aria-hidden','true');g.prepend(r);
+ });
+}
 function state(){return {index,step,id:data[index].id,maxStep:data[index].steps.length-1,total:data.length}}
 function go(i,s=0){index=Math.max(0,Math.min(data.length-1,i));step=Math.max(0,Math.min(data[index].steps.length-1,s));render()}
 function next(){if(step<data[index].steps.length-1)step++;else if(index<data.length-1){index++;step=0}render()}
@@ -50,7 +62,7 @@ function writeNotes(){
  const scroll=w.document?.documentElement?.scrollTop||0;
  const contents=notesTab==='current'?d.note:notesTab==='reserved'?Object.entries(privateMaterial.reserved).map(([k,v])=>`## ${k} — ${v}`).join('\n\n'):privateMaterial[notesTab];
  const tabs=[['current','현재 슬라이드'],['concepts','상세 해설'],['qa','Q&A'],['research','근거·정정'],['demos','데모 제작 명세'],['reserved','예약 SDK']];
- w.document.open();w.document.write(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>발표자 노트 · ${esc(d.id)}</title><style>body{background:#FBFCFF;color:#172B46;font:17px/1.8 sans-serif;margin:0}header{position:sticky;top:0;background:#EFF4FD;padding:18px 28px;border-bottom:1px solid #B7C3D3}header .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}h1{font-size:25px;line-height:1.5;margin:12px 0}h2,h3{margin-top:32px}a{color:#205BC7}small{color:#52647B}main{max-width:1040px;margin:25px auto;padding:0 28px 60px}button{font:inherit;cursor:pointer;color:#172B46;background:#FFFFFF;border:1px solid #B7C3D3;border-radius:5px;padding:6px 12px}button.active{border-color:#6941B8}pre{background:#F0F4FA;border:1px solid #B7C3D3;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.6}code{color:#9B4F0A}table{width:100%;border-collapse:collapse}td{border:1px solid #B7C3D3;padding:9px;vertical-align:top}p{overflow-wrap:anywhere}button:focus-visible,a:focus-visible{outline:3px solid #205BC7}</style><header><div class="row"><small>발표자 전용 · ${index+1}/${data.length} · ${d.id} · ${step}/${d.steps.length-1}</small><button id="back">← 단계</button><button id="next">단계 →</button><button id="nextSlide">다음 장</button></div><h1>${esc(d.title)}</h1><div class="row">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${notesTab===k?'active':''}">${v}</button>`).join('')}</div></header><main>${markdown(contents||'')}<h2>이 장의 출처</h2>${d.sources.length?d.sources.map(([id,name,url])=>`<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">[${id}] ${esc(name)}</a></p>`).join(''):'<p>최종 blueprint의 도입·발표 구성 및 설계 예시.</p>'}<p><small>←/→/Space 단계 · PageUp/Down 장 이동 · G 번호 입력 · T 목차 · N 노트 · F 전체 화면<br>실제 Demo 서비스는 별도 제작·연결 대상입니다. 본 자료는 모델 API를 호출하지 않습니다.</small></p></main></html>`);w.document.close();
+ w.document.open();w.document.write(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>발표자 노트 · ${esc(d.id)}</title><style>body{background:#27364A;color:#E2EAF5;font:17px/1.8 sans-serif;margin:0}header{position:sticky;top:0;background:#30435D;padding:18px 28px;border-bottom:1px solid #536B89}header .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}h1{font-size:25px;line-height:1.5;margin:12px 0}h2,h3{margin-top:32px}a{color:#ACD0FF}small{color:#BED0E6}main{max-width:1040px;margin:25px auto;padding:0 28px 60px}button{font:inherit;cursor:pointer;color:#E2EAF5;background:#344C6B;border:1px solid #536B89;border-radius:5px;padding:6px 12px}button.active{border-color:#BCC7F3}pre{background:#1F2B3A;border:1px solid #536B89;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.6}code{color:#E9C38F}table{width:100%;border-collapse:collapse}td{border:1px solid #536B89;padding:9px;vertical-align:top}p{overflow-wrap:anywhere}button:focus-visible,a:focus-visible{outline:3px solid #ACD0FF}</style><header><div class="row"><small>발표자 전용 · ${index+1}/${data.length} · ${d.id} · ${step}/${d.steps.length-1}</small><button id="back">← 단계</button><button id="next">단계 →</button><button id="nextSlide">다음 장</button></div><h1>${esc(d.title)}</h1><div class="row">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${notesTab===k?'active':''}">${v}</button>`).join('')}</div></header><main>${markdown(contents||'')}<h2>이 장의 출처</h2>${d.sources.length?d.sources.map(([id,name,url])=>`<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">[${id}] ${esc(name)}</a></p>`).join(''):'<p>최종 blueprint의 도입·발표 구성 및 설계 예시.</p>'}<p><small>←/→/Space 단계 · PageUp/Down 장 이동 · G 번호 입력 · T 목차 · N 노트 · F 전체 화면<br>실제 Demo 서비스는 별도 제작·연결 대상입니다. 본 자료는 모델 API를 호출하지 않습니다.</small></p></main></html>`);w.document.close();
  w.document.querySelector('#back').onclick=prev;w.document.querySelector('#next').onclick=next;w.document.querySelector('#nextSlide').onclick=()=>go(index+1);
  w.document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{notesTab=b.dataset.tab;writeNotes()});
  w.document.documentElement.scrollTop=scroll;
@@ -99,3 +111,4 @@ let lastWheel=0;addEventListener('wheel',e=>{if(dialog.open||reader.open||Math.a
 addEventListener('resize',scale);addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(id!==data[index].id)goId(id)});
 const initial=data.findIndex(s=>`#${s.id}`===location.hash);if(initial>=0)index=initial;
 scale();render();window.deck={go,goId,next,prev,state,notes,toc,sources};
+document.fonts.ready.then(prepareFocusFrames);

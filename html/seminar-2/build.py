@@ -287,6 +287,8 @@ add(45,'제공받는 실행과 직접 만드는 계약','프레임워크 선택�
 # === USER EDITORIAL REVISION: stable IDs, updated copy and section opener ===
 from revision import apply, LIGHT_STYLE
 apply(slides, globals())
+from design import refine, STYLE as DESIGN_STYLE
+refine(slides, globals())
 expected=[f'S{i:02}' for i in range(46) if i not in range(39,43)]
 expected.insert(expected.index('S04'),'S03H')
 assert sorted(slides)==expected, (set(expected)-set(slides),set(slides)-set(expected))
@@ -308,9 +310,10 @@ style=example['style']+r'''
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 @media print{.demo-link,.menu-dialog,.progress{display:none!important}.slide.opening header{visibility:hidden!important}.code-line{font-family:Consolas,'Courier New',monospace}}
 '''
-style+=LIGHT_STYLE
-font=base64.b64encode((ROOT/'assets/NanumGothic-Regular.ttf').read_bytes()).decode()
-license_=json.dumps((ROOT/'assets/OFL.txt').read_text(encoding='utf-8'),ensure_ascii=False)
+style+=LIGHT_STYLE+DESIGN_STYLE
+font=base64.b64encode((ROOT/'assets/Pretendard-Regular.woff2').read_bytes()).decode()
+bold_font=base64.b64encode((ROOT/'assets/Pretendard-Bold.woff2').read_bytes()).decode()
+license_=json.dumps((ROOT/'assets/Pretendard-OFL.txt').read_text(encoding='utf-8'),ensure_ascii=False)
 html_slides=[]
 for i,s in enumerate(ordered):
     demo=f'<a class="demo-link" href="demo-handoff.html?demo={s["demo"]}&amp;return={s["id"]}" target="_blank" rel="noopener">{"Hermes" if s["demo"]=="hermes" else "PydanticAI"} Demo ↗</a>' if s['demo'] else ''
@@ -327,8 +330,8 @@ notes_md='# 2차 세미나 — 발표자 전용 노트\n\n'+ '\n\n'.join('## '+s
 private=dict(concepts=sections['C'],qa=sections['D'],research=sections['F'],demos=sections['E'],reserved={k:specs[k] for k in ('S39','S40','S41','S42')})
 script=(ROOT/'controller.js').read_text(encoding='utf-8').replace('__SLIDES__',json.dumps(metadata,ensure_ascii=False)).replace('__PRIVATE__',json.dumps(private,ensure_ascii=False))
 toc=''.join(f'<button data-jump="{i}"><small>{i+1:02} · {s["id"]}</small>　{escape(s["title"])}</button>' for i,s in enumerate(ordered))
-html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/ttf;base64,{font}) format('truetype');font-weight:400;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><dialog class="sources-dialog" aria-labelledby="reader-title"><button class="reader-close" aria-label="개념 설명 닫기">닫기</button><header><div class="reader-meta"></div><h2 id="reader-title"></h2></header><main></main></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
+html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{font}) format('woff2');font-weight:400;font-display:swap}}@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{bold_font}) format('woff2');font-weight:700;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><dialog class="sources-dialog" aria-labelledby="reader-title"><button class="reader-close" aria-label="개념 설명 닫기">닫기</button><header><div class="reader-meta"></div><h2 id="reader-title"></h2></header><main></main></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
 (ROOT/'index.html').write_text(html,encoding='utf-8')
-manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations','slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
+manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations','slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','visualDesign':'2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(f'Final: {len(ordered)} slides, {len(html.encode())//1024} KiB, {ROOT / "index.html"}')

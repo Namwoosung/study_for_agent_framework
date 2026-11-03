@@ -381,5 +381,6 @@
     "S42"
   ],
   "demoStatus": "handoff only; no actual runtime connected",
+  "visualDesign": "2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus",
   "notes": "Sources: concepts and explanation / N: presenter notes and appendix"
 }

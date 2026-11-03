@@ -2,7 +2,7 @@
 
 [발표용 HTML](index.html) · [43페이지 PDF](agent-framework-seminar-2.pdf) · [발표자 노트](presenter-notes.md)
 
-기준은 루트의 `2_2차_세미나_최종_slide_blueprint.md`이며, 2026-11-03 사용자 수정 요청을 `revision.py`에 반영했습니다. 밝은 배경, 전체 장표 문구, 도입부, Hermes 전환/기능 소개 및 Sources 설명을 개정했습니다. 본편 **43장**으로 구성했으며 S39–S42의 미작성 SDK 예약 항목은 청중 순회·목차·PDF에서 제외했습니다. 예약 내용은 발표자 창에서만 확인할 수 있습니다. 5장 예시 폴더와 기존 교재·blueprint는 유지했습니다.
+기준은 루트의 `2_2차_세미나_최종_slide_blueprint.md`이며, 2026-11-03 사용자 수정 요청을 `revision.py`에 반영했습니다. 전체 장표 문구, 도입부, Hermes 전환/기능 소개 및 Sources 설명을 개정한 뒤, 후속 요청에 따라 청회색 테마로 디자인을 개선했습니다. 내용·출처·진행 순서는 유지하고 로컬 Pretendard 글꼴, 직각 곡선 연결선, 선택 영역 강조를 적용했습니다. 본편 **43장**으로 구성했으며 S39–S42의 미작성 SDK 예약 항목은 청중 순회·목차·PDF에서 제외했습니다. 예약 내용은 발표자 창에서만 확인할 수 있습니다. 5장 예시 폴더와 기존 교재·blueprint는 유지했습니다.
 
 ## 실행
 
@@ -40,7 +40,9 @@ python html/seminar-2/build.py
 
 - `build.py`: 43장 화면·도식과 blueprint의 발표자 내용 매핑.
 - `artwork.py`: 5장 예시에서 확정한 도형·스타일과 재사용 도식. 이 폴더 자체 자산만 사용합니다.
-- `revision.py`: 사용자 요청에 따른 문구·도입/소개 도식·개념 해설·밝은 테마. 원 blueprint의 노트는 originalSpec으로 보관.
+- `revision.py`: 문구·도입/소개 도식·개념 해설. 원 blueprint의 노트는 originalSpec으로 보관.
+- `design.py`: 청회색 테마·도식 재배치·연결선·강조 디자인. 내용은 유지.
+- `assets/Pretendard-*`: 내장 글꼴과 SIL OFL 라이선스.
 - `controller.js`: 단계 이동·목차·발표자 창·고정 stage 제어.
 - `assets/`: 로컬 폰트·SIL OFL·viewport base CSS.
 - `notes.json` / `presenter-notes.md`: 생성된 발표자 자료.
