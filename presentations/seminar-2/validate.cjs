@@ -86,7 +86,7 @@ const {pathToFileURL}=require('url');
  await page.evaluate(()=>deck.goId('S04'));await page.locator('.slide.active .sources').click();await screenshot(path.join(out,'revision-screenshots/S04-sources.png'));await page.keyboard.press('Escape');
  for(const [id,demo] of [['S15','hermes'],['PA52','pydanticai']]){
   await page.evaluate(id=>deck.goId(id),id);const popup=page.waitForEvent('popup');await page.locator('.slide.active .demo-link').click();const tab=await popup;await tab.waitForLoadState('networkidle');
-  if(!(await tab.locator('.status').innerText()).includes('연결되어 있지'))errors.push(`Demo status ${id}`);
+  if(!(await tab.locator('#launch').getAttribute('href')).startsWith(demo==='hermes'?'http://127.0.0.1:18000/':'http://127.0.0.1:18001/'))errors.push(`Demo launch ${id}`);
   if(!(await tab.locator('#return').getAttribute('href')).endsWith(id))errors.push(`Demo return ${id}`);await tab.close();
  }
  const ids=await page.locator('[id]').evaluateAll(els=>els.map(e=>e.id));if(new Set(ids).size!==ids.length)errors.push('Duplicate DOM/marker ids');

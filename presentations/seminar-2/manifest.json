@@ -1599,7 +1599,7 @@
     "S41",
     "S42"
   ],
-  "demoStatus": "handoff only; no actual runtime connected",
+  "demoStatus": "local runtime web apps in demos/",
   "visualDesign": "2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus",
   "notes": "Sources: concepts and explanation / N: presenter notes and appendix",
   "claudeOrder": [
@@ -1703,5 +1703,79 @@
   "pydanticPages": [
     83,
     143
-  ]
+  ],
+  "demoTargets": {
+    "HLOOP": [
+      "hermes",
+      "loop"
+    ],
+    "S07": [
+      "hermes",
+      "context"
+    ],
+    "HSEARCH": [
+      "hermes",
+      "search"
+    ],
+    "HSCHEMA": [
+      "hermes",
+      "tools"
+    ],
+    "HHUMAN": [
+      "hermes",
+      "approval"
+    ],
+    "HWRITE": [
+      "hermes",
+      "skill"
+    ],
+    "HHOOK": [
+      "hermes",
+      "guard"
+    ],
+    "HCHILD": [
+      "hermes",
+      "delegate"
+    ],
+    "S15": [
+      "hermes",
+      "loop"
+    ],
+    "PA07": [
+      "pydanticai",
+      "graph"
+    ],
+    "PA15": [
+      "pydanticai",
+      "deps"
+    ],
+    "PA17": [
+      "pydanticai",
+      "conversation"
+    ],
+    "PA25": [
+      "pydanticai",
+      "outputs"
+    ],
+    "PA28": [
+      "pydanticai",
+      "end"
+    ],
+    "PA38": [
+      "pydanticai",
+      "harness"
+    ],
+    "PA47": [
+      "pydanticai",
+      "delegation"
+    ],
+    "PA51": [
+      "pydanticai",
+      "core"
+    ],
+    "PA52": [
+      "pydanticai",
+      "graph"
+    ]
+  }
 }

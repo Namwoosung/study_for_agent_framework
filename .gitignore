@@ -1,2 +1,4 @@
 __pycache__/
 *.py[cod]
+/demos/.local/
+/demos/hermes/.runtime/

@@ -43,7 +43,7 @@ inventory=json.loads((root/'archive/reorganization-map.json').read_text(encoding
 for entry in inventory['fileMap']:
     if not (root/entry['new']).is_file():errors.append('Relocated file missing: '+entry['new'])
 directories=sorted(p.name for p in root.iterdir() if p.is_dir() and p.name!='.git')
-if directories!=['archive','presentations','study']:errors.append('Unexpected root directories: '+str(directories))
+if directories!=['archive','demos','presentations','study']:errors.append('Unexpected root directories: '+str(directories))
 report={'result':'fail' if errors else 'pass','rootDirectories':directories,
         'originalFilesPresent':len(inventory['fileMap']),'activeLocalLinksChecked':checked,
         'presentationSlides':len(notes),'errors':errors}

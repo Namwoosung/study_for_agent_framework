@@ -2,11 +2,12 @@
   "result": "pass",
   "rootDirectories": [
     "archive",
+    "demos",
     "presentations",
     "study"
   ],
   "originalFilesPresent": 722,
-  "activeLocalLinksChecked": 9038,
+  "activeLocalLinksChecked": 9057,
   "presentationSlides": 146,
   "errors": []
 }

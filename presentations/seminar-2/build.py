@@ -332,10 +332,22 @@ font=base64.b64encode((ROOT/'assets/Pretendard-Regular.woff2').read_bytes()).dec
 bold_font=base64.b64encode((ROOT/'assets/Pretendard-Bold.woff2').read_bytes()).decode()
 license_=json.dumps((ROOT/'assets/Pretendard-OFL.txt').read_text(encoding='utf-8'),ensure_ascii=False)
 html_slides=[]
+demo_targets={
+    'HLOOP':('hermes','loop'), 'S07':('hermes','context'), 'HSEARCH':('hermes','search'),
+    'HSCHEMA':('hermes','tools'), 'HHUMAN':('hermes','approval'), 'HWRITE':('hermes','skill'),
+    'HHOOK':('hermes','guard'), 'HCHILD':('hermes','delegate'), 'S15':('hermes','loop'),
+    'PA07':('pydanticai','graph'), 'PA15':('pydanticai','deps'), 'PA17':('pydanticai','conversation'),
+    'PA25':('pydanticai','outputs'), 'PA28':('pydanticai','end'), 'PA38':('pydanticai','harness'),
+    'PA47':('pydanticai','delegation'), 'PA51':('pydanticai','core'), 'PA52':('pydanticai','graph'),
+}
 for i,s in enumerate(ordered):
-    demo=f'<a class="demo-link" href="demo-handoff.html?demo={s["demo"]}&amp;return={s["id"]}" target="_blank" rel="noopener">{"Hermes" if s["demo"]=="hermes" else "PydanticAI"} Demo ↗</a>' if s['demo'] else ''
+    target=demo_targets.get(s['id'])
+    demo=''
+    if target:
+        engine,scenario=target
+        demo=f'<a class="demo-link" href="demo-handoff.html?demo={engine}&amp;scenario={scenario}&amp;return={s["id"]}" target="_blank" rel="noopener">실행 Demo ↗</a>'
     html_slides.append(f'''<!-- === {s['id']}: {escape(s['title'])} === -->
-<section class="slide {s['kind']} {'no-build' if len(s['steps'])==1 else ''} {'active' if i==0 else ''} {'has-demo' if s['demo'] else ''}" data-index="{i}" data-slide-id="{s['id']}" tabindex="-1" aria-label="{i+1}. {escape(s['title'])}" aria-hidden="{'false' if i==0 else 'true'}">
+<section class="slide {s['kind']} {'no-build' if len(s['steps'])==1 else ''} {'active' if i==0 else ''} {'has-demo' if target else ''}" data-index="{i}" data-slide-id="{s['id']}" tabindex="-1" aria-label="{i+1}. {escape(s['title'])}" aria-hidden="{'false' if i==0 else 'true'}">
 <header><p class="section-label">{escape(s['section'])}</p><h1>{escape(s['title'])}</h1><p class="subtitle">{escape(s['sub'])}</p></header>
 <div class="diagram">{diagram_svg(s)}</div><p class="takeaway">{escape(s['take'])}</p>{demo}
 <footer class="slide-footer"><div><span class="page-count">{i+1:02} / {len(ordered)}</span><span>{s['id']}</span><span class="version">{escape(s['version'])}</span><button class="sources" aria-label="이 장의 개념·설명·출처 열기">Sources</button></div><nav class="controls" aria-label="발표 탐색"><span class="step-label">전체 구성 · 0/{len(s['steps'])-1}</span><button class="prev" aria-label="이전 단계">←</button><input class="jump-number" type="number" min="1" max="{len(ordered)}" value="{i+1}" aria-label="이동할 슬라이드 번호"><span class="jump-total">/ {len(ordered)}</span><button class="next" aria-label="다음 단계">→</button><button class="menu" aria-label="전체 목차 열기">목차</button></nav></footer><div class="progress" style="width:{(i+1)/len(ordered)*100:.4f}%"></div></section>''')
@@ -367,6 +379,7 @@ manifest.update(claudeOrder=CLAUDE_ORDER,
 manifest['editorialRevision'] += ' / claude_revision.py / official Claude Code documentation'
 manifest.update(pydanticOrder=PYDANTIC_ORDER,
                 pydanticPages=[expected.index(PYDANTIC_ORDER[0])+1, expected.index(PYDANTIC_ORDER[-1])+1])
+manifest.update(demoStatus='local runtime web apps in demos/', demoTargets=demo_targets)
 manifest['editorialRevision'] += ' / pydantic_revision.py / Core 2.61.0 and Harness 0.61.0'
 (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(f'Final: {len(ordered)} slides, {len(html.encode())//1024} KiB, {ROOT / "index.html"}')

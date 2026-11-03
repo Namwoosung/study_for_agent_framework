@@ -2,6 +2,7 @@
 
 - [학습 홈](study/index.html): 7개 기술의 원문·기본 교재·심층 교재
 - [현재 발표자료](presentations/seminar-2/index.html) · 2차 세미나 146장
+- [실제 실행 Demo](demos/README.md) · Hermes와 PydanticAI
 - [발표 폴더 안내](presentations/README.md): 현재 설계·참고 자료와 다음 작업
 - [아카이브](archive/README.md): 초기안·이전 버전·과거 검토와 검수 결과
 
