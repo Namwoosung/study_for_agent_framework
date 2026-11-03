@@ -28,6 +28,14 @@
 <section class="flow-board" aria-labelledby="flow-title">
 <h2 id="flow-title">실행 흐름</h2>
 <p class="meta" id="flow-note">화살표는 대표 경로입니다. 단계를 선택하면 실제 실행에서 관측한 값을 볼 수 있습니다.</p>
+<div id="timeline" class="timeline" hidden>
+<label for="timeline-select">실제 기록 순서</label>
+<button type="button" id="event-prev" aria-label="이전 관측 이벤트">이전</button>
+<select id="timeline-select"></select>
+<button type="button" id="event-next" aria-label="다음 관측 이벤트">다음</button>
+<button type="button" id="follow" aria-pressed="true">최신 실행 따라가기</button>
+<p class="meta">기록을 선택하면 해당 시점의 값을 봅니다. 병렬 실행의 기록 순서는 작업의 의존 관계와 다를 수 있습니다.</p>
+</div>
 <div class="workspace" id="workspace">
 <ol id="flow" aria-label="대표 실행 경로"></ol>
 <div id="observation"></div>

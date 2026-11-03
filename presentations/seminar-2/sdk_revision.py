@@ -1,5 +1,7 @@
 """SDK comparison chapters following the PydanticAI walkthrough."""
 
+from sdk_depth import CASES, DETAIL, chapter_order
+
 TOPICS = {
     'CAS': ('Claude Agent SDK', '0.2.177', 'anthropics/claude-agent-sdk-python', 'v0.2.177',
             'src/claude_agent_sdk/', 'Claude_Agent_SDK', 'Claude_Agent_SDK',
@@ -45,10 +47,9 @@ OAI|Trace에서 실행 주체 확인|동일 LOT 요청의 모델·도구·전이
 OAI|고정 모델 응답으로 실행 비교|SDK 규칙과 자연 모델의 선택을 분리해 검증합니다.|Tool 종료 비교~같은 응답으로 정책만 변경~모델 횟수·도구 횟수 비교|Agent 협업 비교~부모 반환과 handoff 비교~최종 Agent·전달 이력 확인|중단과 재개~승인 전후 RunState 추적~발행 중복 여부 별도 검증|작은 API로 조합할 수 있고, 이력과 저장소 선택이 실행 계약을 바꿉니다.|시연의 기준 입력은 LOT-A, snapshot r3, 92/100이다. Hosted tools, MCP, Realtime 및 sandbox·skills는 지원 API 및 provider 전제가 다른 별도 기능이다. 장표에는 실험 설계와 예상 관찰값을 제시한다.|run.py agent.py run_state.py
 '''.strip()
 
-ORDER = ['SDKMAP']
-for prefix in TOPICS:
-    count = sum(row.startswith(prefix + '|') for row in CONTENT.splitlines())
-    ORDER.extend(f'{prefix}{number:02}' for number in range(1, count + 1))
+ORDER = chapter_order()
+LEGACY_ORDER = [ident for ident in ORDER if ident[-2:].isdigit()]
+LEGACY_ORDER.sort(key=lambda ident: (list(TOPICS).index(ident[:3]), ident[3:]))
 
 ALIASES = {'S39': 'OAI01', 'S40': 'CAS01', 'S41': 'ADK01', 'S42': 'MAF01'}
 
@@ -208,7 +209,7 @@ def revise(slides, drawing):
         [(prefix, name, docs) for prefix, (name, _, _, _, _, _, _, docs) in TOPICS.items()],
         [], 'SDK 비교', 'Python')
 
-    for ident, row in zip(ORDER[1:], CONTENT.splitlines(), strict=True):
+    for ident, row in zip(LEGACY_ORDER, CONTENT.splitlines(), strict=True):
         prefix, title, subtitle, *fields = row.split('|')
         *rows, takeaway, detail, paths = fields
         name, version, repo, tag, base, folder, stem, docs = TOPICS[prefix]
@@ -221,3 +222,22 @@ def revise(slides, drawing):
                                             ('_발표_실무_시사점_코멘트', '발표 실무 시사점'))]
         add(ident, title, subtitle, [tuple(item.split('~')) for item in rows],
             takeaway, detail, refs, evidence, name, f'Python {version}')
+
+    for prefix, sections in DETAIL.items():
+        name, version, repo, tag, base, *_ = TOPICS[prefix]
+        for suffix, (title, sub, rows, take, paths) in zip('ABCDE', sections, strict=True):
+            ident = prefix + suffix
+            reference = slides[prefix + '01']
+            refs = [(f'{ident}-{i}', path, f'https://github.com/{repo}/blob/{tag}/{base}{path}')
+                    for i, path in enumerate(paths.split(), 1)]
+            refs.extend(source for source in reference['sources'] if source[0].endswith('-DOC'))
+            detail = '\n\n'.join(f'{step} · {symbol} — {role}.' for step, symbol, role in rows)
+            detail += '\n\n' + take
+            add(ident, title, sub, rows, take, detail, refs, reference['localEvidence'].copy(), name, f'Python {version}')
+            slides[ident]['steps'] += [row[0] for row in rows]
+            slides[ident]['readingGuide'] = {
+                'reading': 'Space로 각 행을 강조합니다. 가운데 열은 고정 버전의 소스 심볼 또는 명시한 앱 예시이며, 오른쪽 열에서 그 단계가 맡는 일을 확인합니다.',
+                'application': CASES[prefix]['ABCDE'.index(suffix)],
+            }
+
+    slides['SDKMAP']['sub'] = '각 SDK에서 선언 → 실행 → 입력·상태 → Tool·정책 → 개발 판단을 따라갑니다.'

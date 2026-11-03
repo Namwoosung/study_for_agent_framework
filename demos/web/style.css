@@ -115,3 +115,12 @@ pre { background: #edf2ee; padding: .75rem; white-space: pre-wrap; overflow-wrap
 .change-marker { color: var(--accent); font-size: .83rem; font-weight: 650; }
 .messages p { max-width: 78ch; }
 .messages details { font-size: .9rem; }
+
+.timeline { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin:1rem 0; padding:.8rem; background:var(--wash); border-radius:.4rem; }
+.timeline select { flex:1; min-width:10rem; max-width:100%; }
+.timeline p { flex-basis:100%; margin:0; }
+.timeline button { background:white; color:var(--accent); border-color:var(--line); }
+.timeline button[aria-pressed="true"] { background:var(--accent); color:white; }
+#observation .observation > h3 { font-size:1.3rem; }
+.step-value { font-size:.96rem; color:var(--ink); }
+#observation .meta { font-size:.8rem; }

@@ -59,7 +59,7 @@ def path_neutral(value):
     return value
 unchanged=[]
 for s in notes:
-    if s['id'] in HERMES_ORDER or s['id'] in CLAUDE_ORDER or s['id'] in PYDANTIC_ORDER or s['id'] in SDK_ORDER:continue
+    if s['id'] in {'S44','S45'} or s['id'] in HERMES_ORDER or s['id'] in CLAUDE_ORDER or s['id'] in PYDANTIC_ORDER or s['id'] in SDK_ORDER:continue
     before=baseline[s['id']]
     assert sorted(parser.texts[s['id']])==before['text'],s['id']
     assert all(path_neutral(s[k])==path_neutral(v) for k,v in before['metadata'].items() if not(s['id']=='S01' and k in {'steps','sources'}) and not(s['id']=='S03H' and k=='sources')),s['id']

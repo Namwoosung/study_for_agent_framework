@@ -1,15 +1,15 @@
 {
   "blueprintCoverage": 42,
-  "audienceSlides": 172,
+  "audienceSlides": 192,
   "speakerSpecCoverage": 42,
-  "sourcesExplanations": 172,
-  "slideSpecificReadingGuides": 172,
+  "sourcesExplanations": 192,
+  "slideSpecificReadingGuides": 192,
   "reservedExcluded": [],
   "sdkPages": [
     142,
-    169
+    189
   ],
-  "sdkSlides": 28,
+  "sdkSlides": 48,
   "pydanticPages": [
     83,
     141
@@ -25,7 +25,7 @@
     82
   ],
   "claudeSlides": 29,
-  "otherSlidesContentPreserved": 8,
+  "otherSlidesContentPreserved": 6,
   "limitedIntroChanges": [
     "S01 builds removed",
     "S03H official icon added"
@@ -35,7 +35,7 @@
     "S14B"
   ],
   "pythonSnippetsSyntaxChecked": 15,
-  "pdfPages": 172,
+  "pdfPages": 192,
   "blankPdfPages": 0,
   "result": "pass"
 }

@@ -151,6 +151,8 @@ def observe_functions(run, select):
     """Record real Python calls and returns, including worker threads."""
     original, thread_original = sys.getprofile(), threading.getprofile()
 
+    frames = {}
+
     def profile(frame, event, value):
         if event not in ("call", "return"):
             return
@@ -159,6 +161,15 @@ def observe_functions(run, select):
         category = select(module, name)
         if not category:
             return
+        frame_key = id(frame)
+        if event == "call":
+            frames[frame_key] = uuid.uuid4().hex[:12]
+        call_id = frames.get(frame_key)
+        metadata = dict(function_call_id=call_id, parent_function_call_id=frames.get(id(frame.f_back)),
+                        function=module + "." + name, source_line=frame.f_code.co_firstlineno,
+                        phase=event)
+        if event == "return":
+            frames.pop(frame_key, None)
         fields = {key: frame.f_locals[key] for key in (
             "query", "role_filter", "limit", "tool_name", "function_args",
             "pattern_key", "description", "command", "rule_key", "tool_call",
@@ -168,7 +179,7 @@ def observe_functions(run, select):
             if isinstance(value, (dict, list, str, int, bool, type(None))):
                 fields["return"] = value
         try:
-            run.emit(category, f"{module}.{name} · {event}", fields)
+            run.emit(category, f"{module}.{name} · {event}", fields, **metadata)
         except (TypeError, ValueError):
             run.emit(category, f"{module}.{name} · {event}", {"note": "값을 JSON으로 표현할 수 없습니다."})
 

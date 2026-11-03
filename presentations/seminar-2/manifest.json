@@ -1,6 +1,6 @@
 {
   "blueprint": "blueprint.md",
-  "blueprintSha256": "77131f56e85657a79442daff2d2fc82c300148446930491c0d2343322e598a8d",
+  "blueprintSha256": "b3f52b229efb7bc9bb2efd1afcbfcb76165947a4aeb0c8ed881b5147a0ad5ff8",
   "editorialRevision": "2026-11-03 / hermes_deep.py / official v0.22.5 code-grounded revision / claude_revision.py / official Claude Code documentation / pydantic_revision.py / Core 2.61.0 and Harness 0.61.0",
   "hermesOrder": [
     "S04",
@@ -1598,6 +1598,16 @@
       "builds": 0
     },
     {
+      "id": "CASA",
+      "title": "요청 준비와 CLI 제어 채널",
+      "sourceIds": [
+        "CASA-1",
+        "CASA-2",
+        "CAS01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "CAS02",
       "title": "단발 요청과 대화형 클라이언트",
       "sourceIds": [
@@ -1605,6 +1615,26 @@
         "CAS02-2",
         "CAS02-3",
         "CAS02-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CASB",
+      "title": "Context·기억·재개 구분",
+      "sourceIds": [
+        "CASB-1",
+        "CASB-2",
+        "CAS01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "CAS05",
+      "title": "세션 재개와 산출물 버전",
+      "sourceIds": [
+        "CAS05-1",
+        "CAS05-2",
+        "CAS05-DOC"
       ],
       "builds": 0
     },
@@ -1619,6 +1649,16 @@
       "builds": 0
     },
     {
+      "id": "CASC",
+      "title": "Tool 실행과 승인 경로",
+      "sourceIds": [
+        "CASC-1",
+        "CASC-2",
+        "CAS01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "CAS04",
       "title": "작업 환경과 도구 권한",
       "sourceIds": [
@@ -1626,16 +1666,6 @@
         "CAS04-2",
         "CAS04-3",
         "CAS04-DOC"
-      ],
-      "builds": 0
-    },
-    {
-      "id": "CAS05",
-      "title": "세션 재개와 산출물 버전",
-      "sourceIds": [
-        "CAS05-1",
-        "CAS05-2",
-        "CAS05-DOC"
       ],
       "builds": 0
     },
@@ -1650,12 +1680,53 @@
       "builds": 0
     },
     {
+      "id": "CASD",
+      "title": "결과·실패·관측을 구분하기",
+      "sourceIds": [
+        "CASD-1",
+        "CASD-2",
+        "CAS01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "CASE",
+      "title": "Claude Code 환경을 앱에 연결하기",
+      "sourceIds": [
+        "CASE-1",
+        "CASE-2",
+        "CAS01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "ADKA",
+      "title": "Agent 선언과 실행 준비",
+      "sourceIds": [
+        "ADKA-1",
+        "ADKA-2",
+        "ADKA-3",
+        "ADK01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "ADK01",
       "title": "Runner와 이벤트 스트림",
       "sourceIds": [
         "ADK01-1",
         "ADK01-2",
         "ADK01-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK03",
+      "title": "Session·State·Memory·Artifact",
+      "sourceIds": [
+        "ADK03-1",
+        "ADK03-2",
+        "ADK03-DOC"
       ],
       "builds": 0
     },
@@ -1671,12 +1742,34 @@
       "builds": 0
     },
     {
-      "id": "ADK03",
-      "title": "Session·State·Memory·Artifact",
+      "id": "ADKB",
+      "title": "함수 호출이 모델 응답으로 돌아가기",
       "sourceIds": [
-        "ADK03-1",
-        "ADK03-2",
-        "ADK03-DOC"
+        "ADKB-1",
+        "ADKB-2",
+        "ADKB-3",
+        "ADK01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "ADKC",
+      "title": "중단·승인·재개의 관찰 경계",
+      "sourceIds": [
+        "ADKC-1",
+        "ADKC-2",
+        "ADKC-3",
+        "ADK01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "ADK06",
+      "title": "답변 완료와 발행 완료",
+      "sourceIds": [
+        "ADK06-1",
+        "ADK06-2",
+        "ADK06-DOC"
       ],
       "builds": 0
     },
@@ -1701,14 +1794,13 @@
       "builds": 0
     },
     {
-      "id": "ADK06",
-      "title": "답변 완료와 발행 완료",
+      "id": "ADKD",
+      "title": "그래프와 모델 루프의 경계",
       "sourceIds": [
-        "ADK06-1",
-        "ADK06-2",
-        "ADK06-DOC"
+        "ADKD-1",
+        "ADK01-DOC"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "ADK07",
@@ -1721,6 +1813,16 @@
       "builds": 0
     },
     {
+      "id": "ADKE",
+      "title": "ADK의 이벤트 중심 개발 방식",
+      "sourceIds": [
+        "ADKE-1",
+        "ADKE-2",
+        "ADK01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "MAF01",
       "title": "Agent 실행과 업무 Workflow",
       "sourceIds": [
@@ -1729,6 +1831,17 @@
         "MAF01-DOC"
       ],
       "builds": 0
+    },
+    {
+      "id": "MAFA",
+      "title": "Agent와 Workflow를 연결하는 순서",
+      "sourceIds": [
+        "MAFA-1",
+        "MAFA-2",
+        "MAFA-3",
+        "MAF01-DOC"
+      ],
+      "builds": 3
     },
     {
       "id": "MAF02",
@@ -1750,14 +1863,24 @@
       "builds": 0
     },
     {
-      "id": "MAF04",
-      "title": "병렬 결과를 결합하는 업무 키",
+      "id": "MAFB",
+      "title": "도구 결과와 업무 출력 전달",
       "sourceIds": [
-        "MAF04-1",
-        "MAF04-2",
-        "MAF04-DOC"
+        "MAFB-1",
+        "MAF01-DOC"
       ],
-      "builds": 0
+      "builds": 3
+    },
+    {
+      "id": "MAFC",
+      "title": "대화와 체크포인트에 남는 값",
+      "sourceIds": [
+        "MAFC-1",
+        "MAFC-2",
+        "MAFC-3",
+        "MAF01-DOC"
+      ],
+      "builds": 3
     },
     {
       "id": "MAF05",
@@ -1766,6 +1889,26 @@
         "MAF05-1",
         "MAF05-2",
         "MAF05-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAFD",
+      "title": "승인 요청과 재개 이벤트",
+      "sourceIds": [
+        "MAFD-1",
+        "MAFD-2",
+        "MAF01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "MAF04",
+      "title": "병렬 결과를 결합하는 업무 키",
+      "sourceIds": [
+        "MAF04-1",
+        "MAF04-2",
+        "MAF04-DOC"
       ],
       "builds": 0
     },
@@ -1790,6 +1933,28 @@
       "builds": 0
     },
     {
+      "id": "MAFE",
+      "title": "업무 순서와 복구를 코드로 선언하기",
+      "sourceIds": [
+        "MAFE-1",
+        "MAFE-2",
+        "MAFE-3",
+        "MAF01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "OAIA",
+      "title": "Agent 선언에서 Runner까지",
+      "sourceIds": [
+        "OAIA-1",
+        "OAIA-2",
+        "OAIA-3",
+        "OAI01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "OAI01",
       "title": "Runner가 한 턴을 해석하는 방식",
       "sourceIds": [
@@ -1797,26 +1962,6 @@
         "OAI01-2",
         "OAI01-3",
         "OAI01-DOC"
-      ],
-      "builds": 0
-    },
-    {
-      "id": "OAI02",
-      "title": "도구 결과로 종료하는 정책",
-      "sourceIds": [
-        "OAI02-1",
-        "OAI02-2",
-        "OAI02-DOC"
-      ],
-      "builds": 0
-    },
-    {
-      "id": "OAI03",
-      "title": "Agent.as_tool과 handoff",
-      "sourceIds": [
-        "OAI03-1",
-        "OAI03-2",
-        "OAI03-DOC"
       ],
       "builds": 0
     },
@@ -1831,6 +1976,37 @@
       "builds": 0
     },
     {
+      "id": "OAIC",
+      "title": "모델 입력과 실행 중단 상태",
+      "sourceIds": [
+        "OAIC-1",
+        "OAIC-2",
+        "OAI01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "OAIB",
+      "title": "도구 등록·인가·실행 경로",
+      "sourceIds": [
+        "OAIB-1",
+        "OAIB-2",
+        "OAIB-3",
+        "OAI01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "OAI02",
+      "title": "도구 결과로 종료하는 정책",
+      "sourceIds": [
+        "OAI02-1",
+        "OAI02-2",
+        "OAI02-DOC"
+      ],
+      "builds": 0
+    },
+    {
       "id": "OAI05",
       "title": "Guardrail과 Tool 승인",
       "sourceIds": [
@@ -1839,6 +2015,27 @@
         "OAI05-3",
         "OAI05-DOC",
         "GUARD"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAID",
+      "title": "승인과 Guardrail 순서 따라가기",
+      "sourceIds": [
+        "OAID-1",
+        "OAID-2",
+        "OAID-3",
+        "OAI01-DOC"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "OAI03",
+      "title": "Agent.as_tool과 handoff",
+      "sourceIds": [
+        "OAI03-1",
+        "OAI03-2",
+        "OAI03-DOC"
       ],
       "builds": 0
     },
@@ -1864,6 +2061,17 @@
       "builds": 0
     },
     {
+      "id": "OAIE",
+      "title": "실행 주체 전환을 앱에서 읽기",
+      "sourceIds": [
+        "OAIE-1",
+        "OAIE-2",
+        "OAIE-3",
+        "OAI01-DOC"
+      ],
+      "builds": 3
+    },
+    {
       "id": "S43",
       "title": "Agent를 어디에서 실행할까?",
       "sourceIds": [],
@@ -1871,15 +2079,15 @@
     },
     {
       "id": "S44",
-      "title": "실행 기록과 업무 결과 검증",
+      "title": "한 요청을 끝까지 검증하기",
       "sourceIds": [],
-      "builds": 2
+      "builds": 4
     },
     {
       "id": "S45",
-      "title": "구조를 이해하고 실제 개발로",
+      "title": "내 Agent를 만들 때 결정할 것",
       "sourceIds": [],
-      "builds": 3
+      "builds": 4
     }
   ],
   "reserved": [],
@@ -1989,36 +2197,56 @@
   "sdkOrder": [
     "SDKMAP",
     "CAS01",
+    "CASA",
     "CAS02",
-    "CAS03",
-    "CAS04",
+    "CASB",
     "CAS05",
+    "CAS03",
+    "CASC",
+    "CAS04",
     "CAS06",
+    "CASD",
+    "CASE",
+    "ADKA",
     "ADK01",
-    "ADK02",
     "ADK03",
+    "ADK02",
+    "ADKB",
+    "ADKC",
+    "ADK06",
     "ADK04",
     "ADK05",
-    "ADK06",
+    "ADKD",
     "ADK07",
+    "ADKE",
     "MAF01",
+    "MAFA",
     "MAF02",
     "MAF03",
-    "MAF04",
+    "MAFB",
+    "MAFC",
     "MAF05",
+    "MAFD",
+    "MAF04",
     "MAF06",
     "MAF07",
+    "MAFE",
+    "OAIA",
     "OAI01",
-    "OAI02",
-    "OAI03",
     "OAI04",
+    "OAIC",
+    "OAIB",
+    "OAI02",
     "OAI05",
+    "OAID",
+    "OAI03",
     "OAI06",
-    "OAI07"
+    "OAI07",
+    "OAIE"
   ],
   "sdkPages": [
     142,
-    169
+    189
   ],
   "demoTargets": {
     "HLOOP": [

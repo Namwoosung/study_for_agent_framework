@@ -9,6 +9,9 @@ def add_explanations(slides, root):
         if ident in guides or not (reading and application):
             raise ValueError(f'Invalid explanation for {ident}')
         guides[ident] = {'reading': reading, 'application': application}
+    for slide in slides:
+        if 'readingGuide' in slide:
+            guides[slide['id']] = slide['readingGuide']
     ids = {slide['id'] for slide in slides}
     if ids != guides.keys():
         raise ValueError(f'Missing guides: {ids - guides.keys()}, obsolete guides: {guides.keys() - ids}')

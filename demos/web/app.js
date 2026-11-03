@@ -121,7 +121,7 @@ function messageView(card, event, events) {
     let common = 0;
     while (common < before.length && common < messages.length
         && compact(before[common]) === compact(messages[common])) common++;
-    if (previous) card.append(element('p', '앞 ' + common + '개 유지 · 현재 변경 구간 ' + (messages.length - common)
+    if (previous) card.append(element('p', '같은 HTTP 클라이언트의 앞선 전송과 비교 · 앞 ' + common + '개 유지 · 현재 변경 구간 ' + (messages.length - common)
         + '개 · 이전 변경 구간 ' + (before.length - common) + '개', 'fixture'));
     const list = element('ol', undefined, 'messages');
     messages.forEach((message, index) => {
@@ -155,13 +155,14 @@ function relatedEvents(card, event, events) {
     ]).filter(Boolean));
     const related = events.filter(item => item.n !== event.n && (
         (event.request_id && item.request_id === event.request_id)
+        || (event.function_call_id && item.function_call_id === event.function_call_id)
         || (ids.size && (ids.has(item.value?.id) || ids.has(item.value?.call_id)
             || item.value?.messages?.some(message => ids.has(message.tool_call_id))))
     ));
     if (!related.length) return;
     const group = element('details');
     group.dataset.key = event.n + '-related';
-    group.append(element('summary', '같은 모델 요청 또는 Tool Call의 관측값 ' + related.length + '건'));
+    group.append(element('summary', '같은 요청·함수 호출의 관측값 ' + related.length + '건'));
     for (const item of related) group.append(raw('#' + item.n + ' ' + item.title, item.value, event.n + '-related-' + item.n));
     card.append(group);
 }
@@ -225,6 +226,7 @@ function eventCard(event, events) {
         }
     }
     relatedEvents(card, event, events);
+    if (event.function) card.append(element('p', event.function + ' · 정의 ' + event.source_line + '행 · ' + event.phase, 'meta'));
     card.append(raw('원본 이벤트 값', event.value, event.n + '-raw'));
     return card;
 }
@@ -267,6 +269,53 @@ function observationSequence(key, observations, selected, chosen) {
     return sequence;
 }
 
+let timelineNumber;
+function timelineEvents() {
+    const categories = config.scenarios[runScenario ?? scenario][2];
+    return trace.filter(event => categories.includes(event.category)
+        || ['approval', 'result', 'error'].includes(event.category));
+}
+function drawTimeline(selectedNumber) {
+    const events = timelineEvents();
+    const select = $('timeline-select');
+    const key = (runScenario ?? scenario) + '/' + events.length;
+    if (select.dataset.key !== key) {
+        select.dataset.key = key;
+        select.replaceChildren(...events.map(event => {
+            const option = element('option', '#' + event.n + ' ' + (labels[event.category] ?? event.category) + ' / ' + event.title);
+            option.value = event.n;
+            return option;
+        }));
+    }
+    const index = events.findIndex(event => event.n === selectedNumber);
+    select.value = events[index]?.n ?? '';
+    $('event-prev').disabled = index <= 0;
+    $('event-next').disabled = index < 0 || index >= events.length - 1;
+    $('timeline').hidden = events.length === 0;
+    $('follow').setAttribute('aria-pressed', String(timelineNumber === undefined && stageIndex === undefined));
+}
+function inspectEvent(number) {
+    timelineNumber = number;
+    const event = trace.find(item => item.n === number);
+    const stages = flows[runScenario ?? scenario] ?? [];
+    stageIndex = stages.findIndex(([, category, pattern]) => event.category === category && pattern.test(event.title));
+    eventNumber = number;
+    drawFlow();
+}
+$('timeline-select').onchange = event => inspectEvent(Number(event.target.value));
+for (const [id, delta] of [['event-prev', -1], ['event-next', 1]]) {
+    $(id).onclick = () => {
+        const events = timelineEvents();
+        const index = events.findIndex(event => event.n === Number($('timeline-select').value));
+        const next = events[index + delta];
+        if (next) inspectEvent(next.n);
+    };
+}
+$('follow').onclick = () => {
+    timelineNumber = stageIndex = eventNumber = undefined;
+    drawFlow();
+};
+
 function drawFlow() {
     const flow = $('flow');
     const key = runScenario ?? scenario;
@@ -293,7 +342,7 @@ function drawFlow() {
             const button = element('button');
             button.type = 'button';
             button.append(element('strong', label), element('span', '', 'step-status'), element('span', '', 'step-value'));
-            button.onclick = () => { stageIndex = index; eventNumber = undefined; drawFlow(); };
+            button.onclick = () => { timelineNumber = undefined; stageIndex = index; eventNumber = undefined; drawFlow(); };
             li.append(button);
             flow.append(li);
         });
@@ -303,12 +352,15 @@ function drawFlow() {
         button.setAttribute('aria-pressed', String(index === selected));
         button.dataset.observed = String(Boolean(observations.length));
         button.children[1].textContent = observations.length ? '관측 ' + observations.length + '건'
-            : done ? '미관측' : '예상 단계';
+            : done ? '미관측' : '관측 대기';
         button.children[2].textContent = observations.length ? preview(observations.at(-1)) : '';
     });
     const panel = $('observation');
     const observations = matches[selected] ?? [];
-    const chosen = observations.find(event => event.n === eventNumber) ?? observations.at(-1);
+    const chosen = timelineNumber === undefined
+        ? observations.find(event => event.n === eventNumber) ?? observations.at(-1)
+        : trace.find(event => event.n === timelineNumber);
+    drawTimeline(chosen?.n);
     const comparison = selected === 0 ? comparisonView(key, trace) : null;
     const stamp = (comparison || chosen?.request_id || chosen?.category === 'tool' ? trace.length + '/' : '') + key + '/' + selected + '/' + observations.length + '/' + (chosen?.n ?? 0);
     if (panel.dataset.stamp === stamp) return;
@@ -322,7 +374,7 @@ function drawFlow() {
     if (comparison) panel.append(comparison);
     const sequence = observationSequence(key, observations, selected, chosen);
     if (sequence) panel.append(sequence);
-    if (observations.length > 1) {
+    if (observations.length > 1 && timelineNumber === undefined) {
         const label = element('label', '관측 지점 ');
         const select = element('select');
         observations.forEach(event => {
@@ -365,7 +417,7 @@ function choose() {
     }
     trace = [];
     done = false;
-    runScenario = stageIndex = eventNumber = undefined;
+    runScenario = stageIndex = eventNumber = timelineNumber = undefined;
     $('observation').dataset.stamp = '';
     $('events').replaceChildren();
     $('outcome').hidden = true;
@@ -437,7 +489,9 @@ async function poll() {
         }
         $('status').textContent = state.events.some(e => e.category === 'error') ? '종료 · 오류 기록 확인' : '실행 완료';
     } catch (error) {
-        $('status').textContent = error.message;
+        $('status').textContent = '실행 상태 연결 재시도 중 · ' + error.message;
+        setTimeout(poll, 2000);
+        return;
     }
     $('run').disabled = false;
     $('approval').hidden = true;
@@ -453,7 +507,7 @@ $('form').addEventListener('submit', async (event) => {
     trace = [];
     done = false;
     runScenario = scenario;
-    stageIndex = eventNumber = undefined;
+    stageIndex = eventNumber = timelineNumber = undefined;
     $('outcome').hidden = true;
     $('observation').dataset.stamp = '';
     drawFlow();

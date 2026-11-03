@@ -304,6 +304,8 @@ from technical_walkthroughs import apply as apply_walkthroughs
 apply_walkthroughs(slides, globals())
 from sdk_revision import ALIASES as SDK_ALIASES, ORDER as SDK_ORDER, revise as revise_sdk
 revise_sdk(slides, globals())
+from purpose_revision import refine_purpose
+refine_purpose(slides, globals())
 aliases={'S06':'S05','PA05':'PA04','PA08':'PA07', **CLAUDE_ALIASES, **PYDANTIC_ALIASES, **SDK_ALIASES}
 slides['S01']['diagram']=re.sub(r' data-focus="\d+"','',slides['S01']['diagram'])
 expected=['S00','S01','S02','S03','S03H']+HERMES_ORDER+CLAUDE_ORDER+PYDANTIC_ORDER+SDK_ORDER+['S43','S44','S45']
@@ -354,7 +356,7 @@ for i,s in enumerate(ordered):
         demo=f'<a class="demo-link" href="demo-handoff.html?demo={engine}&amp;scenario={scenario}&amp;return={s["id"]}" target="_blank" rel="noopener">실행 Demo ↗</a>'
     html_slides.append(f'''<!-- === {s['id']}: {escape(s['title'])} === -->
 <section class="slide {s['kind']} {'no-build' if len(s['steps'])==1 else ''} {'active' if i==0 else ''} {'has-demo' if target else ''}" data-index="{i}" data-slide-id="{s['id']}" tabindex="-1" aria-label="{i+1}. {escape(s['title'])}" aria-hidden="{'false' if i==0 else 'true'}">
-<header><p class="section-label">{escape(s['section'])}</p><h1>{escape(s['title'])}</h1><p class="subtitle">{escape(s['sub'])}</p></header>
+<header><p class="section-label">{escape(s['section'])}<span class="learning-role">{escape(s["learningRole"])}</span></p><h1>{escape(s['title'])}</h1><p class="subtitle">{escape(s['sub'])}</p></header>
 <div class="diagram">{diagram_svg(s)}</div><p class="takeaway">{escape(s['take'])}</p>{demo}
 <footer class="slide-footer"><div><span class="page-count">{i+1:02} / {len(ordered)}</span><span>{s['id']}</span><span class="version">{escape(s['version'])}</span><button class="sources" aria-label="이 장의 개념·설명·출처 열기">Sources</button></div><nav class="controls" aria-label="발표 탐색"><span class="step-label">전체 구성 · 0/{len(s['steps'])-1}</span><button class="prev" aria-label="이전 단계">←</button><input class="jump-number" type="number" min="1" max="{len(ordered)}" value="{i+1}" aria-label="이동할 슬라이드 번호"><span class="jump-total">/ {len(ordered)}</span><button class="next" aria-label="다음 단계">→</button><button class="menu" aria-label="전체 목차 열기">목차</button></nav></footer><div class="progress" style="width:{(i+1)/len(ordered)*100:.4f}%"></div></section>''')
 
