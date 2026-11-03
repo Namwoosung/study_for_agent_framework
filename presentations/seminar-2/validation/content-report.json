@@ -1,19 +1,20 @@
 {
   "blueprintCoverage": 42,
-  "audienceSlides": 146,
+  "audienceSlides": 172,
   "speakerSpecCoverage": 42,
-  "sourcesExplanations": 146,
-  "reservedExcluded": [
-    "S39",
-    "S40",
-    "S41",
-    "S42"
+  "sourcesExplanations": 172,
+  "slideSpecificReadingGuides": 172,
+  "reservedExcluded": [],
+  "sdkPages": [
+    142,
+    169
   ],
+  "sdkSlides": 28,
   "pydanticPages": [
     83,
-    143
+    141
   ],
-  "pydanticSlides": 61,
+  "pydanticSlides": 59,
   "hermesPages": [
     6,
     53
@@ -33,8 +34,8 @@
   "explicitlyDeleted": [
     "S14B"
   ],
-  "pythonSnippetsSyntaxChecked": 6,
-  "pdfPages": 146,
+  "pythonSnippetsSyntaxChecked": 15,
+  "pdfPages": 172,
   "blankPdfPages": 0,
   "result": "pass"
 }

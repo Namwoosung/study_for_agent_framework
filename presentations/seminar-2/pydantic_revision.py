@@ -16,7 +16,8 @@ ORDER = ['PYDANTIC']
 for number in range(1, 53):
     if number in GROUPS:
         ORDER.append(f'PAD{list(GROUPS).index(number)+1:02}')
-    ORDER.append(f'PA{number:02}')
+    if number not in (5, 8):
+        ORDER.append(f'PA{number:02}')
 
 LEGACY = [1, 2, 4, 7, 13, 18, 23, 25, 28, 30, 31, 16, 42, 39, 43, 46, 37, 38, 52]
 ALIASES = {'PA00': 'PYDANTIC', **{f'S{i:02}': f'PA{n:02}' for i, n in enumerate(LEGACY, 20)}}
@@ -130,7 +131,7 @@ ROWS = """01|Pydantic과 PydanticAI가 맡는 일|데이터 계약과 Agent 실�
 49|Trace로 모델과 Tool 실행 이어 보기|Run에서 어떤 호출과 검증이 발생했는지 확인합니다.|Run span~요청 전체의 상관관계;Model / Tool span~호출 지연·사용량·오류;Output / 검증~처리와 오류 경계|Instrumentation의 wrap_run, wrap_model_request, wrap_tool_execute, wrap_output_process를 관측 경계에 연결합니다. OpenTelemetry exporter와 모델 입력·Tool 결과의 공개 범위는 앱이 설정합니다. 승인 감사 기록은 별도 계약입니다.|20 36
 50|흐름 테스트와 답변 평가|고정 응답으로 실행을 재현하고 데이터셋으로 답변을 평가합니다.|TestModel~기본 연결 검사;FunctionModel~원하는 응답·오류 재현;Evals~사례별 수치·근거·품질 평가|테스트에서 잘못된 호출과 수정 응답을 주입해 실제 Tool 실행 횟수를 확인합니다. Evals에서는 원본 집계와 최종 수율 오차, 근거 연결 여부를 평가합니다.|02 03 12
 51|어디까지 개발해야 Agent가 될까?|최소 실행에서 운영 서비스까지 책임이 늘어나는 지점을 봅니다.|최소 Agent~모델·조회 Tool·출력 타입;업무 Agent~인가·수치 검증·대화·승인;서비스~저장 충돌·복구·관측 운영|Agent와 Tool을 정의하면 반복 실행은 Core에 맡길 수 있습니다. 실제 업무에는 deps.py, validators.py, conversation_store.py, approval.py의 책임이 남습니다. Memory나 Skills가 필요하면 Harness 구성 파일에서 선택합니다.|01 11 14 35
-52|코드와 내부 실행을 한 요청으로 따라가기|합성 LOT-A를 조회하고 수율 보고서를 검증합니다.|코드~Tool과 YieldReport 선언;실행~요청 → Node → Tool 반환;검증~수치 대조 → 출력과 Trace|고정 응답은 분기와 호출 횟수 재현에 쓰고 실모델 연결은 호환성과 결과 품질을 확인하는 별도 단계입니다. Codex 환경은 10000번, Antigravity 환경은 10001번의 호환 endpoint를 사용합니다. 고정 응답 시험에서 인자 오류와 수율 수정, 세 종료 정책, 대화 직렬화, 승인 재개를 재현했습니다.|02 03 05 19 36"""
+52|코드와 내부 실행을 한 요청으로 따라가기|합성 LOT-A를 조회하고 수율 보고서를 검증합니다.|코드~Tool과 YieldReport 선언;실행~요청 → Node → Tool 반환;검증~수치 대조 → 출력과 Trace|고정 응답은 분기와 호출 횟수 재현에 쓰고 실모델 연결은 호환성과 결과 품질을 확인하는 별도 단계입니다. PydanticAI 데모 화면은 18001번이며 런타임은 10001번의 OpenAI 호환 모델 endpoint를 사용합니다. 고정 응답 시험에서 인자 오류와 수율 수정, 세 종료 정책, 대화 직렬화, 승인 재개를 재현했습니다.|02 03 05 19 36"""
 
 FLOW = {5, 6, 7, 8, 17, 18, 21, 23, 37, 40, 43, 47, 52}
 
@@ -169,6 +170,8 @@ def revise(slides, drawing):
     for row in ROWS.splitlines():
         num, title, sub, visual, detail, ref_ids = row.split('|')
         n = int(num)
+        if n in (5, 8):
+            continue
         refs = [sources[int(k)] for k in ref_ids.split()]
         if n in GROUPS:
             chapter, intro = GROUPS[n]
@@ -200,5 +203,5 @@ def revise(slides, drawing):
                 diagram = table(('구분', '실행에서 맡는 역할'), concepts,
                                 widths=[495, 1157], y=65, row_h=100)
         if n == 52:
-            detail += '\n\nD1–D3은 노드·인자·출력 검증을, D4–D5는 동시 실행과 종료 정책을, D6–D9는 정책 합성·승인·기억·위임 및 관측을 다룹니다. 발표 Demo 링크는 접속 계약과 관찰 항목을 보여 주는 안내입니다.'
+            detail += '\n\n실행 화면은 Graph, Deps, 대화 저장·복원, 출력 모드, 종료 정책, Core, Harness Memory, Subagents를 각각 다룹니다.'
         add(f'PA{num}', title, sub, diagram, sub, detail, refs, concepts, section)

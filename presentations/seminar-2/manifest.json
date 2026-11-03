@@ -1,6 +1,6 @@
 {
   "blueprint": "blueprint.md",
-  "blueprintSha256": "aae02ef79155958a73e8a7aeb507c7509138c26a45c87854c04b603f4766093d",
+  "blueprintSha256": "77131f56e85657a79442daff2d2fc82c300148446930491c0d2343322e598a8d",
   "editorialRevision": "2026-11-03 / hermes_deep.py / official v0.22.5 code-grounded revision / claude_revision.py / official Claude Code documentation / pydantic_revision.py / Core 2.61.0 and Harness 0.61.0",
   "hermesOrder": [
     "S04",
@@ -10,10 +10,12 @@
     "HEXIT",
     "HCTX",
     "S07",
+    "S08",
     "S10",
     "HMEM",
     "S11",
     "HSEARCH",
+    "S09",
     "HTOOL",
     "S13",
     "HSCHEMA",
@@ -23,6 +25,7 @@
     "S13B",
     "HHUMAN",
     "HFAIL",
+    "S14",
     "S12",
     "HLEARN",
     "HWRITE",
@@ -39,9 +42,6 @@
     "HTRACEUSE",
     "HTRACESHARE",
     "HLONG",
-    "S08",
-    "S09",
-    "S14",
     "S14A",
     "HCHILD",
     "HMULTI",
@@ -66,6 +66,8 @@
   ],
   "aliases": {
     "S06": "S05",
+    "PA05": "PA04",
+    "PA08": "PA07",
     "CC00": "CLAUDE",
     "S16": "CC01",
     "S17": "CC03",
@@ -90,7 +92,11 @@
     "S35": "PA46",
     "S36": "PA37",
     "S37": "PA38",
-    "S38": "PA52"
+    "S38": "PA52",
+    "S39": "OAI01",
+    "S40": "CAS01",
+    "S41": "ADK01",
+    "S42": "MAF01"
   },
   "slides": [
     {
@@ -102,7 +108,9 @@
     {
       "id": "S01",
       "title": "Agent Framework의 구성",
-      "sourceIds": [],
+      "sourceIds": [
+        "GUIDE"
+      ],
       "builds": 0
     },
     {
@@ -164,39 +172,53 @@
     },
     {
       "id": "HLOOP",
-      "title": "루프 한 번이 지나는 실제 함수들",
+      "title": "Hermes는 언제 다시 모델을 부를까?",
       "sourceIds": [
         "R-loop",
         "R-prep",
-        "R-retry"
+        "R-retry",
+        "R-turn_request_assembly.py",
+        "R-turn_preflight_gate.py"
       ],
-      "builds": 3
+      "builds": 7
     },
     {
       "id": "HTRACE",
-      "title": "한 요청에서 루프가 세 번 도는 예",
+      "title": "모델 응답을 받고 루프를 잇는 코드",
       "sourceIds": [
         "R-defaults",
         "R-loop",
-        "R-prep"
+        "R-prep",
+        "R-turn_response_intake.py",
+        "R-turn_tool_round.py",
+        "R-turn_final_response.py"
       ],
-      "builds": 4
+      "builds": 6
     },
     {
       "id": "HEXIT",
-      "title": "중단·예산 소진·오류의 종료 경로",
+      "title": "루프가 멈추는 세 가지 이유",
       "sourceIds": [
         "R-prep",
         "R-retry",
-        "R-final"
+        "R-final",
+        "R-loop"
       ],
       "builds": 3
     },
     {
       "id": "HCTX",
-      "title": "Context와 기억",
-      "sourceIds": [],
-      "builds": 0
+      "title": "시스템 프롬프트에는 무엇이 들어갈까?",
+      "sourceIds": [
+        "H03",
+        "H05",
+        "H09",
+        "R-prompt",
+        "R-loop",
+        "R-memory",
+        "R-registry"
+      ],
+      "builds": 4
     },
     {
       "id": "S07",
@@ -213,8 +235,18 @@
       "builds": 5
     },
     {
+      "id": "S08",
+      "title": "System Prompt를 고정해 Prefix를 재사용하기",
+      "sourceIds": [
+        "H04",
+        "V01",
+        "R-prompt"
+      ],
+      "builds": 2
+    },
+    {
       "id": "S10",
-      "title": "memory Tool은 무엇을 어떻게 저장할까?",
+      "title": "memory 도구에 무엇을 보낼까?",
       "sourceIds": [
         "H05",
         "H06",
@@ -225,11 +257,11 @@
         "R-write",
         "R-defaults"
       ],
-      "builds": 3
+      "builds": 4
     },
     {
       "id": "HMEM",
-      "title": "Memory 쓰기 승인은 기본으로 켜져 있을까?",
+      "title": "기억을 쓰기 전에 사람에게 물어볼까?",
       "sourceIds": [
         "R-defaults",
         "R-write",
@@ -239,7 +271,7 @@
     },
     {
       "id": "S11",
-      "title": "session_search는 인자에 따라 다르게 동작합니다",
+      "title": "session_search에 무엇을 보낼까?",
       "sourceIds": [
         "H07",
         "H08",
@@ -247,7 +279,7 @@
         "R-search",
         "R-sql"
       ],
-      "builds": 3
+      "builds": 4
     },
     {
       "id": "HSEARCH",
@@ -255,6 +287,17 @@
       "sourceIds": [
         "R-sql",
         "R-search"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S09",
+      "title": "예시 Context가 압축되는 과정",
+      "sourceIds": [
+        "H04",
+        "H02",
+        "R-prompt",
+        "R-loop"
       ],
       "builds": 4
     },
@@ -348,6 +391,18 @@
         "R-final"
       ],
       "builds": 6
+    },
+    {
+      "id": "S14",
+      "title": "Hermes의 병렬 Tool 실행 코드",
+      "sourceIds": [
+        "H13",
+        "H14",
+        "HX08",
+        "R-parallel",
+        "R-planner"
+      ],
+      "builds": 3
     },
     {
       "id": "S12",
@@ -510,42 +565,9 @@
     },
     {
       "id": "HLONG",
-      "title": "긴 작업과 위임",
+      "title": "위임",
       "sourceIds": [],
       "builds": 0
-    },
-    {
-      "id": "S08",
-      "title": "System Prompt를 고정해 Prefix를 재사용하기",
-      "sourceIds": [
-        "H04",
-        "V01",
-        "R-prompt"
-      ],
-      "builds": 2
-    },
-    {
-      "id": "S09",
-      "title": "예시 Context가 압축되는 과정",
-      "sourceIds": [
-        "H04",
-        "H02",
-        "R-prompt",
-        "R-loop"
-      ],
-      "builds": 4
-    },
-    {
-      "id": "S14",
-      "title": "Hermes의 병렬 Tool 실행 코드",
-      "sourceIds": [
-        "H13",
-        "H14",
-        "HX08",
-        "R-parallel",
-        "R-planner"
-      ],
-      "builds": 3
     },
     {
       "id": "S14A",
@@ -776,7 +798,8 @@
       "id": "CC11",
       "title": "Hook이 실패하면 실행은 계속될까?",
       "sourceIds": [
-        "D11"
+        "D11",
+        "HOOK-FAIL"
       ],
       "builds": 0
     },
@@ -944,18 +967,18 @@
     },
     {
       "id": "PA01",
-      "title": "Pydantic과 PydanticAI가 맡는 일",
+      "title": "Pydantic과 PydanticAI, 어디까지 맡을까?",
       "sourceIds": [
         "PA-SRC07",
         "PA-SRC08",
         "P01",
         "P02"
       ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PA02",
-      "title": "내 코드에서 모델까지",
+      "title": "PydanticAI Core의 네 부분",
       "sourceIds": [
         "PA-SRC01",
         "PA-SRC03",
@@ -965,7 +988,7 @@
         "P01",
         "P03"
       ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PA03",
@@ -978,7 +1001,7 @@
     },
     {
       "id": "PA04",
-      "title": "Tool과 출력 타입 붙이기",
+      "title": "조회 도구와 보고서 타입을 붙이기",
       "sourceIds": [
         "PA-SRC01",
         "PA-SRC06",
@@ -987,18 +1010,7 @@
         "P04",
         "P05"
       ],
-      "builds": 0
-    },
-    {
-      "id": "PA05",
-      "title": "선언이 실행에 필요한 객체로 바뀝니다",
-      "sourceIds": [
-        "PA-SRC01",
-        "PA-SRC03",
-        "PA-SRC06",
-        "PA-SRC07"
-      ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PAD02",
@@ -1012,62 +1024,51 @@
     },
     {
       "id": "PA06",
-      "title": "run에서 Graph가 열리기까지",
+      "title": "run()이 Graph를 여는 과정",
       "sourceIds": [
         "PA-SRC01",
         "PA-SRC02",
         "PA-SRC03"
       ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PA07",
-      "title": "세 노드가 나누어 맡는 실행",
+      "title": "pydantic-graph가 Agent 루프를 돌리는 방법",
       "sourceIds": [
         "PA-SRC03",
         "P03"
       ],
-      "builds": 0
-    },
-    {
-      "id": "PA08",
-      "title": "한 요청에서 모델이 세 번 응답한 경우",
-      "sourceIds": [
-        "PA-SRC03",
-        "PA-SRC04",
-        "PA-SRC05",
-        "PA-SRC12"
-      ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PA09",
-      "title": "상태와 의존성을 구별하기",
+      "title": "Graph 상태와 앱 데이터가 만나는 곳",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC10"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA10",
-      "title": "응답에서 다음 노드를 고르는 조건",
+      "title": "모델 응답을 어느 경로로 보낼까?",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC05",
         "PA-SRC07"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA11",
-      "title": "예산 소진과 취소",
+      "title": "다음 모델 요청이 막히는 지점",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC05",
         "PA-SRC13"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA12",
@@ -1077,7 +1078,7 @@
         "PA-SRC03",
         "PA-SRC05"
       ],
-      "builds": 0
+      "builds": 5
     },
     {
       "id": "PAD03",
@@ -1094,7 +1095,7 @@
     },
     {
       "id": "PA13",
-      "title": "모델에 보내는 값과 Python에 남는 값",
+      "title": "LOT-A 요청에서 모델이 실제로 받는 값",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC10",
@@ -1103,17 +1104,17 @@
         "P06",
         "P07"
       ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PA14",
-      "title": "Instructions와 System Prompt의 수명",
+      "title": "새 Run에서 어떤 지시가 남을까?",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC12",
         "PA-SRC19"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA15",
@@ -1139,12 +1140,12 @@
     },
     {
       "id": "PA17",
-      "title": "대화를 저장하고 다시 열기",
+      "title": "대화 불러오기 → 실행 → 새 버전 저장",
       "sourceIds": [
         "PA-SRC11",
         "PA-SRC12"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PAD04",
@@ -1161,7 +1162,7 @@
     },
     {
       "id": "PA18",
-      "title": "Python 함수에서 모델용 Tool 명세까지",
+      "title": "함수 한 개에서 스키마와 검증기가 만들어지는 과정",
       "sourceIds": [
         "PA-SRC06",
         "PA-SRC09",
@@ -1170,7 +1171,7 @@
         "P08",
         "P09"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA19",
@@ -1184,22 +1185,22 @@
     },
     {
       "id": "PA20",
-      "title": "Toolset이 공개 목록을 바꾸는 시점",
+      "title": "다음 모델 요청에서 도구 목록을 바꾸기",
       "sourceIds": [
         "PA-SRC04",
         "PA-SRC17",
         "PA-SRC18"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA21",
-      "title": "호출 검증과 함수 실행",
+      "title": "Tool 인자가 틀리면 어디에서 멈출까?",
       "sourceIds": [
         "PA-SRC04",
         "PA-SRC05"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA22",
@@ -1213,7 +1214,7 @@
     },
     {
       "id": "PA23",
-      "title": "병렬 Tool과 실행 장벽",
+      "title": "병렬 조회 사이에 단독 작업을 넣기",
       "sourceIds": [
         "PA-SRC04",
         "PA-SRC05",
@@ -1221,7 +1222,7 @@
         "P08",
         "P10"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA24",
@@ -1279,14 +1280,14 @@
     },
     {
       "id": "PA28",
-      "title": "같은 응답, 서로 다른 종료 정책",
+      "title": "같은 모델 응답에서 무엇을 실행할까?",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC05",
         "P03",
         "P10"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA29",
@@ -1352,12 +1353,12 @@
     },
     {
       "id": "PA34",
-      "title": "Guardrail이 판정하는 시점",
+      "title": "가드레일을 어느 경계에 걸까?",
       "sourceIds": [
         "PA-SRC26",
         "PA-SRC27"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA35",
@@ -1381,7 +1382,7 @@
     },
     {
       "id": "PA37",
-      "title": "승인 결과로 다음 Run 시작하기",
+      "title": "승인한 호출 ID로 실행 이어가기",
       "sourceIds": [
         "PA-SRC03",
         "PA-SRC04",
@@ -1389,7 +1390,7 @@
         "PA-SRC11",
         "P23"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PAD07",
@@ -1417,23 +1418,23 @@
     },
     {
       "id": "PA39",
-      "title": "Memory를 쓰고 찾는 Tool",
+      "title": "Harness Memory에 메모 한 줄 쓰기",
       "sourceIds": [
         "PA-SRC21",
         "PA-SRC22",
         "PA-SRC23",
         "P17"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA40",
-      "title": "기억이 모델 입력에 들어가는 시점",
+      "title": "저장한 Memory가 다음 모델 입력에 들어가는 곳",
       "sourceIds": [
         "PA-SRC21",
         "PA-SRC23"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA41",
@@ -1447,25 +1448,25 @@
     },
     {
       "id": "PA42",
-      "title": "압축 전후의 같은 대화",
+      "title": "대화 압축 전후를 메시지로 보기",
       "sourceIds": [
         "PA-SRC28",
         "PA-SRC29",
         "P02",
         "P16"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA43",
-      "title": "Skill을 발견하고 선택해 로딩하기",
+      "title": "Harness Skill이 실행에 들어오는 과정",
       "sourceIds": [
         "PA-SRC24",
         "PA-SRC25",
         "P18",
         "P19"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA44",
@@ -1478,12 +1479,12 @@
     },
     {
       "id": "PA45",
-      "title": "대화 저장, Step 저장, Durable 실행",
+      "title": "서버가 멈췄을 때 무엇부터 복구할까?",
       "sourceIds": [
         "PA-SRC11",
         "PA-SRC34"
       ],
-      "builds": 0
+      "builds": 4
     },
     {
       "id": "PAD08",
@@ -1515,12 +1516,12 @@
     },
     {
       "id": "PA47",
-      "title": "자식 Run이 받는 값",
+      "title": "위임 요청을 자식 Run으로 실행하기",
       "sourceIds": [
         "PA-SRC30",
         "PA-SRC31"
       ],
-      "builds": 0
+      "builds": 3
     },
     {
       "id": "PA48",
@@ -1575,6 +1576,294 @@
       "builds": 0
     },
     {
+      "id": "SDKMAP",
+      "title": "SDK 실행 경계 비교",
+      "sourceIds": [
+        "CAS",
+        "ADK",
+        "MAF",
+        "OAI"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS01",
+      "title": "Claude Agent SDK의 프로세스 경계",
+      "sourceIds": [
+        "CAS01-1",
+        "CAS01-2",
+        "CAS01-3",
+        "CAS01-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS02",
+      "title": "단발 요청과 대화형 클라이언트",
+      "sourceIds": [
+        "CAS02-1",
+        "CAS02-2",
+        "CAS02-3",
+        "CAS02-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS03",
+      "title": "Python 조회 함수를 SDK MCP로 연결",
+      "sourceIds": [
+        "CAS03-1",
+        "CAS03-2",
+        "CAS03-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS04",
+      "title": "작업 환경과 도구 권한",
+      "sourceIds": [
+        "CAS04-1",
+        "CAS04-2",
+        "CAS04-3",
+        "CAS04-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS05",
+      "title": "세션 재개와 산출물 버전",
+      "sourceIds": [
+        "CAS05-1",
+        "CAS05-2",
+        "CAS05-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "CAS06",
+      "title": "스트림과 구조화 결과",
+      "sourceIds": [
+        "CAS06-1",
+        "CAS06-2",
+        "CAS06-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK01",
+      "title": "Runner와 이벤트 스트림",
+      "sourceIds": [
+        "ADK01-1",
+        "ADK01-2",
+        "ADK01-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK02",
+      "title": "함수 응답과 상태 반영",
+      "sourceIds": [
+        "ADK02-1",
+        "ADK02-2",
+        "ADK02-3",
+        "ADK02-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK03",
+      "title": "Session·State·Memory·Artifact",
+      "sourceIds": [
+        "ADK03-1",
+        "ADK03-2",
+        "ADK03-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK04",
+      "title": "Agent 전이와 고정 순서",
+      "sourceIds": [
+        "ADK04-1",
+        "ADK04-2",
+        "ADK04-3",
+        "ADK04-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK05",
+      "title": "ADK 2.x Graph 스케줄러",
+      "sourceIds": [
+        "ADK05-1",
+        "ADK05-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK06",
+      "title": "답변 완료와 발행 완료",
+      "sourceIds": [
+        "ADK06-1",
+        "ADK06-2",
+        "ADK06-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "ADK07",
+      "title": "실행 설정과 이벤트 검증",
+      "sourceIds": [
+        "ADK07-1",
+        "ADK07-2",
+        "ADK07-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF01",
+      "title": "Agent 실행과 업무 Workflow",
+      "sourceIds": [
+        "MAF01-1",
+        "MAF01-2",
+        "MAF01-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF02",
+      "title": "Executor와 Edge의 메시지 계약",
+      "sourceIds": [
+        "MAF02-1",
+        "MAF02-2",
+        "MAF02-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF03",
+      "title": "AgentExecutor의 입력과 출력",
+      "sourceIds": [
+        "MAF03-1",
+        "MAF03-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF04",
+      "title": "병렬 결과를 결합하는 업무 키",
+      "sourceIds": [
+        "MAF04-1",
+        "MAF04-2",
+        "MAF04-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF05",
+      "title": "승인 대기와 응답 연결",
+      "sourceIds": [
+        "MAF05-1",
+        "MAF05-2",
+        "MAF05-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF06",
+      "title": "체크포인트와 외부 발행 복구",
+      "sourceIds": [
+        "MAF06-1",
+        "MAF06-2",
+        "MAF06-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "MAF07",
+      "title": "Agent와 명시적 Executor의 배치",
+      "sourceIds": [
+        "MAF07-1",
+        "MAF07-2",
+        "MAF07-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI01",
+      "title": "Runner가 한 턴을 해석하는 방식",
+      "sourceIds": [
+        "OAI01-1",
+        "OAI01-2",
+        "OAI01-3",
+        "OAI01-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI02",
+      "title": "도구 결과로 종료하는 정책",
+      "sourceIds": [
+        "OAI02-1",
+        "OAI02-2",
+        "OAI02-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI03",
+      "title": "Agent.as_tool과 handoff",
+      "sourceIds": [
+        "OAI03-1",
+        "OAI03-2",
+        "OAI03-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI04",
+      "title": "Session과 RunState의 저장 경계",
+      "sourceIds": [
+        "OAI04-1",
+        "OAI04-2",
+        "OAI04-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI05",
+      "title": "Guardrail과 Tool 승인",
+      "sourceIds": [
+        "OAI05-1",
+        "OAI05-2",
+        "OAI05-3",
+        "OAI05-DOC",
+        "GUARD"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI06",
+      "title": "Trace에서 실행 주체 확인",
+      "sourceIds": [
+        "OAI06-1",
+        "OAI06-2",
+        "OAI06-DOC"
+      ],
+      "builds": 0
+    },
+    {
+      "id": "OAI07",
+      "title": "고정 모델 응답으로 실행 비교",
+      "sourceIds": [
+        "OAI07-1",
+        "OAI07-2",
+        "OAI07-3",
+        "OAI07-DOC"
+      ],
+      "builds": 0
+    },
+    {
       "id": "S43",
       "title": "Agent를 어디에서 실행할까?",
       "sourceIds": [],
@@ -1593,12 +1882,7 @@
       "builds": 3
     }
   ],
-  "reserved": [
-    "S39",
-    "S40",
-    "S41",
-    "S42"
-  ],
+  "reserved": [],
   "demoStatus": "local runtime web apps in demos/",
   "visualDesign": "2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus",
   "notes": "Sources: concepts and explanation / N: presenter notes and appendix",
@@ -1644,11 +1928,9 @@
     "PA02",
     "PA03",
     "PA04",
-    "PA05",
     "PAD02",
     "PA06",
     "PA07",
-    "PA08",
     "PA09",
     "PA10",
     "PA11",
@@ -1702,7 +1984,41 @@
   ],
   "pydanticPages": [
     83,
-    143
+    141
+  ],
+  "sdkOrder": [
+    "SDKMAP",
+    "CAS01",
+    "CAS02",
+    "CAS03",
+    "CAS04",
+    "CAS05",
+    "CAS06",
+    "ADK01",
+    "ADK02",
+    "ADK03",
+    "ADK04",
+    "ADK05",
+    "ADK06",
+    "ADK07",
+    "MAF01",
+    "MAF02",
+    "MAF03",
+    "MAF04",
+    "MAF05",
+    "MAF06",
+    "MAF07",
+    "OAI01",
+    "OAI02",
+    "OAI03",
+    "OAI04",
+    "OAI05",
+    "OAI06",
+    "OAI07"
+  ],
+  "sdkPages": [
+    142,
+    169
   ],
   "demoTargets": {
     "HLOOP": [

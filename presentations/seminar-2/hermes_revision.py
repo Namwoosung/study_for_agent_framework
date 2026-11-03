@@ -211,7 +211,7 @@ def revise(slides, env):
     put('S15','Hermes Demo','지금까지 설명한 요청·Tool·저장 과정을 실행 기록에서 확인합니다.','기본 흐름을 먼저 확인하고, 확장 기능은 실제 발생한 경로만 살펴봅니다.',5,d,
         ['입력','최종 모델 요청','Tool 호출과 반환','저장 상태','후속 질문과 확장'],
         [('관찰 단위','사용자 요청→모델 입력→Tool Call/Result→세션·파일 변경을 ID로 연결합니다.'),('Memory 확인','실제 Tool 반환과 파일 diff, 현재 snapshot/다음 세션을 나누어 봅니다.'),('실행 기록의 구분','live·사전 기록·fixture를 표시하고 이번 실행에서 일어나지 않은 기능을 시연한 것처럼 표시하지 않습니다.')],
-        '합성 데이터 조회와 후속 질문으로 기본 실행을 확인하고 최종 request, tool_call_id, 인자·반환, 종료 원인과 세션 저장을 관찰하는 Demo 계획입니다. Memory 쓰기를 선택하면 실제 Tool·파일 diff와 snapshot을 비교합니다. Skill/MCP/위임/압축/승인을 한 자연 실행에 모두 강제하지 않고 이름 있는 별도 시나리오로 준비합니다.\n\n현재 연결 페이지에는 실제 Hermes 실행 서비스나 Trace가 없으며 이 장도 실행 결과를 꾸며 표시하지 않습니다. Codex 지시의 두 Demo는 10000, Antigravity 지시의 두 Demo는 10001 호환 endpoint를 사용한다는 계약을 유지합니다. 로컬 프록시와 대상 PC의 vLLM은 실제 관찰 환경을 구분합니다. 기존 Profile과 DB/Memory를 덮어쓰지 않는 별도 Demo 환경이 필요합니다.',
+        '합성 검사 데이터로 루프, 모델 요청, 세션 검색, Tool과 Hook, 승인, 가드레일, Skill, 위임을 각각 실행합니다. 요청과 Tool 인자·반환은 해당 실행에서 실제로 관측된 값을 확인합니다.\n\n발표의 연결 페이지는 Hermes 실행 화면(18000)을 엽니다. Hermes 런타임은 10000번의 OpenAI 호환 모델 endpoint에 요청합니다. 모델 endpoint와 데모 서비스는 각각 실행해야 합니다.',
         ['H01','H02','H05','H11','H14'],'§3·8·11·14',evidence='실행 관찰 계획 · 서비스 별도')
 
     # Retain the original snapshot/FTS/resource comments as linked local evidence.

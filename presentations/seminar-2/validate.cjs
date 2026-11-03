@@ -39,7 +39,7 @@ const {pathToFileURL}=require('url');
     return {id:s.dataset.slideId,ratio:r.width/r.height,overflow,overlaps,headerIntrusion,viewportOverflow};
    });
    reports.push({viewport,...report});
-   if(viewport.width===1280)await screenshot(path.join(out,`revision-screenshots/${report.id}.png`));
+   if(viewport.width===1280&&manifest.sdkOrder.includes(report.id))await screenshot(path.join(out,`revision-screenshots/${report.id}.png`));
   }
  }
  await page.setViewportSize({width:1280,height:720});
@@ -52,18 +52,40 @@ const {pathToFileURL}=require('url');
  }
  await page.keyboard.press('Home');await page.keyboard.press('PageDown');if((await page.evaluate(()=>deck.state())).index!==1)errors.push('PageDown');
  await page.keyboard.press('g');await page.locator('.slide.active .jump-number').fill(String(manifest.slides.findIndex(s=>s.id==='PA52')+1));await page.keyboard.press('Enter');if((await page.evaluate(()=>deck.state())).id!=='PA52')errors.push('Jump display index');
- await page.keyboard.press('PageDown');if((await page.evaluate(()=>deck.state())).id!=='S43')errors.push('Reserved not skipped');
+ await page.keyboard.press('PageDown');if((await page.evaluate(()=>deck.state())).id!=='SDKMAP')errors.push('SDK chapter entry');
  await page.keyboard.press('t');if(!await page.locator('.menu-dialog').evaluate(d=>d.open))errors.push('TOC open');
  await page.locator(`[data-jump="${manifest.slides.findIndex(s=>s.id==='S15')}"]`).click();if((await page.evaluate(()=>deck.state())).id!=='S15')errors.push('TOC jump');
  if(await page.locator('.menu-dialog').evaluate(d=>d.open))errors.push('TOC close');
  const popup=page.waitForEvent('popup');await page.keyboard.press('n');const notes=await popup;await notes.waitForLoadState();
  if((await notes.locator('h1').innerText())!==manifest.slides.find(s=>s.id==='S15').title)errors.push('Current notes');
  await notes.locator('[data-tab="qa"]').click();if(!(await notes.locator('main').innerText()).includes('graceful'))errors.push('Private QA');
- await notes.locator('[data-tab="reserved"]').click();if(!(await notes.locator('main').innerText()).includes('S39'))errors.push('Private reserved');
  await notes.locator('[data-tab="current"]').click();await notes.locator('#nextSlide').click();if((await page.evaluate(()=>deck.state())).id!=='CLAUDE')errors.push('Presenter navigation');await notes.close();
+ const sdkStart=manifest.slides.findIndex(s=>s.id==='SDKMAP');
+ if(manifest.slides[sdkStart-1]?.id!==manifest.pydanticOrder.at(-1) ||
+    manifest.slides.slice(sdkStart,sdkStart+manifest.sdkOrder.length).some((s,i)=>s.id!==manifest.sdkOrder[i]))errors.push('SDK order');
+ for(const [legacy,current] of Object.entries({S39:'OAI01',S40:'CAS01',S41:'ADK01',S42:'MAF01'})){
+  await page.evaluate(id=>deck.goId(id),legacy);
+  if(await page.locator('.slide.active').getAttribute('data-slide-id')!==current)errors.push(`SDK alias ${legacy}`);
+ }
+
  if(await page.locator('.module-map').count())errors.push('Intrusive chapter navigation remains');
  await page.evaluate(()=>deck.goId('S01'));if((await page.evaluate(()=>deck.state())).step!==0||manifest.slides.find(s=>s.id==='S01').builds!==0)errors.push('S01 must have no build');
  await page.keyboard.press('Space');if((await page.evaluate(()=>deck.state())).id!=='S02')errors.push('S01 Space should advance page');
+ const idsInOrder=manifest.slides.map(s=>s.id);
+ for(const [anchor, moved] of [['S07','S08'],['HSEARCH','S09'],['HFAIL','S14']]){
+  if(idsInOrder.indexOf(moved)!==idsInOrder.indexOf(anchor)+1)errors.push('Slide order '+moved);
+ }
+ for(const id of ['PA05','PA08'])if(idsInOrder.includes(id))errors.push('Merged slide remains '+id);
+ for(const id of ['HLOOP','HTRACE','HEXIT','S11','PA04','PA12','PA23']){
+  await page.evaluate(id=>deck.goId(id),id);
+  for(let step=1;step<=manifest.slides.find(slide=>slide.id===id).builds;step++){
+   await page.keyboard.press('Space');
+   const groups=await page.locator('.slide.active .highlight').evaluateAll(els=>els.map(el=>({
+    focus:el.dataset.focus,code:!!el.querySelector('.code-line')
+   })));
+   if(!groups.length||groups.some(g=>!g.code||!g.focus.split(' ').includes(String(step))))errors.push('Code highlight '+id+' '+step);
+  }
+ }
  if(manifest.slides.some(s=>s.id==='S14B'))errors.push('Deleted Gateway slide remains');
  // Every Sources reader must explain this slide, without navigating the deck.
  for(let i=0;i<manifest.slides.length;i++){

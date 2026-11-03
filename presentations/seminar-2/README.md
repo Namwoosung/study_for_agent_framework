@@ -1,10 +1,12 @@
 # Agent Framework 2차 세미나 — 전체 발표자료
 
-[발표용 HTML](index.html) · [81페이지 PDF](agent-framework-seminar-2.pdf) · [발표자 노트](presenter-notes.md)
+[발표용 HTML](index.html) · [172페이지 PDF](agent-framework-seminar-2.pdf) · [발표자 노트](presenter-notes.md)
 
-기준 blueprint와 로컬 학습자료를 바탕으로 기존 청회색 테마를 유지했습니다. 후속 요청에 따라 Hermes를 공식 `v0.22.5` 코드와 대조해 확장했습니다. 본편은 **81장**, Hermes는 **6~53페이지 48장**입니다. S39~S42의 미작성 SDK 예약 항목은 청중 목차·PDF에서 제외합니다.
+기준 blueprint와 로컬 학습자료를 바탕으로 기존 청회색 테마를 유지했습니다. 후속 요청에 따라 Hermes를 공식 `v0.22.5` 코드와 대조해 확장했습니다. 본편은 **172장**, Hermes는 **6~53페이지 48장**입니다. PydanticAI 뒤에 SDK 비교 28장(연결 1장, Claude Agent SDK 6장, Google ADK·Microsoft Agent Framework·OpenAI Agents SDK 각 7장)을 포함합니다.
 
 ## 이번 개정
+
+- 네 SDK의 Python API 발췌, 실행 경계와 실패 예시를 추가했습니다. 장표별 고정 소스 태그는 Sources에 있고, LOT 사례는 합성 데이터입니다. [조사·발표 구성](reviews/sdk-comparison-plan.md)
 
 - 반복 범주 메뉴를 없애고 Context·기억 / Tools·Skills / 안전장치·실행 기록 / 긴 작업·위임 / 예약·활용 전환 장표를 넣었습니다.
 - Hermes·Claude Code·PydanticAI 시작을 명시적으로 구분했습니다. Hermes·PydanticAI는 공식 SVG를 내장했고, Claude Code는 글자 중심 구분 장표입니다.
@@ -23,7 +25,7 @@
 | `→` / `Space` | 강조 단계 진행, 마지막 단계 뒤 다음 장 |
 | `←` | 단계 역순, 첫 단계에서 이전 장 마지막 단계 |
 | `PageDown` / `PageUp` | 장 단위 이동 |
-| `G` | 하단 번호 입력에 포커스. 1–81 입력 후 Enter |
+| `G` | 하단 번호 입력에 포커스. 1–172 입력 후 Enter |
 | `T` / 목차 | 전체 본편 목록에서 바로 이동 |
 | `Home` / `End` | 첫 장 / 마지막 장 |
 | Sources | 현재 장의 개념·설명·참고 자료 |
@@ -31,9 +33,9 @@
 | `F` / `Escape` | 전체 화면 / 닫기 |
 | 터치 스와이프 / 휠 | 단계 이동 |
 
-전체 도식은 처음부터 보이며 조작은 설명할 경로를 강조합니다. 3장의 발표자 이름은 Space로 위에서부터 차례로 나타나고, 4장은 Space 한 번으로 Hermes와 PydanticAI를 동시에 강조합니다. Sources에서는 81장 각각의 개념 정의와 설명을 읽고 Escape로 돌아올 수 있습니다. 노트 창은 화면 공유 대상에서 제외하세요. 노트 창에는 현재 슬라이드 대본·상세 해설·Q&A·근거/정정·데모 명세·SDK 예약 내용을 넣었으며 그 창에서도 발표 단계를 제어할 수 있습니다.
+전체 도식은 처음부터 보이며 조작은 설명할 경로를 강조합니다. 3장의 발표자 이름은 Space로 위에서부터 차례로 나타나고, 4장은 Space 한 번으로 Hermes와 PydanticAI를 동시에 강조합니다. Sources에서는 172장 각각의 개념 정의와 설명을 읽고 Escape로 돌아올 수 있습니다. 노트 창은 화면 공유 대상에서 제외하세요. 노트 창에는 현재 슬라이드 대본·상세 해설·Q&A·근거/정정·데모 명세을 넣었으며 그 창에서도 발표 단계를 제어할 수 있습니다.
 
-16:9 1920×1080 stage를 통째로 비례 축소합니다. 모바일에서도 도식 배치를 바꾸지 않습니다. PDF는 강조 조작·별도 노트·Demo 링크 UI가 없는 정적 81장 버전입니다.
+16:9 1920×1080 stage를 통째로 비례 축소합니다. 모바일에서도 도식 배치를 바꾸지 않습니다. PDF는 강조 조작·별도 노트·Demo 링크 UI가 없는 정적 172장 버전입니다.
 
 ## 실제 Demo 상태
 
@@ -48,7 +50,8 @@ S15/S38의 링크는 `demo-handoff.html`로 이동합니다. **실제 Hermes/Pyd
 python presentations/seminar-2/build.py
 ```
 
-- `build.py`: 81장 화면·도식과 blueprint의 발표자 내용 매핑.
+- `sdk_revision.py`: PydanticAI 이후 네 SDK 비교 장표와 고정 버전 소스.
+- `build.py`: 172장 화면·도식과 blueprint의 발표자 내용 매핑.
 - `artwork.py`: 5장 예시에서 확정한 도형·스타일과 재사용 도식. 이 폴더 자체 자산만 사용합니다.
 - `revision.py`: 문구·도입/소개 도식·개념 해설. 원 blueprint의 노트는 originalSpec으로 보관.
 - `hermes_revision.py`: 이전 16장 개정의 기본 도식·자료 매핑.
@@ -66,11 +69,11 @@ python presentations/seminar-2/build.py
 
 ## 확인한 범위
 
-- 본편 81장 및 S38→S43 연결, blueprint SHA-256·원문 명세 보존, Claude 활용 명령 개정의 출처 교체.
+- 본편 172장 및 PA52→S43 연결, blueprint SHA-256·원문 명세 보존, Claude 활용 명령 개정의 출처 교체.
 - 1920×1080, 1280×720, 390×844의 stage 비율·viewport 범위·텍스트 넘침/겹침.
 - 모든 build 정방향·역방향, 번호 이동·목차·예약 제외·노트 분리/제어.
 - 두 Demo 안내의 미연결 표기·복귀 링크, 원격 자동 요청 없음.
-- 모든 장 렌더링 화면 검토, PDF 81페이지 확인.
+- 모든 장 렌더링 화면 검토, PDF 172페이지 확인.
 
 결과는 `validation/report.json`, 화면은 `validation/revision-screenshots/`에 있습니다. 내용 검증은 blueprint·로컬 학습자료와 공식 고정 소스 대조입니다. 실제 Hermes/PydanticAI 패키지·모델·프록시 실행이나 성능 측정은 포함하지 않습니다.
 

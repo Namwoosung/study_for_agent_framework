@@ -10,24 +10,35 @@
 <body>
 <header><a href="/">FAB 실험실</a><span id="engine"></span><span id="endpoint"></span></header>
 <div class="layout">
-<nav aria-label="세부 데모" id="scenarios"></nav>
+<aside><h2>실험 목록</h2><nav aria-label="세부 데모" id="scenarios"></nav></aside>
 <main>
-<p class="fixture">합성 검사 데이터 · FAB-DEMO-r3</p>
 <h1 id="title">데모를 불러오는 중</h1>
+<p id="question" class="lede"></p>
+<p class="fixture">반도체 합성 검사 데이터 · FAB-DEMO-r3</p>
 <form id="form">
 <label for="prompt">모델에 보낼 요청</label>
-<textarea id="prompt" required maxlength="6000" rows="3"></textarea>
+<textarea id="prompt" required maxlength="6000" rows="2"></textarea>
 <label id="sessionRow" hidden>대화 저장 키 <input id="session" value="seminar" maxlength="64"></label>
-<div class="actions"><button id="run" type="submit">실제 요청 실행</button><span id="status" role="status"></span></div>
+<div class="actions"><button id="run" type="submit">실행</button><span id="status" role="status"></span></div>
 </form>
 <section id="approval" hidden aria-labelledby="approval-title">
 <h2 id="approval-title">승인 요청</h2><p id="approval-text"></p>
 <button id="allow">이번 요청만 승인</button> <button id="deny">거절</button>
 </section>
-<section aria-labelledby="trace-title">
-<div class="trace-heading"><h2 id="trace-title">실행 기록</h2><label><input type="checkbox" id="all"> 전체 이벤트</label></div>
-<p id="overview" class="fixture" hidden></p>
-<p id="empty">실행하면 실제 모델 요청, 함수 호출, 결과가 여기에 표시됩니다.</p>
-<ol id="events"></ol>
+<section class="flow-board" aria-labelledby="flow-title">
+<h2 id="flow-title">실행 흐름</h2>
+<p class="meta" id="flow-note">화살표는 대표 경로입니다. 단계를 선택하면 실제 실행에서 관측한 값을 볼 수 있습니다.</p>
+<div class="workspace" id="workspace">
+<ol id="flow" aria-label="대표 실행 경로"></ol>
+<div id="observation"></div>
+</div>
 </section>
+<section id="outcome" hidden aria-labelledby="outcome-title">
+<h2 id="outcome-title">실행 결과</h2><p id="outcome-text" class="answer"></p>
+</section>
+<details class="trace">
+<summary>원본 실행 기록</summary>
+<label><input type="checkbox" id="all"> 전체 이벤트</label>
+<ol id="events"></ol>
+</details>
 </main></div></body></html>

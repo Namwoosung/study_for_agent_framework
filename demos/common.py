@@ -43,12 +43,13 @@ class Run:
         self.done = False
         self.approval = None
 
-    def emit(self, category, title, value=None):
+    def emit(self, category, title, value=None, **metadata):
         # Copy immediately. Framework messages can be mutated on the next iteration.
         payload = json.loads(json.dumps(value, default=snapshot, ensure_ascii=False))
         with self.lock:
             self.events.append(dict(n=len(self.events)+1, category=category, title=title,
-                                    value=payload, time=time.time(), thread=threading.current_thread().name))
+                                    value=payload, time=time.time(), thread=threading.current_thread().name,
+                                    **metadata))
 
     def ask(self, details):
         signal = threading.Event()
@@ -78,7 +79,7 @@ def observe_http(run, endpoint):
     """Observe serialized HTTP request bodies at the SDK's transport boundary."""
     target = urlsplit(endpoint)
 
-    def capture(request):
+    def capture(client, request):
         url = request.url
         if url.host != target.hostname or url.port != target.port:
             return False
@@ -88,13 +89,14 @@ def observe_http(run, endpoint):
             except Exception:
                 return False
             # Headers are intentionally excluded. Do not export hidden reasoning.
-            run.emit("context", f"모델 전송 직전 · {url.path}", body)
+            metadata = {"request_id": uuid.uuid4().hex[:12], "scope": str(id(client))}
+            run.emit("context", f"모델 전송 직전 · {url.path}", body, **metadata)
             if "tools" in body:
-                run.emit("tool", "모델에 전달된 Tool 명세", body["tools"])
-            return True
+                run.emit("tool", "모델에 전달된 Tool 명세", body["tools"], **metadata)
+            return metadata
         return False
 
-    def capture_result(response):
+    def capture_result(response, metadata):
         if response.is_stream_consumed:
             try:
                 value = response.json()
@@ -106,24 +108,24 @@ def observe_http(run, endpoint):
                     for key in ("reasoning", "reasoning_content"):
                         msg.pop(key, None)
                     if msg.get("tool_calls"):
-                        run.emit("tool", "모델이 반환한 Tool Call", msg["tool_calls"])
-            run.emit("response", f"모델 HTTP {response.status_code}", value)
+                        run.emit("tool", "모델이 반환한 Tool Call", msg["tool_calls"], **metadata)
+            run.emit("response", f"모델 HTTP {response.status_code}", value, **metadata)
 
     def wrap(send, asynchronous=False):
         if asynchronous:
             async def async_send(client, request, **kwargs):
-                relevant = capture(request)
+                relevant = capture(client, request)
                 response = await send(client, request, **kwargs)
                 if relevant:
-                    capture_result(response)
+                    capture_result(response, relevant)
                 return response
             return async_send
 
         def sync_send(client, request, **kwargs):
-            relevant = capture(request)
+            relevant = capture(client, request)
             response = send(client, request, **kwargs)
             if relevant:
-                capture_result(response)
+                capture_result(response, relevant)
             return response
         return sync_send
 

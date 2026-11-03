@@ -300,14 +300,20 @@ from claude_revision import ALIASES as CLAUDE_ALIASES, ORDER as CLAUDE_ORDER, re
 revise_claude(slides, globals())
 from pydantic_revision import ALIASES as PYDANTIC_ALIASES, ORDER as PYDANTIC_ORDER, revise as revise_pydantic
 revise_pydantic(slides, globals())
-aliases={'S06':'S05', **CLAUDE_ALIASES, **PYDANTIC_ALIASES}
+from technical_walkthroughs import apply as apply_walkthroughs
+apply_walkthroughs(slides, globals())
+from sdk_revision import ALIASES as SDK_ALIASES, ORDER as SDK_ORDER, revise as revise_sdk
+revise_sdk(slides, globals())
+aliases={'S06':'S05','PA05':'PA04','PA08':'PA07', **CLAUDE_ALIASES, **PYDANTIC_ALIASES, **SDK_ALIASES}
 slides['S01']['diagram']=re.sub(r' data-focus="\d+"','',slides['S01']['diagram'])
-expected=['S00','S01','S02','S03','S03H']+HERMES_ORDER+CLAUDE_ORDER+PYDANTIC_ORDER+['S43','S44','S45']
+expected=['S00','S01','S02','S03','S03H']+HERMES_ORDER+CLAUDE_ORDER+PYDANTIC_ORDER+SDK_ORDER+['S43','S44','S45']
 assert set(slides)==set(expected) and len(expected)==len(set(expected)), (set(expected)-set(slides),set(slides)-set(expected))
 for slide in slides.values():
     for evidence in slide.get('localEvidence',[]):
         if not evidence['path'].startswith('study/'):evidence['path']='study/'+evidence['path']
 ordered=[slides[k] for k in expected]
+from slide_explanations import add_explanations
+add_explanations(ordered, ROOT)
 
 # === SVG: unique marker IDs, role names retained across shared diagrams ===
 def diagram_svg(s):
@@ -366,19 +372,20 @@ notes_md=blueprint_links_for_deck(notes_md)
 (ROOT/'presenter-notes.md').write_text(notes_md,encoding='utf-8')
 (ROOT/'notes.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 hermes_guide='## Hermes 코드 대조 개정 안내\n\n6~53페이지: 실행 루프 → Context·Session·Memory → Tools·Skills → 안전장치·실행 기록 → 긴 작업·위임 → Cron·활용·Demo. Hermes v0.22.5 고정 소스로 확인했으며, 기존 Gateway 상세 장표(S14B)는 제외했습니다. S06은 S05에 통합했습니다. 현재 Sources·notes.json을 기준으로 읽으세요. 아래 원 blueprint의 장표 참조는 개정 전 ID일 수 있습니다.\n\n'
-private=dict(concepts=hermes_guide+sections['C'],qa=hermes_guide+sections['D'],research=hermes_guide+sections['F'],demos=hermes_guide+sections['E'],reserved={k:specs[k] for k in ('S39','S40','S41','S42')})
+private=dict(concepts=hermes_guide+sections['C'],qa=hermes_guide+sections['D'],research=hermes_guide+sections['F'],demos=hermes_guide+sections['E'])
 private={k:blueprint_links_for_deck(v) if isinstance(v,str) else v for k,v in private.items()}
 script=(ROOT/'controller.js').read_text(encoding='utf-8').replace('__SLIDES__',json.dumps(metadata,ensure_ascii=False)).replace('__PRIVATE__',json.dumps(private,ensure_ascii=False)).replace('__ALIASES__',json.dumps(aliases))
 toc=''.join(f'<button data-jump="{i}"><small>{i+1:02} · {s["id"]}</small>　{escape(s["title"])}</button>' for i,s in enumerate(ordered))
 html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{font}) format('woff2');font-weight:400;font-display:swap}}@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{bold_font}) format('woff2');font-weight:700;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><dialog class="sources-dialog" aria-labelledby="reader-title"><button class="reader-close" aria-label="개념 설명 닫기">닫기</button><header><div class="reader-meta"></div><h2 id="reader-title"></h2></header><main></main></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
 (ROOT/'index.html').write_text(html,encoding='utf-8')
-manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / hermes_deep.py / official v0.22.5 code-grounded revision','hermesOrder':HERMES_ORDER,'hermesPages':[6,5+len(HERMES_ORDER)],'topicDividers':['S03H','CLAUDE','PYDANTIC'],'excludedByRequest':['S14B'],'aliases':{'S06':'S05'},'slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','visualDesign':'2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
+manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / hermes_deep.py / official v0.22.5 code-grounded revision','hermesOrder':HERMES_ORDER,'hermesPages':[6,5+len(HERMES_ORDER)],'topicDividers':['S03H','CLAUDE','PYDANTIC'],'excludedByRequest':['S14B'],'aliases':{'S06':'S05'},'slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':[],'demoStatus':'links to separate local demo runtimes','visualDesign':'2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
 manifest.update(claudeOrder=CLAUDE_ORDER,
                 claudePages=[expected.index(CLAUDE_ORDER[0])+1, expected.index(CLAUDE_ORDER[-1])+1],
                 aliases=aliases)
 manifest['editorialRevision'] += ' / claude_revision.py / official Claude Code documentation'
 manifest.update(pydanticOrder=PYDANTIC_ORDER,
                 pydanticPages=[expected.index(PYDANTIC_ORDER[0])+1, expected.index(PYDANTIC_ORDER[-1])+1])
+manifest.update(sdkOrder=SDK_ORDER, sdkPages=[expected.index(SDK_ORDER[0])+1, expected.index(SDK_ORDER[-1])+1])
 manifest.update(demoStatus='local runtime web apps in demos/', demoTargets=demo_targets)
 manifest['editorialRevision'] += ' / pydantic_revision.py / Core 2.61.0 and Harness 0.61.0'
 (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
