@@ -287,11 +287,12 @@ add(45,'제공받는 실행과 직접 만드는 계약','프레임워크 선택�
 # === USER EDITORIAL REVISION: stable IDs, updated copy and section opener ===
 from revision import apply, LIGHT_STYLE
 apply(slides, globals())
+from hermes_revision import revise, HERMES_ORDER, CHAPTERS
+revise(slides, globals())
 from design import refine, STYLE as DESIGN_STYLE
 refine(slides, globals())
-expected=[f'S{i:02}' for i in range(46) if i not in range(39,43)]
-expected.insert(expected.index('S04'),'S03H')
-assert sorted(slides)==expected, (set(expected)-set(slides),set(slides)-set(expected))
+expected=['S00','S01','S02','S03','S03H']+HERMES_ORDER+[f'S{i:02}' for i in range(16,46) if i not in range(39,43)]
+assert set(slides)==set(expected) and len(expected)==len(set(expected)), (set(expected)-set(slides),set(slides)-set(expected))
 ordered=[slides[k] for k in expected]
 
 # === SVG: unique marker IDs, role names retained across shared diagrams ===
@@ -310,28 +311,33 @@ style=example['style']+r'''
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 @media print{.demo-link,.menu-dialog,.progress{display:none!important}.slide.opening header{visibility:hidden!important}.code-line{font-family:Consolas,'Courier New',monospace}}
 '''
-style+=LIGHT_STYLE+DESIGN_STYLE
+style+=LIGHT_STYLE+DESIGN_STYLE+r'''
+.module-map{position:absolute;left:134px;right:134px;top:233px;display:flex;gap:18px;align-items:center;height:25px;font-size:17px;color:#91A4BE;line-height:1.2}
+.module-map span{padding:4px 12px;border-bottom:2px solid transparent}.module-map .current{color:#DCEBFF;border-bottom-color:#A7CEFF;background:#30445D;border-radius:4px 4px 0 0}
+'''
 font=base64.b64encode((ROOT/'assets/Pretendard-Regular.woff2').read_bytes()).decode()
 bold_font=base64.b64encode((ROOT/'assets/Pretendard-Bold.woff2').read_bytes()).decode()
 license_=json.dumps((ROOT/'assets/Pretendard-OFL.txt').read_text(encoding='utf-8'),ensure_ascii=False)
 html_slides=[]
 for i,s in enumerate(ordered):
     demo=f'<a class="demo-link" href="demo-handoff.html?demo={s["demo"]}&amp;return={s["id"]}" target="_blank" rel="noopener">{"Hermes" if s["demo"]=="hermes" else "PydanticAI"} Demo ↗</a>' if s['demo'] else ''
+    module_map='<nav class="module-map" aria-label="Hermes 설명 범주">'+''.join(f'<span class="{"current" if n==s["chapter"] else ""}"'+(' aria-current="step"' if n==s['chapter'] else '')+'>'+escape(name)+'</span>' for n,name in enumerate(CHAPTERS))+'</nav>' if 'chapter' in s else ''
     html_slides.append(f'''<!-- === {s['id']}: {escape(s['title'])} === -->
 <section class="slide {s['kind']} {'active' if i==0 else ''} {'has-demo' if s['demo'] else ''}" data-index="{i}" data-slide-id="{s['id']}" tabindex="-1" aria-label="{i+1}. {escape(s['title'])}" aria-hidden="{'false' if i==0 else 'true'}">
 <header><p class="section-label">{escape(s['section'])}</p><h1>{escape(s['title'])}</h1><p class="subtitle">{escape(s['sub'])}</p></header>
-<div class="diagram">{diagram_svg(s)}</div><p class="takeaway">{escape(s['take'])}</p>{demo}
+{module_map}<div class="diagram">{diagram_svg(s)}</div><p class="takeaway">{escape(s['take'])}</p>{demo}
 <footer class="slide-footer"><div><span class="page-count">{i+1:02} / {len(ordered)}</span><span>{s['id']}</span><span class="version">{escape(s['version'])}</span><button class="sources" aria-label="이 장의 개념·설명·출처 열기">Sources</button></div><nav class="controls" aria-label="발표 탐색"><span class="step-label">전체 구성 · 0/{len(s['steps'])-1}</span><button class="prev" aria-label="이전 단계">←</button><input class="jump-number" type="number" min="1" max="{len(ordered)}" value="{i+1}" aria-label="이동할 슬라이드 번호"><span class="jump-total">/ {len(ordered)}</span><button class="next" aria-label="다음 단계">→</button><button class="menu" aria-label="전체 목차 열기">목차</button></nav></footer><div class="progress" style="width:{(i+1)/len(ordered)*100:.4f}%"></div></section>''')
 
 metadata=[{k:v for k,v in s.items() if k!='diagram'} for s in ordered]
 notes_md='# 2차 세미나 — 발표자 전용 노트\n\n'+ '\n\n'.join('## '+s['id']+' — '+s['title']+'\n\n'+s['note'] for s in ordered)+'\n\n# 심층 개념 해설\n\n'+sections['C']+'\n\n# Q&A\n\n'+sections['D']+'\n\n# 근거와 정정\n\n'+sections['F']
 (ROOT/'presenter-notes.md').write_text(notes_md,encoding='utf-8')
 (ROOT/'notes.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-private=dict(concepts=sections['C'],qa=sections['D'],research=sections['F'],demos=sections['E'],reserved={k:specs[k] for k in ('S39','S40','S41','S42')})
+hermes_guide='## Hermes 개정 안내\n\n6~21페이지를 요청 처리→Tool 실행→기억·재사용→긴 작업·위임→서비스 운영→Demo로 재구성했습니다. 기존 S06은 S05에 통합했습니다. 현재 페이지별 설명은 notes.json과 Sources를 기준으로 합니다. 아래 원 blueprint의 장표 참조는 개정 전 ID 기준일 수 있습니다.\n\n'
+private=dict(concepts=hermes_guide+sections['C'],qa=hermes_guide+sections['D'],research=hermes_guide+sections['F'],demos=hermes_guide+sections['E'],reserved={k:specs[k] for k in ('S39','S40','S41','S42')})
 script=(ROOT/'controller.js').read_text(encoding='utf-8').replace('__SLIDES__',json.dumps(metadata,ensure_ascii=False)).replace('__PRIVATE__',json.dumps(private,ensure_ascii=False))
 toc=''.join(f'<button data-jump="{i}"><small>{i+1:02} · {s["id"]}</small>　{escape(s["title"])}</button>' for i,s in enumerate(ordered))
 html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{font}) format('woff2');font-weight:400;font-display:swap}}@font-face{{font-family:'Seminar Korean';src:url(data:font/woff2;base64,{bold_font}) format('woff2');font-weight:700;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><dialog class="sources-dialog" aria-labelledby="reader-title"><button class="reader-close" aria-label="개념 설명 닫기">닫기</button><header><div class="reader-meta"></div><h2 id="reader-title"></h2></header><main></main></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
 (ROOT/'index.html').write_text(html,encoding='utf-8')
-manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations','slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','visualDesign':'2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
+manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / revision.py and hermes_revision.py / user-approved 16-slide Hermes sequence','hermesOrder':HERMES_ORDER,'hermesPages':[6,21],'aliases':{'S06':'S05'},'slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','visualDesign':'2026-11-03 / design.py / slate surfaces, local Pretendard, orthogonal routing and contextual focus','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(f'Final: {len(ordered)} slides, {len(html.encode())//1024} KiB, {ROOT / "index.html"}')

@@ -25,7 +25,7 @@ const {pathToFileURL}=require('url');
    const report=await page.evaluate(()=>{
     const s=document.querySelector('.slide.active'),r=s.getBoundingClientRect();
     const isVisible=e=>getComputedStyle(e).visibility!=='hidden';
-    const els=[...s.querySelectorAll('h1,.subtitle,.takeaway,svg text,.slide-footer,.demo-link')].filter(isVisible);
+    const els=[...s.querySelectorAll('h1,.subtitle,.takeaway,svg text,.slide-footer,.demo-link,.module-map')].filter(isVisible);
     const overflow=els.filter(e=>{const q=e.getBoundingClientRect();return q.left<r.left-1||q.right>r.right+1||q.top<r.top-1||q.bottom>r.bottom+1}).map(e=>e.textContent);
     const texts=[...s.querySelectorAll('svg text')],overlaps=[];
     for(let a=0;a<texts.length;a++)for(let b=a+1;b<texts.length;b++){
@@ -57,7 +57,7 @@ const {pathToFileURL}=require('url');
  await page.locator(`[data-jump="${manifest.slides.findIndex(s=>s.id==='S15')}"]`).click();if((await page.evaluate(()=>deck.state())).id!=='S15')errors.push('TOC jump');
  if(await page.locator('.menu-dialog').evaluate(d=>d.open))errors.push('TOC close');
  const popup=page.waitForEvent('popup');await page.keyboard.press('n');const notes=await popup;await notes.waitForLoadState();
- if(!(await notes.locator('h1').innerText()).includes('실행 권한'))errors.push('Current notes');
+ if((await notes.locator('h1').innerText())!==manifest.slides.find(s=>s.id==='S15').title)errors.push('Current notes');
  await notes.locator('[data-tab="qa"]').click();if(!(await notes.locator('main').innerText()).includes('graceful'))errors.push('Private QA');
  await notes.locator('[data-tab="reserved"]').click();if(!(await notes.locator('main').innerText()).includes('S39'))errors.push('Private reserved');
  await notes.locator('[data-tab="current"]').click();await notes.locator('#nextSlide').click();if((await page.evaluate(()=>deck.state())).id!=='S16')errors.push('Presenter navigation');await notes.close();

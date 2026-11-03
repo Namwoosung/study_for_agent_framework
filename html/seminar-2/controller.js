@@ -14,7 +14,7 @@ function scale(){const z=Math.min(innerWidth/1920,innerHeight/1080);stage.style.
 function prepareFocusFrames(){
  const ns='http://www.w3.org/2000/svg';
  document.querySelectorAll('svg g[data-focus]').forEach(g=>{
-  if(g.querySelector('.node,[data-focus],.focus-frame'))return;
+  if(g.querySelector('.node,[data-focus],.focus-frame,[marker-end]'))return;
   const b=g.getBBox();if(b.width<150||b.height<38)return;
   const r=document.createElementNS(ns,'rect');r.setAttribute('class','focus-frame');
   const x=Math.max(-18,b.x-18),y=Math.max(-16,b.y-16);
@@ -25,7 +25,7 @@ function state(){return {index,step,id:data[index].id,maxStep:data[index].steps.
 function go(i,s=0){index=Math.max(0,Math.min(data.length-1,i));step=Math.max(0,Math.min(data[index].steps.length-1,s));render()}
 function next(){if(step<data[index].steps.length-1)step++;else if(index<data.length-1){index++;step=0}render()}
 function prev(){if(step>0)step--;else if(index>0){index--;step=data[index].steps.length-1}render()}
-function goId(id){const i=data.findIndex(s=>s.id===id);if(i>=0)go(i)}
+function goId(id){id=id==='S06'?'S05':id;const i=data.findIndex(s=>s.id===id);if(i>=0)go(i)}
 function render(){
  slides.forEach((s,i)=>{
   const active=i===index;s.classList.toggle('active',active);s.setAttribute('aria-hidden',String(!active));s.inert=!active;
@@ -71,7 +71,7 @@ function notes(){notesWindow=window.open('','seminar2-final-notes','width=1080,h
 function sources(){
  const d=data[index];reader.querySelector('.reader-meta').textContent=`${index+1} / ${data.length} · ${d.id} · 개념과 설명`;
  reader.querySelector('h2').textContent=d.title;
- reader.querySelector('main').innerHTML=`<h3>이 장의 개념</h3><dl>${d.concepts.map(c=>`<dt>${esc(c.term)}</dt><dd>${esc(c.meaning)}</dd>`).join('')}</dl><h3>설명</h3><p>${esc(d.explanation)}</p><h3>발표 포인트</h3><p>${esc(d.take)}</p><h3>참고 자료</h3>${d.sources.length?'<ul>'+d.sources.map(([id,name,url])=>`<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(name)}</a></li>`).join('')+'</ul>':'<p>사용자가 정한 세미나 계획과 발표 구성입니다.</p>'}`;
+ reader.querySelector('main').innerHTML=`<h3>이 장의 개념</h3><dl>${d.concepts.map(c=>`<dt>${esc(c.term)}</dt><dd>${esc(c.meaning)}</dd>`).join('')}</dl><h3>설명</h3>${d.explanation.split(/\n\n+/).map(p=>`<p>${esc(p)}</p>`).join('')}<h3>발표 포인트</h3><p>${esc(d.take)}</p><h3>참고 자료</h3>${d.sources.length?'<ul>'+d.sources.map(([id,name,url])=>`<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(name)}</a></li>`).join('')+'</ul>':'<p>사용자가 정한 세미나 계획과 발표 구성입니다.</p>'}${d.localEvidence?'<h3>프로젝트 학습자료</h3><ul>'+d.localEvidence.map(e=>`<li><a href="${esc('../../'+e.path)}" target="_blank" rel="noopener noreferrer">${esc(e.path.split('/').pop())}</a> · ${esc(e.sections)}</li>`).join('')+'</ul>':''}`;
  reader.showModal();reader.scrollTop=0;reader.querySelector('.reader-close').focus();
 }
 function closeSources(){reader.close();slides[index].querySelector('.sources').focus()}
@@ -109,6 +109,6 @@ let startX=null;addEventListener('touchstart',e=>{if(dialog.open||reader.open)re
 addEventListener('touchend',e=>{if(startX===null)return;const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>50){if(dx<0)next();else prev()}startX=null},{passive:true});
 let lastWheel=0;addEventListener('wheel',e=>{if(dialog.open||reader.open||Math.abs(e.deltaY)<30||Date.now()-lastWheel<550)return;lastWheel=Date.now();if(e.deltaY>0)next();else prev()},{passive:true});
 addEventListener('resize',scale);addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(id!==data[index].id)goId(id)});
-const initial=data.findIndex(s=>`#${s.id}`===location.hash);if(initial>=0)index=initial;
+const initialId=location.hash==='#S06'?'S05':location.hash.slice(1);const initial=data.findIndex(s=>s.id===initialId);if(initial>=0)index=initial;
 scale();render();window.deck={go,goId,next,prev,state,notes,toc,sources};
 document.fonts.ready.then(prepareFocusFrames);

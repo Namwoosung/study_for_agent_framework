@@ -1,0 +1,32 @@
+{
+  "focusChecks": [
+    {
+      "id": "S13A",
+      "step": 2,
+      "localSources": true
+    },
+    {
+      "id": "S10",
+      "step": 4,
+      "localSources": true
+    },
+    {
+      "id": "S12",
+      "step": 4,
+      "localSources": true
+    },
+    {
+      "id": "S14B",
+      "step": 2,
+      "localSources": true
+    },
+    {
+      "id": "S14C",
+      "step": 5,
+      "localSources": true
+    }
+  ],
+  "legacyAlias": true,
+  "mobileSources": true,
+  "result": "pass"
+}

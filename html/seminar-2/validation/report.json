@@ -1,5 +1,5 @@
 {
-  "audienceSlides": 43,
+  "audienceSlides": 47,
   "excluded": [
     "S39",
     "S40",
@@ -100,18 +100,6 @@
         "width": 1920,
         "height": 1080
       },
-      "id": "S06",
-      "ratio": 1.7777777777777777,
-      "overflow": [],
-      "overlaps": [],
-      "headerIntrusion": false,
-      "viewportOverflow": false
-    },
-    {
-      "viewport": {
-        "width": 1920,
-        "height": 1080
-      },
       "id": "S07",
       "ratio": 1.7777777777777777,
       "overflow": [],
@@ -124,7 +112,7 @@
         "width": 1920,
         "height": 1080
       },
-      "id": "S08",
+      "id": "S13",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -136,7 +124,19 @@
         "width": 1920,
         "height": 1080
       },
-      "id": "S09",
+      "id": "S13A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "id": "S13B",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -184,7 +184,19 @@
         "width": 1920,
         "height": 1080
       },
-      "id": "S13",
+      "id": "S08",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "id": "S09",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -197,6 +209,42 @@
         "height": 1080
       },
       "id": "S14",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "id": "S14A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "id": "S14B",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "id": "S14C",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -616,18 +664,6 @@
         "width": 1280,
         "height": 720
       },
-      "id": "S06",
-      "ratio": 1.7777777777777777,
-      "overflow": [],
-      "overlaps": [],
-      "headerIntrusion": false,
-      "viewportOverflow": false
-    },
-    {
-      "viewport": {
-        "width": 1280,
-        "height": 720
-      },
       "id": "S07",
       "ratio": 1.7777777777777777,
       "overflow": [],
@@ -640,7 +676,7 @@
         "width": 1280,
         "height": 720
       },
-      "id": "S08",
+      "id": "S13",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -652,7 +688,19 @@
         "width": 1280,
         "height": 720
       },
-      "id": "S09",
+      "id": "S13A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "S13B",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -700,7 +748,19 @@
         "width": 1280,
         "height": 720
       },
-      "id": "S13",
+      "id": "S08",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "S09",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -713,6 +773,42 @@
         "height": 720
       },
       "id": "S14",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "S14A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "S14B",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "S14C",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -1132,18 +1228,6 @@
         "width": 390,
         "height": 844
       },
-      "id": "S06",
-      "ratio": 1.7777777777777777,
-      "overflow": [],
-      "overlaps": [],
-      "headerIntrusion": false,
-      "viewportOverflow": false
-    },
-    {
-      "viewport": {
-        "width": 390,
-        "height": 844
-      },
       "id": "S07",
       "ratio": 1.7777777777777777,
       "overflow": [],
@@ -1156,7 +1240,7 @@
         "width": 390,
         "height": 844
       },
-      "id": "S08",
+      "id": "S13",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -1168,7 +1252,19 @@
         "width": 390,
         "height": 844
       },
-      "id": "S09",
+      "id": "S13A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "id": "S13B",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -1216,7 +1312,19 @@
         "width": 390,
         "height": 844
       },
-      "id": "S13",
+      "id": "S08",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "id": "S09",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],
@@ -1229,6 +1337,42 @@
         "height": 844
       },
       "id": "S14",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "id": "S14A",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "id": "S14B",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "overlaps": [],
+      "headerIntrusion": false,
+      "viewportOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "id": "S14C",
       "ratio": 1.7777777777777777,
       "overflow": [],
       "overlaps": [],

@@ -1,7 +1,32 @@
 {
   "blueprint": "2_2차_세미나_최종_slide_blueprint.md",
   "blueprintSha256": "b9caa3b82a7d933ff6d136f327ed5ff3aa94fe11661918f38778ee8817d79f56",
-  "editorialRevision": "2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations",
+  "editorialRevision": "2026-11-03 / revision.py and hermes_revision.py / user-approved 16-slide Hermes sequence",
+  "hermesOrder": [
+    "S04",
+    "S05",
+    "S07",
+    "S13",
+    "S13A",
+    "S13B",
+    "S10",
+    "S11",
+    "S12",
+    "S08",
+    "S09",
+    "S14",
+    "S14A",
+    "S14B",
+    "S14C",
+    "S15"
+  ],
+  "hermesPages": [
+    6,
+    21
+  ],
+  "aliases": {
+    "S06": "S05"
+  },
   "slides": [
     {
       "id": "S00",
@@ -58,32 +83,88 @@
     },
     {
       "id": "S05",
-      "title": "사용자 입력에서 모델 요청까지",
+      "title": "사용자 요청 한 건의 실행 과정",
       "sourceIds": [
         "H02",
-        "H03"
+        "H03",
+        "H01"
       ],
-      "builds": 4
-    },
-    {
-      "id": "S06",
-      "title": "Tool을 실행할 때와 답변을 마칠 때",
-      "sourceIds": [
-        "H02"
-      ],
-      "builds": 3
+      "builds": 6
     },
     {
       "id": "S07",
-      "title": "고정된 Prompt와 매번 달라지는 정보",
+      "title": "모델에 전달할 Context 구성하기",
       "sourceIds": [
-        "H03"
+        "H03",
+        "H05",
+        "H09"
       ],
       "builds": 3
     },
     {
+      "id": "S13",
+      "title": "Tool·MCP·Plugin으로 기능 연결하기",
+      "sourceIds": [
+        "H11",
+        "H12"
+      ],
+      "builds": 5
+    },
+    {
+      "id": "S13A",
+      "title": "Tool 요청이 실제 실행으로 이어지는 과정",
+      "sourceIds": [
+        "H02",
+        "H11",
+        "HX01",
+        "HX02"
+      ],
+      "builds": 6
+    },
+    {
+      "id": "S13B",
+      "title": "승인·오류·취소가 발생하면 어떻게 될까?",
+      "sourceIds": [
+        "H15",
+        "HX03",
+        "HX08"
+      ],
+      "builds": 6
+    },
+    {
+      "id": "S10",
+      "title": "Session과 Memory는 무엇을 저장할까?",
+      "sourceIds": [
+        "H05",
+        "H06",
+        "H07",
+        "HX09"
+      ],
+      "builds": 6
+    },
+    {
+      "id": "S11",
+      "title": "과거 대화를 찾아 현재 작업에 사용하기",
+      "sourceIds": [
+        "H07",
+        "H08",
+        "H05"
+      ],
+      "builds": 6
+    },
+    {
+      "id": "S12",
+      "title": "Skill을 만들고 다시 사용하는 과정",
+      "sourceIds": [
+        "H09",
+        "H10",
+        "H15"
+      ],
+      "builds": 5
+    },
+    {
       "id": "S08",
-      "title": "같은 Prefix의 계산을 재사용하기",
+      "title": "반복되는 입력과 Prefix Cache",
       "sourceIds": [
         "H04",
         "V01"
@@ -92,63 +173,62 @@
     },
     {
       "id": "S09",
-      "title": "긴 대화에서 남길 것과 줄일 것",
+      "title": "Context가 길어졌을 때 줄이고 보존하기",
       "sourceIds": [
-        "H04"
+        "H04",
+        "H02"
       ],
-      "builds": 2
-    },
-    {
-      "id": "S10",
-      "title": "저장한 Memory는 언제 반영될까?",
-      "sourceIds": [
-        "H05",
-        "H06"
-      ],
-      "builds": 3
-    },
-    {
-      "id": "S11",
-      "title": "기억할 사실과 다시 찾을 대화",
-      "sourceIds": [
-        "H07",
-        "H08"
-      ],
-      "builds": 3
-    },
-    {
-      "id": "S12",
-      "title": "Skill을 읽고 다시 사용하는 과정",
-      "sourceIds": [
-        "H09",
-        "H10"
-      ],
-      "builds": 4
-    },
-    {
-      "id": "S13",
-      "title": "Tool 등록과 MCP·Plugin 연결",
-      "sourceIds": [
-        "H11",
-        "H12"
-      ],
-      "builds": 4
+      "builds": 5
     },
     {
       "id": "S14",
-      "title": "Tool 병렬 실행과 Subagent 위임",
+      "title": "여러 Tool을 함께 실행하기",
       "sourceIds": [
         "H13",
+        "H14",
+        "HX08"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S14A",
+      "title": "별도 Agent에게 작업 맡기기",
+      "sourceIds": [
         "H14"
       ],
       "builds": 3
     },
     {
+      "id": "S14B",
+      "title": "Gateway가 세션과 실행을 관리하는 방식",
+      "sourceIds": [
+        "H07",
+        "HX04",
+        "HX05"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S14C",
+      "title": "Cron으로 예약 작업 실행하기",
+      "sourceIds": [
+        "H16",
+        "HX06",
+        "HX07"
+      ],
+      "builds": 5
+    },
+    {
       "id": "S15",
-      "title": "실행 권한과 Hermes Demo",
+      "title": "Hermes Demo",
       "sourceIds": [
         "H15",
-        "H16"
+        "H16",
+        "H01",
+        "H02",
+        "H05",
+        "H11",
+        "H14"
       ],
       "builds": 5
     },

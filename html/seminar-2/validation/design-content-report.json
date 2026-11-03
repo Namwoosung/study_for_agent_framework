@@ -1,5 +1,12 @@
 {
-  "slides": 43,
-  "visibleTextAndExplanationsUnchanged": true,
-  "differences": []
+  "audienceSlides": 47,
+  "scope": "Overview pages 1-5 and all slides after Hermes",
+  "unmodifiedOtherSlides": 31,
+  "hermesIntentionallyRevised": 16,
+  "hermesPages": [
+    6,
+    21
+  ],
+  "checkedBy": "verify-content.py",
+  "result": "pass"
 }
