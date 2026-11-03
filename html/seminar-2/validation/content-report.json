@@ -1,0 +1,15 @@
+{
+  "blueprintCoverage": 42,
+  "speakerSpecCoverage": 42,
+  "reservedExcluded": [
+    "S39",
+    "S40",
+    "S41",
+    "S42"
+  ],
+  "sourceReferencesPreserved": true,
+  "pythonSnippetsSyntaxChecked": 6,
+  "pdfPages": 42,
+  "blankPdfPages": 0,
+  "result": "pass"
+}

@@ -1,0 +1,118 @@
+[
+  {
+    "id": "S04",
+    "section": "Hermes / Architecture",
+    "title": "Hermes는 반복 실행을 중심으로 기능을 묶습니다",
+    "sub": "입력부터 모델·도구·저장소까지, 먼저 전체 지도를 봅니다.",
+    "steps": [
+      "전체 아키텍처",
+      "입력 경로",
+      "Prompt와 모델 요청",
+      "Tool 실행 경로",
+      "세션·기억·절차"
+    ],
+    "take": "모델 호출·도구 실행·상태 보존을 AIAgent가 연결한다.",
+    "note": "실제 구현을 단순화한 구조도입니다. CLI/Gateway/API/ACP 등은 진입 경로입니다. Prompt와 Provider 변환, Tool dispatch, 저장소를 구분해 설명합니다. 도식의 연결은 대표 관계이며 모든 호출의 상세 순서를 뜻하지 않습니다. 다음 확대 장표에서도 같은 역할 색을 유지합니다.",
+    "sources": [
+      [
+        "Architecture",
+        "https://hermes-agent.nousresearch.com/docs/developer-guide/architecture"
+      ],
+      [
+        "Agent Loop",
+        "https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop"
+      ]
+    ],
+    "version": "Hermes v0.22.5 · 구현 단순화"
+  },
+  {
+    "id": "S07",
+    "section": "Hermes / Context",
+    "title": "고정 Prompt와 호출별 정보는 따로 움직입니다",
+    "sub": "세션 snapshot에 대화 이력과 이번 호출 정보를 합쳐 요청을 구성합니다.",
+    "steps": [
+      "전체 구성",
+      "System Prompt snapshot",
+      "이력과 호출 시점 정보",
+      "최종 모델 요청"
+    ],
+    "take": "Volatile이라는 이름이 매 호출 재작성을 뜻하지는 않는다.",
+    "note": "Stable은 정체성과 기본 행동, Context는 프로젝트·호출자 지침, Volatile은 기억·사용자·런타임 snapshot의 논리적 계층입니다. 모두 세션 내 고정 prompt의 일부일 수 있습니다. Skill 위치는 현행 문서 자체에 불일치가 있어 여기서는 특정 계층으로 단정하지 않았습니다. 실제 wire payload는 Provider adapter 뒤에서 확인해야 합니다.",
+    "sources": [
+      [
+        "Prompt Assembly",
+        "https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly"
+      ]
+    ],
+    "version": "Hermes · Prompt assembly"
+  },
+  {
+    "id": "S14",
+    "section": "Hermes / Orchestration",
+    "title": "병렬 Tool과 Child Agent는 실행 단위가 다릅니다",
+    "sub": "함수를 나란히 실행하는 것과 독립적인 Agent Loop를 위임하는 것은 다릅니다.",
+    "steps": [
+      "두 실행 구조",
+      "한 Loop의 여러 Tool",
+      "자식마다 독립 Loop",
+      "공유 자원과 격리"
+    ],
+    "take": "자식의 결과는 부모로 돌아오며, 부모가 다음 판단을 이어간다.",
+    "note": "왼쪽은 병렬화 가능한 독립 Tool의 개념 예시입니다. 실제 Hermes는 상호작용·파일 충돌 등의 조건에 따라 barrier로 실행 구간을 나눕니다. 오른쪽 delegate_task는 별도 AIAgent의 Goal/Context/Loop를 사용합니다. thread는 실행 수단이며 Agent의 개수와 동일한 개념이 아닙니다. Context 분리만으로 OS·DB·파일 보안 격리가 만들어지지는 않습니다.",
+    "sources": [
+      [
+        "Tool planner",
+        "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/agent/tool_dispatch_helpers.py"
+      ],
+      [
+        "Delegation",
+        "https://github.com/NousResearch/hermes-agent/blob/v0.22.5/tools/delegate_tool.py"
+      ]
+    ],
+    "version": "Hermes v0.22.5 · 개념 비교"
+  },
+  {
+    "id": "S23",
+    "section": "PydanticAI / Graph",
+    "title": "세 Graph 노드가 다음 실행을 정합니다",
+    "sub": "모델 응답은 Tool 실행·최종 출력·수정 요청의 서로 다른 경로로 이어집니다.",
+    "steps": [
+      "전체 Graph",
+      "입력과 이력 준비",
+      "모델 요청",
+      "응답 분류",
+      "Tool 실행과 재요청",
+      "Output 검증과 종료"
+    ],
+    "take": "유효한 Output은 종료로, Tool 결과와 수정 피드백은 다음 요청으로 간다.",
+    "note": "PydanticAI의 내부 실행은 pydantic-graph이며 LangGraph가 아닙니다. UserPromptNode는 입력·지시·이력·재개 상태를 준비합니다. ModelRequestNode는 요청과 Provider 호출을 처리하고 CallToolsNode는 응답을 분류합니다. 출력 검증 실패와 Tool 결과가 다음 모델 요청으로 이어지는 대표 경로를 그렸습니다. 예산 초과·취소·Provider 장애 등은 이 장의 생략된 분기입니다. 정확한 Tool/Output 혼합 정책은 다음 EndStrategy 장표에서 설명합니다.",
+    "sources": [
+      [
+        "Agent Graph source",
+        "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_agent_graph.py"
+      ]
+    ],
+    "version": "PydanticAI v2.61.0 · 대표 경로"
+  },
+  {
+    "id": "S28",
+    "section": "PydanticAI / Finalization",
+    "title": "EndStrategy는 실제 실행 범위를 바꿉니다",
+    "sub": "같은 모델 응답이라도 실행되는 Tool과 최종화 시점이 달라집니다.",
+    "steps": [
+      "같은 응답과 통제 조건",
+      "early",
+      "graceful",
+      "exhaustive"
+    ],
+    "take": "graceful에서도 최종 Output 뒤 Function Tool이 실행될 수 있다.",
+    "note": "비스트리밍·유효 Output·Retry/승인 없음이라는 통제 조건의 설명용 비교입니다. early는 O1만 성공시키고 Function을 생략합니다. graceful은 A를 마친 뒤 O1을 처리하고 뒤 Function B도 실행하며 O2는 생략합니다. exhaustive는 모두 실행하며 emission 순서상 첫 유효 O1을 결과로 선택합니다. Function ModelRetry가 결과를 억제하는 retry-wins, Native/Prompted/plain text, 이미 확정된 streaming 결과는 별도 예외입니다. Mock 게시를 실제 외부 게시로 구현하지 않습니다.",
+    "sources": [
+      [
+        "Tool executor",
+        "https://github.com/pydantic/pydantic-ai/blob/v2.61.0/pydantic_ai_slim/pydantic_ai/_tool_execution.py"
+      ]
+    ],
+    "version": "PydanticAI v2.61.0 · 통제 조건 예시"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "artifact": "2_2차_세미나_최종_slide_blueprint.md",
+  "date": "2026-11-03",
+  "sha256": "b9caa3b82a7d933ff6d136f327ed5ff3aa94fe11661918f38778ee8817d79f56",
+  "slide_specifications": 46,
+  "audience_slides": 42,
+  "reserved_slides": [
+    "S39",
+    "S40",
+    "S41",
+    "S42"
+  ],
+  "sections": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G"
+  ],
+  "source_references": 47,
+  "python_blocks_syntax_checked": 6,
+  "local_links_checked": 7,
+  "errors": [],
+  "result": "pass",
+  "limitations": [
+    "No API imports or model requests executed",
+    "No HTML/browser rendering created or checked",
+    "No runtime/proxy/target-PC verification"
+  ]
+}

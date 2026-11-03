@@ -1,0 +1,44 @@
+{
+  "slides": [
+    {
+      "id": "S04",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "textOverlaps": []
+    },
+    {
+      "id": "S07",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "textOverlaps": []
+    },
+    {
+      "id": "S14",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "textOverlaps": []
+    },
+    {
+      "id": "S23",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "textOverlaps": []
+    },
+    {
+      "id": "S28",
+      "ratio": 1.7777777777777777,
+      "overflow": [],
+      "textOverlaps": []
+    }
+  ],
+  "mobile": {
+    "x": 0,
+    "y": 312.3125,
+    "width": 390,
+    "height": 219.375
+  },
+  "errors": [],
+  "fontEmbedded": true,
+  "offline": true,
+  "checked": "1280x720, 390x844, builds, number jump, page navigation, notes popup, reduced motion, print PDF"
+}

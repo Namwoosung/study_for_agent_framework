@@ -1,0 +1,366 @@
+{
+  "blueprint": "2_2차_세미나_최종_slide_blueprint.md",
+  "blueprintSha256": "b9caa3b82a7d933ff6d136f327ed5ff3aa94fe11661918f38778ee8817d79f56",
+  "slides": [
+    {
+      "id": "S00",
+      "title": "다시 반갑습니다.",
+      "sourceIds": [],
+      "builds": 0
+    },
+    {
+      "id": "S01",
+      "title": "이제 실제 구현을 들여다봅니다",
+      "sourceIds": [],
+      "builds": 1
+    },
+    {
+      "id": "S02",
+      "title": "2차에서 맡는 범위",
+      "sourceIds": [],
+      "builds": 3
+    },
+    {
+      "id": "S03",
+      "title": "완성된 실행환경과 개발용 구성요소",
+      "sourceIds": [
+        "P01"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S04",
+      "title": "Hermes는 반복 실행을 중심으로 기능을 묶습니다",
+      "sourceIds": [
+        "H01",
+        "H02"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S05",
+      "title": "한 Turn을 실제 요청으로 만드는 경로",
+      "sourceIds": [
+        "H02",
+        "H03"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S06",
+      "title": "응답 분기가 루프와 종료를 결정합니다",
+      "sourceIds": [
+        "H02"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S07",
+      "title": "고정 Prompt와 호출별 정보는 따로 움직입니다",
+      "sourceIds": [
+        "H03"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S08",
+      "title": "Prefix 재사용은 서빙 계층의 일입니다",
+      "sourceIds": [
+        "H04",
+        "V01"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S09",
+      "title": "압축은 실행 이력의 정합성도 지켜야 합니다",
+      "sourceIds": [
+        "H04"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S10",
+      "title": "Memory 파일과 지금 보는 기억은 다릅니다",
+      "sourceIds": [
+        "H05",
+        "H06"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S11",
+      "title": "Session 검색은 전체 Memory의 대체물이 아닙니다",
+      "sourceIds": [
+        "H07",
+        "H08"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S12",
+      "title": "Skill은 필요할 때 읽고 유지 관리합니다",
+      "sourceIds": [
+        "H09",
+        "H10"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S13",
+      "title": "도구 등록·외부 연결·확장 Hook은 다른 접점입니다",
+      "sourceIds": [
+        "H11",
+        "H12"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S14",
+      "title": "병렬 Tool과 Child Agent는 실행 단위가 다릅니다",
+      "sourceIds": [
+        "H13",
+        "H14"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S15",
+      "title": "정책 경계를 확인하고 Hermes Demo로 갑니다",
+      "sourceIds": [
+        "H15",
+        "H16"
+      ],
+      "builds": 5
+    },
+    {
+      "id": "S16",
+      "title": "Claude Code도 Harness에서 출발합니다",
+      "sourceIds": [
+        "C01"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S17",
+      "title": "프로젝트 지시와 Auto Memory를 분리합니다",
+      "sourceIds": [
+        "C02"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S18",
+      "title": "Subagent 반환과 Team 협업은 다릅니다",
+      "sourceIds": [
+        "C03",
+        "C04"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S19",
+      "title": "Slash command는 실행 상태를 조작하는 입구입니다",
+      "sourceIds": [
+        "H05",
+        "H08",
+        "C05"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S20",
+      "title": "Pydantic → PydanticAI → 선택적 Harness",
+      "sourceIds": [
+        "P01",
+        "P02"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S21",
+      "title": "PydanticAI 전체 아키텍처",
+      "sourceIds": [
+        "P01",
+        "P03"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S22",
+      "title": "개발자는 업무 계약과 Tool을 작성합니다",
+      "sourceIds": [
+        "P01",
+        "P04",
+        "P05"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S23",
+      "title": "세 Graph 노드가 다음 실행을 정합니다",
+      "sourceIds": [
+        "P03"
+      ],
+      "builds": 5
+    },
+    {
+      "id": "S24",
+      "title": "지시·History·Deps는 같은 입력이 아닙니다",
+      "sourceIds": [
+        "P04",
+        "P06",
+        "P07"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S25",
+      "title": "Tool은 스키마 준비·검증·실행을 거칩니다",
+      "sourceIds": [
+        "P05",
+        "P08",
+        "P09"
+      ],
+      "builds": 5
+    },
+    {
+      "id": "S26",
+      "title": "병렬 실행은 의존성 없는 구간을 겹칩니다",
+      "sourceIds": [
+        "P08",
+        "P10"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S27",
+      "title": "출력 형식과 결과의 정확성은 따로 검증합니다",
+      "sourceIds": [
+        "P11"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S28",
+      "title": "EndStrategy는 실제 실행 범위를 바꿉니다",
+      "sourceIds": [
+        "P03",
+        "P10"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S29",
+      "title": "Retry를 발생 위치별로 나눕니다",
+      "sourceIds": [
+        "P12"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S30",
+      "title": "Hook을 기능 단위 Capability로 합성합니다",
+      "sourceIds": [
+        "P13",
+        "P14"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S31",
+      "title": "여러 Run의 대화는 명시적으로 이어 붙입니다",
+      "sourceIds": [
+        "P06",
+        "P15"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S32",
+      "title": "압축 전략은 제공되지만 보존 정책은 설계합니다",
+      "sourceIds": [
+        "P02",
+        "P16"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S33",
+      "title": "Harness Memory는 저장·주입·검색을 묶습니다",
+      "sourceIds": [
+        "P17"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S34",
+      "title": "Skill 로딩과 MCP 호출을 따로 연결합니다",
+      "sourceIds": [
+        "P18",
+        "P19"
+      ],
+      "builds": 2
+    },
+    {
+      "id": "S35",
+      "title": "위임·라우팅·Graph·Advisor의 제어권",
+      "sourceIds": [
+        "P20",
+        "P21",
+        "P22"
+      ],
+      "builds": 4
+    },
+    {
+      "id": "S36",
+      "title": "승인은 보류 Call을 해결하고 재개하는 계약입니다",
+      "sourceIds": [
+        "P23"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S37",
+      "title": "Core에 Harness를 더해도 업무 책임은 남습니다",
+      "sourceIds": [
+        "P01",
+        "P02",
+        "P24"
+      ],
+      "builds": 3
+    },
+    {
+      "id": "S38",
+      "title": "코드와 내부 전이를 PydanticAI Demo에서 잇습니다",
+      "sourceIds": [],
+      "builds": 3
+    },
+    {
+      "id": "S43",
+      "title": "중앙 실행과 로컬 실행은 책임 배치가 다릅니다",
+      "sourceIds": [],
+      "builds": 3
+    },
+    {
+      "id": "S44",
+      "title": "분석에 필요한 검증 기준을 정합니다",
+      "sourceIds": [],
+      "builds": 2
+    },
+    {
+      "id": "S45",
+      "title": "제공받는 실행과 직접 만드는 계약",
+      "sourceIds": [],
+      "builds": 3
+    }
+  ],
+  "reserved": [
+    "S39",
+    "S40",
+    "S41",
+    "S42"
+  ],
+  "demoStatus": "handoff only; no actual runtime connected",
+  "notes": "presenter-notes.md / separate N window"
+}
