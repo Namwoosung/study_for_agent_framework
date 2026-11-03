@@ -1,6 +1,8 @@
 {
   "blueprintCoverage": 42,
+  "audienceSlides": 43,
   "speakerSpecCoverage": 42,
+  "sourcesExplanations": 43,
   "reservedExcluded": [
     "S39",
     "S40",
@@ -9,7 +11,7 @@
   ],
   "sourceReferencesPreserved": true,
   "pythonSnippetsSyntaxChecked": 6,
-  "pdfPages": 42,
+  "pdfPages": 43,
   "blankPdfPages": 0,
   "result": "pass"
 }

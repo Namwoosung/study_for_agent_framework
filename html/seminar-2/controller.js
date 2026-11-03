@@ -4,6 +4,7 @@ const privateMaterial=__PRIVATE__;
 const slides=[...document.querySelectorAll('.slide')];
 const stage=document.querySelector('.deck-stage');
 const dialog=document.querySelector('.menu-dialog');
+const reader=document.querySelector('.sources-dialog');
 let index=0,step=0,notesWindow=null,notesTab='current';
 
 /* === FIXED STAGE AND REPLACEABLE BUILDS === */
@@ -17,7 +18,9 @@ function render(){
  slides.forEach((s,i)=>{
   const active=i===index;s.classList.toggle('active',active);s.setAttribute('aria-hidden',String(!active));s.inert=!active;
   if(!active)return;
+  s.classList.toggle('focus-on',step>0&&!data[index].reveal);
   s.querySelectorAll('[data-focus]').forEach(g=>{g.classList.toggle('dim',step>0&&Number(g.dataset.focus)!==step);g.classList.toggle('highlight',step>0&&Number(g.dataset.focus)===step)});
+  s.querySelectorAll('[data-reveal]').forEach(g=>{const show=step>=Number(g.dataset.reveal);g.classList.toggle('revealed',show);g.setAttribute('aria-hidden',String(!show))});
   s.querySelector('.step-label').textContent=`${data[index].steps[step]} · ${step}/${data[index].steps.length-1}`;
   s.querySelector('.jump-number').value=index+1;
  });
@@ -47,12 +50,19 @@ function writeNotes(){
  const scroll=w.document?.documentElement?.scrollTop||0;
  const contents=notesTab==='current'?d.note:notesTab==='reserved'?Object.entries(privateMaterial.reserved).map(([k,v])=>`## ${k} — ${v}`).join('\n\n'):privateMaterial[notesTab];
  const tabs=[['current','현재 슬라이드'],['concepts','상세 해설'],['qa','Q&A'],['research','근거·정정'],['demos','데모 제작 명세'],['reserved','예약 SDK']];
- w.document.open();w.document.write(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>발표자 노트 · ${esc(d.id)}</title><style>body{background:#0B1020;color:#EFF4FF;font:17px/1.8 sans-serif;margin:0}header{position:sticky;top:0;background:#10182c;padding:18px 28px;border-bottom:1px solid #33415D}header .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}h1{font-size:25px;line-height:1.5;margin:12px 0}h2,h3{margin-top:32px}a{color:#60A5FA}small{color:#9EACC8}main{max-width:1040px;margin:25px auto;padding:0 28px 60px}button{font:inherit;cursor:pointer;color:#EFF4FF;background:#19243c;border:1px solid #33415D;border-radius:5px;padding:6px 12px}button.active{border-color:#B794F4}pre{background:#080d19;border:1px solid #33415D;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.6}code{color:#FDBA74}table{width:100%;border-collapse:collapse}td{border:1px solid #33415D;padding:9px;vertical-align:top}p{overflow-wrap:anywhere}button:focus-visible,a:focus-visible{outline:3px solid #60A5FA}</style><header><div class="row"><small>발표자 전용 · ${index+1}/${data.length} · ${d.id} · ${step}/${d.steps.length-1}</small><button id="back">← 단계</button><button id="next">단계 →</button><button id="nextSlide">다음 장</button></div><h1>${esc(d.title)}</h1><div class="row">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${notesTab===k?'active':''}">${v}</button>`).join('')}</div></header><main>${markdown(contents||'')}<h2>이 장의 출처</h2>${d.sources.length?d.sources.map(([id,name,url])=>`<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">[${id}] ${esc(name)}</a></p>`).join(''):'<p>최종 blueprint의 도입·발표 구성 및 설계 예시.</p>'}<p><small>←/→/Space 단계 · PageUp/Down 장 이동 · G 번호 입력 · T 목차 · N 노트 · F 전체 화면<br>실제 Demo 서비스는 별도 제작·연결 대상입니다. 본 자료는 모델 API를 호출하지 않습니다.</small></p></main></html>`);w.document.close();
+ w.document.open();w.document.write(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>발표자 노트 · ${esc(d.id)}</title><style>body{background:#FBFCFF;color:#172B46;font:17px/1.8 sans-serif;margin:0}header{position:sticky;top:0;background:#EFF4FD;padding:18px 28px;border-bottom:1px solid #B7C3D3}header .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}h1{font-size:25px;line-height:1.5;margin:12px 0}h2,h3{margin-top:32px}a{color:#205BC7}small{color:#52647B}main{max-width:1040px;margin:25px auto;padding:0 28px 60px}button{font:inherit;cursor:pointer;color:#172B46;background:#FFFFFF;border:1px solid #B7C3D3;border-radius:5px;padding:6px 12px}button.active{border-color:#6941B8}pre{background:#F0F4FA;border:1px solid #B7C3D3;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.6}code{color:#9B4F0A}table{width:100%;border-collapse:collapse}td{border:1px solid #B7C3D3;padding:9px;vertical-align:top}p{overflow-wrap:anywhere}button:focus-visible,a:focus-visible{outline:3px solid #205BC7}</style><header><div class="row"><small>발표자 전용 · ${index+1}/${data.length} · ${d.id} · ${step}/${d.steps.length-1}</small><button id="back">← 단계</button><button id="next">단계 →</button><button id="nextSlide">다음 장</button></div><h1>${esc(d.title)}</h1><div class="row">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${notesTab===k?'active':''}">${v}</button>`).join('')}</div></header><main>${markdown(contents||'')}<h2>이 장의 출처</h2>${d.sources.length?d.sources.map(([id,name,url])=>`<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">[${id}] ${esc(name)}</a></p>`).join(''):'<p>최종 blueprint의 도입·발표 구성 및 설계 예시.</p>'}<p><small>←/→/Space 단계 · PageUp/Down 장 이동 · G 번호 입력 · T 목차 · N 노트 · F 전체 화면<br>실제 Demo 서비스는 별도 제작·연결 대상입니다. 본 자료는 모델 API를 호출하지 않습니다.</small></p></main></html>`);w.document.close();
  w.document.querySelector('#back').onclick=prev;w.document.querySelector('#next').onclick=next;w.document.querySelector('#nextSlide').onclick=()=>go(index+1);
  w.document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{notesTab=b.dataset.tab;writeNotes()});
  w.document.documentElement.scrollTop=scroll;
 }
 function notes(){notesWindow=window.open('','seminar2-final-notes','width=1080,height=850');if(notesWindow)writeNotes()}
+function sources(){
+ const d=data[index];reader.querySelector('.reader-meta').textContent=`${index+1} / ${data.length} · ${d.id} · 개념과 설명`;
+ reader.querySelector('h2').textContent=d.title;
+ reader.querySelector('main').innerHTML=`<h3>이 장의 개념</h3><dl>${d.concepts.map(c=>`<dt>${esc(c.term)}</dt><dd>${esc(c.meaning)}</dd>`).join('')}</dl><h3>설명</h3><p>${esc(d.explanation)}</p><h3>발표 포인트</h3><p>${esc(d.take)}</p><h3>참고 자료</h3>${d.sources.length?'<ul>'+d.sources.map(([id,name,url])=>`<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(name)}</a></li>`).join('')+'</ul>':'<p>사용자가 정한 세미나 계획과 발표 구성입니다.</p>'}`;
+ reader.showModal();reader.scrollTop=0;reader.querySelector('.reader-close').focus();
+}
+function closeSources(){reader.close();slides[index].querySelector('.sources').focus()}
 function toc(){dialog.showModal();const button=dialog.querySelector(`[data-jump="${index}"]`);button?.focus();button?.scrollIntoView({block:'center'})}
 function closeToc(){dialog.close();slides[index].querySelector('.menu').focus()}
 
@@ -60,7 +70,9 @@ function closeToc(){dialog.close();slides[index].querySelector('.menu').focus()}
 document.addEventListener('click',e=>{
  if(e.target.closest('.next'))next();
  if(e.target.closest('.prev'))prev();
- if(e.target.closest('.sources'))notes();
+ if(e.target.closest('.sources'))sources();
+ if(e.target.closest('.reader-close'))closeSources();
+ if(e.target===reader) {const r=reader.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeSources()}
  if(e.target.closest('.menu'))toc();
  if(e.target.closest('.close'))closeToc();
  const jump=e.target.closest('[data-jump]');if(jump){go(Number(jump.dataset.jump));closeToc()}
@@ -68,6 +80,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{if(e.target.matches('.jump-number')&&e.target.value)go(Number(e.target.value)-1)});
 document.addEventListener('keydown',e=>{
  if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(reader.open){if(e.key==='Escape'){e.preventDefault();closeSources()}return}
  if(dialog.open){if(e.key==='Escape'){e.preventDefault();closeToc()}return}
  if(e.target.matches('input')){if(e.key==='Enter'){e.preventDefault();if(e.target.value)go(Number(e.target.value)-1);e.target.blur()}return}
  let handled=true;
@@ -80,9 +93,9 @@ document.addEventListener('keydown',e=>{
  else if(e.key==='Escape'){if(notesWindow&&!notesWindow.closed)notesWindow.close()}
  else handled=false;if(handled)e.preventDefault();
 });
-let startX=null;addEventListener('touchstart',e=>{if(dialog.open)return;startX=e.touches[0].clientX},{passive:true});
+let startX=null;addEventListener('touchstart',e=>{if(dialog.open||reader.open)return;startX=e.touches[0].clientX},{passive:true});
 addEventListener('touchend',e=>{if(startX===null)return;const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>50){if(dx<0)next();else prev()}startX=null},{passive:true});
-let lastWheel=0;addEventListener('wheel',e=>{if(dialog.open||Math.abs(e.deltaY)<30||Date.now()-lastWheel<550)return;lastWheel=Date.now();if(e.deltaY>0)next();else prev()},{passive:true});
+let lastWheel=0;addEventListener('wheel',e=>{if(dialog.open||reader.open||Math.abs(e.deltaY)<30||Date.now()-lastWheel<550)return;lastWheel=Date.now();if(e.deltaY>0)next();else prev()},{passive:true});
 addEventListener('resize',scale);addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(id!==data[index].id)goId(id)});
 const initial=data.findIndex(s=>`#${s.id}`===location.hash);if(initial>=0)index=initial;
-scale();render();window.deck={go,goId,next,prev,state,notes,toc};
+scale();render();window.deck={go,goId,next,prev,state,notes,toc,sources};

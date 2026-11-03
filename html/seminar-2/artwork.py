@@ -16,7 +16,7 @@ if not license_file.exists():
     urllib.request.urlretrieve('https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/OFL.txt', license_file)
 font_license = json.dumps(license_file.read_text(encoding='utf-8'), ensure_ascii=False)
 base = (ROOT / 'assets/viewport-base.css').read_text(encoding='utf-8')
-C = {'model':'#60A5FA','runtime':'#B794F4','tool':'#34D399','context':'#FDBA74','risk':'#FB7185','success':'#5EEAD4','muted':'#9EACC8','line':'#33415D','text':'#EFF4FF'}
+C = {'model':'#205BC7','runtime':'#6941B8','tool':'#087756','context':'#9B4F0A','risk':'#BD2845','success':'#087C74','muted':'#52647B','line':'#7E90A8','text':'#172B46'}
 
 def text(x,y,value,size=26,color='text',weight=400,anchor='start',cls=''):
     color=C.get(color,color)

@@ -1,45 +1,64 @@
 {
   "blueprint": "2_2차_세미나_최종_slide_blueprint.md",
   "blueprintSha256": "b9caa3b82a7d933ff6d136f327ed5ff3aa94fe11661918f38778ee8817d79f56",
+  "editorialRevision": "2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations",
   "slides": [
     {
       "id": "S00",
-      "title": "다시 반갑습니다.",
+      "title": "Agent Framework 세부 구조",
       "sourceIds": [],
       "builds": 0
     },
     {
       "id": "S01",
-      "title": "이제 실제 구현을 들여다봅니다",
+      "title": "Agent Framework의 구성",
       "sourceIds": [],
-      "builds": 1
+      "builds": 5
     },
     {
       "id": "S02",
-      "title": "2차에서 맡는 범위",
+      "title": "2차 세미나 진행 계획",
       "sourceIds": [],
       "builds": 3
     },
     {
       "id": "S03",
-      "title": "완성된 실행환경과 개발용 구성요소",
+      "title": "Agent Harness와 SDK",
       "sourceIds": [
         "P01"
       ],
-      "builds": 2
+      "builds": 1
     },
     {
-      "id": "S04",
-      "title": "Hermes는 반복 실행을 중심으로 기능을 묶습니다",
+      "id": "S03H",
+      "title": "Hermes",
       "sourceIds": [
         "H01",
         "H02"
       ],
-      "builds": 4
+      "builds": 0
+    },
+    {
+      "id": "S04",
+      "title": "Hermes는 범용 Agent Harness입니다",
+      "sourceIds": [
+        "H01",
+        "H02",
+        "H05",
+        "H07",
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H14",
+        "H15",
+        "H16"
+      ],
+      "builds": 6
     },
     {
       "id": "S05",
-      "title": "한 Turn을 실제 요청으로 만드는 경로",
+      "title": "사용자 입력에서 모델 요청까지",
       "sourceIds": [
         "H02",
         "H03"
@@ -48,7 +67,7 @@
     },
     {
       "id": "S06",
-      "title": "응답 분기가 루프와 종료를 결정합니다",
+      "title": "Tool을 실행할 때와 답변을 마칠 때",
       "sourceIds": [
         "H02"
       ],
@@ -56,7 +75,7 @@
     },
     {
       "id": "S07",
-      "title": "고정 Prompt와 호출별 정보는 따로 움직입니다",
+      "title": "고정된 Prompt와 매번 달라지는 정보",
       "sourceIds": [
         "H03"
       ],
@@ -64,7 +83,7 @@
     },
     {
       "id": "S08",
-      "title": "Prefix 재사용은 서빙 계층의 일입니다",
+      "title": "같은 Prefix의 계산을 재사용하기",
       "sourceIds": [
         "H04",
         "V01"
@@ -73,7 +92,7 @@
     },
     {
       "id": "S09",
-      "title": "압축은 실행 이력의 정합성도 지켜야 합니다",
+      "title": "긴 대화에서 남길 것과 줄일 것",
       "sourceIds": [
         "H04"
       ],
@@ -81,7 +100,7 @@
     },
     {
       "id": "S10",
-      "title": "Memory 파일과 지금 보는 기억은 다릅니다",
+      "title": "저장한 Memory는 언제 반영될까?",
       "sourceIds": [
         "H05",
         "H06"
@@ -90,7 +109,7 @@
     },
     {
       "id": "S11",
-      "title": "Session 검색은 전체 Memory의 대체물이 아닙니다",
+      "title": "기억할 사실과 다시 찾을 대화",
       "sourceIds": [
         "H07",
         "H08"
@@ -99,7 +118,7 @@
     },
     {
       "id": "S12",
-      "title": "Skill은 필요할 때 읽고 유지 관리합니다",
+      "title": "Skill을 읽고 다시 사용하는 과정",
       "sourceIds": [
         "H09",
         "H10"
@@ -108,7 +127,7 @@
     },
     {
       "id": "S13",
-      "title": "도구 등록·외부 연결·확장 Hook은 다른 접점입니다",
+      "title": "Tool 등록과 MCP·Plugin 연결",
       "sourceIds": [
         "H11",
         "H12"
@@ -117,7 +136,7 @@
     },
     {
       "id": "S14",
-      "title": "병렬 Tool과 Child Agent는 실행 단위가 다릅니다",
+      "title": "Tool 병렬 실행과 Subagent 위임",
       "sourceIds": [
         "H13",
         "H14"
@@ -126,7 +145,7 @@
     },
     {
       "id": "S15",
-      "title": "정책 경계를 확인하고 Hermes Demo로 갑니다",
+      "title": "실행 권한과 Hermes Demo",
       "sourceIds": [
         "H15",
         "H16"
@@ -135,7 +154,7 @@
     },
     {
       "id": "S16",
-      "title": "Claude Code도 Harness에서 출발합니다",
+      "title": "Claude Code의 실행 구조",
       "sourceIds": [
         "C01"
       ],
@@ -143,7 +162,7 @@
     },
     {
       "id": "S17",
-      "title": "프로젝트 지시와 Auto Memory를 분리합니다",
+      "title": "프로젝트 지침과 Auto Memory",
       "sourceIds": [
         "C02"
       ],
@@ -151,7 +170,7 @@
     },
     {
       "id": "S18",
-      "title": "Subagent 반환과 Team 협업은 다릅니다",
+      "title": "Subagent와 Agent Teams",
       "sourceIds": [
         "C03",
         "C04"
@@ -160,7 +179,7 @@
     },
     {
       "id": "S19",
-      "title": "Slash command는 실행 상태를 조작하는 입구입니다",
+      "title": "명령으로 세션과 기억 관리하기",
       "sourceIds": [
         "H05",
         "H08",
@@ -170,7 +189,7 @@
     },
     {
       "id": "S20",
-      "title": "Pydantic → PydanticAI → 선택적 Harness",
+      "title": "Pydantic에서 PydanticAI로",
       "sourceIds": [
         "P01",
         "P02"
@@ -179,7 +198,7 @@
     },
     {
       "id": "S21",
-      "title": "PydanticAI 전체 아키텍처",
+      "title": "PydanticAI 전체 구조",
       "sourceIds": [
         "P01",
         "P03"
@@ -188,7 +207,7 @@
     },
     {
       "id": "S22",
-      "title": "개발자는 업무 계약과 Tool을 작성합니다",
+      "title": "Agent와 Tool을 코드로 정의하기",
       "sourceIds": [
         "P01",
         "P04",
@@ -198,7 +217,7 @@
     },
     {
       "id": "S23",
-      "title": "세 Graph 노드가 다음 실행을 정합니다",
+      "title": "세 노드로 보는 Agent 실행",
       "sourceIds": [
         "P03"
       ],
@@ -206,7 +225,7 @@
     },
     {
       "id": "S24",
-      "title": "지시·History·Deps는 같은 입력이 아닙니다",
+      "title": "모델 입력과 Python 실행 자원",
       "sourceIds": [
         "P04",
         "P06",
@@ -216,7 +235,7 @@
     },
     {
       "id": "S25",
-      "title": "Tool은 스키마 준비·검증·실행을 거칩니다",
+      "title": "함수 정의에서 Tool 실행까지",
       "sourceIds": [
         "P05",
         "P08",
@@ -226,7 +245,7 @@
     },
     {
       "id": "S26",
-      "title": "병렬 실행은 의존성 없는 구간을 겹칩니다",
+      "title": "함께 실행할 작업과 기다릴 작업",
       "sourceIds": [
         "P08",
         "P10"
@@ -235,7 +254,7 @@
     },
     {
       "id": "S27",
-      "title": "출력 형식과 결과의 정확성은 따로 검증합니다",
+      "title": "출력 형식과 업무 정확성 검증",
       "sourceIds": [
         "P11"
       ],
@@ -243,7 +262,7 @@
     },
     {
       "id": "S28",
-      "title": "EndStrategy는 실제 실행 범위를 바꿉니다",
+      "title": "EndStrategy에 따른 Tool 실행",
       "sourceIds": [
         "P03",
         "P10"
@@ -252,7 +271,7 @@
     },
     {
       "id": "S29",
-      "title": "Retry를 발생 위치별로 나눕니다",
+      "title": "무엇을 다시 시도할까?",
       "sourceIds": [
         "P12"
       ],
@@ -260,7 +279,7 @@
     },
     {
       "id": "S30",
-      "title": "Hook을 기능 단위 Capability로 합성합니다",
+      "title": "Hook과 Capability 구성",
       "sourceIds": [
         "P13",
         "P14"
@@ -269,7 +288,7 @@
     },
     {
       "id": "S31",
-      "title": "여러 Run의 대화는 명시적으로 이어 붙입니다",
+      "title": "이전 대화를 다음 Run으로 이어가기",
       "sourceIds": [
         "P06",
         "P15"
@@ -278,7 +297,7 @@
     },
     {
       "id": "S32",
-      "title": "압축 전략은 제공되지만 보존 정책은 설계합니다",
+      "title": "Context 압축과 원본 보관",
       "sourceIds": [
         "P02",
         "P16"
@@ -287,7 +306,7 @@
     },
     {
       "id": "S33",
-      "title": "Harness Memory는 저장·주입·검색을 묶습니다",
+      "title": "Harness의 Memory 기능",
       "sourceIds": [
         "P17"
       ],
@@ -295,7 +314,7 @@
     },
     {
       "id": "S34",
-      "title": "Skill 로딩과 MCP 호출을 따로 연결합니다",
+      "title": "Skill 로딩과 MCP 연결",
       "sourceIds": [
         "P18",
         "P19"
@@ -304,7 +323,7 @@
     },
     {
       "id": "S35",
-      "title": "위임·라우팅·Graph·Advisor의 제어권",
+      "title": "Agent 사이의 작업 전달",
       "sourceIds": [
         "P20",
         "P21",
@@ -314,7 +333,7 @@
     },
     {
       "id": "S36",
-      "title": "승인은 보류 Call을 해결하고 재개하는 계약입니다",
+      "title": "승인을 기다렸다가 실행 재개하기",
       "sourceIds": [
         "P23"
       ],
@@ -322,7 +341,7 @@
     },
     {
       "id": "S37",
-      "title": "Core에 Harness를 더해도 업무 책임은 남습니다",
+      "title": "Core와 Harness로 구성하는 Agent",
       "sourceIds": [
         "P01",
         "P02",
@@ -332,25 +351,25 @@
     },
     {
       "id": "S38",
-      "title": "코드와 내부 전이를 PydanticAI Demo에서 잇습니다",
+      "title": "PydanticAI Demo",
       "sourceIds": [],
       "builds": 3
     },
     {
       "id": "S43",
-      "title": "중앙 실행과 로컬 실행은 책임 배치가 다릅니다",
+      "title": "Agent를 어디에서 실행할까?",
       "sourceIds": [],
       "builds": 3
     },
     {
       "id": "S44",
-      "title": "분석에 필요한 검증 기준을 정합니다",
+      "title": "실행 기록과 업무 결과 검증",
       "sourceIds": [],
       "builds": 2
     },
     {
       "id": "S45",
-      "title": "제공받는 실행과 직접 만드는 계약",
+      "title": "구조를 이해하고 실제 개발로",
       "sourceIds": [],
       "builds": 3
     }
@@ -362,5 +381,5 @@
     "S42"
   ],
   "demoStatus": "handoff only; no actual runtime connected",
-  "notes": "presenter-notes.md / separate N window"
+  "notes": "Sources: concepts and explanation / N: presenter notes and appendix"
 }

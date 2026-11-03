@@ -1,8 +1,8 @@
 # Agent Framework 2차 세미나 — 전체 발표자료
 
-[발표용 HTML](index.html) · [42페이지 PDF](agent-framework-seminar-2.pdf) · [발표자 노트](presenter-notes.md)
+[발표용 HTML](index.html) · [43페이지 PDF](agent-framework-seminar-2.pdf) · [발표자 노트](presenter-notes.md)
 
-기준은 루트의 `2_2차_세미나_최종_slide_blueprint.md`입니다. 본편 **42장**으로 구성했으며 S39–S42의 미작성 SDK 예약 항목은 청중 순회·목차·PDF에서 제외했습니다. 예약 내용은 발표자 창에서만 확인할 수 있습니다. 5장 예시 폴더와 기존 교재·blueprint는 유지했습니다.
+기준은 루트의 `2_2차_세미나_최종_slide_blueprint.md`이며, 2026-11-03 사용자 수정 요청을 `revision.py`에 반영했습니다. 밝은 배경, 전체 장표 문구, 도입부, Hermes 전환/기능 소개 및 Sources 설명을 개정했습니다. 본편 **43장**으로 구성했으며 S39–S42의 미작성 SDK 예약 항목은 청중 순회·목차·PDF에서 제외했습니다. 예약 내용은 발표자 창에서만 확인할 수 있습니다. 5장 예시 폴더와 기존 교재·blueprint는 유지했습니다.
 
 ## 실행
 
@@ -13,16 +13,17 @@
 | `→` / `Space` | 강조 단계 진행, 마지막 단계 뒤 다음 장 |
 | `←` | 단계 역순, 첫 단계에서 이전 장 마지막 단계 |
 | `PageDown` / `PageUp` | 장 단위 이동 |
-| `G` | 하단 번호 입력에 포커스. 1–42 입력 후 Enter |
+| `G` | 하단 번호 입력에 포커스. 1–43 입력 후 Enter |
 | `T` / 목차 | 전체 본편 목록에서 바로 이동 |
 | `Home` / `End` | 첫 장 / 마지막 장 |
-| `N` / Sources | 별도 발표자 노트·출처 창 |
+| Sources | 현재 장의 개념·설명·참고 자료 |
+| `N` | 별도 발표자 노트 창 |
 | `F` / `Escape` | 전체 화면 / 닫기 |
 | 터치 스와이프 / 휠 | 단계 이동 |
 
-전체 도식은 처음부터 보이며 조작은 설명할 경로를 강조합니다. 노트 창은 화면 공유 대상에서 제외하세요. 노트 창에는 현재 슬라이드 대본·상세 해설·Q&A·근거/정정·데모 명세·SDK 예약 내용을 넣었으며 그 창에서도 발표 단계를 제어할 수 있습니다.
+전체 도식은 처음부터 보이며 조작은 설명할 경로를 강조합니다. 3장의 발표자 이름은 Space로 위에서부터 차례로 나타나고, 4장은 Space 한 번으로 Hermes와 PydanticAI를 동시에 강조합니다. Sources에서는 43장 각각의 개념 정의와 설명을 읽고 Escape로 돌아올 수 있습니다. 노트 창은 화면 공유 대상에서 제외하세요. 노트 창에는 현재 슬라이드 대본·상세 해설·Q&A·근거/정정·데모 명세·SDK 예약 내용을 넣었으며 그 창에서도 발표 단계를 제어할 수 있습니다.
 
-16:9 1920×1080 stage를 통째로 비례 축소합니다. 모바일에서도 도식 배치를 바꾸지 않습니다. PDF는 강조 조작·별도 노트·Demo 링크 UI가 없는 정적 42장 버전입니다.
+16:9 1920×1080 stage를 통째로 비례 축소합니다. 모바일에서도 도식 배치를 바꾸지 않습니다. PDF는 강조 조작·별도 노트·Demo 링크 UI가 없는 정적 43장 버전입니다.
 
 ## 실제 Demo 상태
 
@@ -37,8 +38,9 @@ S15/S38의 링크는 `demo-handoff.html`로 이동합니다. **실제 Hermes/Pyd
 python html/seminar-2/build.py
 ```
 
-- `build.py`: 42장 화면·도식과 blueprint의 발표자 내용 매핑.
+- `build.py`: 43장 화면·도식과 blueprint의 발표자 내용 매핑.
 - `artwork.py`: 5장 예시에서 확정한 도형·스타일과 재사용 도식. 이 폴더 자체 자산만 사용합니다.
+- `revision.py`: 사용자 요청에 따른 문구·도입/소개 도식·개념 해설·밝은 테마. 원 blueprint의 노트는 originalSpec으로 보관.
 - `controller.js`: 단계 이동·목차·발표자 창·고정 stage 제어.
 - `assets/`: 로컬 폰트·SIL OFL·viewport base CSS.
 - `notes.json` / `presenter-notes.md`: 생성된 발표자 자료.
@@ -48,10 +50,10 @@ python html/seminar-2/build.py
 
 ## 확인한 범위
 
-- 본편 42장 및 S38→S43 연결, blueprint SHA-256·출처 ID 보존.
+- 본편 43장 및 S38→S43 연결, blueprint SHA-256·출처 ID 보존.
 - 1920×1080, 1280×720, 390×844의 stage 비율·viewport 범위·텍스트 넘침/겹침.
 - 모든 build 정방향·역방향, 번호 이동·목차·예약 제외·노트 분리/제어.
 - 두 Demo 안내의 미연결 표기·복귀 링크, 원격 자동 요청 없음.
-- 모든 장 렌더링 화면 검토, PDF 42페이지 확인.
+- 모든 장 렌더링 화면 검토, PDF 43페이지 확인.
 
-결과는 `validation/report.json`, 화면은 `validation/screenshots/`에 있습니다. 내용 검증은 제공된 blueprint와의 대조이며 실제 패키지/API·모델/프록시·대상 PC 실행 검증을 뜻하지 않습니다.
+결과는 `validation/report.json`, 화면은 `validation/revision-screenshots/`에 있습니다. 내용 검증은 제공된 blueprint와의 대조이며 실제 패키지/API·모델/프록시·대상 PC 실행 검증을 뜻하지 않습니다.

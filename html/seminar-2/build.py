@@ -284,8 +284,11 @@ for i,(title_,desc,col) in enumerate([
     d+=group(i+1,text(0,y+25,str(i+1).zfill(2),31,col,700)+text(120,y+25,title_,36,col,700)+text(120,y+86,desc,29,'text')+rule(120,y+125,1652,y+125))
 add(45,'제공받는 실행과 직접 만드는 계약','프레임워크 선택은 실행 책임을 나누는 결정입니다.',d,'다음 발표와 3차에서는 실제 Agent를 만들고 이 계약으로 검증한다.',['Hermes의 실제 구조','PydanticAI의 조합','업무 계약'])
 
-# === COMPLETE INPUT COVERAGE AND STABLE IDS ===
+# === USER EDITORIAL REVISION: stable IDs, updated copy and section opener ===
+from revision import apply, LIGHT_STYLE
+apply(slides, globals())
 expected=[f'S{i:02}' for i in range(46) if i not in range(39,43)]
+expected.insert(expected.index('S04'),'S03H')
 assert sorted(slides)==expected, (set(expected)-set(slides),set(slides)-set(expected))
 ordered=[slides[k] for k in expected]
 
@@ -295,7 +298,7 @@ def diagram_svg(s):
     defs=''.join(f'<marker id="{ident}-{k}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="{v}"/></marker>' for k,v in colors.items())
     body=s['diagram'].replace('url(#',f'url(#{ident}-')
     body=re.sub(r'(<text[^>]*>)(UserPromptNode|ModelRequestNode|CallToolsNode|Prompt / Compression|Provider adapter|Tool dispatch)(</text>)',lambda m:f'<g data-node-key="{escape(m[2])}">{m[0]}</g>',body)
-    return f'<svg viewBox="0 0 1652 650" role="img" aria-label="{escape(s["title"])}"><defs>{defs}</defs>{body}</svg>'
+    return f'<svg viewBox="0 0 1652 650" role="img" aria-labelledby="{ident}-title {ident}-desc"><title id="{ident}-title">{escape(s["title"])}</title><desc id="{ident}-desc">{escape(s["sub"])}</desc><defs>{defs}</defs>{body}</svg>'
 
 # === OUTSIDE-THE-STAGE CHROME, INSIDE-THE-STAGE PRESENTATION ===
 style=example['style']+r'''
@@ -305,6 +308,7 @@ style=example['style']+r'''
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 @media print{.demo-link,.menu-dialog,.progress{display:none!important}.slide.opening header{visibility:hidden!important}.code-line{font-family:Consolas,'Courier New',monospace}}
 '''
+style+=LIGHT_STYLE
 font=base64.b64encode((ROOT/'assets/NanumGothic-Regular.ttf').read_bytes()).decode()
 license_=json.dumps((ROOT/'assets/OFL.txt').read_text(encoding='utf-8'),ensure_ascii=False)
 html_slides=[]
@@ -314,7 +318,7 @@ for i,s in enumerate(ordered):
 <section class="slide {s['kind']} {'active' if i==0 else ''} {'has-demo' if s['demo'] else ''}" data-index="{i}" data-slide-id="{s['id']}" tabindex="-1" aria-label="{i+1}. {escape(s['title'])}" aria-hidden="{'false' if i==0 else 'true'}">
 <header><p class="section-label">{escape(s['section'])}</p><h1>{escape(s['title'])}</h1><p class="subtitle">{escape(s['sub'])}</p></header>
 <div class="diagram">{diagram_svg(s)}</div><p class="takeaway">{escape(s['take'])}</p>{demo}
-<footer class="slide-footer"><div><span class="page-count">{i+1:02} / 42</span><span>{s['id']}</span><span class="version">{escape(s['version'])}</span><button class="sources" aria-label="발표자 노트와 출처 열기">Sources</button></div><nav class="controls" aria-label="발표 탐색"><span class="step-label">전체 구성 · 0/{len(s['steps'])-1}</span><button class="prev" aria-label="이전 단계">←</button><input class="jump-number" type="number" min="1" max="42" value="{i+1}" aria-label="이동할 슬라이드 번호"><span class="jump-total">/ 42</span><button class="next" aria-label="다음 단계">→</button><button class="menu" aria-label="전체 목차 열기">목차</button></nav></footer><div class="progress" style="width:{(i+1)/42*100:.4f}%"></div></section>''')
+<footer class="slide-footer"><div><span class="page-count">{i+1:02} / {len(ordered)}</span><span>{s['id']}</span><span class="version">{escape(s['version'])}</span><button class="sources" aria-label="이 장의 개념·설명·출처 열기">Sources</button></div><nav class="controls" aria-label="발표 탐색"><span class="step-label">전체 구성 · 0/{len(s['steps'])-1}</span><button class="prev" aria-label="이전 단계">←</button><input class="jump-number" type="number" min="1" max="{len(ordered)}" value="{i+1}" aria-label="이동할 슬라이드 번호"><span class="jump-total">/ {len(ordered)}</span><button class="next" aria-label="다음 단계">→</button><button class="menu" aria-label="전체 목차 열기">목차</button></nav></footer><div class="progress" style="width:{(i+1)/len(ordered)*100:.4f}%"></div></section>''')
 
 metadata=[{k:v for k,v in s.items() if k!='diagram'} for s in ordered]
 notes_md='# 2차 세미나 — 발표자 전용 노트\n\n'+ '\n\n'.join('## '+s['id']+' — '+s['title']+'\n\n'+s['note'] for s in ordered)+'\n\n# 심층 개념 해설\n\n'+sections['C']+'\n\n# Q&A\n\n'+sections['D']+'\n\n# 근거와 정정\n\n'+sections['F']
@@ -323,8 +327,8 @@ notes_md='# 2차 세미나 — 발표자 전용 노트\n\n'+ '\n\n'.join('## '+s
 private=dict(concepts=sections['C'],qa=sections['D'],research=sections['F'],demos=sections['E'],reserved={k:specs[k] for k in ('S39','S40','S41','S42')})
 script=(ROOT/'controller.js').read_text(encoding='utf-8').replace('__SLIDES__',json.dumps(metadata,ensure_ascii=False)).replace('__PRIVATE__',json.dumps(private,ensure_ascii=False))
 toc=''.join(f'<button data-jump="{i}"><small>{i+1:02} · {s["id"]}</small>　{escape(s["title"])}</button>' for i,s in enumerate(ordered))
-html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/ttf;base64,{font}) format('truetype');font-weight:400;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
+html=f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agent Framework 2차 세미나</title><style>@font-face{{font-family:'Seminar Korean';src:url(data:font/ttf;base64,{font}) format('truetype');font-weight:400;font-display:swap}}\n{example['base']}\n{style}</style><script type="application/json" id="font-license">{license_}</script></head><body><div class="key-hint">← → Space 단계 · PageUp/Down 장 이동 · G 번호 이동 · T 목차 · N 노트 · F 전체 화면</div><div class="deck-viewport"><main class="deck-stage">{''.join(html_slides)}</main></div><dialog class="menu-dialog" aria-labelledby="toc-title"><button class="close">닫기</button><h2 id="toc-title">전체 발표 목차</h2><div class="toc-list">{toc}</div></dialog><dialog class="sources-dialog" aria-labelledby="reader-title"><button class="reader-close" aria-label="개념 설명 닫기">닫기</button><header><div class="reader-meta"></div><h2 id="reader-title"></h2></header><main></main></dialog><div class="sr-only" id="live" aria-live="polite"></div><script>{script}</script></body></html>'''
 (ROOT/'index.html').write_text(html,encoding='utf-8')
-manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','notes':'presenter-notes.md / separate N window'}
+manifest={'blueprint':BLUEPRINT.name,'blueprintSha256':hashlib.sha256(BLUEPRINT.read_bytes()).hexdigest(),'editorialRevision':'2026-11-03 / revision.py / user-requested light theme, copy, intro, Hermes opener and Sources explanations','slides':[{'id':s['id'],'title':s['title'],'sourceIds':[r[0] for r in s['sources']],'builds':len(s['steps'])-1} for s in ordered],'reserved':['S39','S40','S41','S42'],'demoStatus':'handoff only; no actual runtime connected','notes':'Sources: concepts and explanation / N: presenter notes and appendix'}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(f'Final: {len(ordered)} slides, {len(html.encode())//1024} KiB, {ROOT / "index.html"}')
