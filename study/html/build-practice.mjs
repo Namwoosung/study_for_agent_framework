@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {aids, renderAid} from './practice-aids.mjs';
 
 const script = fileURLToPath(import.meta.url);
 const study = path.resolve(path.dirname(script), '..');
@@ -55,12 +56,20 @@ async function buildPractice() {
         chapterIds.set(heading, id);
       }
     }
+    const courseAids = aids[course.folder];
+    for (const chapter of Object.keys(courseAids)) {
+      if (!chapters.some(({id}) => id === chapter)) {
+        throw new Error(`Missing learning aid chapter ${chapter} in ${course.source}`);
+      }
+    }
     const renderer = new Renderer();
     renderer.heading = function (token) {
       const id = chapterIds.get(token);
       const text = this.parser.parseInline(token.tokens);
       const anchor = id ? ` <a class="permalink" href="#${id}" aria-label="${escape(token.text)} 링크">#</a>` : '';
-      return `<h${token.depth}${id ? ` id="${id}"` : ''}>${text}${anchor}</h${token.depth}>\n`;
+      const aid = courseAids[id];
+      return `<h${token.depth}${id ? ` id="${id}"` : ''}>${text}${anchor}</h${token.depth}>\n`
+        + (aid ? renderAid(`aid-${id}`, aid, escape) : '');
     };
     renderer.link = function (token) {
       return Renderer.prototype.link.call(this, {...token, href: localLinks.get(token.href) ?? token.href});

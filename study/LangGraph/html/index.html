@@ -140,6 +140,30 @@ assert result == {&quot;sku&quot;: &quot;KB-01&quot;, &quot;quantity&quot;: 0, &
 </figure>
 <p>각 노드는 변경분을 반환한다. <code>classify</code>에서 <code>sku</code>를 반환하지 않아도 앞 단계의 값은 남는다. <code>TypedDict</code>는 정적 스키마를 표현하므로 실제 외부 입력 검증은 서버 경계에서 추가한다.</p>
 <h2 id="chapter-3">3. 중급 — 도구 선택을 모델에 맡기고 엣지를 제어하기 <a class="permalink" href="#chapter-3" aria-label="3. 중급 — 도구 선택을 모델에 맡기고 엣지를 제어하기 링크">#</a></h2>
+<figure class="learning-aid" id="aid-chapter-3">
+    <figcaption><span>개념 실습 · 예시 데이터</span><strong>마지막 메시지가 다음 노드를 정한다</strong></figcaption>
+    <p>같은 모델 노드에서도 마지막 메시지의 도구 요청 유무에 따라 실행 경로가 갈립니다.</p>
+    <ol class="aid-steps">
+      <li>
+        <details name="aid-chapter-3-steps" open>
+          <summary><span class="aid-index" aria-hidden="true">1</span><span><small>도구 요청 있음</small><strong>도구 노드로 이동</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="도구 노드로 이동의 데이터"><code>START → model → tools → model</code></pre>
+            <p>tools_condition이 도구 노드를 선택합니다. ToolNode가 호출을 실행하고 결과 메시지를 상태에 더합니다.</p>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-3-steps">
+          <summary><span class="aid-index" aria-hidden="true">2</span><span><small>도구 요청 없음</small><strong>실행 종료</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="실행 종료의 데이터"><code>model → END</code></pre>
+            <p>추가로 실행할 도구가 없으므로 그래프가 종료합니다. 첫 응답에서 이 경로로 가면 조회도 실행되지 않습니다.</p>
+          </div>
+        </details>
+      </li>
+    </ol><p class="aid-link"><a href="#chapter-5">여러 조회의 결과를 병합하는 방법</a></p>
+  </figure>
 <p>아래는 LangChain의 모델 어댑터와 도구 선언을 쓰되, LangGraph로 에이전트 루프를 직접 정의하는 독립 스크립트다.</p>
 <figure class="example"><figcaption><span>Python</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python"><code class="language-python">import os
 
@@ -453,6 +477,54 @@ print(&quot;일시 오류 뒤 재조회 성공&quot;)
 </figure>
 <p><code>ConnectionError</code>를 <code>ValueError</code>로 바꾸면 지정한 재시도 조건에 해당하지 않아 실패가 호출자에게 전달된다. 두 경우의 실행 로그를 비교한다. 변경 작업에 재시도를 추가하려면 이전 시도가 업무 시스템에 이미 반영됐는지부터 판단할 수 있어야 한다. <a href="https://docs.langchain.com/oss/python/langgraph/fault-tolerance">노드의 재시도 정책</a></p>
 <h2 id="chapter-9">9. 최종 실습 — 승인형 재고 예약 설계 <a class="permalink" href="#chapter-9" aria-label="9. 최종 실습 — 승인형 재고 예약 설계 링크">#</a></h2>
+<figure class="learning-aid" id="aid-chapter-9">
+    <figcaption><span>개념 실습 · 예시 데이터</span><strong>예약 요청의 세 갈래</strong></figcaption>
+    <p>초기 재고가 7개인 예약 그래프를 비교합니다. 경로를 열어 승인 대기와 재고 변경이 언제 일어나는지 확인하세요.</p>
+    <ol class="aid-steps">
+      <li>
+        <details name="aid-chapter-9-steps" open>
+          <summary><span class="aid-index" aria-hidden="true">1</span><span><small>3개 요청 · 승인</small><strong>한 번만 차감</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="한 번만 차감의 데이터"><code>check → review [대기] → reserve → END
+재고: 7 → 7 → 4</code></pre>
+            <p>승인 대기에는 재고가 그대로입니다. 승인 후에만 3개가 차감됩니다. 같은 요청 ID의 재시도는 4개를 유지합니다.</p>
+            <div class="aid-meter">
+      <span>실행 뒤 재고 <strong>4개</strong> / 시작 7개</span>
+      <meter aria-label="실행 뒤 재고" min="0" max="7" value="4">4 / 7</meter>
+    </div>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-9-steps">
+          <summary><span class="aid-index" aria-hidden="true">2</span><span><small>3개 요청 · 거절</small><strong>변경 없이 종료</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="변경 없이 종료의 데이터"><code>check → review [대기] → END
+재고: 7 → 7</code></pre>
+            <p>거절하면 reserve 노드에 진입하지 않습니다.</p>
+            <div class="aid-meter">
+      <span>실행 뒤 재고 <strong>7개</strong> / 시작 7개</span>
+      <meter aria-label="실행 뒤 재고" min="0" max="7" value="7">7 / 7</meter>
+    </div>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-9-steps">
+          <summary><span class="aid-index" aria-hidden="true">3</span><span><small>8개 요청</small><strong>검사에서 종료</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="검사에서 종료의 데이터"><code>check → END
+재고: 7</code></pre>
+            <p>재고가 부족하므로 승인 요청을 만들지 않습니다.</p>
+            <div class="aid-meter">
+      <span>실행 뒤 재고 <strong>7개</strong> / 시작 7개</span>
+      <meter aria-label="실행 뒤 재고" min="0" max="7" value="7">7 / 7</meter>
+    </div>
+          </div>
+        </details>
+      </li>
+    </ol>
+  </figure>
 <ol>
 <li>그래프 입력을 <code>account_id</code>, <code>sku</code>, <code>quantity</code>, <code>request_id</code>로 설계한다. <code>account_id</code>는 인증 결과에서 넣는다.</li>
 <li>조회 결과가 충분할 때만 승인 노드로 가게 한다. 부족·미등록·권한 실패는 각각 사용자에게 구별해 전달한다.</li>

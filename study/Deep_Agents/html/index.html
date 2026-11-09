@@ -150,6 +150,42 @@ if __name__ == &quot;__main__&quot;:
 <h3 id="chapter-2-1">예제의 완료 조건을 관찰하기 <a class="permalink" href="#chapter-2-1" aria-label="예제의 완료 조건을 관찰하기 링크">#</a></h3>
 <p>보고서가 완성됐다고 판단하려면 (1) 두 SKU가 조회됐는지, (2) 결과의 근거 ID가 각각 INV-202와 INV-203인지, (3) 파일 쓰기 요청이 성공했는지 확인한다. 마지막 응답만 읽으면 (3)을 놓칠 수 있다. 누락을 디버깅할 때는 도구 인자, 도구 오류, 완료 응답을 분리한다. 실습 중 모델이 작업 파일을 만들지 않았다면 요청을 다시 보내기 전에 로그에서 파일 도구가 보였는지 먼저 확인한다.</p>
 <h2 id="chapter-3">3. 중급 — 조사와 종합을 분리하기 <a class="permalink" href="#chapter-3" aria-label="3. 중급 — 조사와 종합을 분리하기 링크">#</a></h2>
+<figure class="learning-aid" id="aid-chapter-3">
+    <figcaption><span>개념 실습 · 예시 데이터</span><strong>위임에서 오가는 것은 무엇인가</strong></figcaption>
+    <p>부모와 조사 에이전트의 역할을 비교합니다. 단계별로 전달되는 입력과 반환값을 확인하세요.</p>
+    <ol class="aid-steps">
+      <li>
+        <details name="aid-chapter-3-steps" open>
+          <summary><span class="aid-index" aria-hidden="true">1</span><span><small>부모</small><strong>조사 범위 전달</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="조사 범위 전달의 데이터"><code>대상: MS-02
+반환 요청: SKU, 수량, 근거 ID</code></pre>
+            <p>부모가 위임 요청에 필요한 정보를 명시합니다.</p>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-3-steps">
+          <summary><span class="aid-index" aria-hidden="true">2</span><span><small>조사 에이전트</small><strong>근거 조회</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="근거 조회의 데이터"><code>fetch_inventory(&quot;MS-02&quot;)
+→ INV-203: MS-02 마우스 재고 0개.</code></pre>
+            <p>조사 에이전트는 자기 컨텍스트에서 도구를 사용하고 결과를 부모에게 돌려줍니다.</p>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-3-steps">
+          <summary><span class="aid-index" aria-hidden="true">3</span><span><small>부모</small><strong>근거를 포함한 초안 작성</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="근거를 포함한 초안 작성의 데이터"><code>/inventory.md
+MS-02 | 0개 | INV-203</code></pre>
+            <p>부모는 조사 요약을 받아 파일을 작성합니다. 요약에 필요한 값이 빠지면 원본을 확인하거나 재조사합니다.</p>
+          </div>
+        </details>
+      </li>
+    </ol>
+  </figure>
 <p>아래 스크립트는 앞의 파일과 같은 폴더에서 실행한다. 부모는 보고서 편집을 담당하고, 조사 서브에이전트에만 업무 조회 도구를 지정한다.</p>
 <figure class="example"><figcaption><span>Python / delegate_inventory.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / delegate_inventory.py"><code class="language-python"># delegate_inventory.py
 from deepagents import create_deep_agent
@@ -343,6 +379,32 @@ if __name__ == &quot;__main__&quot;:
 </figure>
 <p>이 예제에서 스레드 간 파일 분리는 기본 백엔드와 체크포인트의 결과다. 다른 백엔드에서 같은 경로를 공유할 때는 사용자 경계가 달라질 수 있다. 실서비스에서는 서버가 스레드 소유권과 저장 네임스페이스를 정하고 모델이 다른 테넌트의 ID를 입력해 경계를 바꾸지 못하게 한다. <a href="https://docs.langchain.com/oss/python/deepagents/backends">백엔드</a> · <a href="https://docs.langchain.com/oss/python/deepagents/memory">메모리</a></p>
 <h2 id="chapter-8">8. 컨텍스트와 권한을 설계하기 <a class="permalink" href="#chapter-8" aria-label="8. 컨텍스트와 권한을 설계하기 링크">#</a></h2>
+<figure class="learning-aid" id="aid-chapter-8">
+    <figcaption><span>개념 실습 · 예시 데이터</span><strong>새 스레드에서는 어떤 파일이 보이나</strong></figcaption>
+    <p>아래는 이 단원의 CompositeBackend 예제입니다. 동일 계정과 프로세스를 유지한 상태에서 스레드만 바꿉니다.</p>
+    <ol class="aid-steps">
+      <li>
+        <details name="aid-chapter-8-steps" open>
+          <summary><span class="aid-index" aria-hidden="true">1</span><span><small>작업 초안</small><strong>기본 백엔드로 이동</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="기본 백엔드로 이동의 데이터"><code>/inventory.md → StateBackend
+다른 스레드: 조회되지 않음</code></pre>
+            <p>초안은 원래 스레드의 상태에 남습니다.</p>
+          </div>
+        </details>
+      </li>
+      <li>
+        <details name="aid-chapter-8-steps">
+          <summary><span class="aid-index" aria-hidden="true">2</span><span><small>보고서 양식</small><strong>경로에 따라 스토어로 이동</strong></span></summary>
+          <div class="aid-detail">
+            <pre tabindex="0" aria-label="경로에 따라 스토어로 이동의 데이터"><code>/memories/format.md → StoreBackend
+다른 스레드: 표로 작성</code></pre>
+            <p>두 스레드가 같은 계정 네임스페이스를 사용합니다. 예제의 InMemoryStore는 프로세스 종료 뒤에는 유지되지 않습니다.</p>
+          </div>
+        </details>
+      </li>
+    </ol><p class="aid-link"><a href="#chapter-7">기본 백엔드의 스레드 분리 실습</a></p>
+  </figure>
 <h3 id="chapter-8-1">파일·기억·스킬의 용도를 나눈다 <a class="permalink" href="#chapter-8-1" aria-label="파일·기억·스킬의 용도를 나눈다 링크">#</a></h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
 <thead>
