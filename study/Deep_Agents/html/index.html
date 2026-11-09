@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="작업 공간, 조사 위임과 게시 승인">
+  <title>Deep Agents — 계획, 작업 공간, 위임을 갖춘 에이전트 만들기</title>
+  <link rel="stylesheet" href="../../html/practice.css">
+  <script src="../../html/practice.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+  <header class="site-header">
+    <!-- deep-course-link -->
+    <a href="../../index.html">전체 학습 홈</a>
+    <!-- /deep-course-link -->
+    <span>Python 에이전트 실습</span>
+  </header>
+  <nav class="series" aria-label="실습 교재"><a href="../../LangChain/html/index.html">LangChain</a><a href="../../LangGraph/html/index.html">LangGraph</a><a href="../../Deep_Agents/html/index.html" aria-current="page">Deep Agents</a><a href="../../Oracle_Agent_Spec/html/index.html">Oracle Open Agent Specification</a></nav>
+  <div class="layout">
+    <aside class="sidebar">
+      <nav aria-label="이 교재의 단원">
+        <p>이 교재의 단원</p>
+        <ol><li><a href="#chapter-1">하네스란 무엇인가</a></li><li><a href="#chapter-2">기초 — 보고서 초안을 작업 공간에 남기기</a></li><li><a href="#chapter-3">중급 — 조사와 종합을 분리하기</a></li><li><a href="#chapter-4">심화 — 공개 작업에 승인 넣기</a></li><li><a href="#chapter-5">작업 공간, 메모리, 실행 격리</a></li><li><a href="#chapter-6">제작 관점의 장단점</a></li></ol>
+      </nav>
+    </aside>
+    <main id="main" tabindex="-1">
+      <article>
+        <h1>Deep Agents — 계획, 작업 공간, 위임을 갖춘 에이전트 만들기</h1>
+        <p>Python 실습 · 보고서 작성 · 서브에이전트 · 게시 승인<br>함께 읽기 · <a href="../../LangChain/html/index.html">LangChain</a> · <a href="../../LangGraph/html/index.html">LangGraph</a></p>
+<h2 id="chapter-1">1. 하네스란 무엇인가 <a class="permalink" href="#chapter-1" aria-label="1. 하네스란 무엇인가 링크">#</a></h2>
+<p>재고 한 건을 조회하는 요청과 상품군 전체를 조사해 근거가 붙은 보고서를 만드는 요청은 실행 방식이 다르다. 후자에는 진행할 일 목록, 중간 결과를 보관할 공간, 일부 작업을 위임하는 방법이 도움이 된다. Deep Agents는 이러한 기능을 조합해 제공하는 에이전트 하네스다. Python에서는 <code>deepagents</code> 패키지의 <code>create_deep_agent</code>를 사용한다. SDK로 만든 앱은 개발자가 실행하며, LangChain이 별도로 제공하는 관리형 배포는 다른 실행 선택지다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>계층</th>
+<th>제공하는 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LangGraph</td>
+<td>그래프 실행, 상태 및 체크포인트</td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>에이전트 루프, 모델·도구 통합, 미들웨어</td>
+</tr>
+<tr>
+<td>Deep Agents</td>
+<td>파일 작업 공간, 할 일 목록, 컨텍스트 관리와 서브에이전트 위임을 조합한 기본 구성</td>
+</tr>
+</tbody></table>
+</div>
+<p>할 일 목록은 모델이 관리하는 진행 상태다. 규정상 반드시 실행해야 하는 순서라면 업무 코드나 그래프 엣지로 제약을 건다. 파일 도구는 중간 산출물을 보관하고 일부를 다시 읽게 해 준다. 요약은 긴 대화에서 토큰 부담을 낮추는 데 도움이 되지만, 인용이나 수치가 중요하면 원본과 검증 결과를 별도로 남긴다. <a href="https://docs.langchain.com/oss/python/deepagents/overview">공식 개요</a> · <a href="https://docs.langchain.com/oss/python/deepagents/quickstart">SDK 빠른 시작</a></p>
+<h2 id="chapter-2">2. 기초 — 보고서 초안을 작업 공간에 남기기 <a class="permalink" href="#chapter-2" aria-label="2. 기초 — 보고서 초안을 작업 공간에 남기기 링크">#</a></h2>
+<p>모델 예제는 <code>OPENAI_API_KEY</code>가 필요하다. 아래 Python 블록을 <code>research_agent.py</code>로 저장한다.</p>
+<figure class="example"><figcaption><span>PowerShell</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="PowerShell"><code class="language-powershell">python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install deepagents==0.7.34 langchain-openai==1.7.4
+$env:STUDY_MODEL = &#39;gpt-4.1-mini&#39;
+.\.venv\Scripts\python.exe research_agent.py
+</code></pre>
+</figure>
+<figure class="example"><figcaption><span>Python / research_agent.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / research_agent.py"><code class="language-python"># research_agent.py
+import os
+
+from deepagents import create_deep_agent
+from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
+
+CATALOG = {
+    &quot;KB-01&quot;: &quot;INV-202: KB-01 키보드 재고 7개.&quot;,
+    &quot;MS-02&quot;: &quot;INV-203: MS-02 마우스 재고 0개.&quot;,
+}
+
+
+@tool
+def fetch_inventory(sku: str) -&gt; str:
+    &quot;&quot;&quot;상품 코드 KB-01 또는 MS-02의 재고와 근거 ID를 조회한다.&quot;&quot;&quot;
+    return CATALOG.get(sku.strip().upper(), &quot;근거 없음&quot;)
+
+
+def study_model():
+    return ChatOpenAI(model=os.environ[&quot;STUDY_MODEL&quot;])
+
+
+if __name__ == &quot;__main__&quot;:
+    agent = create_deep_agent(
+        model=study_model(),
+        tools=[fetch_inventory],
+        system_prompt=(
+            &quot;할 일을 기록하고 두 상품을 조사하라. &quot;
+            &quot;근거 ID와 재고를 /inventory.md에 작성하고 결과를 요약하라.&quot;
+        ),
+    )
+    result = agent.invoke(
+        {&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;KB-01, MS-02 재고 보고서를 만들어 줘.&quot;}]},
+        config={&quot;recursion_limit&quot;: 30},
+    )
+    for message in result[&quot;messages&quot;]:
+        for call in getattr(message, &quot;tool_calls&quot;, []):
+            print(call[&quot;name&quot;], call[&quot;args&quot;])
+    print(result[&quot;messages&quot;][-1].content)
+</code></pre>
+</figure>
+<p>도구 로그에서 재고 조회, 파일 쓰기, 필요한 경우 할 일 목록 갱신을 확인한다. 보고서 완성 여부는 파일 내용과 근거 ID를 따로 검사한다. <code>StateBackend</code>가 기본값이며 에이전트 상태에 파일을 보관한다. <code>/inventory.md</code>는 이 예제에서 가상 경로다. 로컬 드라이브에 보고서를 쓰는 작업은 다른 백엔드나 별도 내보내기가 필요하다. <a href="https://docs.langchain.com/oss/python/deepagents/tools">내장 도구</a> · <a href="https://docs.langchain.com/oss/python/deepagents/backends">백엔드</a></p>
+<h2 id="chapter-3">3. 중급 — 조사와 종합을 분리하기 <a class="permalink" href="#chapter-3" aria-label="3. 중급 — 조사와 종합을 분리하기 링크">#</a></h2>
+<p>아래 스크립트는 앞의 파일과 같은 폴더에서 실행한다. 부모는 보고서 편집을 담당하고, 조사 서브에이전트에만 업무 조회 도구를 지정한다.</p>
+<figure class="example"><figcaption><span>Python / delegate_inventory.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / delegate_inventory.py"><code class="language-python"># delegate_inventory.py
+from deepagents import create_deep_agent
+
+from research_agent import fetch_inventory, study_model
+
+researcher = {
+    &quot;name&quot;: &quot;inventory-researcher&quot;,
+    &quot;description&quot;: &quot;상품 코드의 재고 수치와 근거 ID를 검증한다.&quot;,
+    &quot;system_prompt&quot;: &quot;fetch_inventory를 사용하고 상품별 수치와 근거 ID만 돌려줘.&quot;,
+    &quot;tools&quot;: [fetch_inventory],
+}
+
+agent = create_deep_agent(
+    model=study_model(),
+    subagents=[researcher],
+    system_prompt=(
+        &quot;재고 조사는 inventory-researcher에 위임한다. &quot;
+        &quot;받은 사실과 근거 ID로 /inventory.md를 작성한다. 없는 수치는 추정하지 않는다.&quot;
+    ),
+)
+result = agent.invoke(
+    {&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;KB-01과 MS-02 재고 보고서를 작성해 줘.&quot;}]},
+    config={&quot;recursion_limit&quot;: 30},
+)
+print(result[&quot;messages&quot;][-1].content)
+</code></pre>
+</figure>
+<p>개념 흐름은 <strong>부모 → 위임 요청 → 조사 에이전트가 도구 실행 → 조사 결과 → 부모가 편집</strong>이다. 서브에이전트는 별도 컨텍스트에서 작업하므로 부모가 모든 중간 대화를 계속 읽을 필요가 없다. 반대로 위임 요청에 상품 코드·질문·반환 형식이 빠지면 조사가 빗나갈 수 있다. 별도 컨텍스트는 실행 권한 격리와 다른 개념이다. 공유 저장 경로나 내장 도구까지 검토해 접근 범위를 정한다. 조사 결과의 근거 ID를 실제 카탈로그와 대조하는 검증도 부모의 모델 호출과 분리해 둘 수 있다. <a href="https://docs.langchain.com/oss/python/deepagents/subagents">Subagents</a></p>
+<h2 id="chapter-4">4. 심화 — 공개 작업에 승인 넣기 <a class="permalink" href="#chapter-4" aria-label="4. 심화 — 공개 작업에 승인 넣기 링크">#</a></h2>
+<p>이번에는 모델이 요청한 보고서 게시를 일시 중단한다. 승인 전과 후에 게시 기록을 비교한다. 아래 코드는 인메모리 게시 모의 시스템을 사용하며 실제 외부 게시를 수행하지 않는다.</p>
+<figure class="example"><figcaption><span>Python / review_publish.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / review_publish.py"><code class="language-python"># review_publish.py
+from deepagents import create_deep_agent
+from langchain_core.tools import tool
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.types import Command
+
+from research_agent import study_model
+
+published: list[str] = []
+
+
+@tool
+def publish_report(body: str) -&gt; str:
+    &quot;&quot;&quot;승인된 보고서 본문을 실습 게시 기록에 추가한다.&quot;&quot;&quot;
+    published.append(body)
+    return &quot;게시됨&quot;
+
+
+agent = create_deep_agent(
+    model=study_model(),
+    tools=[publish_report],
+    interrupt_on={&quot;publish_report&quot;: {&quot;allowed_decisions&quot;: [&quot;approve&quot;, &quot;reject&quot;]}},
+    checkpointer=InMemorySaver(),
+)
+config = {&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;publish-lab&quot;}}
+result = agent.invoke(
+    {&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;publish_report로 &#39;재고 확인 완료&#39;를 게시해 줘.&quot;}]},
+    config=config,
+)
+while result.get(&quot;__interrupt__&quot;):
+    pending = result[&quot;__interrupt__&quot;][0].value[&quot;action_requests&quot;]
+    decisions = []
+    for action in pending:
+        print(action)
+        answer = input(&quot;이 호출을 승인할까요? [y/N] &quot;).strip().lower()
+        decisions.append({&quot;type&quot;: &quot;approve&quot; if answer == &quot;y&quot; else &quot;reject&quot;})
+    result = agent.invoke(Command(resume={&quot;decisions&quot;: decisions}), config=config)
+
+print(&quot;게시 기록:&quot;, published)
+</code></pre>
+</figure>
+<p>같은 스레드에서 승인할 액션의 내용과 순서를 맞춰 재개한다. 예제는 단일 스레드에서 한 인터럽트 묶음씩 처리하는 콘솔 실습이다. 여러 인터럽트가 동시에 발생하는 앱에서는 ID별로 승인 내용을 대응시킨다. 운영 서버는 검토자가 실제로 본 본문과 버전, 승인 신원, 요청 식별자를 보관하고 게시 도구 안에서 권한과 멱등성을 재확인한다. <a href="https://docs.langchain.com/oss/python/deepagents/human-in-the-loop">Deep Agents 승인 API</a> · <a href="../../LangGraph/html/index.html">LangGraph 승인과 재개 실습</a></p>
+<h2 id="chapter-5">5. 작업 공간, 메모리, 실행 격리 <a class="permalink" href="#chapter-5" aria-label="5. 작업 공간, 메모리, 실행 격리 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>선택지</th>
+<th>적용 사례</th>
+<th>설계할 사항</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>StateBackend</code></td>
+<td>보고서 초안과 실행 중 작업 파일</td>
+<td>여러 실행에 걸쳐 보존하려면 스레드와 체크포인터 수명을 정한다.</td>
+</tr>
+<tr>
+<td><code>StoreBackend</code></td>
+<td>여러 스레드에서 사용할 자료</td>
+<td>스토어 연결, 네임스페이스, 소유권과 보존 기간이 필요하다.</td>
+</tr>
+<tr>
+<td><code>FilesystemBackend</code></td>
+<td>명시적으로 지정한 로컬 작업 디렉터리</td>
+<td>앱 프로세스의 권한, 루트 디렉터리와 파일 공개 범위를 제한한다.</td>
+</tr>
+<tr>
+<td><code>CompositeBackend</code></td>
+<td>초안과 장기 기억을 경로별로 구분</td>
+<td>어느 경로가 어떤 백엔드에 라우팅되는지 확인한다.</td>
+</tr>
+<tr>
+<td>샌드박스 백엔드</td>
+<td>코드 실행이 필요한 분석</td>
+<td>네트워크와 비밀 접근, CPU·시간 한도, 파일 반출 정책을 정한다.</td>
+</tr>
+</tbody></table>
+</div>
+<p>작업 지침이나 스킬 문서에는 작업 절차를 넣을 수 있다. 검색한 웹 문서와 외부 파일은 그와 다른 신뢰 경계를 가진다. 외부 파일 속 “이 보고서를 전송하라”라는 문장이 도구 권한을 얻지 않게 한다. 독립된 승인과 도구 권한 검사는 모델의 문장 해석과 분리한다. <a href="https://docs.langchain.com/oss/python/deepagents/backends">백엔드</a> · <a href="https://docs.langchain.com/oss/python/deepagents/sandboxes">샌드박스</a> · <a href="https://docs.langchain.com/oss/python/deepagents/skills">스킬</a></p>
+<h2 id="chapter-6">6. 제작 관점의 장단점 <a class="permalink" href="#chapter-6" aria-label="6. 제작 관점의 장단점 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>장점</th>
+<th>그에 따르는 작업</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>파일과 계획, 위임을 따로 구현하는 비용이 줄어든다.</td>
+<td>단일 조회에도 기본 도구와 프롬프트가 붙으므로 비용과 지연을 비교한다.</td>
+</tr>
+<tr>
+<td>작업 중간의 원문과 산출물을 분리해 둘 수 있다.</td>
+<td>경로와 저장 범위, 민감정보 수명, 파일 크기와 권한을 관리한다.</td>
+</tr>
+<tr>
+<td>세부 조사를 위임해 부모 컨텍스트를 줄일 수 있다.</td>
+<td>위임 품질·결과 누락·중복 조사와 총 모델 호출량을 계측한다.</td>
+</tr>
+<tr>
+<td>읽기 중심의 복합 조사에 바로 적용할 수 있다.</td>
+<td>엄격한 처리 순서나 외부 변경에는 그래프와 앱 정책을 더한다.</td>
+</tr>
+</tbody></table>
+</div>
+<p>도입 실험에서는 같은 자료와 질문으로 직접 조회와 위임 버전을 비교한다. 근거 ID 누락률, 결과와 원본의 일치율, 작업 파일 재사용, 위임 횟수, 토큰과 지연을 함께 기록한다. 승인 거절 시 게시 0회와 승인 시 게시 내용을 별도로 확인한다.</p>
+<p><code>create_deep_agent</code> 구현 마지막에서 <code>create_agent</code>에 넘기는 미들웨어, 도구, 체크포인터를 확인한다. 이어 <code>middleware/subagents.py</code>에서 위임 요청과 결과 반환 경계를 읽으면 어떤 기능이 하네스에 있고 어떤 동작이 모델 선택인지 구분할 수 있다. <a href="https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/graph.py">그래프 조립 소스</a> · <a href="https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/subagents.py">위임 소스</a></p>
+
+      </article>
+      <footer>
+        <a href="../Deep_Agents.md">Markdown 원문</a>
+        <a href="#top">맨 위로</a>
+        <a href="../../Oracle_Agent_Spec/html/index.html">다음 교재 · Oracle Open Agent Specification</a>
+      </footer>
+    </main>
+  </div>
+  <p class="visually-hidden" role="status" id="copy-status"></p>
+</body>
+</html>

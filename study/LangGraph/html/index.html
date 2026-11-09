@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="상태 그래프, 승인 후 재개와 병렬 조회">
+  <title>LangGraph — 실행 순서와 상태를 설계하는 에이전트 런타임</title>
+  <link rel="stylesheet" href="../../html/practice.css">
+  <script src="../../html/practice.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+  <header class="site-header">
+    <!-- deep-course-link -->
+    <a href="../../index.html">전체 학습 홈</a>
+    <!-- /deep-course-link -->
+    <span>Python 에이전트 실습</span>
+  </header>
+  <nav class="series" aria-label="실습 교재"><a href="../../LangChain/html/index.html">LangChain</a><a href="../../LangGraph/html/index.html" aria-current="page">LangGraph</a><a href="../../Deep_Agents/html/index.html">Deep Agents</a><a href="../../Oracle_Agent_Spec/html/index.html">Oracle Open Agent Specification</a></nav>
+  <div class="layout">
+    <aside class="sidebar">
+      <nav aria-label="이 교재의 단원">
+        <p>이 교재의 단원</p>
+        <ol><li><a href="#chapter-1">무엇을 제공하나</a></li><li><a href="#chapter-2">기초 — 모델 없이 상태 갱신하기</a></li><li><a href="#chapter-3">중급 — 도구 선택을 모델에 맡기고 엣지를 제어하기</a></li><li><a href="#chapter-4">심화 — 승인 후 재개와 중복 실행 방지</a></li><li><a href="#chapter-5">심화 설계 — 병렬 수집, 재시도, 관측</a></li><li><a href="#chapter-6">제작 관점의 장단점</a></li></ol>
+      </nav>
+    </aside>
+    <main id="main" tabindex="-1">
+      <article>
+        <h1>LangGraph — 실행 순서와 상태를 설계하는 에이전트 런타임</h1>
+        <p>Python 실습 · 상태 그래프, 도구 루프, 승인과 재개, 병렬 조사<br>함께 읽기 · <a href="../../LangChain/html/index.html">LangChain</a> · <a href="../../Deep_Agents/html/index.html">Deep Agents</a></p>
+<h2 id="chapter-1">1. 무엇을 제공하나 <a class="permalink" href="#chapter-1" aria-label="1. 무엇을 제공하나 링크">#</a></h2>
+<p>배송 취소 요청에서 주문 확인, 조건 검사, 사용자 승인, 취소 실행은 서로 다른 책임이다. 일부 단계에서만 LLM을 쓰고, 나머지 순서는 앱이 보장하고 싶다면 각 단계를 그래프의 노드로 만들 수 있다. LangGraph는 상태를 전달하며 그래프를 실행하고, 체크포인터를 연결하면 중간 상태를 저장할 수 있다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>구성</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>State</td>
+<td>노드가 함께 읽는 데이터의 스키마. 예를 들어 메시지 목록과 주문 ID를 담는다.</td>
+</tr>
+<tr>
+<td>Node</td>
+<td>현재 상태를 읽고 갱신할 필드를 반환하는 함수나 실행 단위.</td>
+</tr>
+<tr>
+<td>Edge</td>
+<td>다음 실행 노드로 이어지는 경로. 조건부 엣지는 상태에 따라 목적지를 고른다.</td>
+</tr>
+<tr>
+<td>Reducer</td>
+<td>동일 상태 필드의 여러 업데이트를 합치는 규칙. 기본 갱신은 값을 교체한다.</td>
+</tr>
+<tr>
+<td>Checkpointer</td>
+<td>스레드별 체크포인트를 저장하고 이전 상태를 불러온다.</td>
+</tr>
+<tr>
+<td>Store</td>
+<td>여러 스레드에서 공유할 수 있는 별도의 데이터 저장 추상화.</td>
+</tr>
+</tbody></table>
+</div>
+<p>그래프의 순서는 개발자가 정의하고, 모델은 허용된 노드 안에서 필요한 결정을 맡는다. 고정 분기와 반복 모두 가능하다. <code>compile()</code>이 그래프를 실행 가능한 객체로 만들며 <code>invoke</code>·<code>stream</code> 등으로 실행한다. <a href="https://docs.langchain.com/oss/python/langgraph/graph-api">Graph API</a> · <a href="https://github.com/langchain-ai/langgraph/blob/main/libs/langgraph/langgraph/graph/state.py">상태 그래프 소스</a></p>
+<h2 id="chapter-2">2. 기초 — 모델 없이 상태 갱신하기 <a class="permalink" href="#chapter-2" aria-label="2. 기초 — 모델 없이 상태 갱신하기 링크">#</a></h2>
+<p>Python 파일로 저장해 실행한다. 3절 모델 예제에서만 <code>OPENAI_API_KEY</code>가 필요하다.</p>
+<figure class="example"><figcaption><span>PowerShell</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="PowerShell"><code class="language-powershell">python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install langgraph==1.2.20 langchain-openai==1.7.4
+$env:STUDY_MODEL = &#39;gpt-4.1-mini&#39;
+</code></pre>
+</figure>
+<figure class="example"><figcaption><span>Python</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python"><code class="language-python">from typing import TypedDict
+
+from langgraph.graph import END, START, StateGraph
+
+
+class Ticket(TypedDict, total=False):
+    sku: str
+    quantity: int
+    status: str
+
+
+def normalize(state: Ticket) -&gt; dict:
+    return {&quot;sku&quot;: state[&quot;sku&quot;].strip().upper()}
+
+
+def classify(state: Ticket) -&gt; dict:
+    return {&quot;status&quot;: &quot;available&quot; if state[&quot;quantity&quot;] &gt; 0 else &quot;out_of_stock&quot;}
+
+
+builder = StateGraph(Ticket)
+builder.add_node(&quot;normalize&quot;, normalize)
+builder.add_node(&quot;classify&quot;, classify)
+builder.add_edge(START, &quot;normalize&quot;)
+builder.add_edge(&quot;normalize&quot;, &quot;classify&quot;)
+builder.add_edge(&quot;classify&quot;, END)
+graph = builder.compile()
+
+result = graph.invoke({&quot;sku&quot;: &quot; kb-01 &quot;, &quot;quantity&quot;: 0})
+assert result == {&quot;sku&quot;: &quot;KB-01&quot;, &quot;quantity&quot;: 0, &quot;status&quot;: &quot;out_of_stock&quot;}
+</code></pre>
+</figure>
+<p>각 노드는 변경분을 반환한다. <code>classify</code>에서 <code>sku</code>를 반환하지 않아도 앞 단계의 값은 남는다. <code>TypedDict</code>는 정적 스키마를 표현하므로 실제 외부 입력 검증은 서버 경계에서 추가한다.</p>
+<h2 id="chapter-3">3. 중급 — 도구 선택을 모델에 맡기고 엣지를 제어하기 <a class="permalink" href="#chapter-3" aria-label="3. 중급 — 도구 선택을 모델에 맡기고 엣지를 제어하기 링크">#</a></h2>
+<p>아래는 LangChain의 모델 어댑터와 도구 선언을 쓰되, LangGraph로 에이전트 루프를 직접 정의하는 독립 스크립트다.</p>
+<figure class="example"><figcaption><span>Python</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python"><code class="language-python">import os
+
+from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
+from langgraph.graph import START, MessagesState, StateGraph
+from langgraph.prebuilt import ToolNode, tools_condition
+
+
+@tool
+def get_stock(sku: str) -&gt; str:
+    &quot;&quot;&quot;상품 코드 KB-01 또는 MS-02의 재고를 조회한다.&quot;&quot;&quot;
+    return {&quot;KB-01&quot;: &quot;7개&quot;, &quot;MS-02&quot;: &quot;0개&quot;}.get(sku.upper(), &quot;상품 없음&quot;)
+
+
+tools = [get_stock]
+model = ChatOpenAI(model=os.environ[&quot;STUDY_MODEL&quot;]).bind_tools(tools)
+
+
+def call_model(state: MessagesState) -&gt; dict:
+    instructions = {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;재고 질문은 조회 후 답하라.&quot;}
+    return {&quot;messages&quot;: [model.invoke([instructions, *state[&quot;messages&quot;]])]}
+
+
+builder = StateGraph(MessagesState)
+builder.add_node(&quot;model&quot;, call_model)
+builder.add_node(&quot;tools&quot;, ToolNode(tools))
+builder.add_edge(START, &quot;model&quot;)
+builder.add_conditional_edges(&quot;model&quot;, tools_condition)
+builder.add_edge(&quot;tools&quot;, &quot;model&quot;)
+graph = builder.compile()
+
+result = graph.invoke(
+    {&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;MS-02 재고가 있나요?&quot;}]},
+    config={&quot;recursion_limit&quot;: 12},
+)
+print(result[&quot;messages&quot;][-1].content)
+</code></pre>
+</figure>
+<p><code>tools_condition</code>은 마지막 모델 메시지에 도구 요청이 있으면 <code>tools</code>로, 없으면 종료로 보낸다. <code>ToolNode</code>가 도구를 실행해 호출 ID가 연결된 결과 메시지를 만든다. <code>MessagesState</code>의 메시지 리듀서는 새 메시지를 합치며 같은 ID의 갱신도 처리한다. <code>recursion_limit</code>는 그래프 실행 단계 제한이다. 결제 횟수나 모델 지출을 제한하려면 별도 정책이 필요하다. <a href="https://docs.langchain.com/oss/python/langgraph/quickstart">공식 빠른 시작</a></p>
+<h2 id="chapter-4">4. 심화 — 승인 후 재개와 중복 실행 방지 <a class="permalink" href="#chapter-4" aria-label="4. 심화 — 승인 후 재개와 중복 실행 방지 링크">#</a></h2>
+<p>아래 예제에서 명시적 승인 값이 참일 때만 실행 노드로 간다. 외부 시스템 대신 인메모리 딕셔너리를 사용한다. 두 번째 실습으로 승인 값을 거절로 바꾸고 기록이 없는지 확인한다.</p>
+<figure class="example"><figcaption><span>Python</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python"><code class="language-python">from typing import Literal, TypedDict
+
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
+
+
+class CancelState(TypedDict, total=False):
+    request_id: str
+    order_id: str
+    outcome: str
+
+
+ledger: dict[str, str] = {}
+
+
+def review(state: CancelState) -&gt; Command[Literal[&quot;execute&quot;, &quot;__end__&quot;]]:
+    approved = interrupt({&quot;action&quot;: &quot;cancel_order&quot;, &quot;order_id&quot;: state[&quot;order_id&quot;]})
+    if approved is True:
+        return Command(goto=&quot;execute&quot;)
+    return Command(update={&quot;outcome&quot;: &quot;rejected&quot;}, goto=END)
+
+
+def execute(state: CancelState) -&gt; dict:
+    request_id, order_id = state[&quot;request_id&quot;], state[&quot;order_id&quot;]
+    existing = ledger.setdefault(request_id, order_id)
+    if existing != order_id:
+        raise ValueError(&quot;동일 요청 ID에 다른 주문이 연결되었습니다.&quot;)
+    return {&quot;outcome&quot;: f&quot;cancelled:{existing}&quot;}
+
+
+builder = StateGraph(CancelState)
+builder.add_node(&quot;review&quot;, review)
+builder.add_node(&quot;execute&quot;, execute)
+builder.add_edge(START, &quot;review&quot;)
+builder.add_edge(&quot;execute&quot;, END)
+graph = builder.compile(checkpointer=InMemorySaver())
+
+config = {&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;cancel-001&quot;}}
+paused = graph.invoke({&quot;request_id&quot;: &quot;req-001&quot;, &quot;order_id&quot;: &quot;O-7&quot;}, config)
+assert paused[&quot;__interrupt__&quot;][0].value[&quot;order_id&quot;] == &quot;O-7&quot;
+assert ledger == {}
+
+done = graph.invoke(Command(resume=True), config)
+assert done[&quot;outcome&quot;] == &quot;cancelled:O-7&quot;
+assert ledger == {&quot;req-001&quot;: &quot;O-7&quot;}
+</code></pre>
+</figure>
+<p>재개할 때 같은 <code>thread_id</code>를 사용한다. 재개된 노드는 처음부터 다시 실행되므로 <code>interrupt()</code> 앞에서 외부 상태를 바꾸면 반복될 수 있다. 재개 전에 승인 주체와 스레드 소유권을 확인하고, 사용자가 검토한 주문 ID 및 요청 버전을 승인 기록에 연결한다. 인메모리 예제에서 프로세스가 종료되면 체크포인트와 취소 기록이 사라진다.</p>
+<p>운영에서는 지속 가능한 체크포인터를 사용한다. 외부 API가 취소를 완료한 직후 체크포인트 저장 전에 프로세스가 죽으면 재개 시 취소 요청이 다시 전송될 수 있다. 외부 API의 멱등성 키, 또는 같은 트랜잭션에서 변경과 요청 ID를 기록하는 업무 저장소가 이 문제를 다룬다. 체크포인트는 그래프의 실행 상태를 저장하며 외부 시스템 전체를 원자적으로 커밋하지 않는다. <a href="https://docs.langchain.com/oss/python/langgraph/interrupts">Interrupts</a> · <a href="https://docs.langchain.com/oss/python/langgraph/persistence">Persistence</a></p>
+<h2 id="chapter-5">5. 심화 설계 — 병렬 수집, 재시도, 관측 <a class="permalink" href="#chapter-5" aria-label="5. 심화 설계 — 병렬 수집, 재시도, 관측 링크">#</a></h2>
+<ul>
+<li><strong>Fan-out/fan-in.</strong> 지역별 검색을 여러 노드에 맡기고 결과를 합쳐 검증한다. 개수가 입력에 따라 달라지는 작업은 <code>Send</code> 패턴을 참고한다. 여러 노드가 같은 키를 동시에 갱신하면 병합 규칙이 필요하다. 예를 들어 <code>Annotated[list[Finding], operator.add]</code>로 결과를 합치고, 렌더링 직전에 안정적인 ID로 정렬·중복 제거를 할 수 있다.</li>
+<li><strong>재시도.</strong> 네트워크의 일시 오류와 사용자 입력 오류를 나눈다. 읽기 도구는 재시도를 허용하기 쉽다. 외부 쓰기는 멱등성 키와 상태 조회를 갖춘 뒤 재시도한다. 승인 대기와 모델 실행 실패도 다른 상태로 관측한다.</li>
+<li><strong>스트리밍.</strong> 상태 변경과 모델 토큰 이벤트를 다른 UI 요소로 표시한다. 스트리밍 중간 출력은 최종 답과 구분하고, 재연결 후에는 저장 상태를 기준으로 진행 상황을 복구한다.</li>
+<li><strong>서브그래프.</strong> 반복 사용되는 조사·검토 단계를 독립 그래프로 만든다. 부모와 자식 상태 키를 공유할지, 노드에서 입력·출력을 변환할지 먼저 결정한다.</li>
+</ul>
+<p><a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents">워크플로와 에이전트</a> · <a href="https://docs.langchain.com/oss/python/langgraph/streaming">스트리밍</a> · <a href="https://docs.langchain.com/oss/python/langgraph/use-subgraphs">서브그래프</a></p>
+<p>아래 실코드는 주문에 포함된 상품 개수만큼 조회 작업을 나눈다. 각 작업은 <code>sku</code>만 받으며, 결과는 <code>findings</code>에 합쳐진다. 비어 있는 주문은 바로 종료한다.</p>
+<figure class="example"><figcaption><span>Python</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python"><code class="language-python">from operator import add
+from typing import Annotated, TypedDict
+
+from langgraph.graph import END, START, StateGraph
+from langgraph.types import Send
+
+
+class Batch(TypedDict, total=False):
+    skus: list[str]
+    findings: Annotated[list[tuple[str, int | None]], add]
+
+
+class Lookup(TypedDict):
+    sku: str
+
+
+def dispatch(state: Batch):
+    return [Send(&quot;lookup&quot;, {&quot;sku&quot;: sku}) for sku in state[&quot;skus&quot;]] or END
+
+
+def lookup(state: Lookup) -&gt; dict:
+    sku = state[&quot;sku&quot;]
+    return {&quot;findings&quot;: [(sku, {&quot;KB-01&quot;: 7, &quot;MS-02&quot;: 0}.get(sku))]}
+
+
+builder = StateGraph(Batch)
+builder.add_node(&quot;lookup&quot;, lookup)
+builder.add_conditional_edges(START, dispatch, [&quot;lookup&quot;, END])
+builder.add_edge(&quot;lookup&quot;, END)
+graph = builder.compile()
+
+result = graph.invoke({&quot;skus&quot;: [&quot;MS-02&quot;, &quot;KB-01&quot;], &quot;findings&quot;: []})
+assert sorted(result[&quot;findings&quot;]) == [(&quot;KB-01&quot;, 7), (&quot;MS-02&quot;, 0)]
+assert graph.invoke({&quot;skus&quot;: [], &quot;findings&quot;: []})[&quot;findings&quot;] == []
+</code></pre>
+</figure>
+<p>이 예제는 결과를 모두 모은 뒤 호출자가 정렬한다. 그래프 안에서 요약까지 하려면 조회 다음에 종합 노드를 둔다. 실제 공급자 API를 병렬 호출할 때는 동시 호출 수, 타임아웃, 일부 조회 실패 시 결과 표시 방식을 정한다.</p>
+<h2 id="chapter-6">6. 제작 관점의 장단점 <a class="permalink" href="#chapter-6" aria-label="6. 제작 관점의 장단점 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>장점</th>
+<th>그에 따르는 작업</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>분기·반복·승인 조건을 코드에서 읽을 수 있다.</td>
+<td>단일 조회 에이전트에도 그래프를 직접 만들면 코드가 늘어난다.</td>
+</tr>
+<tr>
+<td>체크포인트로 장시간 작업을 재개할 수 있다.</td>
+<td>실행 중인 스레드와 새 그래프 버전의 호환성, 저장소 보존 기간을 설계한다.</td>
+</tr>
+<tr>
+<td>모델 없이 노드·분기·상태를 검증할 수 있다.</td>
+<td>모델 호출 결과, 병렬 갱신, 중단 후 재개까지 통합 테스트해야 한다.</td>
+</tr>
+<tr>
+<td>업무 규칙과 모델 판단을 단계별로 분리한다.</td>
+<td>외부 서비스의 멱등성, 인증, 실행 제한은 애플리케이션이 설계한다.</td>
+</tr>
+</tbody></table>
+</div>
+<p>검증할 조합은 정상 종료, 거절, 재개 전 쓰기 0회, 동일 요청 키 재처리, 다른 주문에 요청 키 재사용, 모델 반복 한도 도달이다. 구현을 읽을 때는 <code>StateGraph.compile</code>로 시작해 상태와 엣지가 어떻게 실행 객체로 변환되는지 확인한 뒤, 승인 전후의 상태 스냅샷을 대조한다.</p>
+
+      </article>
+      <footer>
+        <a href="../LangGraph.md">Markdown 원문</a>
+        <a href="#top">맨 위로</a>
+        <a href="../../Deep_Agents/html/index.html">다음 교재 · Deep Agents</a>
+      </footer>
+    </main>
+  </div>
+  <p class="visually-hidden" role="status" id="copy-status"></p>
+</body>
+</html>

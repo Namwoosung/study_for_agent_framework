@@ -1268,7 +1268,79 @@
           ]
         }
       ]
+    },
+    {
+      "folder": "LangChain",
+      "name": "LangChain",
+      "id": "langchain",
+      "courses": [
+        {
+          "label": "Python 실습 교재",
+          "directory": "html",
+          "pages": [
+            {
+              "path": "LangChain/html/index.html",
+              "href": "LangChain/html/index.html",
+              "title": "LangChain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "LangGraph",
+      "name": "LangGraph",
+      "id": "langgraph",
+      "courses": [
+        {
+          "label": "Python 실습 교재",
+          "directory": "html",
+          "pages": [
+            {
+              "path": "LangGraph/html/index.html",
+              "href": "LangGraph/html/index.html",
+              "title": "LangGraph"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "Deep_Agents",
+      "name": "Deep Agents",
+      "id": "deep-agents",
+      "courses": [
+        {
+          "label": "Python 실습 교재",
+          "directory": "html",
+          "pages": [
+            {
+              "path": "Deep_Agents/html/index.html",
+              "href": "Deep_Agents/html/index.html",
+              "title": "Deep Agents"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "Oracle_Agent_Spec",
+      "name": "Oracle Open Agent Specification",
+      "id": "oracle-agent-spec",
+      "courses": [
+        {
+          "label": "Python 실습 교재",
+          "directory": "html",
+          "pages": [
+            {
+              "path": "Oracle_Agent_Spec/html/index.html",
+              "href": "Oracle_Agent_Spec/html/index.html",
+              "title": "Oracle Open Agent Specification"
+            }
+          ]
+        }
+      ]
     }
   ],
-  "totalPages": 227
+  "totalPages": 231
 }

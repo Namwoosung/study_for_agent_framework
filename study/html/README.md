@@ -2,17 +2,20 @@
 
 학습 폴더의 [index.html](../index.html)이 모든 교재를 연결하는 시작 페이지입니다. 파일을 브라우저에서 열면 인터넷이나 서버 없이 사용할 수 있습니다.
 
-- 7개 주제의 1차 기본 교재와 2차 심층 교재를 분리해 표시합니다.
-- 전체 227개 학습 페이지가 목차에 포함되어 각 단원으로 바로 이동할 수 있습니다.
+- 7개 주제의 기본·심층 교재와 4개 주제의 Python 실습 교재를 분리해 표시합니다.
+- 전체 231개 학습 페이지가 목차에 포함되어 각 교재와 단원으로 바로 이동할 수 있습니다.
 - 모든 학습 페이지의 `전체 학습 홈` 버튼은 `study/index.html`로 돌아옵니다.
 - 프로젝트 공통 Markdown 자료도 홈 아래쪽에서 열 수 있습니다.
 
 프로젝트 루트에서 갱신·검사합니다.
 
 ```sh
+node study/html/build-practice.mjs
 node study/html/build-home.mjs
 node study/html/validate-home.mjs
 ```
+
+실습 교재의 Markdown을 수정했을 때는 `build-practice.mjs`로 HTML을 재생성합니다. 기존 교재 빌드와 같이 로컬 `marked` 또는 Codex 번들 `marked`를 사용합니다. 생성된 교재는 브라우저에서 바로 열 수 있습니다.
 
 홈 생성은 각 교재의 content-map.json과 생성된 HTML 제목을 사용합니다. Node.js 기본 모듈만 사용하며 별도 패키지는 필요하지 않습니다. 출력된 홈은 CSS를 포함한 단일 정적 HTML 파일입니다.
 

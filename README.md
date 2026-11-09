@@ -1,6 +1,6 @@
 # Agent Framework 학습과 발표
 
-- [학습 홈](study/index.html): 7개 기술의 원문·기본 교재·심층 교재
+- [학습 홈](study/index.html) — 기본·심층 교재와 Python 에이전트 실습
 - [현재 발표자료](presentations/seminar-2/index.html) · 2차 세미나 146장
 - [실제 실행 Demo](demos/README.md) · Hermes와 PydanticAI
 - [발표 폴더 안내](presentations/README.md): 현재 설계·참고 자료와 다음 작업
