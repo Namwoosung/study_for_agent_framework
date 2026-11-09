@@ -21,13 +21,41 @@
     <aside class="sidebar">
       <nav aria-label="이 교재의 단원">
         <p>이 교재의 단원</p>
-        <ol><li><a href="#chapter-1">무엇을 해결하나</a></li><li><a href="#chapter-2">기초 — 재고 에이전트를 JSON과 YAML로 내보내기</a></li><li><a href="#chapter-3">중급 — WayFlow에서 선언에 실제 도구 연결하기</a></li><li><a href="#chapter-4">심화 — 고정 조회 절차를 Flow로 만들기</a></li><li><a href="#chapter-5">심화 — 같은 Agent Spec을 LangGraph에 로드하기</a></li><li><a href="#chapter-6">제작 관점의 장단점</a></li><li><a href="#chapter-7">운영 점검과 소스 읽기</a></li></ol>
+        <ol start="0"><li value="0"><a href="#chapter-0">무엇을 만들고 어떤 순서로 배우나</a></li><li value="1"><a href="#chapter-1">무엇을 해결하나</a></li><li value="2"><a href="#chapter-2">기초 — 재고 에이전트를 JSON과 YAML로 내보내기</a></li><li value="3"><a href="#chapter-3">중급 — WayFlow에서 선언에 실제 도구 연결하기</a></li><li value="4"><a href="#chapter-4">심화 — 고정 조회 절차를 Flow로 만들기</a></li><li value="5"><a href="#chapter-5">심화 — 같은 Agent Spec을 LangGraph에 로드하기</a></li><li value="6"><a href="#chapter-6">제작 관점의 장단점</a></li><li value="7"><a href="#chapter-7">운영 점검과 소스 읽기</a></li><li value="8"><a href="#chapter-8">키 없이 이식성 확인하기 — 같은 Flow를 LangGraph에서 실행</a></li><li value="9"><a href="#chapter-9">도구·모델·워크플로의 확장 선택지</a></li><li value="10"><a href="#chapter-10">최종 실습 — 팀 사이에서 구성 파일을 전달하기</a></li></ol>
       </nav>
     </aside>
     <main id="main" tabindex="-1">
       <article>
         <h1>Oracle Open Agent Specification — 에이전트 정의를 런타임과 분리하기</h1>
         <p>Python 실습 · JSON/YAML 직렬화 · WayFlow · LangGraph 어댑터<br>기준 버전 · PyAgentSpec 26.3.1, WayFlow Core 26.3.1<br>함께 읽기 · <a href="../../LangChain/html/index.html">LangChain</a> · <a href="../../LangGraph/html/index.html">LangGraph</a> · <a href="../../Deep_Agents/html/index.html">Deep Agents</a></p>
+<h2 id="chapter-0">0. 무엇을 만들고 어떤 순서로 배우나 <a class="permalink" href="#chapter-0" aria-label="0. 무엇을 만들고 어떤 순서로 배우나 링크">#</a></h2>
+<p>완성할 것은 상품 코드를 받아 실제 재고 도구를 실행하는 에이전트와, 같은 조회를 정해진 순서로 실행하는 플로다. Python 함수와 딕셔너리를 읽을 수 있으면 시작할 수 있다. 모델 API 키가 없다면 <strong>2절 → 4절 → 8절</strong> 순서로 진행한다. 이 경로만으로 선언을 만들고, 다른 두 런타임에서 동일한 업무 결과를 얻는 과정을 경험할 수 있다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>결과물</th>
+<th>무엇을 확인하나</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stock-agent.json</code> / <code>stock-agent.yaml</code></td>
+<td>모델 설정과 도구 계약이 직렬화되는지</td>
+</tr>
+<tr>
+<td>WayFlow 또는 LangGraph 에이전트</td>
+<td>선언과 앱의 Python 함수가 연결되는지</td>
+</tr>
+<tr>
+<td><code>stock-flow.json</code></td>
+<td>제어 경로와 데이터 경로가 어떻게 표현되는지</td>
+</tr>
+<tr>
+<td>두 런타임의 조회 결과</td>
+<td>같은 선언을 읽었을 때 정상·품절·미등록을 같은 의미로 처리하는지</td>
+</tr>
+</tbody></table>
+</div>
+<p>직렬화는 실행 구성을 파일로 옮길 수 있는 데이터로 만드는 과정이다. 반대로 역직렬화는 파일을 읽어 구성 요소를 복원한다. 역직렬화와 런타임 변환은 별도 단계다. 변환에 성공한 뒤에야 실행 엔진이 도구나 모델을 호출한다.</p>
 <h2 id="chapter-1">1. 무엇을 해결하나 <a class="permalink" href="#chapter-1" aria-label="1. 무엇을 해결하나 링크">#</a></h2>
 <p>재고 상담 에이전트를 두 팀이 운영한다고 하자. 한 팀은 WayFlow를 쓰고 다른 팀은 LangGraph를 쓴다. 두 팀 모두 모델 설정, 재고 도구 이름과 입출력, 상담 지침을 공유하고 싶다. Oracle의 Open Agent Specification(Agent Spec)은 이런 구성을 선언하고 JSON이나 YAML로 교환할 수 있게 정의하는 공개 명세다. 명세의 <code>Agent</code>는 에이전트 선언이며, 실행 엔진은 어댑터가 그 선언을 번역한 뒤 동작한다.</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
@@ -65,6 +93,38 @@
 </code></pre>
 </figure>
 <p><code>Agent</code>에서는 모델이 다음 도구나 응답을 선택한다. <code>Flow</code>에서는 개발자가 실행 경로와 데이터 연결을 명시한다. 둘 다 동일한 명세 생태계에 속한다. MCP는 도구나 리소스를 제공하는 서버와 연결하는 프로토콜이고, A2A는 에이전트 간 요청·응답에 쓰는 프로토콜이다. Agent Spec은 이러한 연결을 포함해 에이전트와 플로의 구성을 기술한다. <a href="https://oracle.github.io/agent-spec/26.3.1/agentspec/language_spec_26_3_1.html">언어 명세</a> · <a href="https://arxiv.org/abs/2510.04173">기술 보고서</a></p>
+<h3 id="chapter-1-1">정의와 실행의 경계를 예제로 읽기 <a class="permalink" href="#chapter-1-1" aria-label="정의와 실행의 경계를 예제로 읽기 링크">#</a></h3>
+<p>재고 도구를 새 환경으로 옮긴다고 하자. <code>ServerTool</code>의 선언은 ‘어떤 이름의 도구가 어떤 SKU를 받아 무엇을 반환하는가’를 기술한다. 실제 재고 원장에 어떻게 접속하는지는 서비스가 제공하는 Python 함수의 일이다. 런타임 로더에 그 함수를 지정하면 둘이 연결된다. 같은 파일을 옮겨도 접속 권한이나 실제 재고 데이터까지 복제되는 것은 아니다.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>옮길 요소</th>
+<th>이 예제의 위치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>모델 ID와 시스템 지침</td>
+<td><code>stock-agent.json</code></td>
+</tr>
+<tr>
+<td>도구 이름과 입력·출력 필드</td>
+<td><code>stock-agent.json</code></td>
+</tr>
+<tr>
+<td>실제 DB 연결과 권한 검사</td>
+<td>실행 앱의 도구 구현</td>
+</tr>
+<tr>
+<td>도구를 언제 실행할지</td>
+<td>에이전트에서는 모델의 선택, 플로에서는 제어 연결</td>
+</tr>
+<tr>
+<td>대화 이력과 실행 중 상태</td>
+<td>대상 런타임 또는 앱의 저장소</td>
+</tr>
+</tbody></table>
+</div>
+<p><a href="https://oracle.github.io/agent-spec/26.3.1/">Oracle 공식 개요</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/security.html">보안과 도구 레지스트리</a></p>
 <h2 id="chapter-2">2. 기초 — 재고 에이전트를 JSON과 YAML로 내보내기 <a class="permalink" href="#chapter-2" aria-label="2. 기초 — 재고 에이전트를 JSON과 YAML로 내보내기 링크">#</a></h2>
 <p>각 Python 블록을 표시된 파일명으로 같은 실습 폴더에 저장한다. 먼저 Python 3.11의 독립 가상환경을 만든다. 이 단계는 모델 API 키를 사용하지 않는다.</p>
 <figure class="example"><figcaption><span>PowerShell</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="PowerShell"><code class="language-powershell">py -3.11 -m venv .venv-wayflow
@@ -155,6 +215,13 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 </figure>
 <p>같은 이름을 키로 하여 선언과 구현을 연결한다. 실행 결과에서 KB-01의 7개, MS-02의 0개와 도구 요청·응답을 확인한다. 미등록 SKU는 상품 없음으로 별도 처리한다. <code>Agent</code>의 프롬프트는 조회를 요청하도록 유도한다. 조회가 업무상 반드시 필요한 경우 4절처럼 도구 노드를 플로에 둔다. <a href="https://oracle.github.io/agent-spec/26.3.1/howtoguides/howto_execute_agentspec_with_wayflow.html">WayFlow에서 실행하기</a></p>
+<h3 id="chapter-3-1">선언을 읽을 때 오류가 나는 위치 <a class="permalink" href="#chapter-3-1" aria-label="선언을 읽을 때 오류가 나는 위치 링크">#</a></h3>
+<ul>
+<li>모델 설정이나 도구 스키마가 명세에 맞지 않으면 먼저 생성·역직렬화 단계에서 확인한다.</li>
+<li>선언은 유효해도 목표 어댑터가 해당 컴포넌트를 변환하지 못할 수 있다. 지원 매트릭스와 배포 버전을 확인한다.</li>
+<li>변환할 때 도구가 누락되면 레지스트리 키를 선언의 이름과 대조한다. 동일 이름이어도 앱 함수가 받는 인자와 반환값이 계약과 일치해야 한다.</li>
+<li>로드 성공 뒤에만 실제 모델 호출을 확인한다. 모델 접근 오류, 잘못된 모델 출력, 업무 도구 오류는 각각 별도로 처리한다.</li>
+</ul>
 <h2 id="chapter-4">4. 심화 — 고정 조회 절차를 Flow로 만들기 <a class="permalink" href="#chapter-4" aria-label="4. 심화 — 고정 조회 절차를 Flow로 만들기 링크">#</a></h2>
 <p>같은 도구를 모델 선택 없이 한 번 실행한다. 제어 엣지는 <strong>시작 → 조회 → 종료</strong> 순서를, 데이터 엣지는 <strong>시작의 sku → 조회의 sku</strong>, <strong>조회의 stock → 종료의 stock</strong> 연결을 나타낸다. 이 구분 덕분에 실행 순서와 전달되는 값을 따로 읽을 수 있다.</p>
 <figure class="example"><figcaption><span>Python / stock_flow.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / stock_flow.py"><code class="language-python"># stock_flow.py
@@ -292,6 +359,107 @@ if __name__ == &quot;__main__&quot;:
 <li><strong>실행 코드로 확인한다.</strong> 소스의 어댑터 공통 로더에서 역직렬화와 컴포넌트 변환 경계를 찾고, LangGraph 어댑터의 서버 도구 변환과 WayFlow의 로더를 비교한다. 선언에 적힌 이름이 각 런타임의 함수 또는 도구로 연결되는 지점이 핵심이다.</li>
 </ol>
 <p><a href="https://oracle.github.io/agent-spec/26.3.1/security.html">보안 가이드</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/changelog.html">버전별 변경점</a> · <a href="https://github.com/oracle/agent-spec/tree/main/adapters_examples">Oracle 어댑터 예제 소스</a> · <a href="https://github.com/oracle/wayflow">WayFlow 실행 소스</a></p>
+<h2 id="chapter-8">8. 키 없이 이식성 확인하기 — 같은 Flow를 LangGraph에서 실행 <a class="permalink" href="#chapter-8" aria-label="8. 키 없이 이식성 확인하기 — 같은 Flow를 LangGraph에서 실행 링크">#</a></h2>
+<p>4절에서 생성한 <code>stock-flow.json</code>을 그대로 사용한다. WayFlow 쪽에서는 <code>start_conversation({&quot;sku&quot;: ...})</code>으로 값을 전달했다. 여기서는 LangGraph 어댑터가 만드는 플로 상태의 <code>inputs</code>에 값을 넣고 <code>outputs</code>에서 결과를 꺼낸다. 실행 인터페이스가 달라도 두 런타임이 동일한 업무 결과를 내는지 확인한다.</p>
+<figure class="example"><figcaption><span>Python / compare_flow_langgraph.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / compare_flow_langgraph.py"><code class="language-python"># compare_flow_langgraph.py
+from pathlib import Path
+
+from pyagentspec.adapters.langgraph import AgentSpecLoader
+
+from stock_spec import lookup_stock
+
+source = Path(&quot;stock-flow.json&quot;).read_text(encoding=&quot;utf-8&quot;)
+flow = AgentSpecLoader(tool_registry={&quot;lookup_stock&quot;: lookup_stock}).load_json(source)
+cases = {
+    &quot;KB-01&quot;: &quot;KB-01: 재고 7개&quot;,
+    &quot;MS-02&quot;: &quot;MS-02: 재고 0개&quot;,
+    &quot;ZZ-99&quot;: &quot;ZZ-99: 상품 없음&quot;,
+}
+for sku, expected in cases.items():
+    result = flow.invoke({&quot;inputs&quot;: {&quot;sku&quot;: sku}})
+    assert result[&quot;outputs&quot;][&quot;stock&quot;] == expected
+    print(expected)
+</code></pre>
+</figure>
+<p>5절의 LangGraph 가상환경으로 실행한다. <code>{&quot;sku&quot;: sku}</code>를 바깥에 직접 넘기면 이 플로의 시작 노드가 입력을 받지 못한다. 대화형 <code>Agent</code>의 <code>messages</code> 호출 형식과도 다르다. 설치된 어댑터의 시작 노드가 <code>inputs</code>를 읽고 마지막 노드가 <code>outputs</code>를 쓰는지 확인할 수 있다. <a href="https://github.com/oracle/agent-spec/tree/main/adapters_examples/langgraph">LangGraph 어댑터 예제</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/api/adapters.html">어댑터 API</a></p>
+<h2 id="chapter-9">9. 도구·모델·워크플로의 확장 선택지 <a class="permalink" href="#chapter-9" aria-label="9. 도구·모델·워크플로의 확장 선택지 링크">#</a></h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="비교 표"><table>
+<thead>
+<tr>
+<th>요구</th>
+<th>명세에서 살펴볼 구성</th>
+<th>앱이나 런타임이 확인할 내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>사내 Python 함수를 호출한다</td>
+<td><code>ServerTool</code></td>
+<td>등록된 구현의 인자와 실행 권한</td>
+</tr>
+<tr>
+<td>호출을 외부 서비스에 맡긴다</td>
+<td><code>RemoteTool</code> 또는 MCP 구성</td>
+<td>대상 서버, 인증, 타임아웃, 응답 검증</td>
+</tr>
+<tr>
+<td>호출을 클라이언트에서 수행한다</td>
+<td><code>ClientTool</code></td>
+<td>대상 런타임의 실행 요청·응답 처리 방식</td>
+</tr>
+<tr>
+<td>지점별 재고를 동시에 조사한다</td>
+<td><code>ParallelFlowNode</code> 또는 <code>ParallelMapNode</code></td>
+<td>결과 결합 규칙, 동시성 한도, 실패 시 처리</td>
+</tr>
+<tr>
+<td>모델 출력에서 SKU와 수량을 받는다</td>
+<td>구조화 출력을 선언한 LLM 노드</td>
+<td>모델·어댑터 지원과 업무 규칙 검증</td>
+</tr>
+<tr>
+<td>취소 요청을 검토 뒤 실행한다</td>
+<td>확인이 필요한 도구 또는 승인 분기</td>
+<td>승인 주체, 검토한 인자, 재개 방식, 멱등성</td>
+</tr>
+</tbody></table>
+</div>
+<p>두 개의 작업이 동시에 실행될 수 있는지는 데이터 의존성부터 따진다. 재고 조사와 주문 취소는 무조건 병렬화할 일이 아니다. 서로 독립적인 지점 조회를 병렬로 하고, 수량 합산과 권한 검사는 결과가 모인 뒤 한다. 도구 확인 요청을 명세에 표현하더라도 앱에서는 실제 사용자의 승인 권한과 승인 내용을 검증한다. <a href="https://oracle.github.io/agent-spec/26.3.1/api/index.html">노드·도구 API</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/changelog.html">확인 처리의 버전별 변경점</a></p>
+<h3 id="chapter-9-1">실습 — 구성에서 허용한 컴포넌트만 복원하기 <a class="permalink" href="#chapter-9-1" aria-label="실습 — 구성에서 허용한 컴포넌트만 복원하기 링크">#</a></h3>
+<p>아래 스크립트는 2절의 에이전트 JSON을 사용한다. 동일한 입력을 두 정책으로 읽어 본다. 첫 번째는 샘플에 필요한 세 컴포넌트를 허용한다. 두 번째는 서버 도구를 빼므로 복원을 거부해야 한다. 모델을 호출하지 않는다.</p>
+<figure class="example"><figcaption><span>Python / check_spec_policy.py</span><button type="button" data-copy hidden>코드 복사</button></figcaption><pre tabindex="0" aria-label="Python / check_spec_policy.py"><code class="language-python"># check_spec_policy.py
+from pathlib import Path
+
+from pyagentspec.serialization import AgentSpecDeserializer
+
+raw = Path(&quot;stock-agent.json&quot;).read_text(encoding=&quot;utf-8&quot;)
+allowed = AgentSpecDeserializer(
+    allowed_components=[&quot;Agent&quot;, &quot;OpenAiConfig&quot;, &quot;ServerTool&quot;],
+)
+restored = allowed.from_json(raw)
+assert restored.tools[0].name == &quot;lookup_stock&quot;
+
+restricted = AgentSpecDeserializer(
+    allowed_components=[&quot;Agent&quot;, &quot;OpenAiConfig&quot;],
+)
+try:
+    restricted.from_json(raw)
+except ValueError as error:
+    assert &quot;ServerTool&quot; in str(error)
+    print(&quot;허용되지 않은 ServerTool 차단&quot;)
+else:
+    raise AssertionError(&quot;구성 정책이 ServerTool을 허용했습니다.&quot;)
+</code></pre>
+</figure>
+<p>클래스 허용 정책은 컴포넌트의 종류를 검사한다. 이름이 허용된 모델이나 서버 도구라도 대상 URL, 레지스트리 구현, 데이터 접근 권한은 앱에서 별도로 검토한다. 운영 로더에는 같은 종류의 정책을 전달하고, 비밀이 직렬화 파일이나 오류 로그에 포함되지 않도록 확인한다. <a href="https://oracle.github.io/agent-spec/26.3.1/security.html">역직렬화 정책</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/api/serialization.html">직렬화 API</a></p>
+<h2 id="chapter-10">10. 최종 실습 — 팀 사이에서 구성 파일을 전달하기 <a class="permalink" href="#chapter-10" aria-label="10. 최종 실습 — 팀 사이에서 구성 파일을 전달하기 링크">#</a></h2>
+<ol>
+<li>2절 JSON과 YAML을 만든 뒤 도구의 이름, <code>sku</code>와 <code>stock</code> 필드를 비교한다. 새 환경에는 가상환경 설치 명령과 도구 계약, 예제 입력만 전달한다.</li>
+<li>다른 폴더에서 같은 이름의 조회 구현을 등록하고 양쪽에서 재고 0과 미등록 결과를 비교한다. 일부러 이름을 바꿔 로드 오류와 실행 오류가 어떻게 다른지 확인한다.</li>
+<li>둘 중 한 환경에만 지원되는 새 구성 요소를 도입한다고 가정한다. 배포 전에 변환 가능성을 확인하는 테스트를 넣고, 대체 경로가 필요할 때 어떤 의미를 보존해야 하는지 작성한다.</li>
+<li>구조화 응답이 있는 버전을 만들면 유효한 출력뿐 아니라 잘못된 SKU, 수량 0, 누락된 필드도 평가한다. 런타임 이식성 검사는 동일 선언의 변환 가능성과 업무 결과의 일치를 각각 측정한다.</li>
+<li>임의 JSON을 서비스에서 로드한다면 허용 컴포넌트와 등록 도구를 제한하고 파일·네트워크·토큰 접근을 실행 환경에서 제한한다. 실제 업무 쓰기 도구를 연결하기 전에 거절 시 변경 0회, 재시도 시 변경 1회를 검증한다.</li>
+</ol>
+<p><a href="https://oracle.github.io/agent-spec/26.3.1/howtoguides/index.html">공식 실습 목록</a> · <a href="https://oracle.github.io/agent-spec/26.3.1/api/evaluation.html">평가 API</a></p>
 
       </article>
       <footer>

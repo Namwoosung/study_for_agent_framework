@@ -39,8 +39,22 @@ async function buildPractice() {
       throw new Error(`Expected an opening heading in ${course.source}`);
     }
 
-    const chapters = tokens.filter(token => token.type === 'heading' && token.depth === 2);
-    const chapterIds = new Map(chapters.map((chapter, i) => [chapter, `chapter-${i + 1}`]));
+    const chapters = [];
+    const chapterIds = new Map();
+    for (const heading of tokens.filter(token => token.type === 'heading')) {
+      if (heading.depth === 2) {
+        const number = heading.text.match(/^\d+(?=\. )/)?.[0];
+        if (number === undefined) throw new Error(`Unnumbered chapter in ${course.source}`);
+        const id = `chapter-${number}`;
+        chapters.push({heading, id, number, subsections: []});
+        chapterIds.set(heading, id);
+      } else if (heading.depth === 3 && chapters.length) {
+        const parent = chapters.at(-1);
+        const id = `${parent.id}-${parent.subsections.length + 1}`;
+        parent.subsections.push({heading, id});
+        chapterIds.set(heading, id);
+      }
+    }
     const renderer = new Renderer();
     renderer.heading = function (token) {
       const id = chapterIds.get(token);
@@ -66,8 +80,8 @@ async function buildPractice() {
     const nav = practice.map((item, i) => (
       `<a href="../../${item.href}"${i === index ? ' aria-current="page"' : ''}>${escape(item.name)}</a>`
     )).join('');
-    const toc = chapters.map(chapter => (
-      `<li><a href="#${chapterIds.get(chapter)}">${escape(chapter.text.replace(/^\d+\.\s*/, ''))}</a></li>`
+    const toc = chapters.map(({heading, id, number}) => (
+      `<li value="${number}"><a href="#${id}">${escape(heading.text.replace(/^\d+\.\s*/, ''))}</a></li>`
     )).join('');
     const next = practice[index + 1];
     const article = marked.parser(tokens, {renderer, gfm: true});
@@ -94,7 +108,7 @@ async function buildPractice() {
     <aside class="sidebar">
       <nav aria-label="이 교재의 단원">
         <p>이 교재의 단원</p>
-        <ol>${toc}</ol>
+        <ol start="${chapters[0].number}">${toc}</ol>
       </nav>
     </aside>
     <main id="main" tabindex="-1">

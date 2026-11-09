@@ -80,7 +80,13 @@ h2 {
   border-top: 1px solid var(--line);
   scroll-margin-top: .75rem;
 }
+h3 {
+  font-size: 1.13rem;
+  margin: 1.65rem 0 .55rem;
+  scroll-margin-top: .75rem;
+}
 h2:target { border-top-color: var(--accent); }
+h3:target { color: var(--accent); }
 .permalink { font: 600 .7em ui-monospace, monospace; text-decoration: none; }
 p, ul, ol { margin: 0 0 1em; }
 article li + li { margin-top: .4em; }
